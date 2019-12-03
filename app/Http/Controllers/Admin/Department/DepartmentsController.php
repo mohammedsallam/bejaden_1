@@ -295,7 +295,8 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         $chart = MtsChartAc::where('Acc_No', $id)->first();
-        if($chart->Level_Status == 0){
+        // if($chart->Level_Status == 0){
+        if($chart->Level_No == 1){
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
@@ -336,6 +337,7 @@ class DepartmentsController extends Controller
                 'Acc_Ntr' => trans('admin.category')
             ]);
 
+            // return $request->Fbal_DB;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
