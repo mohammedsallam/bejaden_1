@@ -35,17 +35,41 @@
                     name.push(data.instance.get_node(data.selected[i]).text);
                 }
                 $('#parent_name').text(name);
+
+                //get all direct and undirect children of selected node
+                var currentNode = data.node;
+                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                // var result = [currentNode.id];
+                var result = [];
+                allChildren.find('li').addBack().each(function(index, element) {
+                    if ($(this).jstree(true).is_leaf(element)) {
+                        // result.push(element.textContent);
+                        result.push(parseInt(element.id));
+                    } else {
+                        var nod = $(this).jstree(true).get_node(element);
+                        // result.push(nod.text);
+                        result.push(parseInt(nod.id));
+                    }
+                });
+
+                //handle click event
+                // timer = setTimeout(function() {
+                // if (!prevent) {
+                    handle_click(r[0], result);
+                // }
+                // prevent = false;
+                // }, delay);
             });
             
             //handle tree click vent
-            $('#jstree').on("click.jstree", function (e){
-                timer = setTimeout(function() {
-                if (!prevent) {
-                    handle_click(e);
-                }
-                prevent = false;
-                }, delay);
-            });
+            // $('#jstree').on("click.jstree", function (e){
+                // timer = setTimeout(function() {
+                // if (!prevent) {
+                //     handle_click(e);
+                // }
+                // prevent = false;
+                // }, delay);
+            // });
 
             //handle tree double click event
             $('#jstree').on("dblclick.jstree", function (e){
@@ -54,16 +78,17 @@
                 handle_dbclick(e);
             });
 
-
-            function handle_click(e){
-                var node = $(e.target).closest("li");
-                var type = node.attr('rel');
-                var Acc_No = node[0].id;
+            function handle_click(Acc_No, children){
+                // alert(children);
+                // console.log(Acc_No);
+                // var node = $(e.target).closest("li");
+                // var type = node.attr('rel');
+                // var Acc_No = node[0].id;
                 $.ajax({
                     url: "{{route('getEditBlade')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
+                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No, children: children },
                     success: function(data){
                         $('#chart_form').html(data);
                     }
@@ -198,6 +223,10 @@
                     {!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Acc_No? $chart_item->Acc_No : null], 'id' => 'edit_form','files' => true]) !!}
                         {{csrf_field()}}
                         {{method_field('PUT')}}
+
+                        @foreach($children as $child)
+                            <input type="hidden" name="children[]" value='{{$child}}'>
+                        @endforeach
                         
                         <div class="col-md-3 pull-left">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
@@ -226,20 +255,18 @@
                         {{-- نهاية تصنيف الحساب --}}
                         
                         {{-- رقم الشركه --}}
-                        <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden>
-                        {{-- <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>
-                                <select name="Cmp_No" id="Cmp_No" class="form-control">
-                                    <option value="">{{trans('admin.select')}}</option>
-                                    @if(count($cmps) > 0)
-                                        @foreach($cmps as $cmp)
-                                            <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                        </div> --}}
+                        {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
+                        <div class="form-group row">
+                            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
+                            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
+                                <option value="">{{trans('admin.select')}}</option>
+                                @if(count($cmps) > 0)
+                                    @foreach($cmps as $cmp)
+                                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
                         {{-- نهاية رقم الشركه --}}
                     
                         {{-- اسم الحساب عربى --}}

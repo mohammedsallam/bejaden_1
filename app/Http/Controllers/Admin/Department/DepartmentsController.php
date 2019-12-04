@@ -51,8 +51,9 @@ class DepartmentsController extends Controller
             }
             $chart_item = MtsChartAc::first();
             $total = $this->getTotalTransaction($chart_item);
+            $children = [];
             return view('admin.departments.index', ['title' => trans('admin.Departments'), 
-                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total]);
+                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
         }
         else{
             if(session('Cmp_No') == -1){
@@ -281,7 +282,7 @@ class DepartmentsController extends Controller
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'), 
                         'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                        'balances' => $balances, 'incomes' => $incomes]);
+                        'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
        }
     }
 
@@ -318,6 +319,12 @@ class DepartmentsController extends Controller
             $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
             $chart->Updt_Time = $chart->updated_at;
             $chart->save();
+
+            if(count($request->children) > 0){
+                foreach($request->children as $acc_no){
+                    $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                }
+            }
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));  
         }
         else{
@@ -361,6 +368,12 @@ class DepartmentsController extends Controller
             $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
             $chart->Updt_Time = $chart->updated_at;
             $chart->save();
+
+            if(count($request->children) > 0){
+                foreach($request->children as $acc_no){
+                    $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                }
+            }
             
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
         }
