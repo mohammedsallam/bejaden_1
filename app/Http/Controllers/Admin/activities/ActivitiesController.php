@@ -96,7 +96,7 @@ class ActivitiesController extends Controller
           $activitie->save();
 
 
-        return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_edit')));
+        return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_update')));
     }
 
     /**

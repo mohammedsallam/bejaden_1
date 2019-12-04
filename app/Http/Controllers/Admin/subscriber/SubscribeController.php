@@ -52,7 +52,7 @@ class SubscribeController extends Controller
         // return view('admin.subscribers.create1',
         //             ['title'=>trans('admin.create_new_subscriber'),'states'=>$states,'branches'=>$branches,'departments'=>$departments,'countries'=>$countries,'cities'=>$cities,'employees'=>$employees,'activity_type'=>$activity_type,'glccs'=>$glccs]);
 
-        $subcriber = MTsCustomer::get();
+        $subscriber = MTsCustomer::get();
         return view('admin.subscribers.create1', compact('subcriber'));
     }
 
@@ -74,7 +74,7 @@ class SubscribeController extends Controller
             'Cstm_Ctg' => 'sometimes',
             'Cstm_Refno' => 'sometimes',
             'Acc_No' => 'sometimes',
-            'Cstm_NmEn' => 'required',
+            'Cstm_NmEn' => 'sometimes',
             'Cstm_NmAr' => 'required',
             'Catg_No' => 'sometimes',
             'Slm_No' => 'sometimes',

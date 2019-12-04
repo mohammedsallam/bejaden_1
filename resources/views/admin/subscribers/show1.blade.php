@@ -3,6 +3,10 @@
 @inject('branches', 'App\Models\Admin\MainBranch')
 @inject('customers', 'App\Models\Admin\MainBranch')
 @inject('customers', 'App\Models\Admin\MTsCustomer')
+@inject('delegates', 'App\Models\Admin\AstSalesman')
+@inject('supervisors', 'App\Models\Admin\AstMarket')
+@inject('supctgs', 'App\Models\Admin\Astsupctg')
+@inject('activities', 'App\Models\Admin\AstNutrbusn')
 @inject('countries', 'App\country')
 @inject('cities', 'App\city')
 @section('title',trans('admin.show_profile_to') .session_lang($subscriber->Cstm_NmEr,$subscriber->Cstm_NmAr))
@@ -65,8 +69,8 @@
                     </div>
 
                     <div class="form-group">
-                        <div class="col-md-1" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px; padding-left: 38px;">
+                        <div class="col-md-2" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
+                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 38px;">
                             <select class="form-control" name="Brn_No" id="branches" readonly>
                                <option>{{trans('admin.select')}}</option>
                            </select>
@@ -147,12 +151,21 @@
                 </div>
                 <div class="row col-md-4">
                     <div class="col-md-12">
-                        {!! Form::label('Cstm_Active', trans('admin.active')) !!}
-                        {!! Form::checkbox('Cstm_Active') !!}
+                        <ul>
+                            <li style="list-style: none;">
+                                <a class="pull-right">@if($subscriber->Cstm_Active == 1)<div class="badge">{{trans('admin.active')}}</div>
+                                    @else <div class="badge">{{trans('admin.deactive')}}</div> @endif</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="col-md-12">
-                        {!! Form::label('Internal_Invoice', trans('admin.Internal_Invoice')) !!}
-                        {!! Form::checkbox('Internal_Invoice') !!}
+                        <ul>
+                            <li style="list-style: none;">
+                                <a class="pull-right">@if($subscriber->Internal_Invoice == 1)<div class="badge">{{trans('admin.y_Internal_Invoice')}}</div>
+                                    @else <div class="badge">{{trans('admin.No_Internal_Invoice')}}</div> @endif</a>
+                            </li>
+                        </ul>
+
                     </div>
                 </div>
 
@@ -171,9 +184,14 @@
                 <div class="col-md-6">
                     <div class="col-md-12">
                         <div class="col-md-3" style="left: 11px;">{!!Form::label('Cntry_No', trans('admin.country'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Cntry_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
-                                'class'=>'form-control', 'id'=>'countries','placeholder'=>trans('admin.select') ,'readonly'=>'true'
-                        ])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            @if($subscriber->Cntry_No==null)
+                                {!! Form::text('Cntry_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                            {!! Form::text('Cntry_No', $subscriber->country->country_name_ar, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="padding: 3px">{!!Form::label('City_No', trans('admin.city'))!!}</div>
@@ -191,15 +209,36 @@
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Slm_No', trans('admin.slm_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Slm_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            @if($subscriber->Slm_No==null)
+                                {!! Form::text('Slm_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Slm_No', $subscriber->delegate->Slm_NmAr, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:13px;">{!!Form::label('Mrkt_No', trans('admin.mrkt_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Mrkt_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            @if($subscriber->Mrkt_No==null)
+                                {!! Form::text('Mrkt_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Mrkt_No', $subscriber->supervisor->Mrkt_NmAr, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Nutr_No', trans('admin.Nutr_No'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Nutr_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            @if($subscriber->Nutr_No==null)
+                                {!! Form::text('Nutr_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Nutr_No', $subscriber->activity->Nutr_NmAr, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Fbal_Db', trans('admin.Fbal_Db'))!!}</div>
@@ -233,6 +272,10 @@
                     <fieldset>
                         <legend>{{trans('admin.last_mo')}}</legend>
                         <div class="col-md-12">
+                            <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
+                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>
                             <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_Dt', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                         </div>
@@ -246,31 +289,46 @@
                 </div>
                 <div class="col-md-12" style="margin-top: 15px;">
 
-                    <div class="col-md-6">
-                        <div class="col-md-3">{!!Form::label('Cstm_Ctg', trans('admin.customer_catg'))!!}</div>
-                        <div class="col-md-9">
-                            <select class="form-control" name="Cstm_Ctg" readonly>
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
+                    <div class="col-md-12" style="margin-bottom: 11px;">
+                        <div class="col-md-4">{!!Form::label('Cstm_Ctg', trans('admin.customer_catg'))!!}</div>
+                        <div class="col-md-8">
+                            @if($subscriber->Cstm_Ctg==null)
+                                {!! Form::text('Cstm_Ctg', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Cstm_Ctg', $subscriber->cstmCatg->Supctg_Nmar, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
                        </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="col-md-3" style="left: 17px;top: 4px;">{!!Form::label('Catg_No', trans('admin.classification_by_dealing'))!!}</div>
-                        <div class="col-md-9">
-                            <select class="form-control" name="Catg_No" readonly>
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
-                        </div>
-                    </div>
                     <div class="col-md-12" style="margin-bottom: 11px;">
-                        <div class="col-md-3">{!!Form::label('Acc_No', trans('admin.account_number'))!!}</div>
-                        <div class="col-md-9" style="margin-right: 0px;">{!!Form::text('Acc_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-4">{!!Form::label('Acc_No', trans('admin.account_number'))!!}</div>
+                        <div class="col-md-8" style="margin-right: 0px;">{!!Form::text('Acc_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    </div>
+
+                    <div class="col-md-12" style="margin-bottom: 11px;">
+                        <div class="col-md-6">{!!Form::label('Tax_No', trans('admin.Tax_No'))!!}</div>
+                        <div class="col-md-6" style="margin-right: 0px;">{!!Form::text('Tax_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
 
                     <div class="col-md-12">
-                        <div class="col-md-6">{!!Form::label('Tax_No', trans('admin.Tax_No'))!!}</div>
-                        <div class="col-md-6" style="margin-right: -110px;">{!!Form::text('Tax_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <ul>
+                            <li style="list-style: none;">
+                                <a class="pull-right">@if($subscriber->AgeNot_Calculate == 1)<div class="badge">{{trans('admin.No_AgeNot_Calculate')}}</div>
+                                    @else <div class="badge">{{trans('admin.AgeNot_Calculate')}}</div> @endif</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="col-md-12">
+                        <ul>
+                            <li style="list-style: none;">
+                                <a class="pull-right">@if($subscriber->Deserve_Discount == 1)<div class="badge">{{trans('admin.No_Deserve_Discount')}}</div>
+                                    @else <div class="badge">{{trans('admin.Deserve_Discount')}}</div> @endif</a>
+                            </li>
+                        </ul>
+
                     </div>
 
                 </div>
