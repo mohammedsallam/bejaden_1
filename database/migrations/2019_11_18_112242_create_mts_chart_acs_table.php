@@ -27,41 +27,40 @@ class CreateMtsChartAcsTable extends Migration
             $table->string('Acc_NmEn')->nullable();//اسم الحساب انجليزى
             $table->integer('Clsacc_No1')->nullable();//حساب الميزانيه
             $table->integer('Clsacc_No2')->nullable();//حساب قائمة الدخل
-            $table->integer('Clsacc_No3')->nullable();//مركز تكلفه
+            $table->integer('Clsacc_No3')->nullable();//حساب تشغيل
             $table->boolean('CostCntr_Flag')->nullable();//مالوش استخدام دلوقتى
             $table->bigInteger('Costcntr_No')->nullable();//مالوش استخدام دلوقتى
-            $table->float('Fbal_DB', 50, 10)->nullable();//رصيداول المده مدين
-            $table->float('Fbal_CR', 50, 10)->nullable();//رصيد اول المده دائن
-            $table->float('Cr_Blnc', 50, 10)->nullable();//رصيد تقديرى
-            $table->float('DB11', 50, 10)->nullable();//حركة ياناير مدين
-            $table->float('CR11', 50, 10)->nullable();//حركة يناير دائن
-            $table->float('DB12', 50, 10)->nullable();//حركة فبراير مدين
-            $table->float('CR12', 50, 10)->nullable();//حركة فبراير دائن
-            $table->float('DB13', 50, 10)->nullable();//
-            $table->float('CR13', 50, 10)->nullable();//
-            $table->float('DB14', 50, 10)->nullable();//
-            $table->float('CR14', 50, 10)->nullable();//
-            $table->float('DB15', 50, 10)->nullable();//
-            $table->float('CR15', 50, 10)->nullable();//
-            $table->float('DB16', 50, 10)->nullable();//
-            $table->float('CR16', 50, 10)->nullable();//
-            $table->float('DB17', 50, 10)->nullable();//
-            $table->float('CR17', 50, 10)->nullable();//
-            $table->float('DB18', 50, 10)->nullable();//
-            $table->float('CR18', 50, 10)->nullable();//
-            $table->float('DB19', 50, 10)->nullable();//
-            $table->float('CR19', 50, 10)->nullable();//
-            $table->float('DB20', 50, 10)->nullable();//
-            $table->float('CR20', 50, 10)->nullable();//
-            $table->float('DB21', 50, 10)->nullable();//
-            $table->float('CR21', 50, 10)->nullable();//
-            $table->float('DB22', 50, 10)->nullable();//
-            $table->float('CR22', 50, 10)->nullable();//
+            $table->float('Fbal_DB')->nullable();//رصيداول المده مدين
+            $table->float('Fbal_CR')->nullable();//رصيد اول المده دائن
+            $table->float('DB11')->nullable();//حركة ياناير مدين
+            $table->float('CR11')->nullable();//حركة يناير دائن
+            $table->float('DB12')->nullable();//حركة فبراير مدين
+            $table->float('CR12')->nullable();//حركة فبراير دائن
+            $table->float('DB13')->nullable();//
+            $table->float('CR13')->nullable();//
+            $table->float('DB14')->nullable();//
+            $table->float('CR14')->nullable();//
+            $table->float('DB15')->nullable();//
+            $table->float('CR15')->nullable();//
+            $table->float('DB16')->nullable();//
+            $table->float('CR16')->nullable();//
+            $table->float('DB17')->nullable();//
+            $table->float('CR17')->nullable();//
+            $table->float('DB18')->nullable();//
+            $table->float('CR18')->nullable();//
+            $table->float('DB19')->nullable();//
+            $table->float('CR19')->nullable();//
+            $table->float('DB20')->nullable();//
+            $table->float('CR20')->nullable();//
+            $table->float('DB21')->nullable();//
+            $table->float('CR21')->nullable();//
+            $table->float('DB22')->nullable();//
+            $table->float('CR22')->nullable();//
             $table->datetime('Acc_Dt')->nullable();//تاريخ انشاء الحساب
             $table->string('Acc_DtAr')->nullable();//تاريخ انشاء الحساب هجرى
             $table->boolean('Acc_Actv')->nullable()->default(1);//فاعلية الحساب - 0 غير فعال - 1 فعال
-            $table->float('ComplxFbal_DB', 50, 10)->nullable();//حساب مجمع للحسابات الرئيسيه - مدين - مالوش استخدام دلوقتى
-            $table->float('ComplxFbal_CR', 50, 10)->nullable();//حساب مجمع للحسابات الرئيسيه دائن - مالوش استخدام دلوقتى
+            $table->float('ComplxFbal_DB')->nullable();//حساب مجمع للحسابات الرئيسيه - مدين - مالوش استخدام دلوقتى
+            $table->float('ComplxFbal_CR')->nullable();//حساب مجمع للحسابات الرئيسيه دائن - مالوش استخدام دلوقتى
             $table->integer('User_Id')->nullable();//
             $table->datetime('Updt_Time')->nullable();//
             $table->timestamps();

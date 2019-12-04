@@ -27,4 +27,9 @@ class MainCompany extends Model
     public function branches(){
         return $this->hasMany(MainBranch::class, 'Cmp_No', 'Cmp_No');
     }
+
+    public function subcribers(){
+                return $this->hasMany(App\Models\Admin\MTsCustomer::class, 'Cmp_No', 'ID_No');
+
+    }
 }

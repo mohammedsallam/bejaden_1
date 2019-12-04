@@ -22,7 +22,6 @@ use App\receiptsData;
 use App\receiptsType;
 use App\supplier;
 use App\Models\Admin\MtsChartAc;
-use App\Models\Admin\MtsClosAcc;
 use App\Models\Admin\MainCompany;
 use Auth;
 use Illuminate\Http\Request;
@@ -41,72 +40,16 @@ class DepartmentsController extends Controller
      */
     public function index(Department $department)
     {
-        $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-        if(count($chart) > 0){
-            if(session('Cmp_No') == -1){
-                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            }
-            else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-            }
-            $chart_item = MtsChartAc::first();
-            $total = $this->getTotalTransaction($chart_item);
-            return view('admin.departments.index', ['title' => trans('admin.Departments'), 
-                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total]);
-        }
-        else{
-            if(session('Cmp_No') == -1){
-                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            }
-            else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-            }
-            $Acc_No = $this->createAccNo(0);
-            return view('admin.departments.init_chart', ['title' => trans('admin.Departments')
-                        , 'cmps' => $cmps, 'Acc_No' => $Acc_No]);
-        }
-        
-    }
-
-    public function createNewAcc(Request $request){
-        if($request->ajax()){
-            if($request->parent){
-                $parent = MtsChartAc::where('Acc_No', $request->parent)->get(['Acc_No', 'Cmp_No', 'Level_No'])->first();
-                $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
-                $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-                $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
-                $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
-                $Acc_No = $this->createAccNo($parent->Acc_No);
-                return view('admin.departments.create', ['title' => trans('admin.Departments'), 
-                            'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' =>  $Acc_No,
-                            'balances' => $balances, 'incomes' => $incomes]);
-            }
-            // else{
-            //     return 'else';
-            //     if(session('Cmp_No') == -1){
-            //         $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            //     }
-            //     else{
-            //         $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-            //     }
-            //     $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-            //     $Acc_No = $this->createAccNo(0);
-            //     return view('admin.departments.create', ['title' => trans('admin.Departments'), 
-            //                 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' => $Acc_No]);
-            // }
-        }  
-    }
-
-    public function initChartAcc(){
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
         else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
-        $Acc_No = $this->createAccNo(0);
-        return view('admin.departments.create_main_chart', ['title' => trans('admin.Departments')
-                    , 'cmps' => $cmps, 'Acc_No' => $Acc_No]);
+        $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
+        return view('admin.departments.index', ['title' => trans('admin.Departments'), 
+                    'chart' => $chart, 'cmps' => $cmps]);
+        // return view('admin.departments.index',['title'=> trans('admin.Departments'),'department'=>$department]);
     }
 
     /**
@@ -135,91 +78,60 @@ class DepartmentsController extends Controller
      */
     public function store(Request $request,Department $department)
     {
-        if($request->Level_Status == 0){
-            $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Acc_NmAr' => 'required',
-                'Acc_NmEn' => 'required',
-            ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
-                'Acc_NmAr' => trans('admin.arabic_name'),
-                'Acc_NmEn' => trans('admin.english_name'),
-            ]);
+        $data = $this->validate($request,[
+            'Cmp_No' => 'required',
+            'Acc_NmAr' => 'required',
+            'Acc_NmEn' => 'sometimes',
+            'Acc_Typ' => 'sometimes',
+            'Level_Status' => 'required',
+            'Acc_Ntr' => 'required',
+        ],[],[
+            'Cmp_No' => trans('admin.cmp_no'),
+            'Acc_NmAr' => trans('admin.arabic_name'),
+            'Acc_NmEn' => trans('admin.english_name'),
+            'Acc_Typ' => trans('admin.account_type'),
+            'Level_Status' => trans('admin.department_type'),
+            'Acc_Ntr' => trans('admin.category')
+        ]);
 
-            $chart = new MtsChartAc;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Acc_NmAr = $request->Acc_NmAr;
-            $chart->Acc_NmEn = $request->Acc_NmEn;
-            $chart->Level_Status = $request->Level_Status;
+        $chart = new MtsChartAc;
+        $chart->Cmp_No = $request->Cmp_No;
+        $chart->Acc_NmAr = $request->Acc_NmAr;
+        $chart->Acc_NmEn = $request->Acc_NmEn;
+        $chart->Level_Status = $request->Level_Status;
+        if($request->Level_Status == 0){
             $chart->Level_No = 1;
             $chart->Parnt_Acc = 0;
-            $chart->User_Id = Auth::user()->id;
-            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
-            $chart->Acc_No = $request->Acc_No;
-            // $created_Acc_No = $this->createAccNo($chart->Parnt_Acc);
-            // if($request->Acc_No == $created_Acc_No){
-            //     $chart->Acc_No = $created_Acc_No;
-            // }
-            // else{
-            //     $chart->Acc_No = $request->Acc_No;
-            // }
-            $chart->save();
-            $chart->Acc_Dt = $chart->created_at;
-            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_add')));
         }
-        else if($request->Level_Status == 1){
-            $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Acc_NmAr' => 'required',
-                'Acc_NmEn' => 'required',
-                'Acc_Typ' => 'sometimes',
-                'Level_Status' => 'required',
-                'Acc_Ntr' => 'required',
-            ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
-                'Acc_NmAr' => trans('admin.arabic_name'),
-                'Acc_NmEn' => trans('admin.english_name'),
-                'Acc_Typ' => trans('admin.account_type'),
-                'Level_Status' => trans('admin.department_type'),
-                'Acc_Ntr' => trans('admin.category')
-            ]);
-            
-            // return $request;
-            $chart = new MtsChartAc;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Acc_NmAr = $request->Acc_NmAr;
-            $chart->Acc_NmEn = $request->Acc_NmEn;
-            $chart->Level_Status = $request->Level_Status;
+        else{
             $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
             $chart->Level_No = $parent->Level_No + 1;
             $chart->Parnt_Acc = $request->Parnt_Acc;
-            $chart->Acc_Typ = $request->Acc_Typ;
-            $chart->Clsacc_No1 = $request->Clsacc_No1;
-            $chart->Clsacc_No2 = $request->Clsacc_No2;
-            $chart->Clsacc_No3 = $request->Clsacc_No3;
-            $chart->Acc_Actv = $request->Acc_Actv;
-            $chart->Cr_Blnc = $request->Cr_Blnc;
-            $chart->Acc_Ntr = $request->Acc_Ntr;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-            $chart->User_Id = Auth::user()->id;
-            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
-            $chart->Acc_No = $request->Acc_No;
-            $chart->save();
-            $chart->Acc_Dt = $chart->created_at;
-            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            $parent_level = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->first();
-            if($parent_level){
-                $parent_level->Level_Status = 0;
-                $parent_level->save();
-            }
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_add')));
         }
+        $chart->Acc_Typ = $request->Acc_Typ;
+        if($request->Clsacc_No == 0){
+            $chart->Clsacc_No1 = $request->Clsacc_No;
+        }
+        else if($request->Clsacc_No == 1){
+            $chart->Clsacc_No2 = $request->Clsacc_No;
+        }
+        else if($request->Clsacc_No == 2){
+            $chart->Clsacc_No3 = $request->Clsacc_No;
+        }
+        $chart->Acc_Ntr = $request->Acc_Ntr;
+        $chart->Fbal_DB = $request->Fbal_DB;
+        $chart->Fbal_CR = $request->Fbal_CR;
+        $chart->User_Id = Auth::user()->id;
+
+        $chart->Acc_No = $this->createAccNo($chart->Level_No, $chart->Parnt_Acc);
+        $chart->save();
+        $chart->Acc_Dt = $chart->created_at;
+        $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
+        $chart->Updt_Time = $chart->updated_at;
+        $chart->save();
+        
+        return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_add')));
+
     }
 
     /**
@@ -259,11 +171,11 @@ class DepartmentsController extends Controller
      */
     public function edit($id)
     {
-        // $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
-        // $department = Department::findOrFail($id);
-        // $parents = $department->parents->pluck('dep_name_'.session('lang'),'id');
-        // $operations = operation::pluck('name_'.session('lang'),'id');
-        // return view('admin.departments.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
+        $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
+        $department = Department::findOrFail($id);
+        $parents = $department->parents->pluck('dep_name_'.session('lang'),'id');
+        $operations = operation::pluck('name_'.session('lang'),'id');
+        return view('admin.departments.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
     }
 
     public function getEditBlade(Request $request){
@@ -274,14 +186,10 @@ class DepartmentsController extends Controller
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
-            $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
-            $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
             $chart_item = MtsChartAc::where('Acc_No', $request->Acc_No)->first();
-            $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'), 
-                        'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                        'balances' => $balances, 'incomes' => $incomes]);
+                        'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item]);
        }
     }
 
@@ -294,76 +202,57 @@ class DepartmentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $chart = MtsChartAc::where('Acc_No', $id)->first();
-        // if($chart->Level_Status == 0){
-        if($chart->Level_No == 1){
-            $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Acc_NmAr' => 'required',
-                'Acc_NmEn' => 'sometimes',
-            ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
-                'Acc_NmAr' => trans('admin.arabic_name'),
-                'Acc_NmEn' => trans('admin.english_name'),
-            ]);
+        $data = $this->validate($request,[
+            'Cmp_No' => 'required',
+            'Acc_NmAr' => 'required',
+            'Acc_NmEn' => 'sometimes',
+            'Acc_Typ' => 'sometimes',
+            'Level_Status' => 'required',
+            'Acc_Ntr' => 'required',
+        ],[],[
+            'Cmp_No' => trans('admin.cmp_no'),
+            'Acc_NmAr' => trans('admin.arabic_name'),
+            'Acc_NmEn' => trans('admin.english_name'),
+            'Acc_Typ' => trans('admin.account_type'),
+            'Level_Status' => trans('admin.department_type'),
+            'Acc_Ntr' => trans('admin.category')
+        ]);
 
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Acc_NmAr = $request->Acc_NmAr;
-            $chart->Acc_NmEn = $request->Acc_NmEn;
-            $chart->Acc_No = $request->Acc_No;
-            // $chart->Parnt_Acc = 0;
-            $chart->User_Id = Auth::user()->id;
-            $chart->save();
-            $chart->Acc_Dt = $chart->created_at;
-            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));  
+        $chart = MtsChartAc::where('Acc_No', $id)->first();
+        $chart->Cmp_No = $request->Cmp_No;
+        $chart->Acc_NmAr = $request->Acc_NmAr;
+        $chart->Acc_NmEn = $request->Acc_NmEn;
+        $chart->Level_Status = $request->Level_Status;
+        if($request->Level_Status == 0){
+            $chart->Level_No = 1;
+            $chart->Parnt_Acc = 0;
         }
         else{
-            $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Acc_NmAr' => 'required',
-                'Acc_NmEn' => 'sometimes',
-                'Acc_Typ' => 'sometimes',
-                'Level_Status' => 'sometimes',
-                'Acc_Ntr' => 'required',
-            ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
-                'Acc_NmAr' => trans('admin.arabic_name'),
-                'Acc_NmEn' => trans('admin.english_name'),
-                'Acc_Typ' => trans('admin.account_type'),
-                'Level_Status' => trans('admin.department_type'),
-                'Acc_Ntr' => trans('admin.category')
-            ]);
-
-            // return $request->Fbal_DB;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Acc_NmAr = $request->Acc_NmAr;
-            $chart->Acc_NmEn = $request->Acc_NmEn;
-            // $chart->Level_Status = $request->Level_Status;
-            // return $request->Parnt_Acc;
-            // $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
-            // $chart->Level_No = $parent->Level_No + 1;
-            // $chart->Parnt_Acc = $request->Parnt_Acc;
-            $chart->Acc_Typ = $request->Acc_Typ;
-            $chart->Clsacc_No1 = $request->Clsacc_No1;
-            $chart->Clsacc_No2 = $request->Clsacc_No2;
-            $chart->Clsacc_No3 = $request->Clsacc_No3;
-            $chart->Acc_Actv = $request->Acc_Actv;
-            $chart->Cr_Blnc = $request->Cr_Blnc;
-            $chart->Acc_Ntr = $request->Acc_Ntr;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-            $chart->User_Id = Auth::user()->id;
-            $chart->save();
-            $chart->Acc_Dt = $chart->created_at;
-            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
+            $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
+            $chart->Level_No = $parent->Level_No + 1;
+            $chart->Parnt_Acc = $request->Parnt_Acc;
         }
+        $chart->Acc_Typ = $request->Acc_Typ;
+        if($request->Clsacc_No == 0){
+            $chart->Clsacc_No1 = $request->Clsacc_No;
+        }
+        else if($request->Clsacc_No == 1){
+            $chart->Clsacc_No2 = $request->Clsacc_No;
+        }
+        else if($request->Clsacc_No == 2){
+            $chart->Clsacc_No3 = $request->Clsacc_No;
+        }
+        $chart->Acc_Ntr = $request->Acc_Ntr;
+        $chart->Fbal_DB = $request->Fbal_DB;
+        $chart->Fbal_CR = $request->Fbal_CR;
+        $chart->User_Id = Auth::user()->id;
+
+        $chart->Acc_Dt = $chart->created_at;
+        $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
+        $chart->Updt_Time = $chart->updated_at;
+        $chart->save();
+        
+        return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
     }
 
     /**
@@ -691,8 +580,8 @@ class DepartmentsController extends Controller
 
     }
 
-    //create new Acc_No
-    public function createAccNo($Parnt_Acc){
+     //create new Acc_No
+     public function createAccNo($Level_No, $Parnt_Acc){
         if($Parnt_Acc == 0){
             $chart = MtsChartAc::where('Parnt_Acc', 0)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
             if($chart){
@@ -702,7 +591,7 @@ class DepartmentsController extends Controller
             else{
                 $Acc_No = 1;
                 return $Acc_No;
-            }    
+            }
         }
         else{
             $parent = MtsChartAc::where('Acc_No', $Parnt_Acc)->first(); 
@@ -737,13 +626,6 @@ class DepartmentsController extends Controller
         $total_credit = $chart->CR11 + $chart->CR12 + $chart->CR13 + $chart->CR14 + $chart->CR15 + $chart->CR16
                         + $chart->CR17 + $chart->CR18 + $chart->CR19 + $chart->CR20 + $chart->CR21 + $chart->CR22;
         
-        // اجمالى الرصيد
-        $total_balance = ($chart->Fbal_DB - $chart->Fbal_CR) + ($total_debit - $total_credit);
-
-        $total[] = (object) array('total_debit' => $total_debit,
-                                    'total_credit' => $total_credit,
-                                    'total_balance' => $total_balance);
-        return $total;
     }
 
 }

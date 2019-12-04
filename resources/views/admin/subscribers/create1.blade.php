@@ -3,6 +3,10 @@
 @inject('branches', 'App\Models\Admin\MainBranch')
 @inject('customers', 'App\Models\Admin\MainBranch')
 @inject('customers', 'App\Models\Admin\MTsCustomer')
+@inject('delegates', 'App\Models\Admin\AstSalesman')
+@inject('supervisors', 'App\Models\Admin\AstMarket')
+@inject('supctgs', 'App\Models\Admin\Astsupctg')
+@inject('activities', 'App\Models\Admin\AstNutrbusn')
 @inject('countries', 'App\country')
 @inject('cities', 'App\city')
 
@@ -152,8 +156,8 @@
                     </div>
 
                     <div class="form-group">
-                        <div class="col-md-1" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px; padding-left: 38px;">
+                        <div class="col-md-2" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
+                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 38px;">
                             <select class="form-control" name="Brn_No" id="branches">
                                <option>{{trans('admin.select')}}</option>
                            </select>
@@ -278,15 +282,23 @@
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Slm_No', trans('admin.slm_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Slm_No', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Slm_No' ,$delegates->pluck('Slm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                'class'=>'form-control','placeholder'=>trans('admin.select')
+                            ])!!}
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:13px;">{!!Form::label('Mrkt_No', trans('admin.mrkt_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Mrkt_No', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Mrkt_No' ,$supervisors->pluck('Mrkt_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                'class'=>'form-control','placeholder'=>trans('admin.select')
+                            ])!!}
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Nutr_No', trans('admin.Nutr_No'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Nutr_No', null, ['class'=>'form-control'])!!}
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Nutr_No' ,$activities->pluck('Nutr_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                'class'=>'form-control','placeholder'=>trans('admin.select')
+                            ])!!}
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -321,6 +333,10 @@
                     <fieldset>
                         <legend>{{trans('admin.last_mo')}}</legend>
                         <div class="col-md-12">
+                            <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
+                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>
                             <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_Dt', null, ['class'=>'form-control'])!!}</div>
                         </div>
@@ -333,32 +349,33 @@
 
                 </div>
                 <div class="col-md-12" style="margin-top: 15px;">
-
-                    <div class="col-md-6">
-                        <div class="col-md-3">{!!Form::label('Cstm_Ctg', trans('admin.customer_catg'))!!}</div>
-                        <div class="col-md-9">
-                            <select class="form-control" name="Cstm_Ctg">
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
-                       </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="col-md-3" style="left: 17px;top: 4px;">{!!Form::label('Catg_No', trans('admin.classification_by_dealing'))!!}</div>
-                        <div class="col-md-9">
-                            <select class="form-control" name="Catg_No">
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
+                    <div class="col-md-12" style="margin-bottom: 11px;">
+                        <div class="col-md-4">{!!Form::label('Cstm_Ctg', trans('admin.customer_catg'))!!}</div>
+                        <div class="col-md-8">{!!Form::select('Cstm_Ctg' ,$supctgs->pluck('Supctg_Nm'.session('lang'),'ID_No')->toArray(),null,[
+                                    'class'=>'form-control','placeholder'=>trans('admin.select')
+                                ])!!}
                         </div>
                     </div>
+
                     <div class="col-md-12" style="margin-bottom: 11px;">
-                        <div class="col-md-3">{!!Form::label('Acc_No', trans('admin.account_number'))!!}</div>
-                        <div class="col-md-9" style="margin-right: 0px;">{!!Form::text('Acc_No', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-4">{!!Form::label('Acc_No', trans('admin.account_number'))!!}</div>
+                        <div class="col-md-8" style="margin-right: 0px;">{!!Form::text('Acc_No', null, ['class'=>'form-control'])!!}</div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="margin-bottom: 11px;">
                         <div class="col-md-6">{!!Form::label('Tax_No', trans('admin.Tax_No'))!!}</div>
-                        <div class="col-md-6" style="margin-right: -110px;">{!!Form::text('Tax_No', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-6" style="margin-right: 0px;">{!!Form::text('Tax_No', null, ['class'=>'form-control'])!!}</div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="col-md-12">
+                            {!! Form::label('AgeNot_Calculate', trans('admin.AgeNot_Calculate')) !!}
+                            {!! Form::checkbox('AgeNot_Calculate') !!}
+                        </div>
+                        <div class="col-md-12">
+                            {!! Form::label('Deserve_Discount', trans('admin.Deserve_Discount')) !!}
+                            {!! Form::checkbox('Deserve_Discount') !!}
+                        </div>
                     </div>
 
                 </div>

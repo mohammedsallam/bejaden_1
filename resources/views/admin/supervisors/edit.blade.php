@@ -99,13 +99,12 @@
                 </div>
                 <div class="form-group row col-md-12">
                     <div class="col-md-12">
-                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Slm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Slm_NmAr', null, ['class'=>'form-control'])!!}</div>
-
+                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Mrkt_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
+                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Mrkt_NmAr', null, ['class'=>'form-control'])!!}</div>
                     </div>
                     <div class="col-md-12">
-                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Slm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Slm_NmEn', $supervisor->Slm_NmEn, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Mrkt_NmEn', trans('admin.subscriber_name_en'))!!}</div>
+                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Mrkt_NmEn', null, ['class'=>'form-control'])!!}</div>
                     </div>
                 </div>
 

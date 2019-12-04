@@ -584,6 +584,9 @@ if (!function_exists('load_dep')){
             }
             
             $levelType = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->Level_No;
+            // if($department->ID_No == 15){
+            //     dd($levelType);
+            // }
             $Operation = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->Acc_Typ ? \App\Enums\AccountType::getDescription($department->Acc_Typ) : null;
             $cc = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
             $code = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->Acc_No;
@@ -603,6 +606,7 @@ if (!function_exists('load_dep')){
             array_push($dep_arr,$list_arr);
 
         }
+        // dd($dep_arr);
         return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
     }
 }

@@ -65,11 +65,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
-        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');        
+        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');
         Route::post('departments/getEditBlade','Admin\Department\DepartmentsController@getEditBlade')->name('getEditBlade');
-        Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
-        Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
-        
+
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');
         Route::get('departments/department/reviewdepartment','Admin\Department\DepartmentsController@reviewdepartment')->name('reviewdepartment');
@@ -95,6 +93,9 @@ Route::group(['prefix'=>'admin'],function (){
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
+
+        Route::get('subscribers/{id}/deActive','SubscribeController@deActive');
+        Route::get('subscribers/{id}/active','SubscribeController@active');
         // Route::resource('relatedness','Admin\RelatednessController');
 
         Route::resource('systems','Admin\SystemController');
@@ -102,8 +103,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('premium','Admin\report\PremiumController@index')->name('premium');
 
 
-        
-        
 
 
 //        employees
@@ -118,25 +117,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('astsupctg','Admin\Astsupctg\AstsupctgController');
 
 
-//        activities
-        Route::resource('activities','Admin\activities\ActivitiesController');
-
-        Route::resource('subscribers','Admin\subscriber\SubscribeController');
-        Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
-
-        Route::get('subscribers/{id}/deActive','SubscribeController@deActive');
-        Route::get('subscribers/{id}/active','SubscribeController@active');
-        // Route::resource('relatedness','Admin\RelatednessController');
-
-
-        Route::resource('delegates', 'Admin\Delegates\DelegatesController');
-
-        Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
-
-
- Route::get('/country','Admin\SubscribeController@getCountries');
-        Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
-        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranches');
 
 
 //        report
@@ -248,6 +228,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('publicbalance/level','Admin\accountingReports\publicBalanceController@level');
 
 
+
         // Projects data for projects
         Route::resource('projects', 'Admin\Project\ProjectController');
         Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
@@ -263,6 +244,18 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('contractors', 'Admin\Contractors\ContractorsController');
         Route::resource('contracts', 'Admin\Contracts\ContractsController');
         Route::resource('ProjectsSites', 'Admin\ProjectsSites\ProjectsSitesController');
+
+        Route::resource('delegates', 'Admin\Delegates\DelegatesController');
+
+        Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
+
+
+
+        Route::get('/country','Admin\SubscribeController@getCountries');
+        Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
+        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranches');
     });
+
+
 
 });

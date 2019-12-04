@@ -176,8 +176,6 @@
                         </ul>
                     </li>
                     @endhasanyrole
-                    {{-- نهاية الموظفين --}}
-
                     {{-- لمشرفين --}}
                     @hasanyrole('writer|admin')
                     <li class="treeview {{ active_menu('supervisors')[0]  }}">
@@ -188,7 +186,7 @@
                         <ul class="treeview-menu" style=" {{ active_menu('drivers')[1]  }}">
                             <li class="active"><a href="{{url('/admin/supervisors')}}"><i class="fa fa-circle-o"></i>{{trans('admin.supervisors')}} </a></li>
                             @can('create')
-                                <li><a href="{{url('/admin/supervisors/create')}}"><i class="fa fa-plus"></i>{{trans('admin.add_supervisor')}} </a></li>
+                            <li><a href="{{url('/admin/supervisors/create')}}"><i class="fa fa-plus"></i>{{trans('admin.add_supervisor')}} </a></li>
                             @endcan
                         </ul>
                     </li>
@@ -203,11 +201,12 @@
                         <ul class="treeview-menu" style=" {{ active_menu('drivers')[1]  }}">
                             <li class="active"><a href="{{url('/admin/delegates')}}"><i class="fa fa-circle-o"></i>{{trans('admin.delegates')}} </a></li>
                             @can('create')
-                                <li><a href="{{url('/admin/delegates/create')}}"><i class="fa fa-plus"></i>{{trans('admin.add_delegate')}} </a></li>
+                            <li><a href="{{url('/admin/delegates/create')}}"><i class="fa fa-plus"></i>{{trans('admin.add_delegate')}} </a></li>
                             @endcan
                         </ul>
                     </li>
                     @endhasanyrole
+                    {{-- نهاية الموظفين --}}
 
                     {{-- الاصول الثابته --}}
                     @hasanyrole('writer|admin')

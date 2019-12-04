@@ -65,7 +65,21 @@ class MainBranch extends Model
         return $this->belongsTo(Admin::class, 'id', 'ID_No');
     }
 
-    public function company(){
+    /*public function company(){
         return $this->belongsTo(MainCompany::class, 'Cmp_No', 'Cmp_No');
+    }*/
+
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Admin');
     }
+
+    public function subcribers()
+    {
+        return $ths->hasMany('App\Models\Admin\MTsCustomer');
+    }
+    public function suplir(){
+        return $this->hasMany(MtsSuplir::class, 'Brn_No', 'ID_No');
+    }
+
 }

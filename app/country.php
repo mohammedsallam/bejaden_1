@@ -29,5 +29,8 @@ class country extends Model
     ];
 
 
+    public function cities(){
+        return $this->hasMany('App\city','id','country_id');
+    }
 
 }

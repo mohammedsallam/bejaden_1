@@ -9,6 +9,6 @@ class MTScustmr extends Model
     protected $table = 'MTScustmr';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
-        
+
     ];
 }

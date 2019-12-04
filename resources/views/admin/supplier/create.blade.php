@@ -140,7 +140,7 @@
                                     {{ Form::label(trans('admin.mail_box'), null, ['class' => 'control-label']) }}
                                 </div>
                                 <div class="col-md-8">
-                                    {{ Form::text('Cstm_POBox', old('Cstm_POBox'), array_merge(['class' => 'form-control'])) }}
+                                    {{ Form::text('mail_box', old('mail_box'), array_merge(['class' => 'form-control'])) }}
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -148,7 +148,7 @@
                                     {{ Form::label(trans('admin.mail_num'), null, ['class' => 'control-label']) }}
                                 </div>
                                 <div class="col-md-9">
-                                    {{ Form::text('Cstm_ZipCode', old('Cstm_ZipCode'), array_merge(['class' => 'form-control'])) }}
+                                    {{ Form::text('mail_num', old('mail_num'), array_merge(['class' => 'form-control'])) }}
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                                     {{ Form::label(trans('admin.mobMain'), null, ['class' => 'control-label']) }}
                                 </div>
                                 <div class="col-md-8">
-                                    {{ Form::text('Mobile',old('Mobile'), array_merge(['class' => 'form-control']), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+                                    {{ Form::text('mobMain',old('mobMain'), array_merge(['class' => 'form-control']), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
                                 </div>
                             </div>
 
@@ -262,14 +262,14 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="col-md-3">{!!Form::label('Linv_Net', trans('admin.Linv_Net'))!!}</div>
-                                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Linv_Net', null, ['class'=>'form-control'])!!}</div>
+                                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('Linv_Net', null, ['class'=>'form-control'])!!}</div>
                                         </div>
                                     </fieldset>
                                     <fieldset>
                                         <legend>{{trans('admin.last_mo')}}</legend>
                                         <div class="col-md-12">
                                             <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
-                                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
+                                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Linv_No', null, ['class'=>'form-control'])!!}</div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>

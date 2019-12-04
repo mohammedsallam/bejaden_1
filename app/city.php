@@ -27,6 +27,6 @@ class city extends Model
     ];
 
     public function country(){
-        return $this->hasOne('App\country','id','country_id');
+        return $this->belongsTo('App\country','country_id','id');
     }
 }
