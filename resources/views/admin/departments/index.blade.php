@@ -185,8 +185,8 @@
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-body">
+                            <a class="btn btn-primary" id="initChartAcc">{{trans('admin.Create_New_Department')}}</a>
                             <div id="parent_name" style="display: inline-block"></div>
-                                <a class="btn btn-primary" id="initChartAcc">{{trans('admin.Create_New_Department')}}</a>
                             <div id="jstree" style="margin-top: 20px"></div>
                         </div>
                     </div>
