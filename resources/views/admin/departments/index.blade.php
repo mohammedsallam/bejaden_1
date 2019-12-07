@@ -23,8 +23,9 @@
                 "plugins" : [ "themes","html_data","dnd","ui","types" ]
             });
 
+            //close or open all nodes on jstree load -closed by default-
             $('#jstree').on('loaded.jstree', function() {
-                $('#jstree').jstree('open_all');
+                // $('#jstree').jstree('open_all');
             });
 
             $('#jstree').on("changed.jstree", function (e, data) {
@@ -84,6 +85,7 @@
                 // var node = $(e.target).closest("li");
                 // var type = node.attr('rel');
                 // var Acc_No = node[0].id;
+                alert(Acc_No);
                 $.ajax({
                     url: "{{route('getEditBlade')}}",
                     type: "POST",
