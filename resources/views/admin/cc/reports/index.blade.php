@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.motion_detection_center_cost'))
+@section('title',trans('admin.Departments_reports'))
 @section('content')
     @push('js')
 
@@ -31,17 +31,17 @@
                 'use strict';
 
                 // var schedule = $('.schedules').val();
-                $('.glcc').on('change',function () {
-                    var glcc = $('.glcc').val();
+                $('.search').on('change',function () {
+                    var search = $('.search').val();
                     $("#loadingmessage").css("display","block");
                     $(".column-data").css("display","none");
-                    console.log(glcc);
+                    console.log(search);
                     if (this){
                         $.ajax({
-                            url: '{{aurl('cc/report/motioncc/show')}}',
+                            url: '{{aurl('departments/show')}}',
                             type:'get',
                             dataType:'html',
-                            data:{glcc : glcc},
+                            data:{search : search},
                             success: function (data) {
                                 $("#loadingmessage").css("display","none");
                                 $('.column-data').css("display","block").html(data);
@@ -57,19 +57,6 @@
             });
         </script>
 
-
-    @endpush
-    @push('js')
-        <script>
-            $(document).ready(function() {
-
-                $(".glcc").select2({
-                    placeholder: "{{trans('admin.select')}}",
-                    allowClear: true,
-                    dir: '{{direction()}}'
-                });
-            });
-        </script>
     @endpush
     <div class="box">
         @include('admin.layouts.message')
@@ -78,8 +65,8 @@
             <h3 class="box-title">{{$title}}</h3>
         </div>
         <div class="box-body">
-                {{ Form::label('glcc', trans('admin.cc'), ['class' => 'control-label']) }}
-                {{ Form::select('glcc', $glcc,null, array_merge(['class' => 'form-control glcc','placeholder'=>trans('admin.choose')])) }}
+                {{ Form::label('search', trans('admin.search_kind'), ['class' => 'control-label']) }}
+                {{ Form::select('search', \App\Enums\dataLinks\DepartmentReportType::toSelectArray(),null, array_merge(['class' => 'form-control search','placeholder'=>trans('admin.select')])) }}
         </div>
         <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
             <img src="{{ url('/') }}/images/ajax-loader.gif"/>

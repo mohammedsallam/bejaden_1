@@ -1,105 +1,282 @@
-@extends('admin.index')
-@section('title',trans('admin.create_new_cc'))
-@section('content')
-    @push('js')
-        <script>
-            $(document).ready(function () {
-                $('#jstree').jstree({
-                    "core" : {
-                        'data' : {!! load_cc(old('parent_id')) !!},
-                        "themes" : {
-                            "variant" : "large"
-                        },
-                        "multiple" : false,
-                        "animation" : 300
-                    },
-                    "checkbox" : {
-                        "keep_selected_style" : false
-                    },
-                    "plugins" : [ "themes","html_data","dnd","ui","types" ]
-                });
-                $('#jstree').on('loaded.jstree', function() {
-                    $('#jstree').jstree('open_all');
-                });
+{!! Form::open(['method'=>'POST','route' => ['cc.store'], 'id' => 'edit_form','files' => true]) !!}
+    {{csrf_field()}}
+    {{-- Parnt_Acc --}}
+    <input type="text" name="Parnt_Acc" id="Parnt_Acc" value="{{$parent? $parent->Costcntr_No : null}}" hidden>
+    <input type="text" name="Cmp_No" id="Cmp_No" value="{{$parent? $parent->Cmp_No : null}}" hidden>
+    <input type="text" name="Level_No" id="Level_No" value="{{$parent? $parent->Level_No : null}}" hidden>
+    <input type="text" name="Level_Status" id="Level_No" value="{{1}}" hidden>
+    {{-- Parnt_Acc end --}}
 
-                $('#jstree').on("changed.jstree", function (e, data) {
-                    var i, j, r =[];
-                    for (i=0,j=data.selected.length;i < j;i++){
-                        r.push(data.instance.get_node(data.selected[i]).id);
-                    }
-                    $('.parent_id').val(r.join(', '));
-                });
+    <div class="col-md-1 pull-left">
+        <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+    </div>
 
-            });
-            $(document).ready(function () {
-                $('#type').on('change',function () {
-                    var type = $('#type option:selected').val();
-                    console.log(type);
-                    if (type > 0){
-                        $('.cc').removeAttr("disabled")
-                    }else{
-                        $('.cc').attr('disabled','disabled')
-                    }
-                });
-            });
+    {{-- رقم الحساب --}}
+    <div class="row">
+        <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+        <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-4" value="{{$Costcntr_No}}">
+    </div>
+    {{-- رقم الحساب --}}
 
-        </script>
-    @endpush
-    <div class="box">
-        @include('admin.layouts.message')
-        @include('admin.layouts.error')
-        <div class="box-header">
-            <h3 class="box-title">{{$title}}</h3>
+    {{-- رقم الشركه --}}
+    <div class="row">
+        <div class="form-group">
+            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
+            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-8">
+                <option value="{{$cmps->Cmp_No? $cmps->Cmp_No : null}}">{{$cmps->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+            </select>
         </div>
-        <div class="box-body">
-            {!! Form::open(['method'=>'POST','route' => 'cc.store','files' => true]) !!}
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            {{ Form::label(trans('admin.arabic_name'), null, ['class' => 'control-label']) }}
-                            {{ Form::text('name_ar', old('name_ar'), array_merge(['class' => 'form-control'])) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ Form::label(trans('admin.english_name'), null, ['class' => 'control-label']) }}
-                            {{ Form::text('name_en', old('name_en'), array_merge(['class' => 'form-control'])) }}
-                        </div>
-                        {{ Form::hidden('levelType', 2) }}
-                    </div>
-                    <div class="clearfix"></div>
-                    <div id="jstree"></div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {{ Form::label('type', trans('admin.cc_type'), ['class' => 'control-label']) }}
-                        {{ Form::select('type', \App\Enums\dataLinks\TypeAccountType::toSelectArray(),old('type'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('creditor', trans('admin.first_date_creditor'), ['class' => 'control-label']) }}
-                        {{ Form::text('creditor',0, array_merge(['class' => 'form-control'])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('debtor', trans('admin.first_date_debtor'), ['class' => 'control-label']) }}
-                        {{ Form::text('debtor',0, array_merge(['class' => 'form-control'])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('estimite', trans('admin.credit_balance'), ['class' => 'control-label']) }}
-                        {{ Form::text('estimite',0, array_merge(['class' => 'form-control'])) }}
-                    </div>
+    </div>
+    {{-- نهاية رقم الشركه --}}
+
+    {{-- تصنيف الحساب --}}
+    <div class="row">
+        <div class="form-group col-md-4 col-md-offset-2">
+            @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
+                <input class="checkbox-inline" type="radio"
+                    name="Level_Status" id="Level_Status" value="{{$key}}"
+                    style="margin: 3px;" @if($key == 1) checked @endif>
+                <label>{{$value}}</label>
+            @endforeach
+        </div>
+
+        <div class="form-group col-md-4">
+            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
+                <input class="checkbox-inline" type="radio"
+                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
+                    style="margin: 3px;" @if($key == 1) checked @endif>
+                <label>{{$value}}</label>
+            @endforeach
+        </div>
+    </div>
+    {{-- نهاية تصنيف الحساب --}}
+
+    {{-- اسم الحساب عربى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
+            <input type="text" name="Costcntr_Nmar" id="Costcntr_Nmar" class="col-md-9 form-control">
+        </div>
+    {{-- نهاية اشم الحساب عربى --}}
+
+    {{-- اسم الحساب انجليزى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.account_name_en')}}:</label>
+        <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control">
+    </div>
+    {{-- نهاية اسم الحساب انجليزى --}}
+
+    <div class="col-md-6">
+        <div class="row">
+            {{-- رصيد اول المده مدين --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                    <input type="text" name="Fbal_DB" id="Fbal_DB" class="form-control col-md-7" value="{{0}}">
                 </div>
             </div>
-            <input type="hidden" class="parent_id" name="parent_id" value="{{old('parent_id')}}">
-            {{Form::submit(trans('admin.send'),['class'=>'btn btn-primary'])}}
-            {!! Form::close() !!}
+            {{-- نهايةرصيد اول المده مدين --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
+                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-7">
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
         </div>
     </div>
 
 
 
+{!! Form::close() !!}
+{{-- الحركات --}}
+<div class="col-md-12">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">الشهر</th>
+            <th scope="col">الحركة مدين</th>
+            <th scope="col">الحركة دائن</th>
+            <th scope="col">الرصيد الحالى</th>
+            <th scope="col"> رصيد تقديرى</th>
+        </tr>
+        </thead>
+        <tbody>
 
+        <tr>
+            <th scope="row">يناير</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">فبراير</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مارس</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ابريل</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مايو</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يونيو</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يوليو</th>
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">اغسطس</th>
 
+            <td>
+                0.0
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">سبتمبر</th>
 
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">أكتوبر</th>
 
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">نوفمبر</th>
 
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ديسمبر</th>
 
-@endsection
+            <td>
+                0.00
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+
+        <tr style="background-color: #d3d9df">
+            <th scope="row">الإجمالى</th>
+
+            <td>
+                0
+            </td>
+            <td>
+                0
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{{-- نهاية الحركات --}}

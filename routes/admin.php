@@ -65,25 +65,43 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
-        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');        
+        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');
         Route::post('departments/getEditBlade','Admin\Department\DepartmentsController@getEditBlade')->name('getEditBlade');
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
-        
+
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');
         Route::get('departments/department/reviewdepartment','Admin\Department\DepartmentsController@reviewdepartment')->name('reviewdepartment');
 
 //        cc
+
         Route::resource('cc','Admin\Cc\CcController');
-        Route::get('cc/report/motioncc','Admin\Cc\ReportController@motioncc');
-        Route::get('cc/report/motioncc/show','Admin\Cc\ReportController@show');
-        Route::get('cc/report/motioncc/details','Admin\Cc\ReportController@details');
-        Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-        Route::get('cc/report/checkReports','Admin\Cc\ReportController@checkReports');
-        Route::get('cc/report/checkReports/show','Admin\Cc\ReportController@checkShow');
-        Route::get('cc/report/checkReports/details','Admin\Cc\ReportController@checkDetails');
-        Route::post('cc/report/checkReports/pdf','Admin\Cc\ReportController@print');
+        Route::get('cc/department/print','Admin\Cc\CcController@print');
+        Route::get('cc/reports/report','Admin\Cc\CcController@reports')->name('cc.reports');
+        Route::get('cc/reports/details','Admin\Cc\CcController@details')->name('cc.details');
+        Route::post('cc/reports/pdf','Admin\Cc\CcController@pdf');
+        Route::post('cc/getEditBlade','Admin\Cc\CcController@getEditBlade')->name('getCcEditBlade');
+        Route::post('cc/createNewAcc','Admin\Cc\CcController@createNewAcc')->name('createCcNewAcc');
+        Route::post('cc/initChartAcc','Admin\Cc\CcController@initChartAcc')->name('initCcChartAcc');
+
+
+        Route::get('cc/department/Review','Admin\Cc\CcController@Review');
+        Route::get('cc/department/reviewdepartment','Admin\Cc\CcController@reviewdepartment')->name('reviewdeCcpartment');
+
+
+
+
+//
+//        Route::resource('cc','Admin\Cc\CcController');
+//        Route::get('cc/report/motioncc','Admin\Cc\ReportController@motioncc');
+//        Route::get('cc/report/motioncc/show','Admin\Cc\ReportController@show');
+//        Route::get('cc/report/motioncc/details','Admin\Cc\ReportController@details');
+//        Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
+//        Route::get('cc/report/checkReports','Admin\Cc\ReportController@checkReports');
+//        Route::get('cc/report/checkReports/show','Admin\Cc\ReportController@checkShow');
+//        Route::get('cc/report/checkReports/details','Admin\Cc\ReportController@checkDetails');
+//        Route::post('cc/report/checkReports/pdf','Admin\Cc\ReportController@print');
 
 
 
@@ -102,8 +120,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('premium','Admin\report\PremiumController@index')->name('premium');
 
 
-        
-        
+
+
 
 
 //        employees
