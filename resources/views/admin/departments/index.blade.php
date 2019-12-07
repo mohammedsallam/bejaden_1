@@ -25,7 +25,7 @@
 
             //close or open all nodes on jstree load -closed by default-
             $('#jstree').on('loaded.jstree', function() {
-                // $('#jstree').jstree('open_all');
+                $('#jstree').jstree('open_all');
             });
 
             $('#jstree').on("changed.jstree", function (e, data) {

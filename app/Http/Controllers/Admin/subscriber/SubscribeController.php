@@ -53,7 +53,7 @@ class SubscribeController extends Controller
         //             ['title'=>trans('admin.create_new_subscriber'),'states'=>$states,'branches'=>$branches,'departments'=>$departments,'countries'=>$countries,'cities'=>$cities,'employees'=>$employees,'activity_type'=>$activity_type,'glccs'=>$glccs]);
 
         $subscriber = MTsCustomer::get();
-        return view('admin.subscribers.create1', compact('subcriber'));
+        return view('admin.subscribers.create1', compact('subscriber'));
     }
 
     /**
