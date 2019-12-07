@@ -8,7 +8,7 @@ class AstMarket extends Model
 {
 
     protected $table = 'AstMarket';
-    protected $primarykey = 'ID_No';
+    protected $primaryKey = 'ID_No';
     public $timestamps = true;
     protected $fillable = [
         'Mrkt_No',

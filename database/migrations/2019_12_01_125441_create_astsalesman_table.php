@@ -10,9 +10,10 @@ class CreateAstSalesmanTable extends Migration {
 		Schema::create('AstSalesman', function(Blueprint $table) {
 			$table->increments('ID_No');
 			$table->timestamps();
-			$table->integer('Slm_No')->nullable();   //رقم المندوب
+			$table->integer('Slm_No')->nullable();  //رقم المندوب
 			$table->integer('Brn_No')->nullable();
-			$table->integer('StoreNo')->nullable();  //رقم المستودع
+            $table->integer('Mark_No')->nullable(); //رقم الممشرف
+            $table->integer('StoreNo')->nullable();  //رقم المستودع
 			$table->string('Slm_NmEn')->nullable();
 			$table->string('Slm_NmAr')->nullable();
 			$table->decimal('Target')->nullable();

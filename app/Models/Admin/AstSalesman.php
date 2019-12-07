@@ -1,18 +1,19 @@
 <?php
 
 namespace App\Models\Admin;
-
+use App\Models\Admin\AstMarket;
 use Illuminate\Database\Eloquent\Model;
 
 class AstSalesman extends Model
 {
 
     protected $table = 'astsalesman';
-    protected $primarykey = 'ID_No';
+    protected $primaryKey = 'ID_No';
     public $timestamps = true;
     protected $fillable = [
         'Slm_No',
         'Brn_No',
+        'Mark_No',   //المشرف
         'StoreNo',
         'Slm_NmEn',
         'Slm_NmAr',
@@ -24,5 +25,10 @@ class AstSalesman extends Model
         'User_ID',
         'Updt_Date'
     ];
+
+    public function supervisor()
+    {
+        return $this->belongsTo('AstMarket','Mark_No', 'ID_No');
+    }
 
 }

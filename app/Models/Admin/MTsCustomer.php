@@ -1,6 +1,11 @@
 <?php
 
 namespace App\Models\Admin;
+use App\Models\Admin\MainCompany;
+use App\Models\Admin\AstSalesman;
+use App\Models\Admin\AstMarket;
+use App\Models\Admin\AstNutrbusn;
+use App\Models\Admin\Astsupctg;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -101,7 +106,9 @@ class MTsCustomer extends Model
         'LRcpt_Dt',
         'LRcpt_Db',
         'Notes',
-        'Tax_No'
+        'Tax_No',
+        'AgeNot_Calculate',
+        'Deserve_Discount'
     ];
 
     public function branch()
@@ -113,7 +120,32 @@ class MTsCustomer extends Model
         return $this->belongsTo('App\Models\Admin\MainCompany', 'Cmp_No', 'ID_No');
     }
 
-    public function resposiblePerson(){
+    public function country()
+    {
+        return $this->belongsTo('App\country','Cntry_No', 'id');
+    }
+
+    public  function  delegate()
+    {
+        return $this->belongsTo('App\Models\Admin\AstSalesman', 'Slm_No', 'ID_No');
+    }
+
+    public  function  supervisor()
+    {
+        return $this->belongsTo('App\Models\Admin\AstMarket', 'Mrkt_No', 'ID_No');
+    }
+
+    public  function  activity()
+    {
+        return $this->belongsTo('App\Models\Admin\AstNutrbusn', 'Nutr_No', 'ID_No');
+    }
+
+    public  function  cstmCatg()
+    {
+        return $this->belongsTo('App\Models\Admin\Astsupctg', 'Cstm_Ctg', 'ID_No');
+    }
+    public function resposiblePerson()
+    {
         return $this->belongsTo('App\Models\Admin\MainCompany', 'Cstm_Rsp', 'ID_No');
     }
 
