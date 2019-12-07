@@ -51,8 +51,9 @@ class DepartmentsController extends Controller
             }
             $chart_item = MtsChartAc::first();
             $total = $this->getTotalTransaction($chart_item);
+            $children = [];
             return view('admin.departments.index', ['title' => trans('admin.Departments'), 
-                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total]);
+                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
         }
         else{
             if(session('Cmp_No') == -1){
@@ -281,7 +282,7 @@ class DepartmentsController extends Controller
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'), 
                         'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                        'balances' => $balances, 'incomes' => $incomes]);
+                        'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
        }
     }
 
@@ -295,7 +296,8 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         $chart = MtsChartAc::where('Acc_No', $id)->first();
-        if($chart->Level_Status == 0){
+        // if($chart->Level_Status == 0){
+        if($chart->Level_No == 1){
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
@@ -317,6 +319,16 @@ class DepartmentsController extends Controller
             $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
             $chart->Updt_Time = $chart->updated_at;
             $chart->save();
+
+            // $children = $child = MtsChartAc::where('Acc_No', 'LIKE '.$chart->Acc_No.'%')->get(['Cmp_No']);
+            // return $children;
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));  
         }
         else{
@@ -336,6 +348,7 @@ class DepartmentsController extends Controller
                 'Acc_Ntr' => trans('admin.category')
             ]);
 
+            // return $request->Fbal_DB;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
@@ -359,6 +372,14 @@ class DepartmentsController extends Controller
             $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
             $chart->Updt_Time = $chart->updated_at;
             $chart->save();
+
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
             
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
         }

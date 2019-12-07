@@ -60,6 +60,11 @@
 {!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Acc_No? $chart_item->Acc_No : null], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{method_field('PUT')}}
+    @if($children)  
+        @foreach($children as $child)
+            <input type="hidden" name="children[]" value='{{$child}}'>
+        @endforeach
+    @endif
     
     <div class="col-md-3 pull-left">
         <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
@@ -98,20 +103,18 @@
     {{-- نهاية تصنيف الحساب --}}
     
     {{-- رقم الشركه --}}
-    <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden>
-    {{-- <div class="col-md-4">
-        <div class="form-group">
-            <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control">
-                <option value="">{{trans('admin.select')}}</option>
-                @if(count($cmps) > 0)
-                    @foreach($cmps as $cmp)
-                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-    </div> --}}
+    {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
+    <div class="form-group row">
+        <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
+        <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
+            <option value="">{{trans('admin.select')}}</option>
+            @if(count($cmps) > 0)
+                @foreach($cmps as $cmp)
+                    <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                @endforeach
+            @endif
+        </select>
+    </div>
     {{-- نهاية رقم الشركه --}}
 
     {{-- اسم الحساب عربى --}}

@@ -1,6 +1,6 @@
 @extends('admin.index')
 @inject('branches', 'App\Models\Admin\MainBranch')
-@inject('supervisors', 'App\Models\Admin\AstMarket)
+
 
 @section('title',trans('admin.create_new_delegate'))
 @section('content')
@@ -91,7 +91,7 @@
     </div>
     <div>
 
-  {{Form::open(['route'=>'delegates.store','class'=>'form-group','files'=>true])}}
+  {{Form::open(['route'=>'supervisors.store','class'=>'form-group','files'=>true])}}
   <button class="btn btn-primary" style="float: left;"><i class="fa fa-save"></i></button>
 
         <div class="box-body">
@@ -103,66 +103,36 @@
 
                 <div class="form-group row col-md-12">
 
-                    <div class="form-group">
+
                         <div class="col-md-1" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px; padding-left: 41px; left: -5px;">
+                        <div class="col-md-11" style="margin-bottom: 10px; padding-left: 38px; left: -5px;">
                             {!!Form::select('Brn_No', $branches->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')
                         ])!!}
                         </div>
 
-                    </div>
-
                 </div>
                 <div class="form-group row">
                     <div class="form-group row col-md-6">
-                        <div class="col-md-3" style="left: 2px;">{!!Form::label('StoreNo', trans('admin.StoreNo'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('StoreNo', null, ['class'=>'form-control'])!!}</div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-3" style="margin-right: -22px;">{!!Form::label('Slm_No', trans('admin.Slm_No'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Slm_No', null, ['class'=>'form-control'])!!}</div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-3" style="margin-right: -22px;">{!!Form::label('Mark_No', trans('admin.Mark_No'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">
-                            {!!Form::select('Mark_No' ,$supervisors->pluck('Mrkt_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                'class'=>'form-control','placeholder'=>trans('admin.select')
-                            ])!!}
-                        </div>
+                        <div class="col-md-3" style="left: 2px;">{!!Form::label('Mrkt_No', trans('admin.Mrkt_No'))!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Mrkt_No', null, ['class'=>'form-control'])!!}</div>
                     </div>
 
                 </div>
                 <div class="form-group row col-md-12">
                     <div class="col-md-12">
-                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Slm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Slm_NmAr', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Mrkt_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
+                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Mrkt_NmAr', null, ['class'=>'form-control'])!!}</div>
                     </div>
                     <div class="col-md-12">
-                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Slm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
-                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Slm_NmEn', null, ['class'=>'form-control'])!!}</div>
-                    </div>
-                </div>
-                <div class="form-group row col-md-12">
-                    <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Slm_Tel', trans('admin.tel'))!!}
-                    </div>
-                    <div class="col-md-10" style="margin-bottom: 10px;right: 23px;padding-right: 1px;">{!!Form::text('Slm_Tel', null, ['class'=>'form-control'])!!}
-                    </div>
-                </div>
-                <div class="row col-md-12">
-                    <div class="col-md-9">
-                        <div class="col-md-3" style="margin-right: -29px;">{!!Form::label('Target', trans('admin.Target'))!!}</div>
-                        <div class="col-md-9" style="left: 21px;">{!!Form::text('Target', null, ['class'=>'form-control'])!!}</div>
-                    </div>
-                    <div class="col-md-3" style="left: 38px;">
-                        {!! Form::label('Slm_Active', trans('admin.active')) !!}
-                        {!! Form::checkbox('Slm_Active') !!}
+                        <div class="col-md-1" style="margin-right: -47px;left: -18px;">{!!Form::label('Mrkt_NmEn', trans('admin.subscriber_name_en'))!!}</div>
+                        <div class="col-md-11" style="margin-bottom: 10px;right: 27px;">{!!Form::text('Mrkt_NmEn', null, ['class'=>'form-control'])!!}</div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="col-md-6">
+            <di v class="col-md-6">
 
 
             @else

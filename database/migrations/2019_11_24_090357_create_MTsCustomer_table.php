@@ -10,7 +10,7 @@ class CreateMTScustomerTable extends Migration {
 		Schema::create('MTsCustomer', function(Blueprint $table) {
 			$table->increments('ID_No');
 			$table->timestamps();
-			$table->integer('Cmp_No')->nullable()->unique();  //رقم الشركه
+			$table->integer('Cmp_No')->nullable();  //رقم الشركه
 			$table->integer('Brn_No')->nullable();       //رقم الفرع
 			$table->bigInteger('Cstm_No')->nullable();   //رقم العميل
 			$table->boolean('Cstm_Active')->nullable();  //فعالية العميل
@@ -18,7 +18,7 @@ class CreateMTScustomerTable extends Migration {
 			$table->string('Cstm_Refno', 20)->nullable();//رقم المرجع للعميل
 			$table->boolean('Internal_Invoice')->nullable();//الفاتوره الداخليه للعميل (0 مبيعملش / 1 بيعمل)
 			$table->bigInteger('Acc_No')->nullable();       //رقم الحساب للعملاء
-			$table->string('Cstm_NmEn', 200);
+			$table->string('Cstm_NmEn', 200)->nullable();
 			$table->string('Cstm_NmAr', 200);
 			$table->integer('Catg_No')->nullable();     //الراجل بيسدد فى مواعيده - بصنف الناس حسب التعاملات
 			$table->integer('Slm_No')->nullable(); //رقم  مندوب البيع
@@ -102,7 +102,10 @@ class CreateMTScustomerTable extends Migration {
 			$table->decimal('LRcpt_Db')->nullable();        //قيمة اخر سند قبض
 			$table->string('Notes', 40)->nullable();
 			$table->string('Tax_No', 20)->nullable();    //رقم البطاقه الضريبيه للعميل
-		});
+            $table->string('AgeNot_Calculate')->nullable(); //العميل لايدخل في حساب العمولة
+            $table->string('Deserve_Discount')->nullable();    //العميل لايستحق اى خصومات
+
+        });
 	}
 
 	public function down()
