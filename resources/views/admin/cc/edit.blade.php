@@ -11,7 +11,7 @@
 </script>
 
 
-{!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Costcntr_No? $chart_item->Costcntr_No : null], 'id' => 'edit_form','files' => true]) !!}
+{!! Form::open(['method'=>'POST','route' => ['cc.update', $chart_item->Costcntr_No? $chart_item->Costcntr_No : null], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{method_field('PUT')}}
 

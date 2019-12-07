@@ -117,17 +117,17 @@ class CcController extends Controller
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmer' => 'required',
+                'Costcntr_Nmen' => 'required',
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
                 'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmer' => trans('admin.english_name'),
+                'Costcntr_Nmen' => trans('admin.english_name'),
             ]);
 
             $chart = new MtsCostcntr;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmer = $request->Costcntr_Nmer;
+            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
             $chart->Fbal_CR = $request->Fbal_CR;
             $chart->Fbal_DB = $request->Fbal_DB;
             $chart->Level_No = 1;
@@ -253,19 +253,20 @@ class CcController extends Controller
     {
         $chart = MtsCostcntr::where('Costcntr_No', $id)->first();
         if($chart->Level_Status == 0){
+
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmer' => 'sometimes',
+                'Costcntr_Nmen' => 'sometimes',
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
                 'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmer' => trans('admin.english_name'),
+                'Costcntr_Nmen' => trans('admin.english_name'),
             ]);
 
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmer = $request->Costcntr_Nmer;
+            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
             $chart->Costcntr_No = $request->Costcntr_No;
             // $chart->Parnt_Acc = 0;
 //            $chart->User_Id = Auth::user()->id;
@@ -280,19 +281,19 @@ class CcController extends Controller
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmer' => 'sometimes',
+                'Costcntr_Nmen' => 'sometimes',
 
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
                 'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmer' => trans('admin.english_name'),
+                'Costcntr_Nmen' => trans('admin.english_name'),
 
             ]);
 
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmer = $request->Costcntr_Nmer;
-            $chart->Acc_Typ = $request->Acc_Typ;
+            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
+//            $chart->Acc_Typ = $request->Acc_Typ;
             $chart->Fbal_DB = $request->Fbal_DB;
             $chart->Fbal_CR = $request->Fbal_CR;
 //            $chart->User_Id = Auth::user()->id;
@@ -332,10 +333,8 @@ class CcController extends Controller
     public function print()
     {
 
-//        $cc = sumdepartment(15);
         $cc = Department::orderBy('code')->get();
 
-//        dd($cc);
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
@@ -441,8 +440,7 @@ class CcController extends Controller
     }
     public function Review( )
     {
-//        $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');
-//        $branches = Branches::pluck('name_'.session('lang'),'id');
+
         $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
         $title = trans('admin.daily_report');
         return view('admin.cc.review',compact('limitationReceipts'));
@@ -483,14 +481,6 @@ class CcController extends Controller
             })->get();
 
 
-//        $limitations_2 = limitationsType::where('operation_id', '=', 4)->where('limitations_type.tree_id', '!=', \DB::raw('limitations_type.relation_id'))->whereHas('limitations',
-//            function ($query) use ($type) {
-//                $query->where('limitationsType_id', '=', $type);
-//
-//
-//            })->get();
-
-//dd(tree_id  != relation_id);
 
 
         $Errorlimitations_3 = limitationsType::whereHas('limitations',
@@ -647,7 +637,6 @@ class CcController extends Controller
         else{
             $parent = MtsCostcntr::where('Costcntr_No', $Parnt_Acc)->first();
             if(count($parent->children) > 0){
-                dd('dd');
                 $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
                 return $max->Costcntr_No + 1;
             }
@@ -655,17 +644,7 @@ class CcController extends Controller
                 $Costcntr_No = (int)$Parnt_Acc.'01';
                 return $Costcntr_No;
             }
-            // $chart = MtsCostcntr::where('Parnt_Acc', $Parnt_Acc)->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
-            // if($chart){
-            //     $index = explode('0', $chart->Costcntr_No);
-            //     $counter = (int)$index[count($index)-1] + 1;
-            //     $Costcntr_No = (int)$Parnt_Acc.'0'.$counter;
-            //     return $Costcntr_No;
-            // }
-            // else{
-            //     $Costcntr_No = (int)$Parnt_Acc.'01';
-            //     return $Costcntr_No;
-            // }
+
         }
     }
 
