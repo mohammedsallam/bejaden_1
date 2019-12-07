@@ -85,7 +85,6 @@
                 // var node = $(e.target).closest("li");
                 // var type = node.attr('rel');
                 // var Acc_No = node[0].id;
-                alert(Acc_No);
                 $.ajax({
                     url: "{{route('getEditBlade')}}",
                     type: "POST",
