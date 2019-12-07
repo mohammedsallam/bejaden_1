@@ -1,6 +1,7 @@
 <?php
 
 
+use App\MtsCostcntr;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Admin\MtsChartAc;
 
@@ -554,13 +555,9 @@ if (!function_exists('getschedule')){
 }
 if (!function_exists('load_dep')){
     function load_dep($select = null,$dep_hide = null){
-        // $departments = MtsChartAc::selectraw('Acc_Nm'.ucfirst(session('lang')).' as text')
-        //     ->selectraw('Acc_No as id')
-        //     ->selectraw('Parnt_Acc as parent')
-        //     ->get(['text','parent','id']);
 
         $departments = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Acc_No', 'ID_No']);
-        
+
         $dep_arr = [];
         foreach($departments as $department){
             $list_arr = [];
@@ -582,7 +579,7 @@ if (!function_exists('load_dep')){
                     'disabled'=>true
                 ];
             }
-            
+
             $levelType = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->Level_No;
             $Operation = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->Acc_Typ ? \App\Enums\AccountType::getDescription($department->Acc_Typ) : null;
             $cc = MtsChartAc::where('Acc_No',$department->Acc_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
@@ -595,10 +592,10 @@ if (!function_exists('load_dep')){
                     $list_arr['parent'] = $department->Parnt_Acc;
                 }
                 else{
-                    $list_arr['parent'] = $department->Parnt_Acc; 
+                    $list_arr['parent'] = $department->Parnt_Acc;
                 }
             }
-            
+
             $list_arr['text'] = $department->{'Acc_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
             array_push($dep_arr,$list_arr);
 
@@ -606,38 +603,52 @@ if (!function_exists('load_dep')){
         return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
     }
 }
+
 if (!function_exists('load_cc')){
     function load_cc($select = null,$cc_hide = null){
-        $cc = \App\glcc::selectraw('name_'.session("lang").' as text')
-            ->selectraw('id as id')
-            ->selectraw('parent_id as parent')
-            ->get(['text','parent','id']);
+        $departments = \App\Models\Admin\MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Costcntr_No', 'ID_No']);
+
         $dep_arr = [];
-        foreach($cc as $c){
+        foreach($departments as $department){
             $list_arr = [];
             $list_arr['icon'] = '';
             $list_arr['li_attr'] = '';
             $list_arr['a_attr'] = '';
             $list_arr['children'] = [];
-            if ($select !== null and $select == $c->id){
+            if ($select !== null and $select == $department->Acc_No){
                 $list_arr['state'] = [
                     'opened'=>true,
                     'selected'=>true,
                     'disabled'=>false
                 ];
             }
-            if ($cc_hide !== null and $cc_hide == $c->id){
+            if ($cc_hide !== null and $cc_hide == $department->Acc_No){
                 $list_arr['state'] = [
                     'opened'=>false,
                     'selected'=>false,
                     'disabled'=>true
                 ];
             }
-            $code = \App\glcc::where('id',$c->id)->first()->code;
-            $list_arr['id'] = $c->id;
-            $list_arr['parent'] = $c->parent !== null?$c->parent:'#';
-            $list_arr['text'] = $c->text .' '.'( '.$code.' )'.'';
+
+            $levelType = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Level_No;
+            $Operation = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Acc_Typ ? \App\Enums\AccountType::getDescription($department->Acc_Typ) : null;
+            $cc = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
+            $code = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Costcntr_No;
+            $list_arr['id'] = $department->Costcntr_No;
+
+            if( $department->Parnt_Acc !== null){
+                if($department->Parnt_Acc == 0){
+                    $department->Parnt_Acc = '#';
+                    $list_arr['parent'] = $department->Parnt_Acc;
+                }
+                else{
+                    $list_arr['parent'] = $department->Parnt_Acc;
+                }
+            }
+
+            $list_arr['text'] = $department->{'Costcntr_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
             array_push($dep_arr,$list_arr);
+
         }
         return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
     }

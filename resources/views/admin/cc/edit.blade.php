@@ -1,308 +1,414 @@
-@extends('admin.index')
-@section('title',trans('admin.edit_department'))
-@section('content')
-    @hasrole('writer')
-    @push('js')
-        <script>
-            function calculatedept() {
-                var creditor = $('input[name=\'creditor\']').val(),
-                    debtor = $('input[name=\'debtor\']').val(),
-                    minus = debtor - creditor;
-                $('#subtract').text(minus);
-
-            }
-        </script>
-    @endpush
-    <div class="box">
-        @include('admin.layouts.message')
-        <div class="box-header">
-            <h3 class="box-title">{{$title}}</h3>
-        </div>
-        <div class="box-body">
-            {!! Form::model($cc,['method'=>'PUT','route' => ['cc.update',$cc->id]]) !!}
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            {{ Form::label(trans('admin.arabic_name'), null, ['class' => 'control-label']) }}
-                            {{ Form::text('name_ar', $cc->name_ar, array_merge(['class' => 'form-control'])) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ Form::label(trans('admin.english_name'), null, ['class' => 'control-label']) }}
-                            {{ Form::text('name_en', $cc->name_en, array_merge(['class' => 'form-control'])) }}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label(trans('admin.description'), null, ['class' => 'control-label']) }}
-                        {{ Form::text('description',$cc->description, array_merge(['class' => 'form-control'])) }}
-                    </div>
-                    <div class="hidden">
-                        {{$balance = 0}}
-                        {{$dataDebtor = 0}}
-                        {{$dataCredit = 0}}
-                        {{$balance1 = 0}}
-                        {{$balance2 = 0}}
-                        {{$balance3 = 0}}
-                        {{$balance4 = 0}}
-                        {{$balance5 = 0}}
-                        {{$estimated = null}}
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
-                            <tr>
-                                <th>الشهر</th>
-                                <th>الحركه دائن</th>
-                                <th>الحركه مدين</th>
-                                <th>رصيد حالي</th>
-                                <th>رصيد تقديري</th>
-                                @for($date = \Carbon\Carbon::today()->format('Y')-1;$date > \Carbon\Carbon::today()->format('Y')-6;$date--)
-                                    <th>رصيد {{$date}}</th>
-                                @endfor
-                            </tr>
-                            @for($i = 1;$i < 13;$i++)
-                                <tr>
-                                    <td>{{\App\Enums\dataLinks\MonthType::getDescription($i)}}</td>
-                                    <td>
-                                        @if($cc->type == '0')
-                                            {{ $creditor= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) , date("Y-m-t", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) ,'creditor','>=')}}
-                                        @else
-
-                                            {{$creditor =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) , date("Y-m-t", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) ,'creditor','>=')}}
-
-                                        @endif
-                                        <div class="hidden">{{$dataCredit += $creditor}}</div>
-
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['creditor']}}--}}
-{{--                                        <div class="hidden">{{$dataCredit += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['creditor']}}</div>--}}
-
-                                    </td>
-                                    <td>
-
-                                        @if($cc->type== '0')
-                                        {{$debtor = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) , date("Y-m-t", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) ,'debtor','>=')}}
-
-                                        @else
-
-                                            {{$debtor = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) , date("Y-m-t", strtotime('1-'.$i.'-'.\Carbon\Carbon::today()->format('Y')) ) ,'debtor','>=')}}
-
-                                        @endif
-                                        <div class="hidden">{{$dataDebtor += $debtor}}</div>
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['debtor']}}--}}
-{{--                                        <div class="hidden">{{$dataDebtor += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['debtor']}}</div>--}}
-
-                                    </td>
-
-                                    <td>
-                                        {{ $creditor -$debtor }}
-                                        <div class="hidden">  {{$balance +=$creditor -$debtor }}</div>
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['current_balance']}}</div>--}}
-                                    </td>
-                                    <td>
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['estimated_balance']}}--}}
-{{--                                        <div class="hidden">{{$estimated += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y'))['estimated_balance']}}</div>--}}
-                                    </td>
-
-                                    <td>
-
-                                        <?php
-                                        $lastyear = \Carbon\Carbon::today()->format('Y')-1;
-                                        ?>
-
-                                        <div class="hidden">
-                                            @if($cc->type== '0')
-                                                {{ $creditor8= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear)) ,'creditor','>=')}}
-
-                                            @else
-
-                                                {{$creditor8 =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear)) ,'creditor','>=')}}
-
-                                            @endif
-                                            @if($cc->type==  '0')
-                                                {{$debtor8 = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear) ) ,'debtor','>=')}}
-
-                                            @else
-
-                                                {{$debtor8 = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear) ) ,'debtor','>=')}}
-
-                                            @endif
-
-                                        </div>
-                                            <div class="hidden">
-                                                {{$balance1 +=$creditor8 - $debtor8}}
-                                            </div>
-                                            {{$creditor8 - $debtor8}}
-
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-1)['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance1 += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-1)['current_balance']}}</div>--}}
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $lastyear2 = \Carbon\Carbon::today()->format('Y')-2;
-                                        ?>
-
-                                        <div class="hidden">
-                                            @if($cc->type== '0')
-                                                {{ $creditor7= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear2) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear2)) ,'creditor','>=')}}
-                                            @else
-
-                                                {{$creditor7 =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear2) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear2)) ,'creditor','>=')}}
-
-                                            @endif
-                                            @if($cc->type==  '0')
-                                                {{$debtor7 = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear2) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear2) ) ,'debtor','>=')}}
-
-                                            @else
-
-                                                {{$debtor7 = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear2) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear2) ) ,'debtor','>=')}}
-
-                                            @endif
-
-                                        </div>
-                                        <div class="hidden">  {{$balance2 += $creditor7 - $debtor7}}</div>
-                                        <div>  {{$creditor7 - $debtor7}}</div>
-
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-2)['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance2 += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-2)['current_balance']}}</div>--}}
-
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $lastyear3 = \Carbon\Carbon::today()->format('Y')-3;
-                                        ?>
-
-                                        <div class="hidden">
-                                            @if($cc->type== '0')
-                                                {{ $creditor6= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear3) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear3)) ,'creditor','>=')}}
-                                            @else
-
-                                                {{$creditor6 =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear3) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear3)) ,'creditor','>=')}}
-
-                                            @endif
-                                            @if($cc->type==  '0')
-                                                {{$debtor6 = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear3) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear3) ) ,'debtor','>=')}}
-
-                                            @else
-
-                                                {{$debtor6 = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear3) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear3) ) ,'debtor','>=')}}
-
-                                            @endif
-
-                                        </div>
-                                        <div class='hidden'> {{ $balance3 +=$creditor6 - $debtor6}}</div>
-
-                                        <div>  {{$creditor6 - $debtor6}}</div>
+<script>
+    $(document).ready(function(){
+        $('#delete_button').click(function(e){
+            e.preventDefault();
+            $('#delete_form').submit()
+        });
+    });
 
 
-                                        {{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-3)['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance3 += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-3)['current_balance']}}</div>--}}
 
-                                    </td>
+</script>
 
-                                    <td>
-                                        <?php
-                                        $lastyear4 = \Carbon\Carbon::today()->format('Y')-4;
-                                        ?>
 
-                                        <div class="hidden">
-                                            @if($cc->type== '0')
-                                                {{ $creditor5= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)) ,'creditor','>=')}}
-                                            @else
+{!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Costcntr_No? $chart_item->Costcntr_No : null], 'id' => 'edit_form','files' => true]) !!}
+    {{csrf_field()}}
+    {{method_field('PUT')}}
 
-                                                {{$creditor5 =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)) ,'creditor','>=')}}
+    <div class="col-md-3 pull-left">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    </div>
 
-                                            @endif
-                                            @if($cc->type==  '0')
-                                                {{$debtor5 = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)),'debtor','>=')}}
+    {{-- رقم الحساب --}}
+    <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+    <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-2" value="{{$chart_item->Costcntr_No}}">
 
-                                            @else
-
-                                                {{$debtor5 = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4) ) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)),'debtor','>=')}}
-
-                                            @endif
-
-                                        </div>
-                                        <div class='hidden'>  {{ $balance4 +=$creditor5- $debtor5}}</div>
-
-                                        <div>  {{$creditor5- $debtor5}}</div>
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-4)['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance4 += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-4)['current_balance']}}</div>--}}
-
-                                    </td>
-
-                                    <td>
-
-                                        <?php
-                                        $lastyear4 = \Carbon\Carbon::today()->format('Y')-5;
-                                        ?>
-
-                                        <div class="hidden">
-                                            @if($cc->type== '0')
-                                                {{ $creditor5= sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)) ,'creditor','>=')}}
-                                            @else
-
-                                                {{$creditor5 =allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4)) ,'creditor','>=')}}
-
-                                            @endif
-                                            @if($cc->type==  '0')
-                                                {{$debtor5 = sumallcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4) ) ,'debtor','>=')}}
-
-                                            @else
-
-                                                {{$debtor5 = allcc($cc->id,date("Y-m-1", strtotime('1-'.$i.'-'.$lastyear4)) , date("Y-m-t", strtotime('1-'.$i.'-'.$lastyear4) ) ,'debtor','>=')}}
-
-                                            @endif
-
-                                        </div>
-
-                                        <div class='hidden'>  {{ $balance5 +=$creditor5- $debtor5}}</div>
-                                        <div>  {{$creditor5- $debtor5}}</div>
-{{--                                        {{getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-5)['current_balance']}}--}}
-{{--                                        <div class="hidden">{{$balance5 += getpjitmmsflcc($cc->id,$i,\Carbon\Carbon::today()->format('Y')-5)['current_balance']}}</div>--}}
-                                    </td>
-                                </tr>
-                            @endfor
-                            <tr>
-                                <td>الاجمالي</td>
-                                <td>{{$dataCredit}}</td>
-                                <td>{{$dataDebtor}}</td>
-                                <td>{{$balance}}</td>
-                                <td>{{$estimated}}</td>
-                                <td>{{$balance1}}</td>
-                                <td>{{$balance2}}</td>
-                                <td>{{$balance3}}</td>
-                                <td>{{$balance4}}</td>
-                                <td>{{$balance5}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {{ Form::label('type', trans('admin.type'), ['class' => 'control-label']) }}
-                        {{ Form::select('type', \App\Enums\dataLinks\TypeAccountType::toSelectArray(),$cc->type, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select'),'disabled'=>'disabled'])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('creditor', trans('admin.first_date_creditor'), ['class' => 'control-label']) }}
-                        {{ Form::text('creditor',$dataCredit, array_merge(['class' => 'form-control','disabled'=>'disabled'])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('debtor', trans('admin.first_date_debtor'), ['class' => 'control-label']) }}
-                        {{ Form::text('debtor',$dataDebtor, array_merge(['class' => 'form-control','disabled'=>'disabled'])) }}
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('estimite', trans('admin.credit_balance'), ['class' => 'control-label']) }}
-                        {{ Form::text('estimite',0, array_merge(['class' => 'form-control','disabled'=>'disabled'])) }}
-                    </div>
-                </div>
-            </div>
-            {{Form::submit(trans('admin.save'),['class'=>'btn btn-primary'])}}
-            <a href="{{aurl('cc')}}" class="btn btn-danger">{{trans('admin.back')}}</a>
-            {!! Form::close() !!}
+<div class="form-group">
+        {{-- <label for="Level_Status">{{trans('admin.department_type')}}:</label><br> --}}
+        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
+            <input class="checkbox-inline" type="radio"
+                name="Level_Status" id="Level_Status" value="{{$key}}"
+                style="margin: 3px;" disabled
+                @if ($chart_item->Level_Status == $key) checked @endif >
+            <label>{{$value}}</label>
+        @endforeach
+        <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
+            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
+                <input class="checkbox-inline" type="radio"
+                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
+                    style="margin: 3px;" @if($chart_item->Acc_Actv == $key) checked @endif>
+                <label>{{$value}}</label>
+            @endforeach
         </div>
     </div>
-    @else
-        <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
+    {{-- نهاية تصنيف الحساب --}}
 
-        @endhasrole
-@endsection
+    {{-- رقم الشركه --}}
+    <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden>
+{{--    --}}{{-- <div class="col-md-4">--}}
+{{--        <div class="form-group">--}}
+{{--            <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>--}}
+{{--            <select name="Cmp_No" id="Cmp_No" class="form-control">--}}
+{{--                <option value="">{{trans('admin.select')}}</option>--}}
+{{--                @if(count($cmps) > 0)--}}
+{{--                    @foreach($cmps as $cmp)--}}
+{{--                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>--}}
+{{--                    @endforeach--}}
+{{--                @endif--}}
+{{--            </select>--}}
+{{--        </div>--}}
+{{--    </div> --}}
+    {{-- نهاية رقم الشركه --}}
+
+    {{-- اسم الحساب عربى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
+            <input type="text" name="Costcntr_Nmar" id="Acc_NmAr" class="col-md-9 form-control"
+            value="{{$chart_item->Costcntr_Nmar? $chart_item->Costcntr_Nmar : null}}">
+        </div>
+    {{-- نهاية اشم الحساب عربى --}}
+
+    {{-- اسم الحساب انجليزى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.account_name_en')}}:</label>
+        <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control"
+            value="{{$chart_item->Costcntr_Nmen? $chart_item->Costcntr_Nmen : null}}">
+    </div>
+    {{-- نهاية اسم الحساب انجليزى --}}
+
+    <div class="col-md-6">
+        <div class="row">
+            {{-- طبيعة الحساب --}}
+            <div class="form-group col-md-12 branch">
+                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
+                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
+                    <input class="checkbox-inline" type="radio"
+                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
+                        style="margin: 3px;"
+                        @if($chart_item->Level_No == 1) disabled @endif
+                        @if ($chart_item->Acc_Ntr == $key) checked @endif>
+                    <label>{{$value}}</label>
+                @endforeach
+            </div>
+            {{-- نهاية طبيعة الحساب --}}
+
+            {{-- رصيد اول المده مدين --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                    <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهايةرصيد اول المده مدين --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
+                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+        </div>
+    </div>
+
+
+{!! Form::close() !!}
+<form action="{{route('cc.destroy', $chart_item->Costcntr_No? $chart_item->Costcntr_No : null)}}" method="POST" id="delete_form">
+    {{csrf_field()}}
+    {{method_field('DELETE')}}
+</form>
+ {{-- الحركات --}}
+ <div class="col-md-12">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">الشهر</th>
+            <th scope="col">الحركة مدين</th>
+            <th scope="col">الحركة دائن</th>
+            <th scope="col">الرصيد الحالى</th>
+            <th scope="col"> رصيد تقديرى</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <th scope="row">يناير</th>
+            <td>
+                @if($chart_item->DB11 == null)
+                    0.00
+                @else
+                    {{$chart_item->DB11}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR11 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR11}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB11 - $chart_item->CR11}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">فبراير</th>
+            <td>
+                @if($chart_item->DB12 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB12}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR12 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR12}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB12 - $chart_item->CR12}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مارس</th>
+            <td>
+                @if($chart_item->DB13 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB13}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR13 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR13}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB13 - $chart_item->CR13}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ابريل</th>
+            <td>
+                @if($chart_item->DB14 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB14}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR14 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR14}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB14 - $chart_item->CR14}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مايو</th>
+            <td>
+                @if($chart_item->DB15 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB15}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR15 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR15}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB15 - $chart_item->CR15}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يونيو</th>
+            <td>
+                @if($chart_item->DB16 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB16}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR16 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR16}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB16 - $chart_item->CR16}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يوليو</th>
+            <td>
+                @if($chart_item->DB17 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB17}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR17 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR17}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB17 - $chart_item->CR17}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">اغسطس</th>
+
+            <td>
+                @if($chart_item->DB18 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB18}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR18 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR18}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB18 - $chart_item->CR18}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">سبتمبر</th>
+
+            <td>
+                @if($chart_item->DB19 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB19}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR19 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR19}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB19 - $chart_item->CR19}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">أكتوبر</th>
+
+            <td>
+                @if($chart_item->DB20 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB20}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR20 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR20}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB20 - $chart_item->CR20}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">نوفمبر</th>
+
+            <td>
+                @if($chart_item->DB21 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB21}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR21 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR21}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB21 - $chart_item->CR21}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ديسمبر</th>
+
+            <td>
+                @if($chart_item->DB22 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB22}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR22 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR22}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB22 - $chart_item->CR22}}
+            </td>
+        </tr>
+
+        <tr style="background-color: #d3d9df">
+            <th scope="row">الإجمالى</th>
+
+            <td>
+                {{count($total) > 0? $total[0]->total_debit : 0.00}}
+            </td>
+            <td>
+                {{count($total) > 0? $total[0]->total_credit : 0.00}}
+
+            </td>
+            <td>
+                {{count($total) > 0? $total[0]->total_balance : 0.00}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{{-- نهاية الحركات --}}

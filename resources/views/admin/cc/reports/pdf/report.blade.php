@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>glcc Report</title>
+    <title></title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <!-- Optional theme -->
@@ -15,25 +15,18 @@
         padding:0;
         margin: 0;
     }
-    .el-date{
-        float: right;
-        width: 40%
-    }
-    .el-date p{
-        font-size: 12px;
-        margin: 0 20px -25px;
-        padding: 15px 0;
-    }
     .el-no3{
-        width:100%;
+        width:33%;
         display:block;
-        margin:0 auto;
         text-align:center;
-    }
-    .el-no3 span{
-        padding: 5px 20px !important;
+        margin-right: 33%;
+        margin-left: 33%;
+        margin-bottom:20px;
+        padding: 5px 0;
         font-weight: bold;
         font-size: 12px;
+        border:2px solid #000;
+        background-color:#d4d4d4;
     }
     .clearfix{
         clear:both;
@@ -42,108 +35,95 @@
         width: 100%;
         text-align: center;
         font-size: 10px;
-        margin-top: 20px;
     }
     .table th{
-        background-color: #f3f3f3;
-        text-align: center;
         font-size: 11px;
     }
-    .table td, .table th {
+    table td, table th {
         padding: .5rem;
-        vertical-align: middle;
-        border: 1px solid #000000 !important;
-        text-align:center;
-    }
-    .table .th-empty{
-        border: none !important;
-        background: none
+        text-align: right;
     }
 </style>
-
 <body>
 <div>
     <div style="float:right;font-weight:bold;width:50%">{{setting()->sitename_ar}}</div>
     <div style="float:left;font-weight:bold;width:50%;text-align:left">{{setting()->sitename_en}}</div>
 </div>
+
+
 <div style="text-align:center">
-    <img src="{{asset('../storage/app/public/' . setting()->icon)}}" style="max-width:70px;margin:15px 0">
+    <img src="{{asset('storage/'. setting()->icon)}}" style="max-width:100px;margin:15px 0">
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.motion_detection')}} {{$ccname}}</span>
-    {{--<span>{{$typeLimitationReceipts->name_ar}}</span>--}}
+    {{trans('admin.Departments_reports')}}
 </div>
 
 <div class="clearfix"></div>
-<div class="el-date">
-
-</div>
-
-
-<div class="clearfix"></div>
-
-
-{{--<div>--}}
-    {{--<div style="float:right">رقم مركز التكلفة : </div>--}}
-    {{--<div style="float:left">اسم مركز التكلفة : </div>--}}
-{{--</div>--}}
-
-<div class="hidden">{{ $i = 1 }}
-    {{$balance = 0}}
-    {{$dataDebtor = 0}}
-    {{$dataCredit = 0}}
-</div>
 <div class="table-responsive">
-    <table style="border:none" class="table table-bordered table-striped table-hover">
+    <table class="table table-striped table-hover">
         <tr>
-            <th rowspan="2">التاريخ</th>
-            <th rowspan="2">القيد</th>
-            <th rowspan="2">{{trans('admin.account_number')}}</th>
-            <th rowspan="2">{{trans('admin.note_for')}}</th>
-            <th colspan="2" style="vertical-align: middle;">الرصيد</th>
+            <th style="text-decoration:underline;line-height:5px">{{trans('admin.account_number')}}</th>
+            <th style="text-decoration:underline;line-height:5px;text-align:center">{{trans('admin.account_name')}}</th>
+            <th style="text-decoration:underline;line-height:5px;text-align:center">{{trans('admin.first_date_debtor')}}</th>
+            <th style="text-decoration:underline;line-height:5px;text-align:center">{{trans('admin.first_date_creditor')}}</th>
         </tr>
-
-        <tr>
-            <th>{{trans('admin.debtor')}}</th>
-            <th>{{trans('admin.creditor')}}</th>
-        </tr>
-
-
-        <tr>
-        </tr>
-        {{--by level--}}
-        @if($hastask || $hastask2)
-            {{--{{dd($value_merged)}}--}}
-
-            @foreach($value_merged as $merged)
-
+@if(!empty($products))
+            @foreach($products as $merged)
                 <tr>
-                    <td>{{ date('Y-m-d',strtotime($merged->created_at)) }}</td>
-                    <td>{{ $merged->limitations['limitationId'] }}
-                        {{ $merged->receipts['receiptId'] }}</td>
-                    <td>{{ $merged->departments->code }}</td>
-                    <td>{{session_lang($merged->name_en,$merged->name_ar)}}</td>
-                    <td>{{$merged->debtor}}
-                        <div class="hidden">{{$dataDebtor += $merged->debtor}}</div>
+                    <td>
+                        {{$merged->code}}
                     </td>
-                    <td>{{$merged->creditor}}
-                    <div class="hidden">{{$dataCredit += $merged->creditor}}</div>
+                    <td style="text-align:center">
+                        {{session_lang($merged->dep_name_en,$merged->dep_name_ar)}}
+                    </td>
+                    <td style="text-align:center">
+                        @if($merged->type == '1')
+                        {{alldepartmenttrial($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'debtor','>=')}}
+                            @else
+                            {{departmentsum($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'debtor','>=')}}
+                        @endif
+                    </td>
+                    <td style="text-align:center">
+                        @if($merged->type == '1')
+                        {{alldepartmenttrial($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'creditor','>=')}}
+                           @else
+                            {{departmentsum($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'creditor','>=')}}
+                        @endif
                     </td>
                 </tr>
-
             @endforeach
-            <tr>
-                <th colspan="3" class="th-empty"></th>
-                <th>{{trans('admin.Total_motion')}}</th>
-                <th style="text-align: center">{{$dataDebtor}} </th>
-                <th style="text-align: center">{{$dataCredit}} </th>
-            </tr>
-        @endif
-
+@endif
+{{--by personal and branches--}}
+@if(!empty($departments))
+            @foreach($departments as $merged)
+                <tr>
+                    <td>
+                        {{$merged->code}}
+                    </td>
+                    <td style="text-align:center">
+                        {{session_lang($merged->dep_name_en,$merged->dep_name_ar)}}
+                    </td>
+                    <td style="text-align:center">
+                        @if($merged->type == '0')
+                        {{departmentsum($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'debtor','>=')}}
+                        @else
+                            {{alldepartmenttrial($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'debtor','>=')}}
+                        @endif
+                    </td>
+                    <td style="text-align:center">
+                        @if($merged->type == '0')
+                        {{departmentsum($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'creditor','>=')}}
+                        @else
+                            {{alldepartmenttrial($merged->id,\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())),\Carbon\Carbon::today()->format('Y-m-d'),'creditor','>=')}}
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+@endif
     </table>
-</div>
 
+</div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
