@@ -65,11 +65,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
-        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');        
+        Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');
         Route::post('departments/getEditBlade','Admin\Department\DepartmentsController@getEditBlade')->name('getEditBlade');
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
-        
+
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');
         Route::get('departments/department/reviewdepartment','Admin\Department\DepartmentsController@reviewdepartment')->name('reviewdepartment');
@@ -102,8 +102,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('premium','Admin\report\PremiumController@index')->name('premium');
 
 
-        
-        
+
+
 
 
 //        employees
@@ -250,6 +250,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         // Projects data for projects
         Route::resource('projects', 'Admin\Project\ProjectController');
+        Route::resource('projects', 'Admin\Project\ProjectController1');
         Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');

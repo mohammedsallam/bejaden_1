@@ -53,6 +53,7 @@ use App\Enums\dataLinks\ReceiptType;
 use App\Enums\dataLinks\LimitationsType;
 use App\Enums\dataLinks\MonthType;
 use App\Enums\dataLinks\DepartmentReportType;
+use App\Enums\PrjStatus;
 
 return [
 
@@ -375,7 +376,7 @@ return [
         FormsType::Spcrpt_Trnf => 'Transform form',//6
         FormsType::Spcrpt_Adjust => 'Adjustment form',//7
         FormsType::Spcrpt_SRV => 'Goods entring form',//8
-        FormsType::Spcrpt_DNV => 'Goods delivering form',//9  
+        FormsType::Spcrpt_DNV => 'Goods delivering form',//9
     ],
     PrintersType::class => [
         PrintersType::PrintOrder_DNV => 'Print delivery form with sales invoice',//2
@@ -454,5 +455,15 @@ return [
         TransactionType::discount_adujstment => 'Discount adjustment',//14
         TransactionType::debt_notify => 'Debt Not.',//15
         TransactionType::credit_notify => 'Credit Not.',//16
+    ],
+
+    PrjStatus::class => [
+        PrjStatus::enquiry    => 'Accounts',    //0
+        PrjStatus::quted      => 'Clients',     //1
+        PrjStatus::refused    => 'Suppliers',   //2
+        PrjStatus::ordered    => 'Employees',   //3
+        PrjStatus::under_work => 'Fixed assets',//4
+        PrjStatus::completed  => 'Fixed assets',//5
+        PrjStatus::warnty     => 'Fixed assets',//6
     ],
 ];
