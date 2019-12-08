@@ -68,6 +68,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');
         Route::post('departments/getEditBlade','Admin\Department\DepartmentsController@getEditBlade')->name('getEditBlade');
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
+        Route::post('departments/getTree','Admin\Department\DepartmentsController@getTree')->name('getTree');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
 
 

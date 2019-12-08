@@ -72,7 +72,10 @@ class DepartmentsController extends Controller
     public function createNewAcc(Request $request){
         if($request->ajax()){
             if($request->parent){
-                $parent = MtsChartAc::where('Acc_No', $request->parent)->get(['Acc_No', 'Cmp_No', 'Level_No'])->first();
+                $parent = MtsChartAc::where('Acc_No', $request->parent)
+                                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                                    ->get(['Acc_No', 'Cmp_No', 'Level_No', 'Parnt_Acc'])
+                                    ->first();
                 $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
                 $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
                 $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
@@ -106,6 +109,8 @@ class DepartmentsController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $Acc_No = $this->createAccNo(0);
+        // return view('admin.departments.create_main_chart', ['title' => trans('admin.Departments')
+        //             , 'cmps' => $cmps, 'Acc_No' => $Acc_No]);
         return view('admin.departments.create_main_chart', ['title' => trans('admin.Departments')
                     , 'cmps' => $cmps, 'Acc_No' => $Acc_No]);
     }
@@ -117,15 +122,6 @@ class DepartmentsController extends Controller
      */
     public function create(Department $department)
     {   
-        // if(session('Cmp_No') == -1){
-        //     $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-        // }
-        // else{
-        //     $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-        // }
-        // $chart = MtsChartAc::pluck('Acc_Nm'.ucfirst(session('lang')), 'ID_No');
-        // return view('admin.departments.create', ['title' => trans('admin.create_new_department'), 
-        //             'chart' => $chart, 'cmps' => $cmps]);
     }
 
     /**
@@ -138,17 +134,17 @@ class DepartmentsController extends Controller
     {
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                // 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
                 'Acc_NmEn' => 'required',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                // 'Cmp_No' => trans('admin.cmp_no'),
                 'Acc_NmAr' => trans('admin.arabic_name'),
                 'Acc_NmEn' => trans('admin.english_name'),
             ]);
 
             $chart = new MtsChartAc;
-            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Cmp_No = session('Chart_Cmp_No');
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
             $chart->Level_Status = $request->Level_Status;
@@ -173,14 +169,14 @@ class DepartmentsController extends Controller
         }
         else if($request->Level_Status == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                // 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
                 'Acc_NmEn' => 'required',
                 'Acc_Typ' => 'sometimes',
                 'Level_Status' => 'required',
                 'Acc_Ntr' => 'required',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                // 'Cmp_No' => trans('admin.cmp_no'),
                 'Acc_NmAr' => trans('admin.arabic_name'),
                 'Acc_NmEn' => trans('admin.english_name'),
                 'Acc_Typ' => trans('admin.account_type'),
@@ -190,7 +186,7 @@ class DepartmentsController extends Controller
             
             // return $request;
             $chart = new MtsChartAc;
-            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Cmp_No = session('Chart_Cmp_No');
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
             $chart->Level_Status = $request->Level_Status;
@@ -231,25 +227,6 @@ class DepartmentsController extends Controller
      */
     public function show(Request $request)
     {
-        if($request->ajax()){
-            $search = $request->search;
-            if ($search != null){
-                if ($search == 0){
-                    $max_count = DB::table('departments')->max('level_id');
-                    $contents = view('admin.departments.reports.show', compact('max_count','search'))->render();
-                    return $contents;
-                }
-                if ($search == '1'){
-                    $max_count = Department::where('type',1)->pluck('dep_name_'.session('lang'),'id');
-                    $contents = view('admin.departments.reports.show', compact('max_count','search'))->render();
-                    return $contents;
-                }else{
-                    $contents = view('admin.departments.reports.details',compact('search'))->render();
-                    return $contents;
-                }
-            }
-
-        }
     }
 
     /**
@@ -260,11 +237,6 @@ class DepartmentsController extends Controller
      */
     public function edit($id)
     {
-        // $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
-        // $department = Department::findOrFail($id);
-        // $parents = $department->parents->pluck('dep_name_'.session('lang'),'id');
-        // $operations = operation::pluck('name_'.session('lang'),'id');
-        // return view('admin.departments.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
     }
 
     public function getEditBlade(Request $request){
@@ -278,7 +250,9 @@ class DepartmentsController extends Controller
             $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-            $chart_item = MtsChartAc::where('Acc_No', $request->Acc_No)->first();
+            $chart_item = MtsChartAc::where('Acc_No', $request->Acc_No)
+                                        ->where('Cmp_No', session('Chart_Cmp_No'))
+                                        ->first();
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'), 
                         'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
@@ -295,23 +269,25 @@ class DepartmentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $chart = MtsChartAc::where('Acc_No', $id)->first();
+        $chart = MtsChartAc::where('Acc_No', $id)
+                            ->where('Cmp_No', session('Chart_Cmp_No'))
+                            ->first();
         // if($chart->Level_Status == 0){
         if($chart->Level_No == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                // 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
                 'Acc_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                // 'Cmp_No' => trans('admin.cmp_no'),
                 'Acc_NmAr' => trans('admin.arabic_name'),
                 'Acc_NmEn' => trans('admin.english_name'),
             ]);
 
-            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Cmp_No =  session('Chart_Cmp_No');
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
-            $chart->Acc_No = $request->Acc_No;
+            // $chart->Acc_No = $request->Acc_No;
             // $chart->Parnt_Acc = 0;
             $chart->User_Id = Auth::user()->id;
             $chart->save();
@@ -333,14 +309,14 @@ class DepartmentsController extends Controller
         }
         else{
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                // 'Cmp_No' => 'required',
                 'Acc_NmAr' => 'required',
                 'Acc_NmEn' => 'sometimes',
                 'Acc_Typ' => 'sometimes',
                 'Level_Status' => 'sometimes',
                 'Acc_Ntr' => 'required',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                // 'Cmp_No' => trans('admin.cmp_no'),
                 'Acc_NmAr' => trans('admin.arabic_name'),
                 'Acc_NmEn' => trans('admin.english_name'),
                 'Acc_Typ' => trans('admin.account_type'),
@@ -349,7 +325,7 @@ class DepartmentsController extends Controller
             ]);
 
             // return $request->Fbal_DB;
-            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Cmp_No =  session('Chart_Cmp_No');
             $chart->Acc_NmAr = $request->Acc_NmAr;
             $chart->Acc_NmEn = $request->Acc_NmEn;
             // $chart->Level_Status = $request->Level_Status;
@@ -393,10 +369,14 @@ class DepartmentsController extends Controller
      */
     public function destroy($id)
     {
-        $chart = MtsChartAc::where('Acc_No', $id)->first();
-        if(count($chart->children) > 0){
-            return back()->with(session()->flash('error',trans('admin.chart_has_children')));
-        }
+        $chart = MtsChartAc::where('Acc_No', $id)
+                            ->where('Cmp_No', session('Chart_Cmp_No'))
+                            ->first();
+        $children = MtsChartAc::where('Parnt_Acc', $chart->Acc_No)
+                                ->where('Cmp_No', session('Chart_Cmp_No'))->get();
+        if(count($children) > 0){
+            return redirect(aurl('departments'))->with(session()->flash('error',trans('admin.chart_has_children')));
+        }                    
         else{
             $chart->delete();
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_deleted')));
@@ -713,7 +693,9 @@ class DepartmentsController extends Controller
     //create new Acc_No
     public function createAccNo($Parnt_Acc){
         if($Parnt_Acc == 0){
-            $chart = MtsChartAc::where('Parnt_Acc', 0)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
+            $chart = MtsChartAc::where('Parnt_Acc', 0)
+                                ->where('Cmp_No', session('Chart_Cmp_No'))
+                                ->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
             if($chart){
                 $Acc_No = $chart->Acc_No + 1;
                 return $Acc_No;
@@ -724,15 +706,22 @@ class DepartmentsController extends Controller
             }    
         }
         else{
-            $parent = MtsChartAc::where('Acc_No', $Parnt_Acc)->first(); 
-            if(count($parent->children) > 0){
-                $max = MtsChartAc::where('Parnt_Acc', $parent->Acc_No)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
+            $parent = MtsChartAc::where('Acc_No', $Parnt_Acc)
+                                ->where('Cmp_No', session('Chart_Cmp_No'))
+                                ->first(); 
+
+            $max = MtsChartAc::where('Parnt_Acc', $parent->Acc_No)
+                            ->where('Cmp_No', session('Chart_Cmp_No'))
+                            ->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
+            if($max){
                 return $max->Acc_No + 1;
             }
             else{
                 $Acc_No = (int)$Parnt_Acc.'01';
                 return $Acc_No;
             }
+                
+            
             // $chart = MtsChartAc::where('Parnt_Acc', $Parnt_Acc)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
             // if($chart){
             //     $index = explode('0', $chart->Acc_No);
@@ -746,6 +735,7 @@ class DepartmentsController extends Controller
             // }
         }   
     }
+
 
     public function getTotalTransaction($chart){
         // اجمالى الحركة مدين
@@ -764,6 +754,13 @@ class DepartmentsController extends Controller
                                     'total_balance' => $total_balance);
         return $total;
     }
-
+    
+    public function getTree(Request $request){
+        if($request->ajax()){
+            session(['Chart_Cmp_No' => $request->Cmp_No]);
+            $tree = load_dep('parent_id', null, $request->Cmp_No);
+            return $tree;
+        }
+    }
 }
 

@@ -104,7 +104,7 @@
     
     {{-- رقم الشركه --}}
     {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
-    <div class="form-group row">
+    {{-- <div class="form-group row">
         <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
         <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
             <option value="">{{trans('admin.select')}}</option>
@@ -114,7 +114,7 @@
                 @endforeach
             @endif
         </select>
-    </div>
+    </div> --}}
     {{-- نهاية رقم الشركه --}}
 
     {{-- اسم الحساب عربى --}}

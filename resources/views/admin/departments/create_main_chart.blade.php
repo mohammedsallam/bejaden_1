@@ -1,3 +1,18 @@
+{{-- @push('js')
+    <script>
+        $(document).on('change', '#Cmp_No', function(){
+            $.ajax({
+                url: "{{route('createAccNo')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val()},
+                success: function(data){
+                    $('#Acc_No').val(data);
+                }
+            });
+        });
+    </script>
+@endpush --}}
 {!! Form::open(['method'=>'POST','route' => ['departments.store'], 'id' => 'edit_form', 'files' => true]) !!}
     {{csrf_field()}}
     {{-- Parnt_Acc --}}
@@ -17,7 +32,7 @@
         {{-- رقم الحساب --}}
 
         {{-- رقم الشركه --}}
-        <div class="col-md-8 form-group">
+        {{-- <div class="col-md-8 form-group">
             <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
             <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">
                 <option value="">{{trans('admin.select')}}</option>
@@ -27,7 +42,7 @@
                     @endforeach
                 @endif
             </select>
-        </div>
+        </div> --}}
         {{-- نهاية رقم الشركه --}}
     
         {{-- تصنيف الحساب --}}
