@@ -280,6 +280,11 @@ return [
     'cities' => 'المدن',
     // countries // create
     'create_new_country' => 'اضافه دوله جديدة',
+    'arabic_name' => 'الاسم العربى',
+    'english_name' => 'الاسم الانجليزى',
+    'Create_New_cc' => 'اضافة مركز تكلفة جديد',
+
+    'mob' => 'رقم الموبايل',
     'arabic_name' => 'الاسم AR',
     'english_name' => 'الاسم EN',
     'mob' => ' الموبايل',

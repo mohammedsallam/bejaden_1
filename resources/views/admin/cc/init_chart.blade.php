@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.Departments'))
+@section('title',trans('admin.cc'))
 @section('content')
 @push('js')
     <script>
@@ -7,10 +7,10 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
-            
+
             $('#jstree').jstree({
                 "core" : {
-                    'data' : {!! load_dep('parent_id') !!},
+                    'data' : {!! load_cc('parent_id') !!},
                     "themes" : {
                         "variant" : "large"
                     },
@@ -34,42 +34,19 @@
                     r.push(data.instance.get_node(data.selected[i]).id);
                     name.push(data.instance.get_node(data.selected[i]).text);
                 }
+                $('#modal-delete').attr('action','{{aurl('cc')}}/'+r.join(', '));
                 $('#parent_name').text(name);
-
-                //get all direct and undirect children of selected node
-                var currentNode = data.node;
-                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                // var result = [currentNode.id];
-                var result = [];
-                allChildren.find('li').addBack().each(function(index, element) {
-                    if ($(this).jstree(true).is_leaf(element)) {
-                        // result.push(element.textContent);
-                        result.push(parseInt(element.id));
-                    } else {
-                        var nod = $(this).jstree(true).get_node(element);
-                        // result.push(nod.text);
-                        result.push(parseInt(nod.id));
-                    }
-                });
-
-                //handle click event
-                // timer = setTimeout(function() {
-                // if (!prevent) {
-                    handle_click(r[0], result);
-                // }
-                // prevent = false;
-                // }, delay);
             });
-            
+
             //handle tree click vent
-            // $('#jstree').on("click.jstree", function (e){
-            //     timer = setTimeout(function() {
-            //     if (!prevent) {
-            //         handle_click(e);
-            //     }
-            //     prevent = false;
-            //     }, delay);
-            // });
+            $('#jstree').on("click.jstree", function (e){
+                timer = setTimeout(function() {
+                if (!prevent) {
+                    handle_click(e);
+                }
+                prevent = false;
+                }, delay);
+            });
 
             //handle tree double click event
             $('#jstree').on("dblclick.jstree", function (e){
@@ -79,32 +56,30 @@
             });
 
 
-            function handle_click(Acc_No, children){
-                // alert(children);
-                // console.log(Acc_No);
-                // var node = $(e.target).closest("li");
-                // var type = node.attr('rel');
-                // var Acc_No = node[0].id;
+            function handle_click(e){
+                var node = $(e.target).closest("li");
+                var type = node.attr('rel');
+                var Costcntr_No = node[0].id;
                 $.ajax({
-                    url: "{{route('getEditBlade')}}",
+                    url: "{{route('getCcEditBlade')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No, children: children },
+                    data: {"_token": "{{ csrf_token() }}", Costcntr_No: Costcntr_No },
                     success: function(data){
                         $('#chart_form').html(data);
                     }
                 });
-            }}
+            }
 
             function handle_dbclick(e){
                 var node = $(e.target).closest("li");
                 var type = node.attr('rel');
-                var Acc_No = node[0].id;
+                var Costcntr_No = node[0].id;
                 $.ajax({
-                    url: "{{route('createNewAcc')}}",
+                    url: "{{route('createCcNewAcc')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
+                    data: {"_token": "{{ csrf_token() }}", Costcntr_No: Costcntr_No },
                     success: function(data){
                         $('#chart_form').html(data);
                     }
@@ -192,21 +167,21 @@
                     <div id="jstree" style="margin-top: 20px"></div>
                 </div>
                 <div class="col-md-6" id="chart_form">
-                    {!! Form::open(['method'=>'POST','route' => ['departments.store'], 'id' => 'edit_form', 'files' => true]) !!}
+                    {!! Form::open(['method'=>'POST','route' => ['cc.store'], 'id' => 'edit_form', 'files' => true]) !!}
                         {{csrf_field()}}
                         {{-- Parnt_Acc --}}
                         <input type="text" name="Parnt_Acc" id="Parnt_Acc" value="{{0}}" hidden>
                         <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
                         {{-- Parnt_Acc ebd --}}
-                    
+
                         <div class="row">
                             <div class="col-md-1 pull-left">
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                             </div>
-                        
+
                             {{-- رقم الحساب --}}
-                            <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-                            <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-1" value="{{$Acc_No}}">
+                            <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+                            <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-1" value="{{$Costcntr_No}}">
                             {{-- رقم الحساب --}}
 
                             {{-- رقم الشركه --}}
@@ -222,58 +197,58 @@
                                 </select>
                             </div>
                             {{-- نهاية رقم الشركه --}}
-                        
+
                             {{-- تصنيف الحساب --}}
                             <input type="text" value="{{0}}" name="Level_Status" hidden>
                             {{-- نهاية تصنيف الحساب --}}
                         </div>
-                        
+
                         {{-- اسم الحساب عربى --}}
                         <div class="form-group row">
-                            <label class="col-md-2" for="Acc_NmAr">{{trans('admin.account_name')}}:</label>
-                                <input type="text" name="Acc_NmAr" id="Acc_NmAr" class="col-md-9 form-control">
+                            <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.arabic_name')}}:</label>
+                                <input type="text" name="Costcntr_Nmar" id="Costcntr_Nmar" class="col-md-9 form-control">
                             </div>
                         {{-- نهاية اشم الحساب عربى --}}
-                    
+
                         {{-- اسم الحساب انجليزى --}}
                         <div class="form-group row">
-                            <label class="col-md-2" for="Acc_NmEn">{{trans('admin.account_name_en')}}:</label>
-                            <input type="text" name="Acc_NmEn" id="Acc_NmEn" class=" col-md-9 form-control">
+                            <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.english_name')}}:</label>
+                            <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control">
                         </div>
                         {{-- نهاية اسم الحساب انجليزى --}}
-                    
+
                         <div class="col-md-6">
                             <div class="row">
                                 {{-- طبيعة الحساب --}}
                                 <div class="form-group col-md-12 branch hidden">
                                     <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
                                     @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                                        <input class="checkbox-inline" type="radio" 
+                                        <input class="checkbox-inline" type="radio"
                                             name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
                                             style="margin: 3px;">
                                         <label>{{$value}}</label>
                                     @endforeach
                                 </div>
                                 {{-- نهاية طبيعة الحساب --}}
-                    
+
                                 {{-- رصيد اول المده مدين --}}
-                                <div class="col-md-12 branch hidden">
+                                <div class="col-md-12 branch">
                                     <div class="form-group row">
                                         <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
                                         <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{0}}' class="form-control col-md-7">
                                     </div>
                                 </div>
                                 {{-- نهايةرصيد اول المده مدين --}}
-                    
+
                                 {{-- رصيد اول المده دائن --}}
-                                <div class="col-md-12 branch hidden">
+                                <div class="col-md-12 branch">
                                     <div class="form-group row">
                                         <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
                                         <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
                                     </div>
                                 </div>
                                 {{-- نهاية رصيد اول المده دائن --}}
-                    
+
                                 {{-- رصيد  تقديرى --}}
                                 <div class="col-md-12 branch hidden">
                                     <div class="form-group row">
@@ -284,7 +259,7 @@
                                 {{-- نهاية رصيد  تقديرى --}}
                             </div>
                         </div>
-                    
+
                         <div class="col-md-6">
                             <div class="row">
                                 {{-- نوع الحساب --}}
@@ -300,12 +275,12 @@
                                     </div>
                                 </div>
                                 {{-- نهاية نوع الحساب --}}
-                    
+
                                 {{-- حسابات ختاميه --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1" type="checkbox" id='Clsacc_No1_Check'>
                                     <label for="Clsacc_No1" class="col-md-5">{{trans('admin.Clsacc_No1')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="Clsacc_No1" id="Clsacc_No1" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -316,12 +291,12 @@
                                     </div>
                                 </div>
                                 {{-- نهاية الحسابات الختاميه --}}
-                    
+
                                 {{-- حسابات قائمة الدخل --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1 checks" type="checkbox" id='Clsacc_No2_Check'>
                                     <label for="Clsacc_No2" class="col-md-5">{{trans('admin.Clsacc_No2')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="Clsacc_No2" id="Clsacc_No2" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -332,13 +307,13 @@
                                     </div>
                                 </div>
                                 {{-- نهاية الحسابات قائمة الدخل --}}
-                                
-                    
+
+
                                 {{-- مركز التكلفه --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'>
                                     <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="cc_type" id="cc_type" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>

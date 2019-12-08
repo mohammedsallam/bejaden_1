@@ -322,9 +322,11 @@ class DepartmentsController extends Controller
 
             // $children = $child = MtsChartAc::where('Acc_No', 'LIKE '.$chart->Acc_No.'%')->get(['Cmp_No']);
             // return $children;
-            if(count($request->children) > 0){
-                foreach($request->children as $acc_no){
-                    $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
                 }
             }
             return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));  
@@ -371,9 +373,11 @@ class DepartmentsController extends Controller
             $chart->Updt_Time = $chart->updated_at;
             $chart->save();
 
-            if(count($request->children) > 0){
-                foreach($request->children as $acc_no){
-                    $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
                 }
             }
             

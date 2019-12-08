@@ -60,10 +60,11 @@
 {!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Acc_No? $chart_item->Acc_No : null], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{method_field('PUT')}}
-
-    @foreach($children as $child)
-        <input type="hidden" name="children[]" value='{{$child}}'>
-    @endforeach
+    @if($children)  
+        @foreach($children as $child)
+            <input type="hidden" name="children[]" value='{{$child}}'>
+        @endforeach
+    @endif
     
     <div class="col-md-3 pull-left">
         <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>

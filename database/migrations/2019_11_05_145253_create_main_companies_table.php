@@ -16,7 +16,7 @@ class CreateMainCompaniesTable extends Migration
         Schema::create('MainCompany', function (Blueprint $table) {
             $table->increments('ID_No');
             
-            //ثوابت الشكره - tap
+            //ثوابت الشركه - tap
             $table->integer('Cmp_No')->nullable()->unique();//رقم الشركه و يتم انشاءه يدوي
             $table->integer('Local_Lang')->nullable()->default('0');// رقم اللغه
             $table->integer('Sys_SetupNo')->nullable();//النظام المستخدم

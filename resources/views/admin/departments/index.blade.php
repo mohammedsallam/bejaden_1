@@ -23,6 +23,7 @@
                 "plugins" : [ "themes","html_data","dnd","ui","types" ]
             });
 
+            //close or open all nodes on jstree load -closed by default-
             $('#jstree').on('loaded.jstree', function() {
                 $('#jstree').jstree('open_all');
             });
