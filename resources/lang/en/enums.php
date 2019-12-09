@@ -458,12 +458,12 @@ return [
     ],
 
     PrjStatus::class => [
-        PrjStatus::enquiry    => 'Accounts',    //0
-        PrjStatus::quted      => 'Clients',     //1
-        PrjStatus::refused    => 'Suppliers',   //2
-        PrjStatus::ordered    => 'Employees',   //3
-        PrjStatus::under_work => 'Fixed assets',//4
-        PrjStatus::completed  => 'Fixed assets',//5
-        PrjStatus::warnty     => 'Fixed assets',//6
+        PrjStatus::enquiry    => 'Enquiry',    //0
+        PrjStatus::quted      => 'Quted',     //1
+        PrjStatus::refused    => 'Refused',   //2
+        PrjStatus::ordered    => 'Ordered',   //3
+        PrjStatus::under_work => 'Under Work',//4
+        PrjStatus::completed  => 'Completed',//5
+        PrjStatus::warnty     => 'Warnty',  //6
     ],
 ];

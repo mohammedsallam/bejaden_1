@@ -66,8 +66,8 @@ class Projectmfs extends Model
         'Ordr_Dt',      //تاريخ التعميد
         'Prj_Adr',      //عنوان المشروع
         'Prj_Tel',      //هاتف المشروع
-        'Prj_Mobile',   //تليفون المشروع
-        'Prj_Mobile1',  //موبيل المشروع
+        'Prj_Mobile',   //موبيل المشروع
+        //'Prj_Mobile1',  //موبيل المشروع
         //'Nxt_Vst',      //الزيارة القادمة
         'Mnth_Year',    //سنة/شهر
         'Cntct_Prsn1',  //الشخص المسئول

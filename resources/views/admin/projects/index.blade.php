@@ -9,6 +9,7 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
+
             // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
                 $('#jstree').jstree('destroy');
@@ -28,83 +29,89 @@
                                 tree.push(dataParse[i])
                             }
 
-                    $('#jstree').jstree({
-                        "core" : {
-                            //'data' : {!! load_prj('parent_id','', '') !!},
-                            "themes" : {
-                                "variant" : "large"
-                            },
-                            "multiple" : false,
-                            "animation" : 300
-                        },
-                        "checkbox" : {
-                            "keep_selected_style" : false
-                        },
-                        "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                            $('#jstree').jstree({
+                                "core" : {
+                                    // 'data' : "{!! load_dep('parent_id', '', '') !!}",
+                                    'data' : tree,
+                                    "themes" : {
+                                        "variant" : "large"
+                                    },
+                                    "multiple" : false,
+                                    "animation" : 300
+                                },
+                                "checkbox" : {
+                                    "keep_selected_style" : false
+                                },
+                                "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                            });
+
+                            //close or open all nodes on jstree load -opened by default-
+                            $('#jstree').on('loaded.jstree', function() {
+                                $('#jstree').jstree('open_all');
+                            });
+
+                            $('#jstree').on("changed.jstree", function (e, data) {
+                                var i, j, r = [];
+                                var name = [];
+                                for (i=0,j=data.selected.length;i < j;i++){
+                                    r.push(data.instance.get_node(data.selected[i]).id);
+                                    name.push(data.instance.get_node(data.selected[i]).text);
+                                }
+                                $('#parent_name').text(name);
+
+                                //get all direct and undirect children of selected node
+                                var currentNode = data.node;
+                                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                                // var result = [currentNode.id];
+                                var result = [];
+                                allChildren.find('li').addBack().each(function(index, element) {
+                                    if ($(this).jstree(true).is_leaf(element)) {
+                                        // result.push(element.textContent);
+                                        result.push(parseInt(element.id));
+                                    } else {
+                                        var nod = $(this).jstree(true).get_node(element);
+                                        // result.push(nod.text);
+                                        result.push(parseInt(nod.id));
+                                    }
+                                });
+
+                                //handle click event
+                                // timer = setTimeout(function() {
+                                // if (!prevent) {
+                                handle_click(r[0], result);
+                                // }
+                                // prevent = false;
+                                // }, delay);
+                            });
+
+                            //handle tree click vent
+                            // $('#jstree').on("click.jstree", function (e){
+                            // timer = setTimeout(function() {
+                            // if (!prevent) {
+                            //     handle_click(e);
+                            // }
+                            // prevent = false;
+                            // }, delay);
+                            // });
+
+                            //handle tree double click event
+                            $('#jstree').on("dblclick.jstree", function (e){
+                                clearTimeout(timer);
+                                prevent = true;
+                                handle_dbclick(e);
+                            });
+                        }
                     });
-
-            //close or open all nodes on jstree load -closed by default-
-            $('#jstree').on('loaded.jstree', function() {
-                $('#jstree').jstree('open_all');
-            });
-
-            $('#jstree').on("changed.jstree", function (e, data) {
-                var i, j, r = [];
-                var name = [];
-                for (i=0,j=data.selected.length;i < j;i++){
-                    r.push(data.instance.get_node(data.selected[i]).id);
-                    name.push(data.instance.get_node(data.selected[i]).text);
                 }
-                $('#parent_name').text(name);
-
-                //get all direct and undirect children of selected node
-                var currentNode = data.node;
-                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                // var result = [currentNode.id];
-                var result = [];
-                allChildren.find('li').addBack().each(function(index, element) {
-                    if ($(this).jstree(true).is_leaf(element)) {
-                        // result.push(element.textContent);
-                        result.push(parseInt(element.id));
-                    } else {
-                        var nod = $(this).jstree(true).get_node(element);
-                        // result.push(nod.text);
-                        result.push(parseInt(nod.id));
-                    }
-                });
-
-                //handle click event
-                // timer = setTimeout(function() {
-                // if (!prevent) {
-                    handle_click(r[0], result);
-                // }
-                // prevent = false;
-                // }, delay);
             });
 
-            //handle tree click vent
-            // $('#jstree').on("click.jstree", function (e){
-                // timer = setTimeout(function() {
-                // if (!prevent) {
-                //     handle_click(e);
-                // }
-                // prevent = false;
-                // }, delay);
-            // });
 
-            //handle tree double click event
-            $('#jstree').on("dblclick.jstree", function (e){
-                clearTimeout(timer);
-                prevent = true;
-                handle_dbclick(e);
-            });
-
-            function handle_click(Prj_No, children){
+            function handle_click(Acc_No, children){
                 // alert(children);
-                // console.log(Prj_No);
+                // console.log(Acc_No);
                 // var node = $(e.target).closest("li");
                 // var type = node.attr('rel');
-                // var Prj_No = node[0].id;
+                // var Acc_No = node[0].id;
                 $.ajax({
                     url: "{{route('getEditBladePrj')}}",
                     type: "POST",
@@ -222,7 +229,7 @@
                     <div class="box-header">
                         <div class="form-group row">
                             <h3 class="box-title col-md-3">{{$title}}</h3>
-                            <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                            <select name="Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
                                 <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
                                 @if(count($cmps) > 0)
                                     @foreach($cmps as $cmp)
@@ -293,33 +300,63 @@
                                 </div>
                                 {{-- نهاية تصنيف الحساب --}}
 
+                                {{-- رقم المرجع المشروع --}}
+                                <div class="row">
+                                    <div class="col-md-6 branch">
+                                        <label for="Prj_Refno" class="col-md-6 col-md-offset-1">{{trans('admin.Prj_Refno')}}</label>
+                                        <input type="text" name="Prj_Refno" id="Prj_Refno" class="form-control col-md-6"
+                                               value="{{$chart_item->Prj_Refno? $chart_item->Prj_Refno : null}}"
+                                               @if($chart_item->Level_No == 1) disabled @endif>
+                                    </div>
+                                    {{-- نهاية رقم المرجع المشروع --}}
 
-                            {{-- رقم الفرع و المستودع --}}
+                                    {{-- تاريخ المشروع --}}
+                                    <div class="col-md-6 branch">
+                                        <label for="Tr_Dt" class="col-md-6 col-md-offset-1">{{trans('admin.Tr_Dt')}}</label>
+                                        <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control col-md-6"
+                                               value="{{$chart_item->Tr_Dt? $chart_item->Tr_Dt : null}}"
+                                               @if($chart_item->Level_No == 1) disabled @endif>
+                                    </div>
+                                </div>
+                                {{-- نهاية تاريخ المشروع --}}
 
-                            <div class="form-group row">
-                                <div class="col-md-6">
-                                    <label for="Brn_No" class="col-md-1">{{trans('admin.Brn_No')}}</label>
-                                    <select name="Brn_No" id="Brn_No" class="form-control col-md-8">
-                                        <option value="">{{trans('admin.select')}}</option>
-                                        @if(count($cmps) > 0)
-                                            @foreach($cmps as $cmp)
-                                                <option value="{{$cmp->Brn_No? $cmp->Brn_No : null}}" @if($chart_item->Brn_No == $cmp->Brn_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
+                                {{-- سنة المشروع --}}
+                                <div class="row">
+                                    <div class="col-md-6 branch">
+                                        <label for="Prj_Year" class="col-md-3 col-md-offset-1">{{trans('admin.Prj_Year')}}</label>
+                                        <input type="text" name="Prj_Year" id="Prj_Year" class="form-control col-md-9"
+                                               value="{{$chart_item->Prj_Year? $chart_item->Prj_Year : null}}"
+                                               @if($chart_item->Level_No == 1) disabled @endif>
+                                    </div>
+                                    {{-- نهاية سنة المشروع --}}
+                                    {{-- التاريخ الهجري --}}
+
+                                    <div class="col-md-6 branch">
+                                        <label for="Tr_DtAr" class="col-md-3 col-md-offset-1">{{trans('admin.Tr_DtAr')}}</label>
+                                        <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control col-md-9"
+                                               value="{{$chart_item->Tr_DtAr? $chart_item->Tr_DtAr : null}}"
+                                               @if($chart_item->Level_No == 1) disabled @endif>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="Dlv_Stor" class="col-md-2">{{trans('admin.Dlv_Stor')}}</label>
-                                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-9">
-                                        <option value="">{{trans('admin.select')}}</option>
-                                        @if(count($cmps) > 0)
-                                            @foreach($cmps as $cmp)
-                                                <option value="{{$cmp->Dlv_Stor? $cmp->Dlv_Stor : null}}" @if($chart_item->Dlv_Stor == $cmp->Dlv_Stor) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
+                                {{-- نهاية التاريخ الهجري --}}
+                                {{-- العميل --}}
+                                <div class="row col-md-6">
+                                    <label class="col-md-1" for="">{{trans('admin.subscriper')}}:</label>
+                                    <div class="col-md-10">{!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                    'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                ])!!}</div>
                                 </div>
-                            </div>
+                                {{-- نهاية العميل --}}
+
+                                {{-- المندوب --}}
+                                <div class="row col-md-6">
+                                    <label class="col-md-1" for="Slm_No">{{trans('admin.slm_no')}}:</label>
+                                    <div class="col-md-10">{!!Form::select('Slm_No', $delegates->pluck('Slm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                    'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                ])!!}</div>
+                                </div>
+                                {{-- نهاية المندوب --}}
+
                             {{-- نهاية رقم الشركه --}}
 
                                 {{-- اسم الحساب عربى --}}
@@ -338,46 +375,72 @@
                                 </div>
                                 {{-- نهاية اسم الحساب انجليزى --}}
 
-                                {{-- العميل --}}
-                                <div class="form-group row">
-                                    <label class="col-md-2" for="">{{trans('admin.subscriper')}}:</label>
-                                    <div class="col-md-9">{!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
-                                    ])!!}</div>
+                                {{-- قيمة المشروع --}}
+                                <div class="form-group col-md-12 row">
+                                    <label class="col-md-2" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
+                                    <input type="text" name="Prj_Value" id="Prj_Value" class=" col-md-10 form-control"
+                                           value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}">
                                 </div>
-                                {{-- نهاية العميل --}}
-
-                                {{-- المندوب --}}
-                                <div class="form-group row">
-                                    <label class="col-md-2" for="Slm_No">{{trans('admin.slm_no')}}:</label>
-                                    <div class="col-md-9">{!!Form::select('Slm_No', $delegates->pluck('Slm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
-                                    ])!!}</div>
-                                </div>
+                                {{-- نهاية قيمة المشروع --}}
 
                                     {{-- العنوان --}}
-                                <div class="form-group row">
+                                <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}:</label>
                                     <input type="text" name="Prj_Adr" id="Prj_Adr" class=" col-md-9 form-control"
                                            value="{{$chart_item->Prj_Adr? $chart_item->Prj_Adr : null}}">
                                 </div>
                                 {{-- نهاية العنوان --}}
 
+                                {{-- تليفون --}}
+                                <div class="form-group col-md-12 row">
+                                    <label class="col-md-2" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
+                                    <input type="text" name="Prj_Tel" id="Prj_Tel" class=" col-md-9 form-control"
+                                           value="{{$chart_item->Prj_Tel? $chart_item->Prj_Tel : null}}">
+                                </div>
+                                {{-- نهاية التليفون --}}
+
+                                {{-- الموبايل --}}
+                                <div class="form-group col-md-12 row">
+                                    <label class="col-md-2" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
+                                    <input type="text" name="Prj_Mobile" id="Prj_Mobile" class=" col-md-9 form-control"
+                                           value="{{$chart_item->Prj_Mobile? $chart_item->Prj_Mobile : null}}">
+                                </div>
+                                {{-- نهاية الموبايل --}}
+
                                 <div class="col-md-6">
                                     <div class="row">
-                                        {{-- طبيعة الحساب --}}
-        {{--                                <div class="form-group col-md-12 branch">--}}
-        {{--                                    <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>--}}
-        {{--                                    @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)--}}
-        {{--                                        <input class="checkbox-inline" type="radio"--}}
-        {{--                                            name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"--}}
-        {{--                                            style="margin: 3px;"--}}
-        {{--                                            @if($chart_item->Level_No == 1) disabled @endif--}}
-        {{--                                            @if ($chart_item->Acc_Ntr == $key) checked @endif>--}}
-        {{--                                        <label>{{$value}}</label>--}}
-        {{--                                    @endforeach--}}
-        {{--                                </div>--}}
-                                        {{-- نهاية طبيعة الحساب --}}
+                                        {{-- الدوله --}}
+                                        <div class="col-md-12 branch">
+                                            <div class="form-group row">
+                                                <label for="Country_No" class="col-md-5">{{trans('admin.Country_No')}}</label>
+                                                <input type="text" name="Country_No" id="Country_No" value='{{$chart_item->Country_No? $chart_item->Country_No : 0}}'
+                                                       class="form-control col-md-7"
+                                                       @if($chart_item->Level_No == 1) disabled @endif>
+                                            </div>
+                                        </div>
+                                        {{-- نهاية الدوله --}}
+
+                                        {{-- المدينه --}}
+                                        <div class="col-md-12 branch">
+                                            <div class="form-group row">
+                                                <label for="City_No" class="col-md-5">{{trans('admin.City_No')}}</label>
+                                                <input type="text" name="City_No" id="City_No" value='{{$chart_item->City_No? $chart_item->City_No : 0}}'
+                                                       class="form-control col-md-7"
+                                                       @if($chart_item->Level_No == 1) disabled @endif>
+                                            </div>
+                                        </div>
+                                        {{-- نهاية المدينه --}}
+
+                                        {{-- المنطقه --}}
+                                        <div class="col-md-12 branch">
+                                            <div class="form-group row">
+                                                <label for="Area_No" class="col-md-5">{{trans('admin.Area_No')}}</label>
+                                                <input type="text" name="Area_No" id="Area_No" value='{{$chart_item->Area_No? $chart_item->Area_No : 0}}'
+                                                       class="form-control col-md-7"
+                                                       @if($chart_item->Level_No == 1) disabled @endif>
+                                            </div>
+                                        </div>
+                                        {{-- نهاية المنطقه --}}
 
                                         {{-- رصيد اول المده مدين --}}
                                         <div class="col-md-12 branch">
@@ -454,15 +517,6 @@
 
                                 <div class="col-md-6">
                                     <div class="row">
-                                        {{-- رقم المرجع المشروع --}}
-                                        <div class="col-md-12 branch">
-                                            <label for="Prj_Refno" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Refno')}}</label>
-                                            <input type="text" name="Prj_Refno" id="Prj_Refno" class="form-control col-md-6"
-                                                   value="{{$chart_item->Prj_Refno? $chart_item->Prj_Refno : null}}"
-                                                   @if($chart_item->Level_No == 1) disabled @endif>
-                                        </div>
-                                        {{-- نهاية رقم المرجع المشروع --}}
-
 
                                         {{-- فئة المشروع --}}
                                         <div class="col-md-12 branch">
@@ -471,27 +525,28 @@
                                                 <select name="Prj_Categ" id="Prj_Categ" class="form-control col-md-6"
                                                     @if($chart_item->Level_No == 1) disabled @endif>
                                                     <option value="{{null}}">{{trans('admin.select')}}</option>
-                                                    @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
-                                                        <option value="{{$key}}"
-                                                            @if($chart_item->Prj_Categ == $key) selected @endif>{{$value}}</option>
-                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
                                         {{-- نهاية فئة المشروع --}}
 
-                                        {{-- قيمة المشروع --}}
+                                        {{-- وضع المشروع --}}
                                         <div class="col-md-12 branch">
-
-                                            <label for="Prj_Value" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Value')}}</label>
-                                            <input type="text" name="Prj_Value" id="Prj_Value" class="form-control col-md-6"
-                                                   value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}"
-                                                   @if($chart_item->Level_No == 1) disabled @endif>
+                                            <label for="Prj_Status" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Status')}}</label>
                                             <div class="form-group">
-
+                                                <select name="Prj_Status" id="Prj_Status" class="form-control col-md-6"
+                                                        @if($chart_item->Level_No == 1) disabled @endif>
+                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                                    @foreach(\App\Enums\PrjStatus::toSelectArray() as $key => $value)
+                                                        <option value="{{$key}}"
+{{--                                                                @if($chart_item->Prj_Status == $key) selected @endif--}}
+                                                        >{{$value}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                        {{-- نهاية قيمة المشروع --}}
+                                        {{-- نهاية وضع المشروع --}}
+
 
                                         {{-- امر التوريد --}}
                                         <div class="col-md-12 branch">
@@ -558,6 +613,32 @@
                                             </div>
                                         </div>
                                         {{-- نهاية مركز التكلفه --}}
+                                        {{-- رقم الفرع و المستودع --}}
+
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label for="Brn_No" class="col-md-1">{{trans('admin.Brn_No')}}</label>
+                                                <select name="Brn_No" id="Brn_No" class="form-control col-md-8">
+                                                    <option value="">{{trans('admin.select')}}</option>
+                                                    @if(count($cmps) > 0)
+                                                        @foreach($cmps as $cmp)
+                                                            <option value="{{$cmp->Brn_No? $cmp->Brn_No : null}}" @if($chart_item->Brn_No == $cmp->Brn_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="Dlv_Stor" class="col-md-2">{{trans('admin.Dlv_Stor')}}</label>
+                                                <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-9">
+                                                    <option value="">{{trans('admin.select')}}</option>
+                                                    @if(count($cmps) > 0)
+                                                        @foreach($cmps as $cmp)
+                                                            <option value="{{$cmp->Dlv_Stor? $cmp->Dlv_Stor : null}}" @if($chart_item->Dlv_Stor == $cmp->Dlv_Stor) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -463,13 +463,13 @@ return [
     ],
 
     PrjStatus::class => [
-        PrjStatus::enquiry    => 'Accounts',    //0
-        PrjStatus::quted      => 'Clients',     //1
-        PrjStatus::refused    => 'Suppliers',   //2
-        PrjStatus::ordered    => 'Employees',   //3
-        PrjStatus::under_work => 'Fixed assets',//4
-        PrjStatus::completed  => 'Fixed assets',//5
-        PrjStatus::warnty     => 'Fixed assets',//6
+        PrjStatus::enquiry    => 'تحت الدراسه',    //0
+        PrjStatus::quted      => 'عرض سعر',     //1
+        PrjStatus::refused    => 'مرفوض',   //2
+        PrjStatus::ordered    => 'تنفيذ',   //3
+        PrjStatus::under_work => 'تحت التشغيل',//4
+        PrjStatus::completed  => 'انتهاء المشروع',//5
+        PrjStatus::warnty     => 'الضمان',//6
     ],
 
 ];

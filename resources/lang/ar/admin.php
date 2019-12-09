@@ -1356,12 +1356,12 @@ return [
     'Prj_Status'         =>'وضع المشروع',
     'Level_Status'       =>'نوع الحساب',
     'project_name'       =>'وصف المشروع عربي',
-    'project_name_en'    =>'وصف المشروع En',
+    'project_name_en'    =>'En',
     'project_number'     =>'رقم المشروع',
     'project_type'       =>'تصنيف المشروع',
     'Create_New_project' =>'اضافة مشروع جديد',
     'Prj_Categ'          =>'فئة المشروع',
-    'Prj_Value'          =>'قيمتة',
+    'Prj_Value'          =>'قيمة المشروع',
     'Acc_DB'             =>'حساب المصاريف للمشاريع',
     'Acc_CR'             =>'حساب الايرادات للمشاريع',
     'Dlv_Stor'           =>'المستودع',
@@ -1370,6 +1370,11 @@ return [
     'Ordr_No'            =>'أمر التوريد',
     'Ordr_Value'         =>'قيمته',
     'select_Cmp'         =>'اختر الشـركه',
+    'Tr_Dt'              =>'تاريخ المشروع',
+    'Tr_DtAr'            =>'الهجري',
+    'Prj_Year'           =>'سنة المشروع',
+    'Prj_Tel'            =>'هاتف المشروع',
+    'Prj_Mobile'         =>'موبايل المشروع',
 
 
 

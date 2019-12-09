@@ -127,11 +127,11 @@ class ProjectController extends Controller
     {
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
@@ -162,14 +162,14 @@ class ProjectController extends Controller
         }
         else if($request->Level_Status == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
                 'Prj_Status' => 'sometimes',
                 'Level_Status' => 'sometimes',
                 //'Acc_Ntr' => 'required',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
                 'Prj_Status' => trans('admin.Prj_Status'),
@@ -280,11 +280,11 @@ class ProjectController extends Controller
         // if($chart->Level_Status == 0){
         if($chart->Level_No == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'required',
                 'Prj_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
@@ -314,7 +314,7 @@ class ProjectController extends Controller
         }
         else{
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'required',
                 'Prj_NmEn' => 'sometimes',
                 'Acc_Typ' => 'sometimes',
