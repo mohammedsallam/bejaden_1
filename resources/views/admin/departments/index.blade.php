@@ -227,17 +227,17 @@
                     <div class="box-header">
                         {{-- رقم الشركه --}}
                         <div class="form-group row">
-                                <h3 class="box-title col-md-3">{{$title}}</h3>
-                                <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
-                                    <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
-                                    @if(count($cmps) > 0)
-                                        @foreach($cmps as $cmp)
-                                            <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                            {{-- نهاية رقم الشركه --}}
+                            <h3 class="box-title col-md-3">{{$title}}</h3>
+                            <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
+                                @if(count($cmps) > 0)
+                                    @foreach($cmps as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        {{-- نهاية رقم الشركه --}}
                         {{-- @if(count($cmps) > 0)
                             @foreach($cmps as $cmp)
                                 @if($cmp->Cmp_No == $chart_item->Cmp_No)
@@ -273,7 +273,7 @@
 
                         {{-- رقم الحساب --}}
                         <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-                        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-1" value="{{$chart_item->Acc_No}}">
+                        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$chart_item->Acc_No}}">
                         {{-- رقم الحساب --}}
 
                         {{-- تصنيف الحساب --}}
@@ -291,6 +291,20 @@
                            </div>
                         </div>
                         {{-- نهاية تصنيف الحساب --}}
+
+                        {{-- طبيعة الحساب --}}
+                        <div class="form-group col-md-12 branch">
+                            <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
+                            @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
+                                <input class="checkbox-inline" type="radio" 
+                                    name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
+                                    style="margin: 3px;" 
+                                    @if($chart_item->Level_No == 1) disabled @endif
+                                    @if ($chart_item->Acc_Ntr == $key) checked @endif>
+                                <label>{{$value}}</label>
+                            @endforeach
+                        </div>
+                        {{-- نهاية طبيعة الحساب --}}
                         
                         {{-- رقم الشركه --}}
                         {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
@@ -325,20 +339,6 @@
 
                         <div class="col-md-6">
                             <div class="row">
-                                {{-- طبيعة الحساب --}}
-                                <div class="form-group col-md-12 branch">
-                                    <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                                    @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                                        <input class="checkbox-inline" type="radio" 
-                                            name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                                            style="margin: 3px;" 
-                                            @if($chart_item->Level_No == 1) disabled @endif
-                                            @if ($chart_item->Acc_Ntr == $key) checked @endif>
-                                        <label>{{$value}}</label>
-                                    @endforeach
-                                </div>
-                                {{-- نهاية طبيعة الحساب --}}
-
                                 {{-- رصيد اول المده مدين --}}
                                 <div class="col-md-12 branch">
                                     <div class="form-group row">
