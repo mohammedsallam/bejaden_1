@@ -116,16 +116,6 @@
                         $('#chart_form').html(data);
                     }
                 });
-
-                // $.ajax({
-                //     url: "{{route('getParentName')}}",
-                //     type: "POST",
-                //     dataType: 'html',
-                //     data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No, children: children },
-                //     success: function(data){
-                //         $('#chart_form').html(data);
-                //     }
-                // });
             }
 
             function handle_dbclick(e){
