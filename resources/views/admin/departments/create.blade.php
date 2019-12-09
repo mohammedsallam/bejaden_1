@@ -7,31 +7,18 @@
     <input type="text" name="Level_Status" id="Level_No" value="{{1}}" hidden>
     {{-- Parnt_Acc end --}}
 
-    <div class="col-md-1 pull-left">
-        <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-    </div>
-
-    {{-- رقم الحساب --}}
     <div class="row">
-        <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-4" value="{{$Acc_No}}">
-    </div>
-    {{-- رقم الحساب --}}
-    
-    {{-- رقم الشركه --}}
-    {{-- <div class="row">
-        <div class="form-group">
-            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-8">
-                <option value="{{$cmps->Cmp_No? $cmps->Cmp_No : null}}">{{$cmps->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-            </select>
+        <div class="col-md-1 pull-left">
+            <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
         </div>
-    </div> --}}
-    {{-- نهاية رقم الشركه --}}
 
-    {{-- تصنيف الحساب --}}
-    <div class="row">
-        <div class="form-group col-md-4 col-md-offset-2">
+        {{-- رقم الحساب --}}
+        <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$Acc_No}}">
+        {{-- رقم الحساب --}}
+
+        {{-- تصنيف الحساب --}}
+        <div class="form-group col-md-3">
             @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
                 <input class="checkbox-inline" type="radio" 
                     name="Level_Status" id="Level_Status" value="{{$key}}"
@@ -39,17 +26,29 @@
                 <label>{{$value}}</label>
             @endforeach
         </div>
+        {{-- نهاية تصنيف الحساب --}}
 
+        {{-- فعال \ غير فعال --}}
         <div class="form-group col-md-4">
-            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
+            <input class="checkbox-inline" type="checkbox" 
+                name="Acc_Actv" id="Acc_Actv" value="1"
+                style="margin: 3px;" checked>
+            <label>{{trans('admin.active')}}</label>
+        </div>
+        {{-- فعال \ غير فعال --}}
+
+        {{-- طبيعة الحساب --}}
+        <div class="form-group col-md-12 col-md-offset-2 branch">
+            <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
+            @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
                 <input class="checkbox-inline" type="radio" 
-                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
-                    style="margin: 3px;" @if($key == 1) checked @endif>
+                    name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
+                    style="margin: 3px;">
                 <label>{{$value}}</label>
             @endforeach
         </div>
+        {{-- نهاية طبيعة الحساب --}}
     </div>    
-    {{-- نهاية تصنيف الحساب --}}
 
     {{-- اسم الحساب عربى --}}
     <div class="form-group row">
@@ -67,18 +66,6 @@
 
     <div class="col-md-6">
         <div class="row">
-            {{-- طبيعة الحساب --}}
-            <div class="form-group col-md-12 branch">
-                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio" 
-                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                        style="margin: 3px;">
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-            {{-- نهاية طبيعة الحساب --}}
-
             {{-- رصيد اول المده مدين --}}
             <div class="col-md-12 branch">
                 <div class="form-group row">

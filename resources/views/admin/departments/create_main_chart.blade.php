@@ -1,18 +1,3 @@
-{{-- @push('js')
-    <script>
-        $(document).on('change', '#Cmp_No', function(){
-            $.ajax({
-                url: "{{route('createAccNo')}}",
-                type: "POST",
-                dataType: 'html',
-                data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val()},
-                success: function(data){
-                    $('#Acc_No').val(data);
-                }
-            });
-        });
-    </script>
-@endpush --}}
 {!! Form::open(['method'=>'POST','route' => ['departments.store'], 'id' => 'edit_form', 'files' => true]) !!}
     {{csrf_field()}}
     {{-- Parnt_Acc --}}
@@ -28,33 +13,8 @@
 
         {{-- رقم الحساب --}}
         <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-1" value="{{$Acc_No}}">
+        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$Acc_No}}">
         {{-- رقم الحساب --}}
-
-        {{-- رقم الشركه --}}
-        {{-- <div class="col-md-8 form-group">
-            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">
-                <option value="">{{trans('admin.select')}}</option>
-                @if(count($cmps) > 0)
-                    @foreach($cmps as $cmp)
-                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div> --}}
-        {{-- نهاية رقم الشركه --}}
-    
-        {{-- تصنيف الحساب --}}
-        {{-- <div class="col-md-4 form-group">
-            @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio" 
-                    name="Level_Status" id="Level_Status" value="{{$key}}"
-                    style="margin: 3px;">
-                <label>{{$value}}</label>
-            @endforeach
-        </div> --}}
-        {{-- نهاية تصنيف الحساب --}}
     </div>
     
     {{-- اسم الحساب عربى --}}

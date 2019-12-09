@@ -8,7 +8,6 @@
         var prevent = false;
         $(document).ready(function () {
         
-            // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
                 $('#jstree').jstree('destroy');    
                 var tree = [];
@@ -55,20 +54,18 @@
                                     r.push(data.instance.get_node(data.selected[i]).id);
                                     name.push(data.instance.get_node(data.selected[i]).text);
                                 }
-                                $('#parent_name').text(name);
+                                // $('#parent_name').text(name);
+                                // console.log($('#parent_name').text(name));
 
                                 //get all direct and undirect children of selected node
                                 var currentNode = data.node;
                                 var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                                // var result = [currentNode.id];
                                 var result = [];
                                 allChildren.find('li').addBack().each(function(index, element) {
                                     if ($(this).jstree(true).is_leaf(element)) {
-                                        // result.push(element.textContent);
                                         result.push(parseInt(element.id));
                                     } else {
                                         var nod = $(this).jstree(true).get_node(element);
-                                        // result.push(nod.text);
                                         result.push(parseInt(nod.id));
                                     }
                                 });
@@ -119,6 +116,16 @@
                         $('#chart_form').html(data);
                     }
                 });
+
+                // $.ajax({
+                //     url: "{{route('getParentName')}}",
+                //     type: "POST",
+                //     dataType: 'html',
+                //     data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No, children: children },
+                //     success: function(data){
+                //         $('#chart_form').html(data);
+                //     }
+                // });
             }
 
             function handle_dbclick(e){
@@ -237,14 +244,6 @@
                                 @endif
                             </select>
                         </div>
-                        {{-- نهاية رقم الشركه --}}
-                        {{-- @if(count($cmps) > 0)
-                            @foreach($cmps as $cmp)
-                                @if($cmp->Cmp_No == $chart_item->Cmp_No)
-                                    <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
-                                @endif
-                            @endforeach
-                        @endif --}}
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-body">
