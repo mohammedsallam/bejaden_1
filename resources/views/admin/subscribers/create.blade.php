@@ -49,7 +49,7 @@
             <div class="form-group row">
                 <div class="col-md-3">
                     {{ Form::label('tree_id',trans('admin.account_number') , ['class' => 'control-label']) }}
-                    {{ Form::select('tree_id', $departments,null, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+                    {{ Form::select('tree_id', $departments, null, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
                 </div>
                 <div class="col-md-3">
                     {{ Form::label(trans('admin.email'), null, ['class' => 'control-label']) }}

@@ -350,7 +350,7 @@ return [
     // invoice // show
     'From' => 'من',
     'To' => 'الى',
-    'Brn_No' => 'رقم الفرع',
+    'Brn_No' => 'الفرع',
     'manage' => 'اداره',
     'Order_ID' => 'رقم الفاتورة',
     'Payment_Due' => 'استحقاق الدفع',
@@ -1353,5 +1353,22 @@ return [
     'y_Internal_Invoice' =>'توجد فاتوره داخليه',
     'LRcpt_No'           =>'رقم السند',
     'Mark_No'            =>'المشرف',
+    'Prj_Status'         =>'وضع المشروع',
+    'Level_Status'       =>'نوع الحساب',
+    'project_name'       =>'وصف المشروع عربي',
+    'project_name_en'    =>'وصف المشروع En',
+    'project_number'     =>'رقم المشروع',
+    'project_type'       =>'تصنيف المشروع',
+    'Create_New_project' =>'اضافة مشروع جديد',
+    'Prj_Categ'          =>'فئة المشروع',
+    'Prj_Value'          =>'قيمتة',
+    'Acc_DB'             =>'حساب المصاريف للمشاريع',
+    'Acc_CR'             =>'حساب الايرادات للمشاريع',
+    'Dlv_Stor'           =>'المستودع',
+    'Prj_Adr'            =>'عنوان المشروع',
+    'Prj_Refno'          =>'رقم المرجع',
+
+
+
 
 ];
