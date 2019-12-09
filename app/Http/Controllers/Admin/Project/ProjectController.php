@@ -1,17 +1,37 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Project;
+namespace App\Http\Controllers\Admin\project;
 
+
+use App\Branches;
+
+use App\Contractors;
+
+use App\employee;
 use App\Department;
 use App\glcc;
-use App\levels;
-use App\Project;
-use App\employee;
-use App\DataTables\ProjectDataTable;
-use App\subscription;
-use Illuminate\Http\Request;
+use App\limitations;
 use App\Http\Controllers\Controller;
+use App\levels;
+use App\limitationReceipts;
+use App\limitationsType;
+use App\operation;
+use App\pjitmmsfl;
+use App\receipts;
+use App\receiptsData;
+use App\receiptsType;
+use App\supplier;
+//use App\Models\Admin\Projectmfs;
+use App\Models\Admin\MtsClosAcc;
+use App\Models\Admin\MainCompany;
+use App\Models\Admin\Projectmfs;
+use Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use niklasravnsborg\LaravelPdf\Facades\Pdf;
+use Up;
+
 
 class ProjectController extends Controller
 {
@@ -20,9 +40,76 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ProjectDataTable $project)
+    public function index()
     {
-        return $project->render('admin.projects.index');
+        $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
+        if(count($chart) > 0){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $chart_item = Projectmfs::first();
+            $total = $this->getTotalTransaction($chart_item);
+            $children = [];
+            return view('admin.projects.index', ['title' => trans('admin.projects'),
+                'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
+        }
+        else{
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $Prj_No = $this->createPrjNo(0);
+            return view('admin.projects.init_chart', ['title' => trans('admin.projects')
+                , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
+
+        }
+
+    }
+
+    public function createNewPrj(Request $request){
+        if($request->ajax()){
+            if($request->parent){
+                $parent = Projectmfs::where('Prj_No', $request->parent)->get(['Prj_No', 'Cmp_No', 'Level_No'])->first();
+                $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
+                $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
+                $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+                $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+                $Prj_No = $this->createPrjNo($parent->Prj_No);
+                return view('admin.projects.create', ['title' => trans('admin.projects'),
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No,
+                    'balances' => $balances, 'incomes' => $incomes]);
+            }
+            // else{
+            //     return 'else';
+            //     if(session('Cmp_No') == -1){
+            //         $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            //     }
+            //     else{
+            //         $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            //     }
+            //     $chart = Projectmfs::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
+            //     $Acc_No = $this->createAccNo(0);
+            //     return view('admin.departments.create', ['title' => trans('admin.Departments'),
+            //                 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' => $Acc_No]);
+            // }
+        }
+    }
+
+    public function initChartAcc(){
+        if(session('Cmp_No') == -1){
+            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        }
+        else{
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+        }
+        $Prj_No = $this->createPrjNo(0);
+        return view('admin.projects.create_main_chart', ['title' => trans('admin.projects')
+            , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
     }
 
     /**
@@ -32,209 +119,632 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $subscribers = subscription::all()->pluck('name_'.session('lang'), 'id');
-        $glcc = glcc::where('level_id',8)->pluck('name_'.session('lang'),'id');
-        $tree = Department::where('operation_id',3)->pluck('dep_name_'.session('lang'),'id');
-//        return ($employee);
-        return view('admin.projects.create',compact('subscribers','glcc','tree'));
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request,glcc $glcc)
+
+    public function store(Request $request)
     {
-        $data = $this->validate($request,[
-            'name_ar' => 'required',
-            'name_en' => 'required',
-            'contract_number' => 'sometimes',
-            'phone_number' => 'sometimes',
-            'fax_number' => 'sometimes',
-            'email' => 'required|email',
-            'responsible_person' => 'required',
-            'warehouse' => 'sometimes',
-            'subscriber_id' => 'required',
-            'project_title' => 'sometimes',
-            'cc_id' => 'required',
-            'tree_id' => 'required',
-        ],[],[
-            'name_ar' => 'Arbic name',
-            'name_en' => 'English name',
-            'contract_number' => 'Contract number',
-            'phone_number' => 'Phone number',
-            'fax_number' => 'Fax number',
-            'email' => 'Email',
-            'esponsible_person' => 'Responsible person',
-            'warehouse' => 'Warehouse',
-            'subscriber_id' => 'Subscriber name',
-            'roject_title' => 'Project title',
-        ]);
-        $project = new Project();
-        $project->name_ar = $request->name_ar;
-        $project->name_en = $request->name_en;
-        $project->contract_number = $request->contract_number;
-        $project->phone_number = $request->phone_number;
-        $project->fax_number = $request->fax_number;
-        $project->email = $request->email;
-        $project->responsible_person = $request->responsible_person;
-        $project->warehouse = $request->warehouse;
-        $project->subscriber_id = $request->subscriber_id;
-        $project->project_title = $request->project_title;
-        $project->tree_id = $request->tree_id;
-        $ccs = $glcc->create([
-            'name_ar'=>$request->name_ar,
-            'name_en'=>$request->name_en,
-            'parent_id'=>$request->cc_id,
-            'levelType'=>2,
-            'type'=>'0',
+        if($request->Level_Status == 0){
+            $data = $this->validate($request,[
+                'Cmp_No' => 'required',
+                'Prj_NmAr' => 'sometimes',
+                'Prj_NmEn' => 'sometimes',
+            ],[],[
+                'Cmp_No' => trans('admin.cmp_no'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+            ]);
 
-        ]);
+            $chart = new Projectmfs;
+            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Prj_NmAr = $request->Prj_NmAr;
+            $chart->Prj_NmEn = $request->Prj_NmEn;
+            $chart->Level_Status = $request->Level_Status;
+            $chart->Level_No = 1;
+            $chart->Prj_Parnt = 0;
+            $chart->User_ID = Auth::user()->id;
+            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
+            $chart->Prj_No = $request->Prj_No;
+            // $created_Acc_No = $this->createAccNo($chart->Parnt_Acc);
+            // if($request->Acc_No == $created_Acc_No){
+            //     $chart->Acc_No = $created_Acc_No;
+            // }
+            // else{
+            //     $chart->Acc_No = $request->Acc_No;
+            // }
+            $chart->save();
+            $chart->Tr_Dt = $chart->created_at;
+            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
+            $chart->Opn_Date = $chart->updated_at;
+            $chart->save();
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
+        }
+        else if($request->Level_Status == 1){
+            $data = $this->validate($request,[
+                'Cmp_No' => 'required',
+                'Prj_NmAr' => 'sometimes',
+                'Prj_NmEn' => 'sometimes',
+                'Prj_Status' => 'sometimes',
+                'Level_Status' => 'sometimes',
+                //'Acc_Ntr' => 'required',
+            ],[],[
+                'Cmp_No' => trans('admin.cmp_no'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+                'Prj_Status' => trans('admin.Prj_Status'),
+                'Level_Status' => trans('admin.Level_Status'),
+                //'Acc_Ntr' => trans('admin.category')
+            ]);
 
-        if($ccs->parent_id == null){
-            $count = count(\Illuminate\Support\Facades\DB::table('glccs')->where('parent_id',null)->get());
-            $level_id = levels::where('type',2)->where('levelId',1)->first()->id;
-            DB::table('glccs')->where('id',$ccs->id)->update(['code' => $count,'level_id'=>$level_id]);
-        }else{
+            // return $request;
+            $chart = new Projectmfs;
+            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Prj_NmAr = $request->Prj_NmAr;
+            $chart->Prj_NmEn = $request->Prj_NmEn;
+            $chart->Level_Status = $request->Level_Status;
+            $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
+            $chart->Level_No = $parent->Level_No + 1;
+            $chart->Prj_Parnt = $request->Prj_Parnt;
+            $chart->Prj_Status = $request->Prj_Status;
+            $chart->Costcntr_No = $request->Costcntr_No;  //مركز التكلفه
+            $chart->Prj_Actv = $request->Prj_Actv;
+            //$chart->Cr_Blnc = $request->Cr_Blnc;
+            //$chart->Acc_Ntr = $request->Acc_Ntr;
+            $chart->Fbal_DB = $request->Fbal_DB;
+            $chart->Fbal_CR = $request->Fbal_CR;
+            $chart->User_Id = Auth::user()->id;
+            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
+            $chart->Prj_No = $request->Prj_No;
+            $chart->save();
+            $chart->Tr_Dt = $chart->created_at;
+            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
+            $chart->Updt_Date = $chart->updated_at;
+            $chart->save();
+            $parent_level = Projectmfs::where('Prj_No', $request->Prj_Parnt)->first();
+            if($parent_level){
+                $parent_level->Level_Status = 0;
+                $parent_level->save();
+            }
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
+        }
+    }
 
-            $parent =  glcc::where('id',$ccs->parent_id)->first();
-            if ($parent->levelType != $ccs->levelType){
-                $ccs->delete();
-                return back()->with(session()->flash('error',trans('admin.cannot_add_branche')));
-            }else{
-                $count = count(DB::table('glccs')->where('parent_id',$ccs->parent_id)->where('levelType',$ccs->levelType)->get())-1;
-                if (levels::where('type',$ccs->levelType)->where('id',$parent->level_id + 1)->exists()){
-                    $level_id = levels::where('type',$ccs->levelType)->where('id',$parent->level_id + 1)->first()->id;
-                    $code = DB::table('glccs')->where('parent_id',$ccs->parent_id)->where('levelType',$ccs->levelType)->max('code');
-//                        there here an issue may be from table or from model
-                    $i = substr($code + 1, -3,1);
-                    if (substr($code + 1, -3) == $i.'00') {
-                        $ccs->delete();
-                        return back()->with(session()->flash('error', trans('admin.cannot_add')));
-                    } else {
-                        $project->cc_id = $ccs->id;
-                        if ($count == null){
-                            $code_first = substr(glcc::where('id',$ccs->parent_id)->where('levelType',$ccs->levelType)->first()->code, 0,1);
-                            DB::table('glccs')->where('id',$ccs->id)->update(['code' => (($code_first.substr($code,1)).'01') ,'level_id'=>$level_id]);
-                        }else{
-                            $co = DB::table('glccs')->where('parent_id',$ccs->parent_id)->where('levelType',$ccs->levelType)->max('code');
-                            DB::table('glccs')->where('id', $ccs->id)->update(['code' => $co + 1, 'level_id' => $level_id]);
-                        }
-                        $ccs1 = $glcc->create([
-                            'name_ar'=>'ايرادات '.$request->name_ar,
-                            'name_en'=>'ايرادات '.$request->name_en,
-                            'parent_id'=>$ccs->id,
-                            'levelType'=>2,
-                            'type'=>'1',
-                        ]);
-                        $ccs2 = $glcc->create([
-                            'name_ar'=>'مصروفات '.$request->name_ar,
-                            'name_en'=>'مصروفات '.$request->name_en,
-                            'parent_id'=>$ccs->id,
-                            'levelType'=>2,
-                            'type'=>'1',
-                        ]);
-                        $parent1 =  glcc::where('id',$ccs1->parent_id)->first();
-                        $level_id1 = levels::where('type',$ccs1->levelType)->where('id',$parent1->level_id + 1)->first()->id;
-                        $code1 = DB::table('glccs')->where('id',$ccs1->parent_id)->where('levelType',$ccs1->levelType)->max('code');
-                        $code_first1 = substr(glcc::where('id',$ccs1->parent_id)->where('levelType',$ccs1->levelType)->first()->code, 0,1);
-                        DB::table('glccs')->where('id',$ccs1->id)->update(['code' => (($code_first1.substr($code1,1)).'01') ,'level_id'=>$level_id1]);
-
-
-                        $parent2 =  glcc::where('id',$ccs2->parent_id)->first();
-                        $level_id2 = levels::where('type',$ccs2->levelType)->where('id',$parent2->level_id + 1)->first()->id;
-                        $code2 = DB::table('glccs')->where('parent_id',$ccs2->parent_id)->where('levelType',$ccs2->levelType)->max('code');
-                        DB::table('glccs')->where('id', $ccs2->id)->update(['code' => $code2 + 1, 'level_id' => $level_id2]);
-                    }
+    public function show(Request $request)
+    {
+        if($request->ajax()){
+            $search = $request->search;
+            if ($search != null){
+                if ($search == 0){
+                    $max_count = DB::table('projectmfs')->max('Level_No');
+                    $contents = view('admin.projects.reports.show', compact('max_count','search'))->render();
+                    return $contents;
+                }
+                if ($search == '1'){
+                    $max_count = Projectmfs::where('type',1)->pluck('dep_name_'.session('lang'),'id');
+                    $contents = view('admin.projects.reports.show', compact('max_count','search'))->render();
+                    return $contents;
                 }else{
-                    $ccs->delete();
-                    return back()->with(session()->flash('error',trans('admin.cannot_add')));
+                    $contents = view('admin.projects.reports.details',compact('search'))->render();
+                    return $contents;
                 }
             }
-            DB::table('glccs')->where('id',$ccs->id)->update(['type' => '0']);
-        }
-        $project->save();
-        return redirect(route('projects.index'))->with(session()->flash('message','Project is added successfully'));
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Project  $Project
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $project = Project::findOrFail($id);
-        return view('admin.projects.show',compact('project'));
-        // return view('admin.employees.show',['title'=> trans('employee') ,'employee'=>$employee]);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Project  $Project
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $Project)
+    public function edit($id)
     {
-        $project = request('project');
-        $subscribers = subscription::all()->pluck('name_'.session('lang'), 'id');
-        // dd($project);
-        // $Project = Project::findOrFail($id);
-        return view('admin.projects.edit',compact('project','subscribers'));
+        // $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
+        // $department = Department::findOrFail($id);
+        // $parents = $department->parents->pluck('dep_name_'.session('lang'),'id');
+        // $operations = operation::pluck('name_'.session('lang'),'id');
+        // return view('admin.departments.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
+    }
+
+    public function getEditBlade(Request $request){
+        if($request->ajax()){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+            $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+            $chart = Projectmfs::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
+            $chart_item = Projectmfs::where('Acc_No', $request->Acc_No)->first();
+            $total = $this->getTotalTransaction($chart_item);
+            return view('admin.projects.edit', ['title' => trans('admin.projects'),
+                'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
+                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $Project
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $Project)
+    public function update(Request $request, $id)
     {
-        $data = $this->validate($request,[
-            'name_ar' => 'required',
-            'name_en' => 'required',
-            'contract_number' => 'sometimes',
-            'phone_number' => 'sometimes',
-            'fax_number' => 'sometimes',
-            'email' => 'required|email',
-            'responsible_person' => 'required',
-            'warehouse' => 'sometimes',
-            'subscriber_id' => 'required',
-            'project_title' => 'required',
-            'tree_id' => 'sometimes',
-        ],[],[
-            'name_ar' => 'Arbic name',
-            'name_en' => 'English name',
-            'contract_number' => 'Contract number',
-            'phone_number' => 'Phone number',
-            'fax_number' => 'Fax number',
-            'email' => 'Email',
-            'esponsible_person' => 'Responsible person',
-            'warehouse' => 'Warehouse',
-            'subscriber_id' => 'Subscriber name',
-            'roject_title' => 'Project title',
-        ]);
-        $project = request('project');
-        $Project->update($data);
-        return redirect(route('projects.index'))->with(session()->flash('message','Project is update successfully'));
+        $chart = Projectmfs::where('Acc_No', $id)->first();
+        // if($chart->Level_Status == 0){
+        if($chart->Level_No == 1){
+            $data = $this->validate($request,[
+                'Cmp_No' => 'required',
+                'Prj_NmAr' => 'required',
+                'Prj_NmEn' => 'sometimes',
+            ],[],[
+                'Cmp_No' => trans('admin.cmp_no'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+            ]);
+
+            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Prj_NmAr = $request->Prj_NmAr;
+            $chart->Prj_NmEn = $request->Prj_NmEn;
+            $chart->Acc_No = $request->Acc_No;
+            // $chart->Parnt_Acc = 0;
+            $chart->User_ID = Auth::user()->id;
+            $chart->save();
+            $chart->Tr_Dt = $chart->created_at;
+            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
+            $chart->Updt_Time = $chart->updated_at;
+            $chart->save();
+
+            // $children = $child = MtsChartAc::where('Acc_No', 'LIKE '.$chart->Acc_No.'%')->get(['Cmp_No']);
+            // return $children;
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
+        }
+        else{
+            $data = $this->validate($request,[
+                'Cmp_No' => 'required',
+                'Prj_NmAr' => 'required',
+                'Prj_NmEn' => 'sometimes',
+                'Acc_Typ' => 'sometimes',
+                'Level_Status' => 'sometimes',
+                //'Acc_Ntr' => 'required',
+            ],[],[
+                'Cmp_No' => trans('admin.cmp_no'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+                'Acc_Typ' => trans('admin.account_type'),
+                'Level_Status' => trans('admin.project_type'),
+                //'Acc_Ntr' => trans('admin.category')
+            ]);
+
+            // return $request->Fbal_DB;
+            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Prj_NmAr = $request->Prj_NmAr;
+            $chart->Prj_NmEn = $request->Prj_NmEn;
+            // $chart->Level_Status = $request->Level_Status;
+            // return $request->Parnt_Acc;
+            // $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
+            // $chart->Level_No = $parent->Level_No + 1;
+            // $chart->Parnt_Acc = $request->Parnt_Acc;
+            $chart->Acc_Typ = $request->Acc_Typ;
+            //$chart->Clsacc_No1 = $request->Clsacc_No1;
+            //$chart->Clsacc_No2 = $request->Clsacc_No2;
+            $chart->Costcntr_No = $request->Costcntr_No;
+            $chart->Prj_Actv = $request->Prj_Actv;
+            $chart->Cr_Blnc = $request->Cr_Blnc;
+            $chart->Acc_Ntr = $request->Acc_Ntr;
+            $chart->Fbal_DB = $request->Fbal_DB;
+            $chart->Fbal_CR = $request->Fbal_CR;
+            $chart->User_ID = Auth::user()->id;
+            $chart->save();
+            $chart->Tr_Dt = $chart->created_at;
+            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
+            $chart->Updt_Date = $chart->updated_at;
+            $chart->save();
+
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $acc_no){
+                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
+
+            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Project  $Project
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-         $Project = Project::findOrFail($id);
-         $Project->delete();
-         return back();
+        $chart = MtsChartAc::where('Acc_No', $id)->first();
+        if(count($chart->children) > 0){
+            return back()->with(session()->flash('error',trans('admin.chart_has_children')));
+        }
+        else{
+            $chart->delete();
+            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_deleted')));
+        }
     }
+
+    public function reports()
+    {
+        $title = trans('admin.Departments_reports');
+        return view('admin.departments.reports.index',compact('title'));
+    }
+    public function print()
+    {
+
+//        $departments = sumdepartment(15);
+        $departments = Department::orderBy('code')->get();
+
+//        dd($departments);
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+            );
+        }];
+        $pdf = Pdf::loadView('admin.departments.print', compact('departments'),[], $config);
+        return $pdf->stream();
+    }
+    public function details(Request $request)
+    {
+        if($request->ajax()){
+            $typeRange = $request->typeRange;
+            $type = $request->type;
+            if ($typeRange != null){
+                $contents = view('admin.departments.reports.details', compact('typeRange', 'type'))->render();
+                return $contents;
+
+            }
+
+            if ($type != null){
+
+                $contents = view('admin.departments.reports.details', compact('typeRange', 'type'))->render();
+                return $contents;
+            }
+        }
+    }
+
+    public function pdf(Request $request) {
+        $typeRange = $request->typeRange;
+        $type = $request->type;
+        $search = $request->search;
+        if ($search == 6){
+            $departments = Department::where('cc_id','!=',null)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+            return $pdf->stream();
+        }
+        if ($typeRange != null){
+            $departments = Department::where('level_id',$typeRange)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+            return $pdf->stream();
+        }
+        if ($type != null){
+            $products = [];
+            $departments = Department::where('id',$type)->get();
+            while(count($departments) > 0){
+                $nextCategories = [];
+                foreach ($departments as $category) {
+                    $products = array_merge($products, $category->children->all());
+                    $nextCategories = array_merge($nextCategories, $category->children->all());
+                }
+                $departments = $nextCategories;
+            }
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+
+        if ($search == '2'){
+            $departments = Department::where('category','0')->get();
+        }elseif ($search == '3'){
+            $departments = Department::where('category','1')->get();
+        }elseif ($search == '4'){
+            $departments = Department::where('type','0')->get();
+        }elseif ($search == '5'){
+            $departments = Department::where('type','1')->get();
+        }elseif ($search == '6'){
+            $departments = glcc::where('type','1')->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.departments.reports.pdf.cc', compact('departments'), [], $config);
+            return $pdf->stream();
+        }
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+            );
+        }];
+        $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+        return $pdf->stream();
+    }
+    public function Review( )
+    {
+//        $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');
+//        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+        $title = trans('admin.daily_report');
+        return view('admin.departments.review',compact('limitationReceipts'));
+    }
+
+    public function reviewdepartment(Request $request)
+    {
+        $type = $request->type;
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+
+        $limitations_1 = [];
+        $limitations_2 = [];
+        $limitations_3 = [];
+
+        $receipts_1 = [];
+        $receipts_2 = [];
+        $receipts_3= [];
+//dd(dep_name_ar != name_ar);
+        $limitations_1 = limitationsType::where('operation_id', '=', 4)
+            ->where('limitations_type.tree_id', '=', \DB::raw('limitations_type.relation_id'))
+            ->whereHas('departments', function ($qu) {
+
+                $qu->where('dep_name_ar', '!=', \DB::raw('limitations_type.name_ar'));
+            })->whereHas('limitations',
+                function ($q) use ($type) {
+
+                    $q->where('limitationsType_id', '=', $type);
+                })->get();
+
+//dd($limitations_1);
+
+        $limitations_2 = limitationsType::where('operation_id', '=', 4)->where('limitations_type.tree_id', '!=', \DB::raw('limitations_type.relation_id'))->whereHas('limitations',
+            function ($query) use ($type) {
+                $query->where('limitationsType_id', '=', $type);
+
+
+            })->get();
+
+
+//        $limitations_2 = limitationsType::where('operation_id', '=', 4)->where('limitations_type.tree_id', '!=', \DB::raw('limitations_type.relation_id'))->whereHas('limitations',
+//            function ($query) use ($type) {
+//                $query->where('limitationsType_id', '=', $type);
+//
+//
+//            })->get();
+
+//dd(tree_id  != relation_id);
+
+
+        $Errorlimitations_3 = limitationsType::whereHas('limitations',
+            function ($query) use ($type) {
+                $query->where('limitationsType_id', '=', $type);
+
+
+            })->get();
+
+        foreach ($Errorlimitations_3 as $one) {
+
+            if ($one->operation_id == 1) {
+                $tree = supplier::where('id', $one->relation_id)->first()['tree_id'];
+
+                $limitations_3 = limitationsType::where('operation_id', '=', 1)->where('tree_id', '!=', $tree)->whereHas('limitations',
+                    function ($query) use ($type) {
+                        $query->where('limitationsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 3) {
+                $tree = Project::where('id', $one->relation_id)->first()['tree_id'];
+
+                $limitations_3 = limitationsType::where('operation_id', '=', 3)->where('tree_id', '!=', $tree)->whereHas('limitations',
+                    function ($query) use ($type) {
+                        $query->where('limitationsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 5) {
+                $tree = employee::where('id', $one->relation_id)->first()['tree_id'];
+
+                $limitations_3 = limitationsType::where('operation_id', '=', 5)->where('tree_id', '!=', $tree)->whereHas('limitations',
+                    function ($query) use ($type) {
+                        $query->where('limitationsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 10) {
+                $tree = Contractors::where('id', $one->relation_id)->first()['tree_id'];
+
+                $limitations_3 = limitationsType::where('operation_id', '=', 10)->where('tree_id', '!=', $tree)->whereHas('limitations',
+                    function ($query) use ($type) {
+                        $query->where('limitationsType_id', '=', $type);
+
+
+                    })->get();
+
+
+            }
+
+
+        }
+        $receipts_1 = receiptsType::where('operation_id', '=', 4)
+            ->where('receipts_type.tree_id', '!=', \DB::raw('receipts_type.relation_id'))->whereHas('receipts',
+                function ($query) use ($type) {
+                    $query->where('receiptsType_id', '=', $type);
+
+
+                })->get();
+
+
+        $receipts_2 = receiptsType::where('operation_id', '=', 4)
+            ->where('receipts_type.tree_id', '=', \DB::raw('receipts_type.relation_id'))
+            ->whereHas('departments', function ($qu) {
+
+                $qu->where('dep_name_ar', '!=', \DB::raw('receipts_type.name_ar'));
+            })->whereHas('receipts',
+                function ($q) use ($type) {
+
+                    $q->where('receiptsType_id', '=', $type);
+                })->get();
+//dd($receipts);
+
+
+
+
+        $Errorreceipts_3 = receiptsType::whereHas('receipts',
+            function ($query) use ($type) {
+                $query->where('receiptsType_id', '=', $type);
+
+
+            })->get();
+
+        foreach ($Errorreceipts_3 as $one) {
+
+            if ($one->operation_id == 1) {
+                $tree = supplier::where('id', $one->relation_id)->first()['tree_id'];
+
+                $receipts_3 = receiptsType::where('operation_id', '=', 1)->where('tree_id', '!=', $tree)->whereHas('receipts',
+                    function ($query) use ($type) {
+                        $query->where('receiptsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 3) {
+                $tree = Project::where('id', $one->relation_id)->first()['tree_id'];
+
+                $receipts_3 = receiptsType::where('operation_id', '=', 3)->where('tree_id', '!=', $tree)->whereHas('receipts',
+                    function ($query) use ($type) {
+                        $query->where('receiptsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 5) {
+                $tree = employee::where('id', $one->relation_id)->first()['tree_id'];
+
+                $receipts_3 = receiptsType::where('operation_id', '=', 5)->where('tree_id', '!=', $tree)->whereHas('receipts',
+                    function ($query) use ($type) {
+                        $query->where('receiptsType_id', '=', $type);
+
+
+                    })->get();
+
+            } elseif ($one->operation_id == 10) {
+                $tree = Contractors::where('id', $one->relation_id)->first()['tree_id'];
+
+                $receipts_3 = receiptsType::where('operation_id', '=', 10)->where('tree_id', '!=', $tree)->whereHas('receipts',
+                    function ($query) use ($type) {
+                        $query->where('receiptsType_id', '=', $type);
+
+
+                    })->get();
+
+
+            }
+
+
+        }
+
+        return view('admin.departments.ajax.error', compact('receipts_1','receipts_2','receipts_3', 'limitations_1', 'limitations_2', 'limitations_3'))->render();
+
+
+    }
+
+    //create new Acc_No
+    public function createPrjNo($Prj_Parnt){
+        if($Prj_Parnt == 0){
+            $chart = Projectmfs::where('Prj_Parnt', 0)->orderBy('Prj_No', 'desc')->get(['Prj_No'])->first();
+            if($chart){
+                $Prj_No = $chart->Prj_No + 1;
+                return $Prj_No;
+            }
+            else{
+                $Prj_No = 1;
+                return $Prj_No;
+            }
+        }
+        else{
+            $parent = Projectmfs::where('Prj_Parnt', $Prj_Parnt)->first();
+            if(count($parent->children) > 0){
+                $max = Projectmfs::where('Prj_Parnt', $parent->Prj_Parnt)->orderBy('Prj_Parnt', 'desc')->get(['Prj_Parnt'])->first();
+                return $max->Prj_Parnt + 1;
+            }
+            else{
+                $Prj_Parnt = (int)$Prj_Parnt.'01';
+                return $Prj_No;
+            }
+            // $chart = Projectmfs::where('Parnt_Acc', $Parnt_Acc)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
+            // if($chart){
+            //     $index = explode('0', $chart->Acc_No);
+            //     $counter = (int)$index[count($index)-1] + 1;
+            //     $Acc_No = (int)$Parnt_Acc.'0'.$counter;
+            //     return $Acc_No;
+            // }
+            // else{
+            //     $Acc_No = (int)$Parnt_Acc.'01';
+            //     return $Acc_No;
+            // }
+        }
+    }
+
+    public function getTotalTransaction($chart){
+        // اجمالى الحركة مدين
+        $total_debit = $chart->DB11 + $chart->DB12 + $chart->DB13 + $chart->DB14 + $chart->DB15 + $chart->DB16
+            + $chart->DB17 + $chart->DB18 + $chart->DB19 + $chart->DB20 + $chart->DB21 + $chart->DB22;
+
+        // اجمالى الحركه دائن
+        $total_credit = $chart->CR11 + $chart->CR12 + $chart->CR13 + $chart->CR14 + $chart->CR15 + $chart->CR16
+            + $chart->CR17 + $chart->CR18 + $chart->CR19 + $chart->CR20 + $chart->CR21 + $chart->CR22;
+
+        // اجمالى الرصيد
+        $total_balance = ($chart->Fbal_DB - $chart->Fbal_CR) + ($total_debit - $total_credit);
+
+        $total[] = (object) array('total_debit' => $total_debit,
+            'total_credit' => $total_credit,
+            'total_balance' => $total_balance);
+        return $total;
+    }
+
 }
+

@@ -53,6 +53,7 @@ use App\Enums\dataLinks\ReceiptType;
 use App\Enums\dataLinks\LimitationsType;
 use App\Enums\dataLinks\MonthType;
 use App\Enums\dataLinks\DepartmentReportType;
+use App\Enums\PrjStatus;
 
 
 return [
@@ -380,7 +381,7 @@ return [
         FormsType::Spcrpt_Trnf => 'نموذج خاص سندات التحويل',//6
         FormsType::Spcrpt_Adjust => 'نموذج خاص سندات التسويه',//7
         FormsType::Spcrpt_SRV => 'نموذج خاص سند ادخال بضاعه',//8
-        FormsType::Spcrpt_DNV => 'نموذج خاص سند تسليم بضاعه',//9  
+        FormsType::Spcrpt_DNV => 'نموذج خاص سند تسليم بضاعه',//9
     ],
     PrintersType::class => [
         PrintersType::PrintOrder_DNV => 'طابعة سند التسليم مع فاتورة المبيعات',//2
@@ -459,6 +460,16 @@ return [
         TransactionType::discount_adujstment => 'تشويه بالخصم',//14
         TransactionType::debt_notify => 'اشعار مدين',//15
         TransactionType::credit_notify => 'اشعار دائن',//16
+    ],
+
+    PrjStatus::class => [
+        PrjStatus::enquiry    => 'Accounts',    //0
+        PrjStatus::quted      => 'Clients',     //1
+        PrjStatus::refused    => 'Suppliers',   //2
+        PrjStatus::ordered    => 'Employees',   //3
+        PrjStatus::under_work => 'Fixed assets',//4
+        PrjStatus::completed  => 'Fixed assets',//5
+        PrjStatus::warnty     => 'Fixed assets',//6
     ],
 
 ];

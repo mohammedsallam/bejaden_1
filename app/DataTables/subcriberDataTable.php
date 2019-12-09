@@ -160,7 +160,7 @@ class subcriberDataTable extends DataTable
             ['name'=>'ID_No','data'=>'ID_No','title'=>trans('admin.id')],
             ['name'=>'Cstm_Nm'.ucfirst(session('lang')),'data'=>'Cstm_Nm'.ucfirst(session('lang')),'title'=>trans('admin.name')],
             ['name'=>'Brn_No','data'=>'Brn_No','title'=>trans('admin.Branches')],
-            ['name'=>'Cmp_No','data'=>'company.Cmp_Nm'.session('lang'),'title'=>trans('admin.company')],
+            ['name'=>'Cmp_No','data'=>'company.Cmp_Nm'.ucfirst(session('lang')),'title'=>trans('admin.company')],
             ['name'=>'Cstm_No','data'=>'Cstm_No','title'=>trans('admin.subscriber_no')],
             ['name'=>'Cstm_Active','data'=>'Cstm_Active','title'=>trans('admin.active')],
             ['name'=>'Cstm_Ctg','data'=>'Cstm_Ctg','title'=>trans('admin.customer_catg')],

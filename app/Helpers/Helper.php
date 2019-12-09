@@ -4,6 +4,7 @@
 use App\MtsCostcntr;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Admin\MtsChartAc;
+use App\Models\Admin\Projectmfs;
 
 if (!function_exists('makeNumber2Text')){
     function makeNumber2Text($numberValue){
@@ -554,9 +555,9 @@ if (!function_exists('getschedule')){
     }
 }
 if (!function_exists('load_dep')){
-    function load_dep($select = null,$dep_hide = null){
+    function load_dep($select = null,$dep_hide = null, $Cmp_No){
 
-        $departments = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Acc_No', 'ID_No']);
+        $departments = MtsChartAc::where('Cmp_No', $Cmp_No)->get(['Acc_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Acc_No', 'ID_No']);
 
         $dep_arr = [];
         foreach($departments as $department){
@@ -597,6 +598,57 @@ if (!function_exists('load_dep')){
             }
 
             $list_arr['text'] = $department->{'Acc_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
+            array_push($dep_arr,$list_arr);
+
+        }
+        return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
+    }
+}
+
+if (!function_exists('load_prj')){
+    function load_prj($select = null,$dep_hide = null){
+
+        $projects = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_Parnt', 'Prj_No', 'ID_No']);
+
+        $dep_arr = [];
+        foreach($projects as $project){
+            $list_arr = [];
+            $list_arr['icon'] = '';
+            $list_arr['li_attr'] = '';
+            $list_arr['a_attr'] = '';
+            $list_arr['children'] = [];
+            if ($select !== null and $select == $project->Prj_No){
+                $list_arr['state'] = [
+                    'opened'=>true,
+                    'selected'=>true,
+                    'disabled'=>false
+                ];
+            }
+            if ($dep_hide !== null and $dep_hide == $project->Prj_No){
+                $list_arr['state'] = [
+                    'opened'=>false,
+                    'selected'=>false,
+                    'disabled'=>true
+                ];
+            }
+
+            $levelType = Projectmfs::where('Prj_No',$project->Prj_No)->first()->Level_No;
+            $Operation = Projectmfs::where('Prj_No',$project->Prj_No)->first()->Prj_Status ? \App\Enums\PrjStatus::getDescription($project->Prj_Status) : null;
+            $cc = Projectmfs::where('Prj_No',$project->Prj_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
+            $code = Projectmfs::where('Prj_No',$project->Prj_No)->first()->Prj_No;
+            $list_arr['id'] = $project->Prj_No;
+
+            if( $project->Prj_Parnt !== null){
+                if($project->Prj_Parnt == 0){
+                    $project->Prj_Parnt = '#';
+                    $list_arr['parent'] = $project->Prj_Parnt;
+                }
+                else{
+                    $list_arr['parent'] = $project->Prj_Parnt;
+                }
+            }
+
+            $list_arr['text'] = $project->{'Prj_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
             array_push($dep_arr,$list_arr);
 
         }
