@@ -146,6 +146,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
 
 
+        //Projcontractmfs
+        Route::resource('project_contract','Admin\Projcontractmfs\ProjcontractmfsController');
+
+
 //        astsupctg
         Route::resource('astsupctg','Admin\Astsupctg\AstsupctgController');
 
@@ -166,7 +170,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
 
 
- Route::get('/country','Admin\SubscribeController@getCountries');
+        Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranches');
 
@@ -282,8 +286,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         // Projects data for projects
 //        Route::resource('projects', 'Admin\Project\ProjectController');
+//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+//        Route::resource('projects', 'Admin\Project\ProjectController');
 //        Route::resource('projects', 'Admin\Project\ProjectController1');
-        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');

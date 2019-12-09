@@ -638,6 +638,8 @@ return [
     'Edit_Slider' => 'تعديل الصور المتحركة',
     'Edit_About' => 'تعديل عن الشركة',
     'Edit_Service' => 'تعديل خدماتنا',
+    'na_Comp' => 'اسم الشركة',
+
 
     // admin/project/create //
     'name_project_ar' => 'اسم المشروع بالعربى',
@@ -1353,6 +1355,8 @@ return [
     'y_Internal_Invoice' =>'توجد فاتوره داخليه',
     'LRcpt_No'           =>'رقم السند',
     'Mark_No'            =>'المشرف',
+    'cntrct_No'          =>'رقم العقد',
+    'rvisd_No'          =>'نسخة العقد',
     'Prj_Status'         =>'وضع المشروع',
     'Level_Status'       =>'نوع الحساب',
     'project_name'       =>'وصف المشروع عربي',
