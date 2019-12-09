@@ -1,93 +1,551 @@
-@extends('admin.index')
-@section('title',trans('admin.edit_project'))
-@section('content')
-    {{-- @push('js')
+<script>
+    $(document).ready(function(){
+        $('#delete_button').click(function(e){
+            e.preventDefault();
+            $('#delete_form').submit()
+        });
+    });
 
-        <script>
-            $('.datepicker').datepicker({
-                format: 'yyyy-mm-dd',
-                rtl: true,
-                language: '{{session('lang')}}',
-                inline:true,
-                minDate: 0,
-                autoclose:true,
-                minDateTime: dateToday
+    $('#Clsacc_No1_Check').on('change', function(){
+        if($(this).is(':checked')){
+            $('#Clsacc_No1').removeClass('hidden');
+        }
+        else{
+            $('#Clsacc_No1').addClass('hidden');
+            $('#Clsacc_No1').val(null);
+        }
+    });
 
-            });
-        </script>
-    @endpush --}}
-@hasanyrole('writer|admin')
-@can('create')
-    <div class="box">
-        @include('admin.layouts.message')
-        <div class="box-header">
-            <h3 class="box-title">{{trans('admin.edit_project')}}</h3>
-        </div>
-        <div class="box-body">
-            {!! Form::model($project,['method'=>'PUT','route' => ['projects.update',$project->id]]) !!}
-            <div class="form-group row">
-                <div class="col-md-6">
-                    {{ Form::label('name_ar', trans('admin.name_project_ar'), ['class' => 'control-label']) }}
-                    {{ Form::text('name_ar', $project->name_ar, array_merge(['class' => 'form-control','placeholder'=>trans('admin.arabic_name')])) }}
-                </div>
-                <div class="col-md-6">
-                    {{ Form::label('name_en', trans('admin.name_project_en'), ['class' => 'control-label']) }}
-                    {{ Form::text('name_en', $project->name_en, array_merge(['class' => 'form-control','placeholder'=>trans('admin.english_name')])) }}
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    {{ Form::label('contract_number',trans('admin.contract_number') , ['class' => 'control-label']) }}
-                    {{ Form::number('contract_number', $project->contract_number, array_merge(['class' => 'form-control','placeholder'=>trans('admin.contract_number')])) }}
-                </div>
-                <div class="col-md-4">
-                    {{ Form::label('phone_number',trans('admin.phone_number') , ['class' => 'control-label']) }}
-                    {{ Form::number('phone_number', $project->phone_number, array_merge(['class' => 'form-control','placeholder'=>trans('admin.phone_number')])) }}
-                </div>
-                <div class="col-md-4">
-                    {{ Form::label('fax_number',trans('admin.fax_number') , ['class' => 'control-label']) }}
-                    {{ Form::number('fax_number', $project->fax_number, array_merge(['class' => 'form-control','placeholder'=>trans('admin.fax_number')])) }}
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-6">
-                    {{ Form::label('email',trans('admin.email_project') , ['class' => 'control-label']) }}
-                    {{ Form::email('email', $project->email, array_merge(['class' => 'form-control','placeholder'=>trans('admin.email_project')])) }}
-                </div>
-                <div class="col-md-6">
-                    {{ Form::label('responsible_person',trans('admin.responsible_person') , ['class' => 'control-label']) }}
-                    {{ Form::text('responsible_person', $project->responsible_person, array_merge(['class' => 'form-control','placeholder'=>trans('admin.responsible_person')])) }}
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    {{ Form::label('warehouse',trans('admin.warehouse') , ['class' => 'control-label']) }}
-                    {{ Form::number('warehouse', $project->warehouse, array_merge(['class' => 'form-control','placeholder'=>trans('admin.warehouse')])) }}
-                </div>
-                <div class="col-md-4">
-                    {{ Form::label('subscriber_id',trans('admin.customer_name'), ['class' => 'control-label']) }}
-                    {{ Form::select('subscriber_id',$subscribers, $project->subscriber_id, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
-                </div>
-                <div class="col-md-4">
-                    {{ Form::label('project_title',trans('admin.project_title'), ['class' => 'control-label']) }}
-                    {{ Form::text('project_title', $project->project_title, array_merge(['class' => 'form-control','placeholder'=>trans('admin.project_title')])) }}
-                </div>
-            </div>
+    $('#Clsacc_No2_Check').on('change', function(){
+        if($(this).is(':checked')){
+            $('#Clsacc_No2').removeClass('hidden');
+        }
+        else{
+            $('#Clsacc_No2').addClass('hidden');
+            $('#Clsacc_No2').val(null);
+        }
+    });
 
-            {{Form::submit('تعديل',['class'=>'btn btn-primary'])}}
-            {!! Form::close() !!}
+    $('#cc_type_Check').on('change', function(){
+        if($(this).is(':checked')){
+            $('#cc_type').removeClass('hidden');
+        }
+        else{
+            $('#cc_type').addClass('hidden');
+            $('#cc_type').val(null);
+        }
+    });
+
+    $('#edit_form :radio[id=Level_Status]').change(function(){
+        if($(this).is(':checked')){
+            if($(this).val() == 1){
+                $('.branch').removeClass('hidden');
+            }
+            else{
+                $('.branch').addClass('hidden');
+                $('#Acc_Ntr').val(null);
+                $('#Fbal_DB').val(0);
+                $('#Fbal_CR').val(0);
+                $('#Cr_Blnc').val(0);
+                $('#Acc_Typ').val(null);
+                $('#Clsacc_No1').val(null);
+                $('#Clsacc_No2').val(null);
+                $('#cc_type').val(null);
+            }
+        }
+    });
+</script>
+
+
+{!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
+    {{csrf_field()}}
+    {{method_field('PUT')}}
+    @if($children)
+        @foreach($children as $child)
+            <input type="hidden" name="children[]" value='{{$child}}'>
+        @endforeach
+    @endif
+
+    <div class="col-md-3 pull-left">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    </div>
+
+    {{-- رقم الحساب --}}
+    <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
+    <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-1" value="{{$chart_item->Prj_No}}">
+    {{-- رقم الحساب --}}
+
+    {{-- <div class="col-md-3">
+        <label>{{trans('admin.account_number')}}:{{$chart_item->Acc_No}}</label>
+    </div> --}}
+
+    {{-- تصنيف الحساب --}}
+    <div class="form-group">
+        {{-- <label for="Level_Status">{{trans('admin.department_type')}}:</label><br> --}}
+        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
+            <input class="checkbox-inline" type="radio"
+                name="Level_Status" id="Level_Status" value="{{$key}}"
+                style="margin: 3px;" disabled
+                @if ($chart_item->Level_Status == $key) checked @endif>
+            <label>{{$value}}</label>
+        @endforeach
+
+        <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
+            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
+                <input class="checkbox-inline" type="radio"
+                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
+                    style="margin: 3px;" @if($chart_item->Acc_Actv == $key) checked @endif>
+                <label>{{$value}}</label>
+            @endforeach
         </div>
     </div>
-    @endcan
-@else
-    <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
+    {{-- نهاية تصنيف الحساب --}}
 
-@endhasanyrole
+    {{-- رقم الشركه --}}
+    {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
+    <div class="form-group row">
+        <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
+        <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
+            <option value="">{{trans('admin.select')}}</option>
+            @if(count($cmps) > 0)
+                @foreach($cmps as $cmp)
+                    <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                @endforeach
+            @endif
+        </select>
+    </div>
+    {{-- نهاية رقم الشركه --}}
+
+    {{-- اسم الحساب عربى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Prj_NmAr">{{trans('admin.project_name')}}:</label>
+            <input type="text" name="Prj_NmAr" id="Prj_NmAr" class="col-md-9 form-control"
+            value="{{$chart_item->Prj_NmAr? $chart_item->Prj_NmAr : null}}">
+        </div>
+    {{-- نهاية اشم الحساب عربى --}}
+
+    {{-- اسم الحساب انجليزى --}}
+    <div class="form-group row">
+        <label class="col-md-2" for="Prj_NmEn">{{trans('admin.project_name_en')}}:</label>
+        <input type="text" name="Prj_NmEn" id="Prj_NmEn" class=" col-md-9 form-control"
+            value="{{$chart_item->Prj_NmEn? $chart_item->Prj_NmEn : null}}">
+    </div>
+    {{-- نهاية اسم الحساب انجليزى --}}
+
+    <div class="col-md-6">
+        <div class="row">
+            {{-- طبيعة الحساب --}}
+            <div class="form-group col-md-12 branch">
+                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
+                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
+                    <input class="checkbox-inline" type="radio"
+                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
+                        style="margin: 3px;"
+                        @if($chart_item->Level_No == 1) disabled @endif
+                        @if ($chart_item->Acc_Ntr == $key) checked @endif>
+                    <label>{{$value}}</label>
+                @endforeach
+            </div>
+            {{-- نهاية طبيعة الحساب --}}
+
+            {{-- رصيد اول المده مدين --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                    <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهايةرصيد اول المده مدين --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-12 branch">
+                <div class="form-group row">
+                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
+                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
+                    class="form-control col-md-7"
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                </div>
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="row">
+            {{-- نوع الحساب --}}
+            <div class="col-md-12 branch">
+                <label for="Clsacc_No1" class="col-md-5 col-md-offset-1">{{trans('admin.account_type')}}</label>
+                <div class="form-group">
+                    <select name="Acc_Typ" id="Acc_Typ" class="form-control col-md-6"
+                        @if($chart_item->Level_No == 1) disabled @endif>
+                        <option value="{{null}}">{{trans('admin.select')}}</option>
+                        @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
+                            <option value="{{$key}}"
+                                @if($chart_item->Acc_Typ == $key) selected @endif>{{$value}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            {{-- نهاية نوع الحساب --}}
+
+            {{-- بند الميزانيه --}}
+            <div class="col-md-12 branch">
+                <input class="checkbox-inline col-md-1" type="checkbox" id='Clsacc_No1_Check'
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                <label for="Clsacc_No1" class="col-md-5">{{trans('admin.Clsacc_No1')}}</label>
+
+                <div class="form-group">
+                    <select name="Clsacc_No1" id="Clsacc_No1" class="form-control col-md-6"
+                        @if($chart_item->Level_No == 1) disabled @endif>
+                        <option value="{{null}}">{{trans('admin.select')}}</option>
+                        @if(count($balances) > 0)
+                            @foreach($balances as $blnc)
+                                <option value="{{$blnc->CLsacc_No}}"  @if($chart_item->Clsacc_No1 == $blnc->CLsacc_No) selected @endif>
+                                    {{$blnc->{'CLsacc_Nm'.ucfirst(session('lang'))} }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+            {{-- نهاية بند الميزانيه --}}
+
+            {{-- حسابات قائمة الدخل --}}
+            <div class="col-md-12 branch">
+                <input class="checkbox-inline col-md-1 checks" type="checkbox" id='Clsacc_No2_Check'
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                <label for="Clsacc_No2" class="col-md-5">{{trans('admin.Clsacc_No2')}}</label>
+
+                <div class="form-group">
+                    <select name="Clsacc_No2" id="Clsacc_No2" class="form-control col-md-6"
+                        @if($chart_item->Level_No == 1) disabled @endif>
+                        <option value="{{null}}">{{trans('admin.select')}}</option>
+                        @if(count($incomes) > 0)
+                            @foreach($incomes as $income)
+                                <option value="{{$income->CLsacc_No}}"  @if($chart_item->Clsacc_No2 == $income->CLsacc_No) selected @endif>
+                                    {{$income->{'CLsacc_Nm'.ucfirst(session('lang'))} }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+            {{-- نهاية الحسابات قائمة الدخل --}}
 
 
+            {{-- مركز التكلفه --}}
+            <div class="col-md-12 branch">
+                <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'
+                    @if($chart_item->Level_No == 1) disabled @endif>
+                <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
 
+                <div class="form-group">
+                    <select name="cc_type" id="cc_type" class="form-control col-md-6"
+                        @if($chart_item->Level_No == 1) disabled @endif>
+                        <option value="{{null}}">{{trans('admin.select')}}</option>
+                        {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
+                            <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
+                        @endforeach --}}
+                    </select>
+                </div>
+            </div>
+            {{-- نهاية مركز التكلفه --}}
+        </div>
+    </div>
+{!! Form::close() !!}
+<form action="{{route('departments.destroy', $chart_item->Acc_No? $chart_item->Acc_No : null)}}" method="POST" id="delete_form">
+    {{csrf_field()}}
+    {{method_field('DELETE')}}
+</form>
+ {{-- الحركات --}}
+ <div class="col-md-12">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">الشهر</th>
+            <th scope="col">الحركة مدين</th>
+            <th scope="col">الحركة دائن</th>
+            <th scope="col">الرصيد الحالى</th>
+            <th scope="col"> رصيد تقديرى</th>
+        </tr>
+        </thead>
+        <tbody>
 
+        <tr>
+            <th scope="row">يناير</th>
+            <td>
+                @if($chart_item->DB11 == null)
+                    0.00
+                @else
+                    {{$chart_item->DB11}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR11 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR11}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB11 - $chart_item->CR11}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">فبراير</th>
+            <td>
+                @if($chart_item->DB12 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB12}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR12 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR12}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB12 - $chart_item->CR12}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مارس</th>
+            <td>
+                @if($chart_item->DB13 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB13}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR13 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR13}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB13 - $chart_item->CR13}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ابريل</th>
+            <td>
+                @if($chart_item->DB14 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB14}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR14 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR14}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB14 - $chart_item->CR14}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">مايو</th>
+            <td>
+                @if($chart_item->DB15 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB15}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR15 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR15}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB15 - $chart_item->CR15}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يونيو</th>
+            <td>
+                @if($chart_item->DB16 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB16}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR16 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR16}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB16 - $chart_item->CR16}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">يوليو</th>
+            <td>
+                @if($chart_item->DB17 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB17}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR17 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR17}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB17 - $chart_item->CR17}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">اغسطس</th>
 
+            <td>
+                @if($chart_item->DB18 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB18}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR18 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR18}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB18 - $chart_item->CR18}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">سبتمبر</th>
 
+            <td>
+                @if($chart_item->DB19 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB19}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR19 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR19}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB19 - $chart_item->CR19}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">أكتوبر</th>
 
-@endsection
+            <td>
+                @if($chart_item->DB20 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB20}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR20 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR20}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB20 - $chart_item->CR20}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">نوفمبر</th>
+
+            <td>
+                @if($chart_item->DB21 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB21}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR21 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR21}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB21 - $chart_item->CR21}}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">ديسمبر</th>
+
+            <td>
+                @if($chart_item->DB22 == null )
+                    0.00
+                @else
+                    {{$chart_item->DB22}}
+                @endif
+            </td>
+            <td>
+                @if($chart_item->CR22 == null )
+                    0.00
+                @else
+                    {{$chart_item->CR22}}
+                @endif
+            </td>
+            <td>
+                {{$chart_item->DB22 - $chart_item->CR22}}
+            </td>
+        </tr>
+
+        <tr style="background-color: #d3d9df">
+            <th scope="row">الإجمالى</th>
+
+            <td>
+                {{count($total) > 0? $total[0]->total_debit : 0.00}}
+            </td>
+            <td>
+                {{count($total) > 0? $total[0]->total_credit : 0.00}}
+
+            </td>
+            <td>
+                {{count($total) > 0? $total[0]->total_balance : 0.00}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{{-- نهاية الحركات --}}
