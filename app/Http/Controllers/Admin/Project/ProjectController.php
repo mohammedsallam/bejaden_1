@@ -745,6 +745,13 @@ class ProjectController extends Controller
             'total_balance' => $total_balance);
         return $total;
     }
+    public function getTree(Request $request){
+        if($request->ajax()){
+            session(['Chart_Cmp_No' => $request->Cmp_No]);
+            $tree = load_prj('parent_id', null, $request->Cmp_No);
+            return $tree;
+        }
+    }
 
 }
 

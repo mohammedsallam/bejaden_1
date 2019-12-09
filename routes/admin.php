@@ -96,9 +96,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
         Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getEditBlade','Admin\Project\ProjectController@getEditBlade')->name('getEditBlade');
-        Route::post('projects/createNewAcc','Admin\Project\ProjectController@createNewAcc')->name('createNewAcc');
-        Route::post('projects/initChartAcc','Admin\Project\ProjectController@initChartAcc')->name('initChartAcc');
+        Route::post('projects/getTree','Admin\Project\ProjectController@getTree')->name('getTreePrj');
+        Route::post('projects/getEditBlade','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
+        Route::post('projects/createNewAcc','Admin\Project\ProjectController@createNewAcc')->name('createNewAccPrj');
+        Route::post('projects/initChartAcc','Admin\Project\ProjectController@initChartAcc')->name('initChartAccPrj');
 
 
         Route::get('projects/department/Review','Admin\Project\ProjectController@Review');

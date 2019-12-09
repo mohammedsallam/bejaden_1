@@ -34,8 +34,8 @@ class Projectmfs extends Model
         'Area_No',
         'Acc_DB',       //حساب المصاريف للمشاريع
         'Acc_CR',       //حساب الايرادات للمشاريع
-        'FBal_Db',      //اول المدة مدين
-        'FBal_Cr',      //اول المدة دائن
+        'FBal_DB',      //اول المدة مدين
+        'FBal_CR',      //اول المدة دائن
         'DB11',
         'DB12',
         'DB13',

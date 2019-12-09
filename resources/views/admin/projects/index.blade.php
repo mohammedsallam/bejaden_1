@@ -1,5 +1,6 @@
 @extends('admin.index')
-@inject('customer', 'App\Models\Admin\MTsCustomer')
+@inject('customers', 'App\Models\Admin\MTsCustomer')
+@inject('delegates', 'App\Models\Admin\AstSalesman')
 @section('title',trans('admin.projects'))
 @section('content')
 @push('js')
@@ -8,21 +9,39 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
+            // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
+            $(document).on('change', '#Select_Cmp_No', function(){
+                $('#jstree').jstree('destroy');
+                var tree = [];
+                var Cmp_No = $('#Select_Cmp_No').val();
+                if(Cmp_No != null){
+                    $.ajax({
+                        url: "{{route('getTreePrj')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                        success: function(data){
 
-            $('#jstree').jstree({
-                "core" : {
-                    'data' : {!! load_dep('parent_id') !!},
-                    "themes" : {
-                        "variant" : "large"
-                    },
-                    "multiple" : false,
-                    "animation" : 300
-                },
-                "checkbox" : {
-                    "keep_selected_style" : false
-                },
-                "plugins" : [ "themes","html_data","dnd","ui","types" ]
-            });
+                            dataParse = JSON.parse(data);
+
+                            for(var i = 0; i < dataParse.length; i++){
+                                tree.push(dataParse[i])
+                            }
+
+                    $('#jstree').jstree({
+                        "core" : {
+                            //'data' : {!! load_prj('parent_id','', '') !!},
+                            "themes" : {
+                                "variant" : "large"
+                            },
+                            "multiple" : false,
+                            "animation" : 300
+                        },
+                        "checkbox" : {
+                            "keep_selected_style" : false
+                        },
+                        "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                    });
 
             //close or open all nodes on jstree load -closed by default-
             $('#jstree').on('loaded.jstree', function() {
@@ -87,7 +106,7 @@
                 // var type = node.attr('rel');
                 // var Prj_No = node[0].id;
                 $.ajax({
-                    url: "{{route('getEditBlade')}}",
+                    url: "{{route('getEditBladePrj')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Prj_No: Prj_No, children: children },
@@ -102,7 +121,7 @@
                 var type = node.attr('rel');
                 var parent = node[0].id;
                 $.ajax({
-                    url: "{{route('createNewAcc')}}",
+                    url: "{{route('createNewAccPrj')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", parent: parent },
@@ -129,7 +148,7 @@
 
             $('#initChartAcc').on('click', function(){
                 $.ajax({
-                    url: "{{route('initChartAcc')}}",
+                    url: "{{route('initChartAccPrj')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}"},
@@ -201,14 +220,17 @@
                 {{-- chart tree start --}}
                 <div class="col-md-6">
                     <div class="box-header">
-                        <h3 class="box-title" style="display: inline-block">{{$title}}</h3>
-                        @if(count($cmps) > 0)
-                            @foreach($cmps as $cmp)
-                                @if($cmp->Cmp_No == $chart_item->Cmp_No)
-                                    <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
+                        <div class="form-group row">
+                            <h3 class="box-title col-md-3">{{$title}}</h3>
+                            <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
+                                @if(count($cmps) > 0)
+                                    @foreach($cmps as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
                                 @endif
-                            @endforeach
-                        @endif
+                            </select>
+                        </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -271,20 +293,6 @@
                                 </div>
                                 {{-- نهاية تصنيف الحساب --}}
 
-                                {{-- رقم الشركه --}}
-                                {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
-                                <div class="form-group row">
-                                    <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-                                    <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
-                                        <option value="">{{trans('admin.select')}}</option>
-                                        @if(count($cmps) > 0)
-                                            @foreach($cmps as $cmp)
-                                                <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                                {{-- نهاية رقم الشركه --}}
 
                             {{-- رقم الفرع و المستودع --}}
 
@@ -332,15 +340,22 @@
 
                                 {{-- العميل --}}
                                 <div class="form-group row">
-                                    <label class="col-md-2" for="Cstm_No">{{trans('admin.subscriper')}}:</label>
-                                    <select name="Cstm_No" id="Cstm_No" class=" col-md-9 form-control"
-                                           value="">
-
-                                    </select>
+                                    <label class="col-md-2" for="">{{trans('admin.subscriper')}}:</label>
+                                    <div class="col-md-9">{!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                    ])!!}</div>
                                 </div>
                                 {{-- نهاية العميل --}}
 
-                                {{-- العنوان --}}
+                                {{-- المندوب --}}
+                                <div class="form-group row">
+                                    <label class="col-md-2" for="Slm_No">{{trans('admin.slm_no')}}:</label>
+                                    <div class="col-md-9">{!!Form::select('Slm_No', $delegates->pluck('Slm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                    ])!!}</div>
+                                </div>
+
+                                    {{-- العنوان --}}
                                 <div class="form-group row">
                                     <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}:</label>
                                     <input type="text" name="Prj_Adr" id="Prj_Adr" class=" col-md-9 form-control"
@@ -442,8 +457,9 @@
                                         {{-- رقم المرجع المشروع --}}
                                         <div class="col-md-12 branch">
                                             <label for="Prj_Refno" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Refno')}}</label>
-                                            <input type="text" name="Prj_Refno" id="Prj_Refno" class="col-md-9 form-control"
-                                                   value="{{$chart_item->Prj_Refno? $chart_item->Prj_Refno : null}}">
+                                            <input type="text" name="Prj_Refno" id="Prj_Refno" class="form-control col-md-6"
+                                                   value="{{$chart_item->Prj_Refno? $chart_item->Prj_Refno : null}}"
+                                                   @if($chart_item->Level_No == 1) disabled @endif>
                                         </div>
                                         {{-- نهاية رقم المرجع المشروع --}}
 
@@ -466,21 +482,45 @@
 
                                         {{-- قيمة المشروع --}}
                                         <div class="col-md-12 branch">
-                                            <input class="checkbox-inline col-md-1" type="checkbox" id='Clsacc_No1_Check'
-                                                @if($chart_item->Level_No == 1) disabled @endif>
-                                            <label for="Prj_Value" class="col-md-5">{{trans('admin.Prj_Value')}}</label>
 
+                                            <label for="Prj_Value" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Value')}}</label>
+                                            <input type="text" name="Prj_Value" id="Prj_Value" class="form-control col-md-6"
+                                                   value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}"
+                                                   @if($chart_item->Level_No == 1) disabled @endif>
                                             <div class="form-group">
-                                                <select name="Prj_Value" id="Prj_Value" class="form-control col-md-6"
-                                                    @if($chart_item->Level_No == 1) disabled @endif>
-                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                                    {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                                        <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                                    @endforeach --}}
-                                                </select>
+
                                             </div>
                                         </div>
                                         {{-- نهاية قيمة المشروع --}}
+
+                                        {{-- امر التوريد --}}
+                                        <div class="col-md-12 branch">
+                                            <label for="Ordr_No" class="col-md-5 col-md-offset-1">{{trans('admin.Ordr_No')}}</label>
+                                            <div class="form-group">
+                                                <select name="Ordr_No" id="Ordr_No" class="form-control col-md-6"
+                                                        @if($chart_item->Level_No == 1) disabled @endif>
+                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                                    @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
+                                                        <option value="{{$key}}"
+                                                                @if($chart_item->Prj_Categ == $key) selected @endif>{{$value}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {{-- نهاية امر التوريد --}}
+
+                                        {{-- قيمة التوريد --}}
+                                        <div class="col-md-12 branch">
+
+                                            <label for="Ordr_Value" class="col-md-5 col-md-offset-1">{{trans('admin.Ordr_Value')}}</label>
+                                            <input type="text" name="Ordr_Value" id="Ordr_Value" class="form-control col-md-6"
+                                                   value="{{$chart_item->Ordr_Value? $chart_item->Ordr_Value : null}}"
+                                                   @if($chart_item->Level_No == 1) disabled @endif>
+                                            <div class="form-group">
+
+                                            </div>
+                                        </div>
+                                        {{-- نهاية قيمة التوريد --}}
 
                                         {{-- حسابات قائمة الدخل --}}
                                         <div class="col-md-12 branch">
