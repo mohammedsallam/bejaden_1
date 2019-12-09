@@ -89,7 +89,19 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cc/department/Review','Admin\Cc\CcController@Review');
         Route::get('cc/department/reviewdepartment','Admin\Cc\CcController@reviewdepartment')->name('reviewdeCcpartment');
 
+//        projects
+        Route::resource('projects','Admin\Project\ProjectController');
+        Route::get('projects/department/print','Admin\Project\ProjectController@print');
+        Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
+        Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
+        Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
+        Route::post('projects/getEditBlade','Admin\Project\ProjectController@getEditBlade')->name('getEditBlade');
+        Route::post('projects/createNewAcc','Admin\Project\ProjectController@createNewAcc')->name('createNewAcc');
+        Route::post('projects/initChartAcc','Admin\Project\ProjectController@initChartAcc')->name('initChartAcc');
 
+
+        Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
+        Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController@reviewdepartment')->name('reviewdepartment');
 
 
 //
@@ -267,8 +279,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-        Route::resource('projects', 'Admin\Project\ProjectController');
-        Route::resource('projects', 'Admin\Project\ProjectController1');
+//        Route::resource('projects', 'Admin\Project\ProjectController');
+//        Route::resource('projects', 'Admin\Project\ProjectController1');
         Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');

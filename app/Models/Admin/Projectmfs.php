@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -68,7 +68,7 @@ class Projectmfs extends Model
         'Prj_Tel',      //هاتف المشروع
         'Prj_Mobile',   //تليفون المشروع
         'Prj_Mobile1',  //موبيل المشروع
-        'Nxt_Vst',      //الزيارة القادمة
+        //'Nxt_Vst',      //الزيارة القادمة
         'Mnth_Year',    //سنة/شهر
         'Cntct_Prsn1',  //الشخص المسئول
         'Cntct_Prsn2',
@@ -84,5 +84,13 @@ class Projectmfs extends Model
         'Updt_Date'     //تاريخ التعديل
 
     ];
+
+    public function parent(){
+        return $this->hasOne(Projectmfs::class, 'Prj_No','Prj_Parnt');
+    }
+
+    public function children(){
+        return $this->hasMany(Projectmfs::class, 'Prj_Parnt', 'Prj_No');
+    }
 
 }
