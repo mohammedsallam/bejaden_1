@@ -555,9 +555,9 @@ if (!function_exists('getschedule')){
     }
 }
 if (!function_exists('load_dep')){
-    function load_dep($select = null,$dep_hide = null){
+    function load_dep($select = null,$dep_hide = null, $Cmp_No){
 
-        $departments = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Acc_No', 'ID_No']);
+        $departments = MtsChartAc::where('Cmp_No', $Cmp_No)->get(['Acc_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Acc_No', 'ID_No']);
 
         $dep_arr = [];
         foreach($departments as $department){

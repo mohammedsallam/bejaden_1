@@ -7,75 +7,101 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
-            
-            $('#jstree').jstree({
-                "core" : {
-                    'data' : {!! load_dep('parent_id') !!},
-                    "themes" : {
-                        "variant" : "large"
-                    },
-                    "multiple" : false,
-                    "animation" : 300
-                },
-                "checkbox" : {
-                    "keep_selected_style" : false
-                },
-                "plugins" : [ "themes","html_data","dnd","ui","types" ]
-            });
+        
+            // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
+            $(document).on('change', '#Select_Cmp_No', function(){
+                $('#jstree').jstree('destroy');    
+                var tree = [];
+                var Cmp_No = $('#Select_Cmp_No').val();
+                if(Cmp_No != null){
+                    $.ajax({
+                        url: "{{route('getTree')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                        success: function(data){
+                           
+                            dataParse = JSON.parse(data);
+                        
+                            for(var i = 0; i < dataParse.length; i++){
+                               tree.push(dataParse[i])   
+                            }
 
-            $('#jstree').on('loaded.jstree', function() {
-                $('#jstree').jstree('open_all');
-            });
+                            $('#jstree').jstree({
+                                "core" : {
+                                    // 'data' : {!! load_dep('parent_id', '', '') !!},
+                                    'data' : tree,
+                                    "themes" : {
+                                        "variant" : "large"
+                                    },
+                                    "multiple" : false,
+                                    "animation" : 300
+                                },
+                                "checkbox" : {
+                                    "keep_selected_style" : false
+                                },
+                                "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                            }); 
 
-            $('#jstree').on("changed.jstree", function (e, data) {
-                var i, j, r = [];
-                var name = [];
-                for (i=0,j=data.selected.length;i < j;i++){
-                    r.push(data.instance.get_node(data.selected[i]).id);
-                    name.push(data.instance.get_node(data.selected[i]).text);
-                }
-                $('#parent_name').text(name);
+                            //close or open all nodes on jstree load -opened by default-
+                            $('#jstree').on('loaded.jstree', function() {
+                                $('#jstree').jstree('open_all');
+                            });
 
-                //get all direct and undirect children of selected node
-                var currentNode = data.node;
-                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                // var result = [currentNode.id];
-                var result = [];
-                allChildren.find('li').addBack().each(function(index, element) {
-                    if ($(this).jstree(true).is_leaf(element)) {
-                        // result.push(element.textContent);
-                        result.push(parseInt(element.id));
-                    } else {
-                        var nod = $(this).jstree(true).get_node(element);
-                        // result.push(nod.text);
-                        result.push(parseInt(nod.id));
-                    }
-                });
+                            $('#jstree').on("changed.jstree", function (e, data) {
+                                var i, j, r = [];
+                                var name = [];
+                                for (i=0,j=data.selected.length;i < j;i++){
+                                    r.push(data.instance.get_node(data.selected[i]).id);
+                                    name.push(data.instance.get_node(data.selected[i]).text);
+                                }
+                                $('#parent_name').text(name);
 
-                //handle click event
-                // timer = setTimeout(function() {
-                // if (!prevent) {
-                    handle_click(r[0], result);
-                // }
-                // prevent = false;
-                // }, delay);
-            });
-            
-            //handle tree click vent
-            // $('#jstree').on("click.jstree", function (e){
-            //     timer = setTimeout(function() {
-            //     if (!prevent) {
-            //         handle_click(e);
-            //     }
-            //     prevent = false;
-            //     }, delay);
-            // });
+                                //get all direct and undirect children of selected node
+                                var currentNode = data.node;
+                                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                                // var result = [currentNode.id];
+                                var result = [];
+                                allChildren.find('li').addBack().each(function(index, element) {
+                                    if ($(this).jstree(true).is_leaf(element)) {
+                                        // result.push(element.textContent);
+                                        result.push(parseInt(element.id));
+                                    } else {
+                                        var nod = $(this).jstree(true).get_node(element);
+                                        // result.push(nod.text);
+                                        result.push(parseInt(nod.id));
+                                    }
+                                });
 
-            //handle tree double click event
-            $('#jstree').on("dblclick.jstree", function (e){
-                clearTimeout(timer);
-                prevent = true;
-                handle_dbclick(e);
+                                //handle click event
+                                // timer = setTimeout(function() {
+                                // if (!prevent) {
+                                    handle_click(r[0], result);
+                                // }
+                                // prevent = false;
+                                // }, delay);
+                            });
+                            
+                            //handle tree click vent
+                            // $('#jstree').on("click.jstree", function (e){
+                                // timer = setTimeout(function() {
+                                // if (!prevent) {
+                                //     handle_click(e);
+                                // }
+                                // prevent = false;
+                                // }, delay);
+                            // });
+
+                            //handle tree double click event
+                            $('#jstree').on("dblclick.jstree", function (e){
+                                clearTimeout(timer);
+                                prevent = true;
+                                alert('db click');
+                                handle_dbclick(e);
+                            }); 
+                        }
+                    });  
+                }  
             });
 
 
@@ -94,17 +120,17 @@
                         $('#chart_form').html(data);
                     }
                 });
-            }}
+            }
 
             function handle_dbclick(e){
                 var node = $(e.target).closest("li");
                 var type = node.attr('rel');
-                var Acc_No = node[0].id;
+                var parent = node[0].id;
                 $.ajax({
                     url: "{{route('createNewAcc')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
+                    data: {"_token": "{{ csrf_token() }}", parent: parent },
                     success: function(data){
                         $('#chart_form').html(data);
                     }
@@ -124,6 +150,18 @@
             $('#delete_button').click(function(e){
                 e.preventDefault();
                 $('#delete_form').submit()
+            });
+
+            $('#initChartAcc').on('click', function(){
+                $.ajax({
+                    url: "{{route('initChartAcc')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}"},
+                    success: function(data){
+                        $('#chart_form').html(data);
+                    }
+                });
             });
 
             $(document).on('change' ,'#Clsacc_No1_Check' , function(){
@@ -185,9 +223,28 @@
         <div class="box-body table-responsive" id="create_chart">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="box-header">
-                        <h3 class="box-title" style="display: inline-block">{{$title}}</h3>
-                    </div>
+                        <div class="box-header">
+                            {{-- رقم الشركه --}}
+                            <div class="form-group row">
+                                    <h3 class="box-title col-md-3">{{$title}}</h3>
+                                    <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                        <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
+                                        @if(count($cmps) > 0)
+                                            @foreach($cmps as $cmp)
+                                                <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                                {{-- نهاية رقم الشركه --}}
+                            {{-- @if(count($cmps) > 0)
+                                @foreach($cmps as $cmp)
+                                    @if($cmp->Cmp_No == $chart_item->Cmp_No)
+                                        <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
+                                    @endif
+                                @endforeach
+                            @endif --}}
+                        </div>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
                 </div>

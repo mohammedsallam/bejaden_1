@@ -18,6 +18,8 @@ return [
     'cc_type' => 'cc type',
     'sSearch' => 'sSearch',
     'sUrl' => 'sUrl',
+    'select_Chart_Cmp' => 'Select company to view chart account ...',
+    'account_name_en' => 'EN',
     'next' => 'Next',
     'company_fixed_data' => 'Company data',
     'select_cmp' => 'Select company!',
