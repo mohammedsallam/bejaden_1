@@ -70,6 +70,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
         Route::post('departments/getTree','Admin\Department\DepartmentsController@getTree')->name('getTree');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
+        Route::post('departments/getParentName','Admin\Department\DepartmentsController@getParentName')->name('getParentName');
 
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');

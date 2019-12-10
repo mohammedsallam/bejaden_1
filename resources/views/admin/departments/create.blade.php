@@ -1,3 +1,8 @@
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="save"]').tooltip();
+    });
+</script>
 {!! Form::open(['method'=>'POST','route' => ['departments.store'], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{-- Parnt_Acc --}}
@@ -9,7 +14,12 @@
 
     <div class="row">
         <div class="col-md-1 pull-left">
-            <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+            <button type="submit" class="btn btn-primary pull-left"
+                    data-toggle="save" 
+                    title="{{trans('admin.save')}}"
+                    data-placement="bottom">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
         </div>
 
         {{-- رقم الحساب --}}

@@ -1,5 +1,8 @@
 <script>
     $(document).ready(function(){
+        $('[data-toggle="save"]').tooltip();
+        $('[data-toggle="delete"]').tooltip();
+
         $('#delete_button').click(function(e){
             e.preventDefault();
             $('#delete_form').submit()
@@ -66,8 +69,18 @@
     
     <div class="row">
         <div class="col-md-3 pull-left">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <button type="submit" class="btn btn-primary"
+                    data-toggle="save" 
+                    title="{{trans('admin.save')}}"
+                    data-placement="bottom">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+            <button type="submit" class="btn btn-danger" id="delete_button"
+                    data-toggle="delete" 
+                    title="{{trans('admin.delete')}}"
+                    data-placement="bottom">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
         </div>
 
         {{-- رقم الحساب --}}

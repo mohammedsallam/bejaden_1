@@ -253,15 +253,28 @@ class DepartmentsController extends Controller
             $chart_item = MtsChartAc::where('Acc_No', $request->Acc_No)
                                         ->where('Cmp_No', session('Chart_Cmp_No'))
                                         ->first();
-            $parent =  MtsChartAc::where('Acc_No', $chart_item->Parnt_Acc)
-                                    ->where('Cmp_No', session('Chart_Cmp_No'))
-                                    ->get(['Acc_Nm'.ucfirst(session('lang'))])->first();
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'), 
                         'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                        'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children, 
-                        'parent' => $parent? $parent->{'Acc_Nm'.ucfirst(session('lang'))} : null ]);
+                        'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
        }
+    }
+
+    public function getParentName(Request $request){
+        if($request->ajax()){
+            $chart =  MtsChartAc::where('Acc_No', $request->Acc_No)
+                                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                                    ->get(['Parnt_Acc', 'Acc_No', 'Acc_Nm'.ucfirst(session('lang'))])->first();
+            $parent = MtsChartAc::where('Acc_No', $chart->Parnt_Acc)
+                                ->where('Cmp_No', session('Chart_Cmp_No'))
+                                ->get(['Acc_No','Acc_Nm'.ucfirst(session('lang'))])->first();
+            if($parent){
+                return $parent;
+            }
+            else{
+                return $chart;
+            }
+        }
     }
 
     /**
