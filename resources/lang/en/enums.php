@@ -434,9 +434,9 @@ return [
         AccountType::clients => 'Clients',//2
         AccountType::suppliers => 'Suppliers',//3
         AccountType::employees => 'Employees',//4
-        AccountType::fixed_assets => 'Fixed assets',//5
-        AccountType::approvals => 'Approvals',//6
-        AccountType::projects => 'Projects',//7
+        // AccountType::fixed_assets => 'Fixed assets',//5
+        // AccountType::approvals => 'Approvals',//6
+        // AccountType::projects => 'Projects',//7
     ],
     TransactionType::class => [
         TransactionType::open_entry => 'Open entry',//1

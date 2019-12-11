@@ -18,8 +18,7 @@
                 }
             });
 
-            $(document).on('change', '#Cmp_No', function(){
-                
+            $(document).on('change', '#Cmp_No', function(){  
                 $.ajax({
                     url: "{{route('getBranchesAndStores')}}",
                     type: "POST",
@@ -30,7 +29,6 @@
                         $('#Main_Brn_content').html(data);
                     }
                 });
-
             });
         });
     </script>

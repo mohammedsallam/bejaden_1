@@ -220,6 +220,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('receiptsData/singledelete','Admin\banks\ReceiptController@singledelete');
 
         Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
+        Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
+        Route::get('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');

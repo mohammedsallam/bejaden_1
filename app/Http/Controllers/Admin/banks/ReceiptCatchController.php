@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\catchDataTable;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\AstSalesman;
 
 class ReceiptCatchController extends Controller
 {
@@ -84,5 +85,17 @@ class ReceiptCatchController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function convertToDateToHijri(Request $request){
+        $hijri = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Hijri)));
+        return response()->json($hijri);
+    }
+
+    public function getSalesMan(Request $request){
+        if($request->ajax()){
+            $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.salman', ['salesman' => $salesman]);
+        }
     }
 }
