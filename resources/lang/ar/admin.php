@@ -797,7 +797,7 @@ return [
     'please_modify'=>'من فضلك قم بتعديل تاريخ رحلة العميل',
     'code'=>'الكود المحاسبي',
     'fund_and_banks'=>'الصندوق والبنوك',
-    'create_catch_receipt'=>'اضافة سند',
+    'create_catch_receipt'=>'اضافة سند قبض',
     'catch_receipt' => 'بيانات سندات قبض',
     'Rcpt_Flg' => 'سند قبض',
     'caching_receipt' => 'بيانات سندات صرف',
