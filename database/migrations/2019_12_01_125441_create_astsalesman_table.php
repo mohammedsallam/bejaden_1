@@ -11,6 +11,7 @@ class CreateAstSalesmanTable extends Migration {
 			$table->increments('ID_No');
 			$table->timestamps();
 			$table->integer('Slm_No')->nullable();  //رقم المندوب
+			$table->integer('Cmp_No')->nullable();  //الشركه
 			$table->integer('Brn_No')->nullable();
             $table->integer('Mark_No')->nullable(); //رقم الممشرف
             $table->integer('StoreNo')->nullable();  //رقم المستودع

@@ -89,7 +89,7 @@ class DelegatesController extends Controller
     }
     public function show($ID_No)
     {
-        $delegate= MTsCustomer::findOrFail($ID_No);
+        $delegate= AstSalesman::findOrFail($ID_No);
         return view('admin.delegates.show',compact('delegate'));
     }
 
@@ -151,6 +151,15 @@ class DelegatesController extends Controller
         $delegate = AstSalesman::where('ID_No',$id)->first();
         $delegate->delete();
         return redirect(aurl('delegates'))->with(session()->flash('message',trans('admin.success_deleted')));
+    }
+
+    public function getBranches(Request $request)
+    {
+
+        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
+
+
+        return view('admin.delegates.get_branches', compact('branches'));
     }
 
 

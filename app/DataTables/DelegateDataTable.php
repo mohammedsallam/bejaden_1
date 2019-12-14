@@ -23,26 +23,26 @@ class DelegateDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a  href="delegates/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i>' . trans('admin.edit') .'</a>';
+                return '<a  href="delegates/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i></a>';
             })
             ->addColumn('branches', function ($query) {
                 return session_lang($query->branches['name_en'],$query->branches['name_ar']);
             })
 
             ->addColumn('details', function ($query) {
-                return '<a href="delegates/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i> ' . trans('admin.information_details') .' </a>';
+                return '<a href="delegates/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i></a>';
             })
 
 
-            ->addColumn('delete', 'admin.subscribers.btn.delete')
-            ->addColumn('status', 'admin.subscribers.status')
-            ->addColumn('type', function ($query) {
-                return TypeType::getDescription($query->type);
-            })
+            ->addColumn('delete', 'admin.delegates.btn.delete')
+            ->addColumn('status', 'admin.delegates.status')
+//            ->addColumn('type', function ($query) {
+//                return TypeType::getDescription($query->type);
+//            })
 
-            ->addColumn('gender',  function ($query) {
-                return GenderType::getDescription($query->gender);
-            })
+//            ->addColumn('gender',  function ($query) {
+//                return GenderType::getDescription($query->gender);
+//            })
             ->rawColumns([
                 'edit',
                 'delete',
@@ -134,12 +134,7 @@ class DelegateDataTable extends DataTable
     {
         return [
             ['name'=>'Slm_No','data'=>'Slm_No','title'=>trans('admin.Slm_No')],
-            ['name'=>'Slm_NmAr'.ucfirst(session('lang')),'data'=>'Slm_Nm'.ucfirst(session('lang')),'title'=>trans('admin.arabic_name')],
-            ['name'=>'Slm_NmEn'.ucfirst(session('lang')),'data'=>'Slm_Nm'.ucfirst(session('lang')),'title'=>trans('admin.english_name')],
-            ['name'=>'Brn_No','data'=>'Brn_No','title'=>trans('admin.Brn_No')],
-            ['name'=>'StoreNo','data'=>'StoreNo','title'=>trans('admin.StoreNo')],
-            ['name'=>'Target','data'=>'Target','title'=>trans('admin.Target')],
-            ['name'=>'Slm_Tel','data'=>'Slm_Tel','title'=>trans('admin.phone')],
+            ['name'=>'Slm_NmAr','data'=>'Slm_Nm'.ucfirst(session('lang')),'title'=>trans('admin.arabic_name')],
             ['name'=>'created_at','data'=>'created_at','title'=>trans('admin.created_at')],
             ['name'=>'updated_at','data'=>'updated_at','title'=>trans('admin.updated_at')],
             ['name'=>'details','data'=>'details','title'=>trans('admin.details'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],

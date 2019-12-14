@@ -97,6 +97,10 @@
                 prevent = true;
                 handle_dbclick(e);
             });
+                        }
+                    });
+                }
+            });
 
 
             function handle_click(Prj_No, children){
@@ -114,7 +118,7 @@
                         $('#chart_form').html(data);
                     }
                 });
-            }}
+            }
 
             function handle_dbclick(e){
                 var node = $(e.target).closest("li");
