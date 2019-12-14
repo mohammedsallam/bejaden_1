@@ -1,5 +1,8 @@
 <script>
     $(document).ready(function(){
+        $('[data-toggle="save"]').tooltip();
+        $('[data-toggle="delete"]').tooltip();
+
         $('#delete_button').click(function(e){
             e.preventDefault();
             $('#delete_form').submit()
@@ -55,8 +58,6 @@
         }
     });
 </script>
-
-
 {!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Acc_No? $chart_item->Acc_No : null], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{method_field('PUT')}}
@@ -66,56 +67,61 @@
         @endforeach
     @endif
     
-    <div class="col-md-3 pull-left">
-        <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-        <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-    </div>
+    <div class="row">
+        <div class="col-md-3 pull-left">
+            <button type="submit" class="btn btn-primary"
+                    data-toggle="save" 
+                    title="{{trans('admin.save')}}"
+                    data-placement="bottom">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+            <button type="submit" class="btn btn-danger" id="delete_button"
+                    data-toggle="delete" 
+                    title="{{trans('admin.delete')}}"
+                    data-placement="bottom">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+        </div>
 
-    {{-- رقم الحساب --}}
-    <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-    <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-1" value="{{$chart_item->Acc_No}}">
-    {{-- رقم الحساب --}}
+        {{-- رقم الحساب --}}
+        <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+        <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$chart_item->Acc_No}}">
+        {{-- رقم الحساب --}}
 
-    {{-- <div class="col-md-3">
-        <label>{{trans('admin.account_number')}}:{{$chart_item->Acc_No}}</label>
-    </div> --}}
-
-    {{-- تصنيف الحساب --}}
-    <div class="form-group">
-        {{-- <label for="Level_Status">{{trans('admin.department_type')}}:</label><br> --}}
-        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-            <input class="checkbox-inline" type="radio" 
-                name="Level_Status" id="Level_Status" value="{{$key}}"
-                style="margin: 3px;" disabled
-                @if ($chart_item->Level_Status == $key) checked @endif>
-            <label>{{$value}}</label>
-        @endforeach
-
-        <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
-            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
+        {{-- تصنيف الحساب --}}
+        <div class="form-group col-md-3">
+            @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
                 <input class="checkbox-inline" type="radio" 
-                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
-                    style="margin: 3px;" @if($chart_item->Acc_Actv == $key) checked @endif>
+                    name="Level_Status" id="Level_Status" value="{{$key}}" disabled
+                    @if ($chart_item->Level_Status == $key) checked @endif>
                 <label>{{$value}}</label>
             @endforeach
         </div>
+        {{-- نهاية تصنيف الحساب --}}
+
+        {{-- فعال \ غير فعال --}}
+        <div class="form-group col-md-2" @if($chart_item->Level_No == 1) hidden @endif>
+            <input class="checkbox-inline" type="checkbox" 
+                name="Acc_Actv" id="Acc_Actv" value="{{$chart_item->Acc_Actv}}"
+                style="margin: 3px;" @if($chart_item->Acc_Actv == 1) checked @endif>
+            <label>{{trans('admin.active')}}</label>
+        </div>
+        {{-- نهاية فعال \ غير فعال --}}
+
+        {{-- طبيعة الحساب --}}
+        <div class="form-group col-md-12 col-md-offset-2 branch">
+            <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
+            @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
+                <input class="checkbox-inline" type="radio" 
+                    name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
+                    style="margin: 3px;" 
+                    @if($chart_item->Level_No == 1) disabled @endif
+                    @if ($chart_item->Acc_Ntr == $key) checked @endif>
+                <label>{{$value}}</label>
+            @endforeach
+        </div>
+        {{-- نهاية طبيعة الحساب --}}
     </div>
-    {{-- نهاية تصنيف الحساب --}}
-    
-    {{-- رقم الشركه --}}
-    {{-- <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden> --}}
-    {{-- <div class="form-group row">
-        <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-        <select name="Cmp_No" id="Cmp_No" class="form-control col-md-9">
-            <option value="">{{trans('admin.select')}}</option>
-            @if(count($cmps) > 0)
-                @foreach($cmps as $cmp)
-                    <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                @endforeach
-            @endif
-        </select>
-    </div> --}}
-    {{-- نهاية رقم الشركه --}}
 
     {{-- اسم الحساب عربى --}}
     <div class="form-group row">
@@ -135,20 +141,6 @@
 
     <div class="col-md-6">
         <div class="row">
-            {{-- طبيعة الحساب --}}
-            <div class="form-group col-md-12 branch">
-                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio" 
-                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                        style="margin: 3px;" 
-                        @if($chart_item->Level_No == 1) disabled @endif
-                        @if ($chart_item->Acc_Ntr == $key) checked @endif>
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-            {{-- نهاية طبيعة الحساب --}}
-
             {{-- رصيد اول المده مدين --}}
             <div class="col-md-12 branch">
                 <div class="form-group row">
@@ -257,9 +249,6 @@
                     <select name="cc_type" id="cc_type" class="form-control col-md-6"
                         @if($chart_item->Level_No == 1) disabled @endif>
                         <option value="{{null}}">{{trans('admin.select')}}</option>
-                        {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                            <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                        @endforeach --}}
                     </select>
                 </div>
             </div>

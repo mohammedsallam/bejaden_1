@@ -17,6 +17,19 @@
                     }
                 }
             });
+
+            $(document).on('change', '#Cmp_No', function(){  
+                $.ajax({
+                    url: "{{route('getBranchesAndStores')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
+                    success: function(data){
+                        $('#Dlv_Stor_content').html(data);
+                        $('#Main_Brn_content').html(data);
+                    }
+                });
+            });
         });
     </script>
 @endpush
@@ -65,54 +78,69 @@
                                     </div>
                                     {{-- نهاية نوع الفرع --}}
                                 </div>
-                                {{--  اسم الفرع عربى و انجليزى و الهاتف و الفاكس--}}
+                                {{-- الشركه --}}
+                                <div class="col-md-12">
+                                    <div class="row from-group">
+                                        <label for="">{{trans('admin.Cmp_No')}}</label>
+                                        <select name="Cmp_No" id="Cmp_No" class="form-control">
+                                            @if(count($company) > 0)
+                                                <option value="">{{trans('admin.select')}}</option>
+                                                @foreach($company as $cmp)
+                                                    <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                                @endforeach
+                                            @else
+                                                <option value="">{{trans('admin.nodata')}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                </div>
+                                {{-- نهاية الشركه --}}
                                 <div class="row">
+                                    {{-- الفرع الرئيسى --}}
                                     <div class="col-md-12">
                                         <div class="form-group hidden" id="MainBrn">
                                             <label for="">{{trans('admin.Main_Brn')}}</label>
-                                            @if(count($branches) > 0)
+                                            <div id="Main_Brn_content">
                                                 <select name="Main_Brn" id="Main_Brn" class="form-control">
                                                     <option value="">{{trans('admin.select')}}</option>
-                                                    @foreach($branches as $brn)
-                                                        <option value="{{$brn->Brn_No}}"
-                                                            @if($branch->Main_Brn == $brn->Brn_No) selected @endif>
-                                                            {{$brn->{'Brn_Nm'.ucfirst(session('lang'))} }}
-                                                        </option>
-                                                    @endforeach
                                                 </select>
-                                            @else
-                                                <select name="Main_Brn" id="Main_Brn" class="form-control">
-                                                    <option value="">{{trans('admin.nodata')}}</option>
-                                                </select>
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
+                                    {{-- نهاية الفرع الرئيسى --}}
+                                    {{-- الاسم عربى --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="">{{trans('admin.arabic_name')}}</label>
                                             <input type="text" value="{{$branch->Brn_NmAr? $branch->Brn_NmAr: ''}}" name="Brn_NmAr" id="Brn_NmAr" class="form-control">
                                         </div>
                                     </div>
+                                    {{-- نهاية الاسم عربى --}}
+                                    {{-- الاسم انجليزى --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="">{{trans('admin.english_name')}}</label>
                                             <input type="text" value="{{$branch->Brn_NmEn? $branch->Brn_NmEn: ''}}" name="Brn_NmEn" id="Brn_NmEn" class="form-control">
                                         </div>
                                     </div>
+                                    {{-- نهاية الاسم انجليزى --}}
+                                    {{-- الهاتف --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="">{{trans('admin.phone')}}</label>
                                             <input type="text" value="{{$branch->Brn_Tel? $branch->Brn_Tel: ''}}" name="Brn_Tel" id="Brn_Tel" class="form-control">
                                         </div>
                                     </div>
+                                    {{-- نهاية الهاتف --}}
+                                    {{-- الفاكس --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="Brn_Fax">{{trans('admin.fax')}}</label>
                                             <input type="text" value="{{$branch->Brn_Fax? $branch->Brn_Fax: ''}}" name="Brn_Fax" id="Brn_Fax" class="form-control">
                                         </div>
                                     </div>
+                                    {{-- نهاية الفاكس --}}
                                 </div>
-                                {{-- نهاية اسم الفرع عربى و انجليزى و الهاتف و الفاكس--}}
                                 {{-- عنوان الفرع --}}
                                 <div class="row">
                                     <div class="col-md-12">
@@ -124,50 +152,28 @@
                                 </div>
                                 {{-- نهاية عنوان الفرع --}}
                                
-                                {{-- الشركه و مستودع التسليم و الايميل --}}
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    {{-- الايميل --}}
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">{{trans('admin.email')}}</label>
                                             <input type="email" value="{{$branch->Brn_Email? $branch->Brn_Email: ''}}" name="Brn_Email" id="Brn_Email" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="from-group">
-                                            <label for="">{{trans('admin.Cmp_No')}}</label>
-                                            <select name="Cmp_No" id="Cmp_No" class="form-control">
-                                                @if(count($company) > 0)
-                                                    @foreach($company as $cmp)
-                                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                                    @endforeach
-                                                @else
-                                                    <option value="">{{trans('admin.nodata')}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    {{-- نهاية الايميل --}}
+                                    {{-- مستودع التسليم --}}
+                                    <div class="col-md-6">
                                         <div class="from-group">
                                             <label for="">{{trans('admin.Delivery_Store')}}</label>
-                                            @if(count($branches) > 0)
+                                            <div  id="Dlv_Stor_content">
                                                 <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
                                                     <option value="">{{trans('admin.select')}}</option>
-                                                    @foreach($branches as $brn)
-                                                        <option value="{{$brn->Brn_No}}"
-                                                            @if($branch->Dlv_Stor == $brn->Brn_No) selected @endif>
-                                                            {{$brn->{'Brn_Nm'.ucfirst(session('lang'))} }}
-                                                        </option>
-                                                    @endforeach
                                                 </select>
-                                            @else
-                                                <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                                                    <option value="">{{trans('admin.nodata')}}</option>
-                                                </select>
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {{-- نهاية الشركه و مستودع التسليم و الايميل--}}
+                                {{-- نهاية مستودع التسليم --}}
                                 {{-- p tag for design purpose --}} <p></p>  {{-- p tag for design purpose --}} 
                             </div>
                         </div>

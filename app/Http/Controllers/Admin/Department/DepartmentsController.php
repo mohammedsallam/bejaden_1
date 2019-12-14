@@ -261,6 +261,23 @@ class DepartmentsController extends Controller
        }
     }
 
+    public function getParentName(Request $request){
+        if($request->ajax()){
+            $chart =  MtsChartAc::where('Acc_No', $request->Acc_No)
+                                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                                    ->get(['Parnt_Acc', 'Acc_No', 'Acc_Nm'.ucfirst(session('lang'))])->first();
+            $parent = MtsChartAc::where('Acc_No', $chart->Parnt_Acc)
+                                ->where('Cmp_No', session('Chart_Cmp_No'))
+                                ->get(['Acc_No','Acc_Nm'.ucfirst(session('lang'))])->first();
+            if($parent){
+                return $parent;
+            }
+            else{
+                return $chart;
+            }
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *

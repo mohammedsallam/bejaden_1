@@ -439,16 +439,16 @@ return [
         AccountType::clients => 'عملاء',//2
         AccountType::suppliers => 'موردين',//3
         AccountType::employees => 'موظفين',//4
-        AccountType::fixed_assets => 'الاصول الثابته',//5
-        AccountType::approvals => 'الاعتمادات',//6
-        AccountType::projects => 'المشاريع',//7
+        // AccountType::fixed_assets => 'الاصول الثابته',//5
+        // AccountType::approvals => 'الاعتمادات',//6
+        // AccountType::projects => 'المشاريع',//7
     ],
     TransactionType::class => [
         TransactionType::open_entry => 'قيد افتتاحى',//1
-        TransactionType::cash_reciept => 'قيد قبض نقدى',//2
-        TransactionType::cheque_reciept => 'قيد قبض شيك',//3
-        TransactionType::cash_payment => 'قيد صرف نقدى',//4
-        TransactionType::cheque_payment => 'قيد صرف شيك',//5
+        TransactionType::cash_reciept => ' قبض نقدى',//2
+        TransactionType::cheque_reciept => ' قبض شيك',//3
+        TransactionType::cash_payment => ' صرف نقدى',//4
+        TransactionType::cheque_payment => ' صرف شيك',//5
         TransactionType::daily_entry => 'قيد يوميه',//6
         TransactionType::future_sales => 'مبيعات اجله',//7
         TransactionType::cash_sales => 'مبيعات نقديه',//8

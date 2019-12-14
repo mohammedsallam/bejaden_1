@@ -70,6 +70,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
         Route::post('departments/getTree','Admin\Department\DepartmentsController@getTree')->name('getTree');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
+        Route::post('departments/getParentName','Admin\Department\DepartmentsController@getParentName')->name('getParentName');
 
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');
@@ -181,6 +182,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        branches
         Route::resource('branches','Admin\Branches\BranchesController');
+        Route::post('branches/getBranchesAndStores','Admin\Branches\BranchesController@getBranchesAndStores')->name('getBranchesAndStores');
 
 
 //        funds and banks
@@ -208,8 +210,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('receiptsData/delete','Admin\banks\ReceiptController@delete');
         Route::post('receiptsData/singledelete','Admin\banks\ReceiptController@singledelete');
 
+        Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
+        Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
+        Route::get('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
 
-        //Edit by: Norhan Hesham Foda
+
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
         Route::get('banks/Receipt/receipts/catch/all','Admin\banks\ReceiptController@catch')->name('receipts.catch');

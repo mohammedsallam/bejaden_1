@@ -7,8 +7,10 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
+            $('[data-toggle="save"]').tooltip();
+            $('[data-toggle="delete"]').tooltip();
+            $('[data-toggle="add"]').tooltip();
         
-            // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
                 $('#jstree').jstree('destroy');    
                 var tree = [];
@@ -55,20 +57,16 @@
                                     r.push(data.instance.get_node(data.selected[i]).id);
                                     name.push(data.instance.get_node(data.selected[i]).text);
                                 }
-                                $('#parent_name').text(name);
 
                                 //get all direct and undirect children of selected node
                                 var currentNode = data.node;
                                 var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                                // var result = [currentNode.id];
                                 var result = [];
                                 allChildren.find('li').addBack().each(function(index, element) {
                                     if ($(this).jstree(true).is_leaf(element)) {
-                                        // result.push(element.textContent);
                                         result.push(parseInt(element.id));
                                     } else {
                                         var nod = $(this).jstree(true).get_node(element);
-                                        // result.push(nod.text);
                                         result.push(parseInt(nod.id));
                                     }
                                 });
@@ -117,6 +115,17 @@
                     data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No, children: children },
                     success: function(data){
                         $('#chart_form').html(data);
+                    }
+                });
+
+                $.ajax({
+                    url: "{{route('getParentName')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
+                    success: function(data){
+                        data = JSON.parse(data);
+                        $('#parent_name').text(data.Acc_NmAr+' ('+data.Acc_No+')');
                     }
                 });
             }
@@ -237,18 +246,15 @@
                                 @endif
                             </select>
                         </div>
-                        {{-- نهاية رقم الشركه --}}
-                        {{-- @if(count($cmps) > 0)
-                            @foreach($cmps as $cmp)
-                                @if($cmp->Cmp_No == $chart_item->Cmp_No)
-                                    <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
-                                @endif
-                            @endforeach
-                        @endif --}}
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <a class="btn btn-primary" id="initChartAcc">{{trans('admin.Create_New_Department')}}</a>
+                            <a class="btn btn-primary" id="initChartAcc"
+                                data-toggle="add" 
+                                title="{{trans('admin.add')}}"
+                                data-placement="bottom">
+                                {{trans('admin.Create_New_Department')}}
+                            </a>
                             <div id="parent_name" style="display: inline-block"></div>
                             <div id="jstree" style="margin-top: 20px"></div>
                         </div>
@@ -267,8 +273,18 @@
                         @endforeach
                         
                         <div class="col-md-3 pull-left">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            <button type="submit" class="btn btn-primary" 
+                                    data-toggle="save" 
+                                    title="{{trans('admin.save')}}"
+                                    data-placement="bottom">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                            </button>
+                            <button type="submit" class="btn btn-danger" id="delete_button"
+                                    data-toggle="delete" 
+                                    title="{{trans('admin.delete')}}"
+                                    data-placement="bottom">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
                         </div>
 
                         {{-- رقم الحساب --}}
