@@ -81,9 +81,15 @@
                 </div>
                 <div class="form-group row">
                     <div class="form-group row col-md-6">
-                        <div class="col-md-3">{!!Form::label('Cstm_No', trans('admin.subscriber_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">
+                            {!!Form::label('Cstm_No', trans('admin.subscriber_no'))!!}
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" disabled name="Cstm_No" value="{{$last_no}}">
+                        </div>
+
                     </div>
+
                     <div class="form-group col-md-6">
                         <div class="col-md-3" style="margin-right: -22px;">{!!Form::label('Cstm_Refno', trans('admin.customer_Ref_no'))!!}</div>
                         <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_Refno', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
@@ -265,7 +271,7 @@
                         </div>
                         <div class="col-md-12">
                         <div class="col-md-3">{!!Form::label('Linv_Net', trans('admin.Linv_Net'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('Linv_Net', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Linv_Net', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                         </div>
                     </fieldset>
 
@@ -273,7 +279,7 @@
                         <legend>{{trans('admin.last_mo')}}</legend>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
-                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('LRcpt_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                         </div>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>
@@ -296,7 +302,7 @@
                                 {!! Form::text('Cstm_Ctg', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
 
                             @else
-                                {!! Form::text('Cstm_Ctg', $subscriber->cstmCatg->Supctg_Nmar, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                                {!! Form::text('Cstm_Ctg', $supctgs->Supctg_Nm.session('lang'), ['class' =>'form-control', 'readonly'=>'true']) !!}
                             @endif
                        </div>
                     </div>

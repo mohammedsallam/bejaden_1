@@ -32,8 +32,10 @@
             <h3 class="box-title">{{$title}}</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($supplier,['method'=>'PUT','route' => ['suppliers.update',$supplier->ID_No]]) !!}
-<br>
+            {!! Form::model($pro,['method'=>'PUT','route' => ['project_contract.update',$pro->ID_No]]) !!}
+            {{ Form::button('<i class="fa fa-edit"></i>', ['type' => 'submit', 'class' => 'btn btn-primary','style' => 'float:left;display:inline-block'] )  }}
+
+            <br>
 <br>
 <br>
                @include('admin.Projcontractmfs.form')

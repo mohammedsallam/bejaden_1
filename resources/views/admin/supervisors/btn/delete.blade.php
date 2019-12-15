@@ -21,7 +21,7 @@
         });
     </script>
 
-<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('supervisors.destroy', $ID_No) }}" data-id="{{$ID_No}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i> {{trans('admin.delete')}}</a>
+<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('supervisors.destroy', $ID_No) }}" data-id="{{$ID_No}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i></a>
 
 <form action="" method="POST" class="remove-record-model">
     <div id="custom-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel" aria-hidden="true" style="display: none;">
@@ -32,7 +32,7 @@
                     <h4 class="modal-title" id="custom-width-modalLabel">{{trans('admin.Delete_Record')}}</h4>
                 </div>
                 <div class="modal-body">
-                    <h4>{{trans('admin.You_Want_You_Sure_Delete_This_Record')}}/h4>
+                    <h4>{{trans('admin.You_Want_You_Sure_Delete_This_Record')}}</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">{{trans('admin.close')}}</button>

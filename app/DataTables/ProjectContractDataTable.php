@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Admin\Projcontractmfs;
 use App\projectcontract;
 use Yajra\DataTables\Services\DataTable;
 
@@ -17,10 +18,10 @@ class ProjectContractDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a href="project_contract/'.$query->id.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . trans('admin.edit') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . trans('admin.edit') . '</a>';
             })
             ->addColumn('show', function ($query) {
-                return '<a href="project_contract/'.$query->id.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
             })
             ->addColumn('branshes', function ($query) {
                 return $query->branshe->map(function($branshe) {
@@ -52,7 +53,7 @@ class ProjectContractDataTable extends DataTable
                     }
                 })->implode(' ');
             })
-            ->addColumn('delete', 'admin.project_contract.btn.delete')
+            ->addColumn('delete', 'admin.Projcontractmfs.btn.delete')
             ->rawColumns([
                 'show',
                 'edit',
@@ -68,7 +69,7 @@ class ProjectContractDataTable extends DataTable
      */
     public function query()
     {
-        return projectcontract::query()->orderByDesc('id');
+        return Projcontractmfs::query()->orderByDesc('ID_No');
     }
 
     public static function lang(){
@@ -146,16 +147,16 @@ class ProjectContractDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            ['name'=>'branshes','data'=>'branshes','title'=>trans('admin.section')],
-            ['name'=>'date','data'=>'date','title'=>trans('admin.date')],
-            ['name'=>'date_hijri','data'=>'date_hijri','title'=>trans('admin.higri_date')],
-            ['name'=>'projects','data'=>'projects','title'=>trans('admin.project_name')],
-            ['name'=>'Date_contract','data'=>'Date_contract','title'=>trans('admin.Date_of_contract')],
-            ['name'=>'period_contract','data'=>'period_contract','title'=>trans('admin.period_contract')],
-            ['name'=>'subscribers','data'=>'subscribers','title'=>trans('admin.Subscribers')],
-            ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
-            ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
-            ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+//            ['name'=>'branshes','data'=>'branshes','title'=>trans('admin.section')],
+//            ['name'=>'date','data'=>'date','title'=>trans('admin.date')],
+//            ['name'=>'date_hijri','data'=>'date_hijri','title'=>trans('admin.higri_date')],
+//            ['name'=>'projects','data'=>'projects','title'=>trans('admin.project_name')],
+//            ['name'=>'Date_contract','data'=>'Date_contract','title'=>trans('admin.Date_of_contract')],
+//            ['name'=>'period_contract','data'=>'period_contract','title'=>trans('admin.period_contract')],
+//            ['name'=>'subscribers','data'=>'subscribers','title'=>trans('admin.Subscribers')],
+//            ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+//            ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+//            ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
         ];
     }
 

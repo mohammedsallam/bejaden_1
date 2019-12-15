@@ -27,6 +27,10 @@ class AdminAuth extends Controller
 
     public function login( Request $request){
 
+        if (auth('admin')->check()){
+            return redirect()->route('admin.home');
+        }
+
         //connect to DB according to the selected company
         if($request->id == 1){
             $envFile = app()->environmentFilePath();

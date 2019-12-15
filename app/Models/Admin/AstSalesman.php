@@ -12,6 +12,7 @@ class AstSalesman extends Model
     public $timestamps = true;
     protected $fillable = [
         'Slm_No',
+        'Cmp_No',
         'Brn_No',
         'Mark_No',   //المشرف
         'StoreNo',

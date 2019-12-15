@@ -21,7 +21,7 @@ Route::group(['prefix'=>'admin'],function (){
         return back();
     });
 //    admin panal
-    Route::group(['middleware'=>'auth:admin'],function (){
+    Route::group(['middleware'=>'auth:admin'], function(){
 //        laguage
 //        dashboard
         Route::get('/dashboard','DashboardController@home')->name('admin.home');
@@ -97,26 +97,14 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
         Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTree','Admin\Project\ProjectController@getTree')->name('getTreePrj');
-        Route::post('projects/getEditBlade','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
-        Route::post('projects/createNewAcc','Admin\Project\ProjectController@createNewAcc')->name('createNewAccPrj');
-        Route::post('projects/initChartAcc','Admin\Project\ProjectController@initChartAcc')->name('initChartAccPrj');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
+        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
+        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
+        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
 
 
         Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
         Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController@reviewdepartment')->name('reviewdepartment');
-
-
-//
-//        Route::resource('cc','Admin\Cc\CcController');
-//        Route::get('cc/report/motioncc','Admin\Cc\ReportController@motioncc');
-//        Route::get('cc/report/motioncc/show','Admin\Cc\ReportController@show');
-//        Route::get('cc/report/motioncc/details','Admin\Cc\ReportController@details');
-//        Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-//        Route::get('cc/report/checkReports','Admin\Cc\ReportController@checkReports');
-//        Route::get('cc/report/checkReports/show','Admin\Cc\ReportController@checkShow');
-//        Route::get('cc/report/checkReports/details','Admin\Cc\ReportController@checkDetails');
-//        Route::post('cc/report/checkReports/pdf','Admin\Cc\ReportController@print');
 
 
 
@@ -128,6 +116,7 @@ Route::group(['prefix'=>'admin'],function (){
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
+
         // Route::resource('relatedness','Admin\RelatednessController');
 
         Route::resource('systems','Admin\SystemController');
@@ -149,6 +138,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Projcontractmfs
         Route::resource('project_contract','Admin\Projcontractmfs\ProjcontractmfsController');
+        Route::post('project_contract/getComp','Admin\Projcontractmfs\ProjcontractmfsController@getComp')->name('getComp');
 
 
 //        astsupctg
@@ -167,13 +157,15 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('delegates', 'Admin\Delegates\DelegatesController');
+        //Route::get('branch','Admin\Delegates\DelegatesController@getBranches')->name('getBranch');
+
 
         Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
 
 
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
-        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranches');
+        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
 
 //        report

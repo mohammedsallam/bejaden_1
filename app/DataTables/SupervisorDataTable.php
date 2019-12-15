@@ -23,14 +23,14 @@ class SupervisorDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a  href="supervisors/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i>' . trans('admin.edit') .'</a>';
+                return '<a  href="supervisors/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i></a>';
             })
             ->addColumn('branches', function ($query) {
                 return session_lang($query->branches['name_en'],$query->branches['name_ar']);
             })
 
             ->addColumn('details', function ($query) {
-                return '<a href="supervisors/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i> ' . trans('admin.information_details') .' </a>';
+                return '<a href="supervisors/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i></a>';
             })
 
 

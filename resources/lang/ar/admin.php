@@ -1182,7 +1182,7 @@ return [
     'net_deviation_percentage' =>'نسبة صافي الانحراف',
     'net_deviation' =>'صافي الانحراف',
 
-    'total_collection' =>'اجماليالتحصيل',
+    'total_collection' =>'إجمالى التحصيل',
 
 
     'current_balance' =>'الرصيد الحالي',
@@ -1363,9 +1363,11 @@ return [
     'LRcpt_No'           =>'رقم السند',
     'Mark_No'            =>'المشرف',
     'cntrct_No'          =>'رقم العقد',
-    'rvisd_No'          =>'نسخة العقد',
-    'Prj_Status'         =>'وضع المشروع',
+    'rvisd_No'           =>'نسخة العقد',
+    'Prj_Status'         =>'وضع المشروع',/////// لسه الانجلش بتاعهم
     'Level_Status'       =>'نوع الحساب',
+//    'project_name'       =>'وصف المشروع عربي',
+    'project_name_en'    =>'وصف المشروع En',
     'project_name'       =>'وصف المشروع عربي',
     'project_name_en'    =>'En',
     'project_number'     =>'رقم المشروع',
@@ -1386,6 +1388,12 @@ return [
     'Prj_Year'           =>'سنة المشروع',
     'Prj_Tel'            =>'هاتف المشروع',
     'Prj_Mobile'         =>'موبايل المشروع',
+    'edit_delegate'      =>'تعديل المندوب-',
+    'show_delegate'      =>'عرض المندوب-',
+    'show_details'       =>'عرض التفاصيل',
+    'create_new_supervisor'=>'اضافة مشرف جديد',
+    'show_supervisor'    =>'عرض المشرف-',
+    'edit_supervisor'      =>'تعديل المشرف-',
 
 
 

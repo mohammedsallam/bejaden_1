@@ -11,24 +11,10 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
         </div>
 
-        {{-- رقم الحساب --}}
+        {{-- رقم المشروع --}}
         <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
-        <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-1" value="{{$Prj_No}}">
-        {{-- رقم الحساب --}}
-
-        {{-- رقم الشركه --}}
-        <div class="col-md-8 form-group">
-            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">
-                <option value="">{{trans('admin.select')}}</option>
-                @if(count($cmps) > 0)
-                    @foreach($cmps as $cmp)
-                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-        {{-- نهاية رقم الشركه --}}
+        <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-2" value="{{$Prj_No}}">
+        {{-- رقم المشروع --}}
 
         {{-- تصنيف الحساب --}}
         <div class="col-md-4 form-group">
@@ -58,17 +44,6 @@
 
     <div class="col-md-6">
         <div class="row">
-            {{-- طبيعة الحساب --}}
-{{--            <div class="form-group col-md-12 branch hidden">--}}
-{{--                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>--}}
-{{--                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)--}}
-{{--                    <input class="checkbox-inline" type="radio" --}}
-{{--                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"--}}
-{{--                        style="margin: 3px;">--}}
-{{--                    <label>{{$value}}</label>--}}
-{{--                @endforeach--}}
-{{--            </div>--}}
-            {{-- نهاية طبيعة الحساب --}}
 
             {{-- رصيد اول المده مدين --}}
             <div class="col-md-12 branch hidden">
@@ -88,65 +63,11 @@
             </div>
             {{-- نهاية رصيد اول المده دائن --}}
 
-            {{-- رصيد  تقديرى --}}
-{{--            <div class="col-md-12 branch hidden">--}}
-{{--                <div class="form-group row">--}}
-{{--                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>--}}
-{{--                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-7">--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            {{-- نهاية رصيد  تقديرى --}}
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="row">
-            {{-- نوع الحساب --}}
-{{--            <div class="col-md-12 branch hidden">--}}
-{{--                <label for="Clsacc_No1" class="col-md-5 col-md-offset-1">{{trans('admin.account_type')}}</label>--}}
-{{--                <div class="form-group">--}}
-{{--                    <select name="Acc_Typ" id="Acc_Typ" class="form-control col-md-6">--}}
-{{--                        <option value="{{null}}">{{trans('admin.select')}}</option>--}}
-{{--                        @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)--}}
-{{--                            <option value="{{$key}}">{{$value}}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            {{-- نهاية نوع الحساب --}}
-
-            {{-- حسابات ختاميه --}}
-{{--            <div class="col-md-12 branch hidden">--}}
-{{--                <input class="checkbox-inline col-md-1" type="checkbox" id='Clsacc_No1_Check'>--}}
-{{--                <label for="Clsacc_No1" class="col-md-5">{{trans('admin.Clsacc_No1')}}</label>--}}
-
-{{--                <div class="form-group">--}}
-{{--                    <select name="Clsacc_No1" id="Clsacc_No1" class="form-control col-md-6 hidden">--}}
-{{--                        <option value="{{null}}">{{trans('admin.select')}}</option>--}}
-{{--                        --}}{{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)--}}
-{{--                            <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>--}}
-{{--                        @endforeach --}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            {{-- نهاية الحسابات الختاميه --}}
-
-            {{-- حسابات قائمة الدخل --}}
-{{--            <div class="col-md-12 branch hidden">--}}
-{{--                <input class="checkbox-inline col-md-1 checks" type="checkbox" id='Clsacc_No2_Check'>--}}
-{{--                <label for="Clsacc_No2" class="col-md-5">{{trans('admin.Clsacc_No2')}}</label>--}}
-
-{{--                <div class="form-group">--}}
-{{--                    <select name="Clsacc_No2" id="Clsacc_No2" class="form-control col-md-6 hidden">--}}
-{{--                        <option value="{{null}}">{{trans('admin.select')}}</option>--}}
-{{--                        --}}{{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)--}}
-{{--                            <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>--}}
-{{--                        @endforeach --}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            {{-- نهاية الحسابات قائمة الدخل --}}
-
 
             {{-- مركز التكلفه --}}
             <div class="col-md-12 branch hidden">

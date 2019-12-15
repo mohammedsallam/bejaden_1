@@ -1,19 +1,186 @@
+@push('js')
+    <script>
+        $(document).on('change', '#Cmp_No', function() {
+            var Cmp_No = $('#Cmp_No').val();
+            if (Cmp_No != null) {
+                $.ajax({
+                    url: "{{route('getComp')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                    success: function (data) {
+                        $('#Cntrct_No').val(data);
+                    }
+                });
+            }
+        });
+
+
+
+        $(document).on('keyup', '.Cnt_Bdgt, .Cnt_Vl', function() {
+            var Cnt_Bdgt = $('.Cnt_Bdgt').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Cnt_Bdgt.match(regex) !== null && Cnt_Vl.match(regex) !== null){
+                //if (Cnt_Bdgt > Cnt_Vl){
+                 //   alert('>')
+                    var Cntrb_VL = $('#Cntrb_VL').val(Cnt_Bdgt - Cnt_Vl);
+                    $('.Cntrb_Prct').val(Cntrb_VL.val() / Cnt_Vl * 100) ;
+                    $('#noNomric').addClass('hidden');
+                    // $('#bigNomric').addClass('hidden');
+
+                // }
+            // else{
+            //         $('#bigNomric').removeClass('hidden');
+            //     }
+            //     $('#noNomric').addClass('hidden');
+            }else{
+                $('#noNomric').removeClass('hidden');
+            }
+        });
+
+        $(document).on('keyup', '#Gnrlovhd_VaL', function() {
+            var Gnrlovhd_VaL = $('#Gnrlovhd_VaL').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Gnrlovhd_VaL.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                    $('#Gnrlovhd_Prct').val(Gnrlovhd_VaL / Cnt_Vl * 100);
+            }
+        });
+
+        $(document).on('keyup', '#Gnrlovhd_Prct', function() {
+            var Gnrlovhd_Prct = $('#Gnrlovhd_Prct').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Gnrlovhd_Prct.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Gnrlovhd_VaL').val((Gnrlovhd_Prct / 100) * Cnt_Vl);
+            }
+        });
+
+
+        $(document).on('keyup', '#Dprtmovhd_Vl', function() {
+            var Dprtmovhd_Vl = $('#Dprtmovhd_Vl').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Dprtmovhd_Vl.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Dprtmovhd_Prct').val(Dprtmovhd_Vl / Cnt_Vl * 100);
+            }
+        });
+
+        $(document).on('keyup', '#Dprtmovhd_Prct', function() {
+            var Dprtmovhd_Prct = $('#Dprtmovhd_Prct').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Dprtmovhd_Prct.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Dprtmovhd_Vl').val((Dprtmovhd_Prct / 100) * Cnt_Vl);
+            }
+        });
+
+        $(document).on('keyup', '#Wrnt_Vl', function() {
+            var Wrnt_Vl = $('#Wrnt_Vl').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Wrnt_Vl.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Wrnt_Prct').val(Wrnt_Vl / Cnt_Vl * 100);
+            }
+        });
+
+        $(document).on('keyup', '#Wrnt_Prct', function() {
+            var Wrnt_Prct = $('#Wrnt_Prct').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Wrnt_Prct.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Wrnt_Vl').val((Wrnt_Prct / 100) * Cnt_Vl);
+            }
+        });
+
+
+        $(document).on('keyup', '#Fince_Vl', function() {
+            var Fince_Vl = $('#Fince_Vl').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Fince_Vl.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Fince_Prct').val(Fince_Vl / Cnt_Vl * 100);
+            }
+        });
+
+        $(document).on('keyup', '#Fince_Vl ,#Wrnt_Vl , #Dprtmovhd_Vl , #Gnrlovhd_VaL', function() {
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var Fince_Vl = $('#Fince_Vl').val();
+            var Wrnt_Vl = $('#Wrnt_Vl').val();
+            var Dprtmovhd_Vl = $('#Dprtmovhd_Vl').val();
+            var Gnrlovhd_VaL = $('#Gnrlovhd_VaL').val();
+
+            var Total = (Number(Fince_Vl) + Number(Wrnt_Vl) + Number(Dprtmovhd_Vl) + Number(Gnrlovhd_VaL));
+            $('#Subtot_VaL').val(Total);
+            $('#Subtot_Prct').val(Total / Cnt_Vl * 100);
+            var Netcntrib_VaL =  $('#Netcntrib_VaL').val(Cnt_Vl - Total);
+            $('#Netcntrib_Prct').val(Math.round(Netcntrib_VaL.val() / Cnt_Vl * 100));
+
+
+
+        });
+
+        $(document).on('keyup', '#Subtot_VaL', function() {
+            var Subtot_VaL = $('#Subtot_VaL').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+
+            var regex = '^[0-9]+$';
+            if(Subtot_VaL.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Subtot_Prct').val(Subtot_VaL / Cnt_Vl * 100);
+                $('#Netcntrib_VaL').val(Cnt_Vl - Subtot_Prct);
+
+            }
+        });
+
+        $(document).on('keyup', '#Subtot_Prct', function() {
+            var Subtot_Prct = $('#Subtot_Prct').val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+            var regex = '^[0-9]+$';
+            if(Subtot_Prct.match(regex) !== null && Cnt_Vl.match(regex) !== null) {
+                $('#Subtot_VaL').val(Math.round((Subtot_Prct / 100) * Cnt_Vl));
+            }
+        });
+
+        $(document).on('keyup','#Tot_Rcpt' , function () {
+            var Tot_Rcpt = $(this).val();
+            var Cnt_Vl = $('.Cnt_Vl').val();
+
+            $('#Balance').val(Cnt_Vl - Tot_Rcpt);
+        });
+
+
+
+
+    </script>
+@endpush
 
 <div style="border: 1px solid #ddd;padding: 9px">
     <div class="form-group row">
         <div class="col-md-6">
             {{ Form::label('Cmp_No', trans('admin.na_Comp'), ['class' => 'control-label']) }}
-            {{ Form::select('Cmp_No',$branches, old('Cmp_No'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+            {{ Form::select('Cmp_No',$company, old('Cmp_No'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select'),'id' => 'Cmp_No'])) }}
 
             @if ($errors->has('Cmp_No'))
                 <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cmp_No') }}</div>
             @endif
         </div>
+
+        <div class="col-md-4">
+           <div>
+               {{ Form::label('Cmp_No', trans('admin.active'), ['class' => 'control-label']) }}
+           </div>
+            <div>
+                {!! Form::checkbox('Cntrct_Actv') !!}
+            </div>
+
+
+        </div>
     </div>
     <div class="form-group row">
         <div class="col-md-2">
             {{ Form::label('Cntrct_No',trans('admin.cntrct_No') , ['class' => 'control-label']) }}
-            {{ Form::text('Cntrct_No', old('Cntrct_No'), array_merge(['class' => 'form-control ','placeholder'=>trans('admin.cntrct_No')])) }}
+            {{ Form::text('Cntrct_No', old('Cntrct_No'), array_merge(['class' => 'form-control ','placeholder'=>trans('admin.cntrct_No'),'readonly'])) }}
         </div>
         <div class="col-md-2">
             {{ Form::label('Rvisd_No',trans('admin.rvisd_No') , ['class' => 'control-label']) }}
@@ -48,17 +215,17 @@
 
     <div class="form-group row">
         <div class="col-md-6">
-            {{ Form::label('note',trans('admin.notee') , ['class' => 'control-label']) }}
-            {{ Form::textarea('note', old('note'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.note'),'cols' => '-58' ,'rows' => '-9'])) }}
-            @if ($errors->has('email'))
-                <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('note') }}</div>
+            {{ Form::label('note',trans('admin.description') , ['class' => 'control-label']) }}
+            {{ Form::textarea('Cnt_DscAr', old('Cnt_DscAr'), array_merge(['class' => 'form-control','placeholder'=> 'AR','cols' => '-58' ,'rows' => '-9'])) }}
+            @if ($errors->has('Cnt_DscAr'))
+                <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cnt_DscAr') }}</div>
             @endif
         </div>
         <div class="col-md-6">
-            {{ Form::label('note_en',trans('admin.notee_en') , ['class' => 'control-label']) }}
-            {{ Form::textarea('note_en', old('note_en'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.note_en'),'cols' => '-58' ,'rows' => '-9'])) }}
+            {{ Form::label('note_en',null , ['class' => 'control-label']) }}
+            {{ Form::textarea('Cnt_DscEn', old('Cnt_DscEn'), array_merge(['class' => 'form-control','placeholder'=> 'EN','cols' => '-58' ,'rows' => '-9'])) }}
             @if ($errors->has('note_en'))
-                <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('note') }}</div>
+                <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cnt_DscEn') }}</div>
             @endif
         </div>
     </div>
@@ -273,7 +440,9 @@
                     {{ Form::label('Estimated_value',trans('admin.Estimated_value') , ['class' => 'control-label']) }}
                 </div>
                 <div class="col-md-8">
-                    {{ Form::text('Cnt_Bdgt', old('Cnt_Bdgt'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.Estimated_value')])) }}
+                    {{ Form::text('Cnt_Bdgt', old('Cnt_Bdgt'), array_merge(['class' => 'form-control Cnt_Bdgt','placeholder'=>trans('admin.Estimated_value')])) }}
+                    <span class="hidden text-danger" id="noNomric">تأكد من القيم المكتوبه</span>
+                    <span class="hidden text-danger" id="bigNomric">يجب ان يكون القيمه التقديريه أكبر</span>
                     @if ($errors->has('Cnt_Bdgt'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cnt_Bdgt') }}</div>
                     @endif
@@ -284,7 +453,7 @@
                     {{ Form::label('contract_value',trans('admin.contract_value') , ['class' => 'control-label']) }}
                 </div>
                 <div class="col-md-8">
-                    {{ Form::text('Cnt_Vl', old('Cnt_Vl'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.contract_value')])) }}
+                    {{ Form::text('Cnt_Vl', old('Cnt_Vl'), array_merge(['class' => 'form-control Cnt_Vl','placeholder'=>trans('admin.contract_value')])) }}
                     @if ($errors->has('Cnt_Vl'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cnt_Vl') }}</div>
                     @endif
@@ -295,13 +464,13 @@
                     {{ Form::label('deviation_value',trans('admin.deviation_value') , ['class' => 'control-label']) }}
                 </div>
                 <div class="col-md-5">
-                    {{ Form::text('Cntrb_VL', old('Cntrb_VL'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.deviation_value')])) }}
+                    {{ Form::text('Cntrb_VL', old('Cntrb_VL'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.deviation_value'),'readonly','id'=>'Cntrb_VL'])) }}
                     @if ($errors->has('Cntrb_VL'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cntrb_VL') }}</div>
                     @endif
                 </div>
                 <div class="col-md-3">
-                    {{ Form::text('Cntrb_Prct', old('Cntrb_Prct'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.deviation_value')])) }}
+                    {{ Form::text('Cntrb_Prct', old('Cntrb_Prct'), array_merge(['class' => 'form-control Cntrb_Prct','placeholder'=>trans('admin.deviation_value'),'readonly'])) }}
                     @if ($errors->has('Cntrb_Prct'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Cntrb_Prct') }}</div>
                     @endif
@@ -434,13 +603,13 @@
                     {{ Form::label('management_expenses',trans('admin.management_expenses') , ['class' => 'control-label']) }}
                 </div>
                 <div class="col-md-5">
-                    {{ Form::text('Gnrlovhd_VaL', old('Gnrlovhd_VaL'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.management_expenses')])) }}
+                    {{ Form::text('Gnrlovhd_VaL', old('Gnrlovhd_VaL'), array_merge(['class' => 'form-control','id' => 'Gnrlovhd_VaL','placeholder'=>trans('admin.management_expenses')])) }}
                     @if ($errors->has('Gnrlovhd_VaL'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Gnrlovhd_VaL') }}</div>
                     @endif
                 </div>
                 <div class="col-md-3">
-                    {{ Form::text('Gnrlovhd_Prct', old('Gnrlovhd_Prct'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.management_expenses_percentage')])) }}
+                    {{ Form::text('Gnrlovhd_Prct', old('Gnrlovhd_Prct'), array_merge(['class' => 'form-control','id' => 'Gnrlovhd_Prct','placeholder'=>trans('admin.management_expenses_percentage')])) }}
                     @if ($errors->has('Gnrlovhd_Prct'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Gnrlovhd_Prct') }}</div>
                     @endif
@@ -452,13 +621,13 @@
                     {{ Form::label('department_expenses',trans('admin.department_expenses') , ['class' => 'control-label']) }}
                 </div>
                 <div class="col-md-5">
-                    {{ Form::text('Dprtmovhd_Vl', old('Dprtmovhd_Vl'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.department_expenses')])) }}
+                    {{ Form::text('Dprtmovhd_Vl', old('Dprtmovhd_Vl'), array_merge(['class' => 'form-control','id'=>'Dprtmovhd_Vl','placeholder'=>trans('admin.department_expenses')])) }}
                     @if ($errors->has('Dprtmovhd_Vl'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Dprtmovhd_Vl') }}</div>
                     @endif
                 </div>
                 <div class="col-md-3">
-                    {{ Form::text('Dprtmovhd_Prct', old('Dprtmovhd_Prct'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.department_expenses_percentage')])) }}
+                    {{ Form::text('Dprtmovhd_Prct', old('Dprtmovhd_Prct'), array_merge(['class' => 'form-control','id' => 'Dprtmovhd_Prct','placeholder'=>trans('admin.department_expenses_percentage')])) }}
 
                     @if ($errors->has('Dprtmovhd_Prct'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Dprtmovhd_Prct') }}</div>
@@ -472,7 +641,7 @@
                 </div>
                 <div class="col-md-5">
 
-                    {{ Form::text('Wrnt_Vl', old('Wrnt_Vl'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.warranty_period')])) }}
+                    {{ Form::text('Wrnt_Vl', old('Wrnt_Vl'), array_merge(['class' => 'form-control','id' => 'Wrnt_Vl','placeholder'=>trans('admin.warranty_period')])) }}
 
                     @if ($errors->has('Wrnt_Vl'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Wrnt_Vl') }}</div>
@@ -480,7 +649,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    {{ Form::text('Wrnt_Prct', old('Wrnt_Prct'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.warranty_period_percentage')])) }}
+                    {{ Form::text('Wrnt_Prct', old('Wrnt_Prct'), array_merge(['class' => 'form-control','id' => 'Wrnt_Prct','placeholder'=>trans('admin.warranty_period_percentage')])) }}
 
                     @if ($errors->has('Wrnt_Prct'))
                         <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Wrnt_Prct') }}</div>
@@ -494,18 +663,18 @@
                 </div>
                 <div class="col-md-5">
 
-                    {{ Form::text('financial_expenses', old('financial_expenses'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.financial_expenses')])) }}
+                    {{ Form::text('Fince_Vl', old('Fince_Vl'), array_merge(['class' => 'form-control','id'=>'Fince_Vl','placeholder'=>trans('admin.financial_expenses')])) }}
 
-                    @if ($errors->has('financial_expenses'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('financial_expenses') }}</div>
+                    @if ($errors->has('Fince_Vl'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Fince_Vl') }}</div>
                     @endif
                 </div>
 
                 <div class="col-md-3">
-                    {{ Form::text('financial_expenses_percentage', old('financial_expenses_percentage'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.financial_expenses_percentage')])) }}
+                    {{ Form::text('Fince_Prct', old('Fince_Prct'), array_merge(['class' => 'form-control','id'=>'Fince_Prct','placeholder'=>trans('admin.financial_expenses_percentage')])) }}
 
-                    @if ($errors->has('financial_expenses_percentage'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('financial_expenses_percentage') }}</div>
+                    @if ($errors->has('Fince_Prct'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Fince_Prct') }}</div>
                     @endif
                 </div>
             </div>
@@ -517,18 +686,18 @@
 
                 <div class="col-md-5">
 
-                    {{ Form::text('subtotal', old('subtotal'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.subtotal')])) }}
+                    {{ Form::text('Subtot_VaL', old('Subtot_VaL'), array_merge(['class' => 'form-control','id'=>'Subtot_VaL','placeholder'=>trans('admin.subtotal'),'readonly']) ) }}
 
-                    @if ($errors->has('subtotal'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('subtotal') }}</div>
+                    @if ($errors->has('Subtot_VaL'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Subtot_VaL') }}</div>
                     @endif
                 </div>
 
                 <div class="col-md-3">
-                    {{ Form::text('subtotal_percentage', old('subtotal_percentage'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.subtotal_percentage')])) }}
+                    {{ Form::text('Subtot_Prct', old('Subtot_Prct'), array_merge(['class' => 'form-control','id'=>'Subtot_Prct','placeholder'=>trans('admin.subtotal_percentage'),'readonly'])) }}
 
-                    @if ($errors->has('subtotal_percentage'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('subtotal_percentage') }}</div>
+                    @if ($errors->has('Subtot_Prct'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Subtot_Prct') }}</div>
                     @endif
                 </div>
             </div>
@@ -540,17 +709,17 @@
 
                 <div class="col-md-5">
 
-                    {{ Form::text('net_deviation', old('net_deviation'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.net_deviation')])) }}
+                    {{ Form::text('Netcntrib_VaL', old('Netcntrib_VaL'), array_merge(['class' => 'form-control','id'=>'Netcntrib_VaL','placeholder'=>trans('admin.net_deviation'),'readonly'])) }}
 
-                    @if ($errors->has('net_deviation'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('net_deviation') }}</div>
+                    @if ($errors->has('Netcntrib_VaL'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Netcntrib_VaL') }}</div>
                     @endif
                 </div>
                 <div class="col-md-3">
-                    {{ Form::text('net_deviation_percentage', old('net_deviation_percentage'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.net_deviation_percentage')])) }}
+                    {{ Form::text('Netcntrib_Prct', old('Netcntrib_Prct'), array_merge(['class' => 'form-control','id'=>'Netcntrib_Prct','placeholder'=>trans('admin.net_deviation_percentage'),'readonly'])) }}
 
-                    @if ($errors->has('net_deviation_percentage'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('net_deviation_percentage') }}</div>
+                    @if ($errors->has('Netcntrib_Prct'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Netcntrib_Prct') }}</div>
                     @endif
                 </div>
             </div>
@@ -561,9 +730,9 @@
                 </div>
 
                 <div class="col-md-5">
-                    {{ Form::text('total_collection', old('total_collection'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.total_collection')])) }}
-                    @if ($errors->has('total_collection'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('total_collection') }}</div>
+                    {{ Form::text('Tot_Rcpt', old('Tot_Rcpt'), array_merge(['class' => 'form-control','id'=>'Tot_Rcpt','placeholder'=>trans('admin.total_collection')])) }}
+                    @if ($errors->has('Tot_Rcpt'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Tot_Rcpt') }}</div>
                     @endif
                 </div>
             </div>
@@ -574,9 +743,9 @@
                 </div>
                 <div class="col-md-5">
 
-                    {{ Form::text('current_balance', old('current_balance'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.current_balance')])) }}
-                    @if ($errors->has('current_balance'))
-                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('current_balance') }}</div>
+                    {{ Form::text('Balance', old('Balance'), array_merge(['class' => 'form-control','id'=>'Balance','placeholder'=>trans('admin.current_balance'),'readonly'])) }}
+                    @if ($errors->has('Balance'))
+                        <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Balance') }}</div>
                     @endif
                 </div>
             </div>

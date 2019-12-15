@@ -11,9 +11,11 @@ class CreateAstMarketTable extends Migration {
 			$table->increments('ID_No');
 			$table->timestamps();
 			$table->integer('Mrkt_No')->nullable();    //رقم المشرف
-			$table->integer('Brn_No')->nullable();      //رقم الفرع
+            $table->integer('Cmp_No')->nullable();  //الشركه
+            $table->integer('Brn_No')->nullable();      //رقم الفرع
 			$table->string('Mrkt_NmEn')->nullable();     //الاسم
 			$table->string('Mrkt_NmAr')->nullable();
+			$table->boolean('Mrkt_Active')->nullable();
 		});
 	}
 

@@ -18,18 +18,18 @@ class ProjcontractmfsDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a href="project_contract/'.$query->id.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . trans('admin.edit') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . trans('admin.edit') . '</a>';
             })
             ->addColumn('show', function ($query) {
-                return '<a href="project_contract/'.$query->id.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
             })
             ->addColumn('branshes', function ($query) {
                 return $query->branshe->map(function($branshe) {
                     if (app()->getLocale() == 'ar') {
-                        return $branshe->name_ar;
+                        return $branshe->Brn_NmAr;
                     }
                     if (app()->getLocale() == 'en') {
-                        return $branshe->name_en;
+                        return $branshe->Brn_NmEn;
                     }
                 })->implode(' ');
             })
@@ -43,17 +43,17 @@ class ProjcontractmfsDataTable extends DataTable
                     }
                 })->implode(' ');
             })
-            ->addColumn('subscribers', function ($query) {
+            ->addColumn('Cstm_No', function ($query) {
                 return $query->subscriber->map(function($subscriber) {
                     if (app()->getLocale() == 'ar') {
-                        return $subscriber->name_ar;
+                        return $subscriber->Cstm_NmAr;
                     }
                     if (app()->getLocale() == 'en') {
-                        return $subscriber->name_en;
+                        return $subscriber->Cstm_NmEn;
                     }
                 })->implode(' ');
             })
-            ->addColumn('delete', 'admin.project_contract.btn.delete')
+            ->addColumn('delete', 'admin.Projcontractmfs.btn.delete')
             ->rawColumns([
                 'show',
                 'edit',
@@ -148,12 +148,10 @@ class ProjcontractmfsDataTable extends DataTable
     {
         return [
             ['name'=>'branshes','data'=>'branshes','title'=>trans('admin.section')],
-            ['name'=>'date','data'=>'date','title'=>trans('admin.date')],
-            ['name'=>'date_hijri','data'=>'date_hijri','title'=>trans('admin.higri_date')],
-            ['name'=>'projects','data'=>'projects','title'=>trans('admin.project_name')],
-            ['name'=>'Date_contract','data'=>'Date_contract','title'=>trans('admin.Date_of_contract')],
-            ['name'=>'period_contract','data'=>'period_contract','title'=>trans('admin.period_contract')],
-            ['name'=>'subscribers','data'=>'subscribers','title'=>trans('admin.Subscribers')],
+            ['name'=>'Prj_No','data'=>'Prj_No','title'=>trans('admin.project_name')],
+            ['name'=>'Tr_Dt','data'=>'Tr_Dt','title'=>trans('admin.Date_of_contract')],
+            ['name'=>'CntCompL_Priod','data'=>'CntCompL_Priod','title'=>trans('admin.period_contract')],
+            ['name'=>'Cstm_No','data'=>'Cstm_No','title'=>trans('admin.Subscribers')],
             ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
