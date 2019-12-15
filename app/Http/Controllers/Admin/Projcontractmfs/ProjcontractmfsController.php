@@ -11,6 +11,7 @@ use App\Models\Admin\MTsCustomer;
 use App\Admin\Projcontractmfs;
 use App\DataTables\ProjcontractmfsDataTable;
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Projectmfs;
 use App\projectcontract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,7 @@ class ProjcontractmfsController extends Controller
         $subscription = MTsCustomer::all()->pluck('Cstm_Nm'.ucfirst(session('lang')), 'ID_No');
 
         $company = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
-        $Projects = projectcontract::all()->pluck('name_'.session('lang'), 'id');
+        $Projects = Projectmfs::all()->pluck('Prj_Nm'.ucfirst(session('lang')), 'ID_No');
 
         return view('admin.Projcontractmfs.create',['title'=> trans('admin.add_project_contract'),'astsupctg' => $astsupctg,'company' => $company,'countries' => $countries,'branches' => $branches,'subscription' => $subscription,'Projects' => $Projects]);
 
