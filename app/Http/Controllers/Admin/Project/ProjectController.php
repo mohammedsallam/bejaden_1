@@ -96,7 +96,7 @@ class ProjectController extends Controller
     }
 
     public function initChartPrj(Request $request){
-        dd($request->all());
+        //dd($request->all());
 
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -106,6 +106,7 @@ class ProjectController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $Prj_No = $this->createPrjNo(0);
+        //dd($request->all());
         return view('admin.projects.create_main_chart', ['title' => trans('admin.projects')
             , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
     }
@@ -126,29 +127,24 @@ class ProjectController extends Controller
         //dd($request->all());
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
-                //'Cmp_No' => 'required',
+                'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
             ],[],[
-                //'Cmp_No' => trans('admin.cmp_no'),
+                'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
-            //dd($request->all());
-            $chart = new Projectmfs;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Prj_NmAr = $request->Prj_NmAr;
-            $chart->Prj_NmEn = $request->Prj_NmEn;
-            $chart->Level_Status = $request->Level_Status;
-            $chart->Level_No = 1;
-            $chart->Prj_Parnt = 0;
-            $chart->User_ID = Auth::user()->id;
-            $chart->Prj_No = $request->Prj_No;
-            $chart->Tr_Dt = $chart->created_at;
-            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
-            $chart->Opn_Date = $chart->updated_at;
-            $chart->save();
-            //dd($chart);
+            $chart = $request->all();
+            $chart['Cmp_No'] = $request->Select_Cmp_No;
+            $chart['Level_No'] = 1;
+            $chart['Prj_Parnt'] = 0;
+            $chart['User_ID'] = Auth::user()->id;
+            $chart['Tr_Dt'] = $request->created_at;
+            $chart['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $chart['Opn_Date'] = $request->created_at;
+            $chart['Updt_Date'] = $request->updated_at;
+            Projectmfs::create($chart);
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
         else if($request->Level_Status == 1){
@@ -166,36 +162,22 @@ class ProjectController extends Controller
                 'Level_Status' => trans('admin.Level_Status'),
             ]);
 
-            //dd($request->parent);
-            $chart = new Projectmfs;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Prj_NmAr = $request->Prj_NmAr;
-            $chart->Prj_NmEn = $request->Prj_NmEn;
-            $chart->Level_Status = $request->Level_Status;
-            //dd($request->parent);
-            $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
+            $chart = $request->all();
 
-            $chart->Level_No = $parent->Level_No + 1;
-            //$chart->Level_No = $chart->Level_No + 1;
-            $chart->Prj_Parnt = $request->Prj_Parnt;
-            $chart->Prj_Status = $request->Prj_Status;
-            $chart->Costcntr_No = $request->Costcntr_No;  //مركز التكلفه
-            $chart->Prj_Actv = $request->Prj_Actv;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-            $chart->User_Id = Auth::user()->id;
-            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
-            $chart->Prj_No = $request->Prj_No;
-            $chart->save();
-            $chart->Tr_Dt = $chart->created_at;
-            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
-            $chart->Updt_Date = $chart->updated_at;
-            $chart->save();
+            $chart['User_ID'] = Auth::user()->id;
+            $chart['Tr_Dt'] = $request->created_at;
+            $chart['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $chart['Opn_Date'] = $request->created_at;
+            $chart['Updt_Date'] = $request->updated_at;
+            $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
+            $chart['Level_No'] = $parent->Level_No +1;
             $parent_level = Projectmfs::where('Prj_No', $request->Prj_Parnt)->first();
             if($parent_level){
                 $parent_level->Level_Status = 0;
                 $parent_level->save();
             }
+            //dd($chart);
+            Projectmfs::create($chart);
 
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
@@ -232,11 +214,6 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        // $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
-        // $department = Department::findOrFail($id);
-        // $parents = $department->parents->pluck('dep_name_'.session('lang'),'id');
-        // $operations = operation::pluck('name_'.session('lang'),'id');
-        // return view('admin.departments.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
     }
 
     public function getEditBlade(Request $request){
@@ -747,7 +724,7 @@ class ProjectController extends Controller
     public function getTree(Request $request){
         if($request->ajax()){
             session(['Chart_Cmp_No' => $request->Cmp_No]);
-            $tree = load_prj('parent_id', null, $request->Cmp_No);
+            $tree = load_prj('Prj_Parnt', null, $request->Cmp_No);
             return $tree;
         }
     }
