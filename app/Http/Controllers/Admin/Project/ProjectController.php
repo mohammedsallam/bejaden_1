@@ -74,7 +74,7 @@ class ProjectController extends Controller
     }
 
     public function createNewPrj(Request $request){
-//dd($request->all());
+        //dd($request->all());
         if($request->ajax()){
             if($request->parent){
                 $parent = Projectmfs::where('Prj_No', $request->parent)
@@ -95,9 +95,12 @@ class ProjectController extends Controller
         }
     }
 
-    public function initChartPrj(){
+    public function initChartPrj(Request $request){
+        dd($request->all());
+
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
@@ -120,7 +123,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->Level_No);
+        //dd($request->all());
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
                 //'Cmp_No' => 'required',
@@ -141,7 +144,6 @@ class ProjectController extends Controller
             $chart->Prj_Parnt = 0;
             $chart->User_ID = Auth::user()->id;
             $chart->Prj_No = $request->Prj_No;
-            $chart->save();
             $chart->Tr_Dt = $chart->created_at;
             $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
             $chart->Opn_Date = $chart->updated_at;
@@ -151,19 +153,17 @@ class ProjectController extends Controller
         }
         else if($request->Level_Status == 1){
             $data = $this->validate($request,[
-                //'Cmp_No' => 'required',
+                'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
                 'Prj_Status' => 'sometimes',
                 'Level_Status' => 'sometimes',
-                //'Acc_Ntr' => 'required',
             ],[],[
-                //'Cmp_No' => trans('admin.cmp_no'),
+                'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
                 'Prj_Status' => trans('admin.Prj_Status'),
                 'Level_Status' => trans('admin.Level_Status'),
-                //'Acc_Ntr' => trans('admin.category')
             ]);
 
             //dd($request->parent);
@@ -175,15 +175,12 @@ class ProjectController extends Controller
             //dd($request->parent);
             $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
 
-            //dd($parent);
             $chart->Level_No = $parent->Level_No + 1;
             //$chart->Level_No = $chart->Level_No + 1;
             $chart->Prj_Parnt = $request->Prj_Parnt;
             $chart->Prj_Status = $request->Prj_Status;
             $chart->Costcntr_No = $request->Costcntr_No;  //مركز التكلفه
             $chart->Prj_Actv = $request->Prj_Actv;
-            //$chart->Cr_Blnc = $request->Cr_Blnc;
-            //$chart->Acc_Ntr = $request->Acc_Ntr;
             $chart->Fbal_DB = $request->Fbal_DB;
             $chart->Fbal_CR = $request->Fbal_CR;
             $chart->User_Id = Auth::user()->id;

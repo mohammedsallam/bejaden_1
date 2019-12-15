@@ -104,11 +104,6 @@
 
 
             function handle_click(Prj_No, children){
-                // alert(children);
-                // console.log(Prj_No);
-                // var node = $(e.target).closest("li");
-                // var type = node.attr('rel');
-                // var Prj_No = node[0].id;
                 $.ajax({
                     url: "{{route('getEditBladePrj')}}",
                     type: "POST",
@@ -231,7 +226,9 @@
                         {{-- Parnt_Acc --}}
                         <input type="text" name="Prj_Parnt" id="Prj_Parnt" value="{{0}}" hidden>
                         <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
-                        {{-- Prj_Parnt ebd --}}
+                        <input type="text" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
+
+                    {{-- Prj_Parnt ebd --}}
 
                         <div class="row">
                             <div class="col-md-1 pull-left">
