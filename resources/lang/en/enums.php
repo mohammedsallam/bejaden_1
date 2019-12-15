@@ -201,10 +201,11 @@ return [
         BusStatusType::stoped => 'stoped',
         BusStatusType::weekend => 'weekend',
     ],
-    PayType::class => [
-        PayType::bank => 'bank',
-        PayType::check => 'check',
-        PayType::cache => 'cache',
+    PayType::class => [   
+        PayType::cache => 'cache',//1
+        PayType::check => 'check',//2
+        PayType::cache => 'visa',//3
+        PayType::bank => 'bank transform',//4
     ],
 
 

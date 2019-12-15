@@ -420,14 +420,18 @@ class SubscribeController extends Controller
     public function createCstmNo(Request $request){
         if($request->ajax()){
             $last_no = 0;
-            if(count(MTsCustomer::all()) == 0){         //no records
+            if(count(MTsCustomer::all()) == 0){
+//                return 'first';
+                //no records
                 $last_no = $request->Brn_No * 10000;
             }else{
-                $last_cstm = MTsCustomer::where('Cstm_No', 'LIKE', $request->Brn_No.'%')->orderBy('Cstm_No', 'desc')->first();
+                $last_cstm = MTsCustomer::where('Brn_No',  $request->Brn_No)->orderBy('Cstm_No', 'desc')->first();
                 if($last_cstm == null){
+//                    return 'else first';
                     $last_no = $request->Brn_No * 10000;
                 }
                 else{
+//                    return 'else second';
                     $last_no = $last_cstm->Cstm_No;
                 }
             }

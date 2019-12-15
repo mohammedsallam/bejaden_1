@@ -6,8 +6,9 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 final class PayType extends Enum implements LocalizedEnum
-{
-    const bank = 0;
-    const check = 1;
-    const cache = 2;
+{ 
+    const cache = 1;
+    const check = 2;
+    const visa = 3;
+    const bank = 4;
 }
