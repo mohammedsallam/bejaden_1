@@ -606,9 +606,10 @@ if (!function_exists('load_dep')){
 }
 
 if (!function_exists('load_prj')){
-    function load_prj($select = null,$dep_hide = null){
+    function load_prj($select = null,$dep_hide = null, $Cmp_No){
 
-        $projects = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_Parnt', 'Prj_No', 'ID_No']);
+
+        $projects = Projectmfs::where('Cmp_No', $Cmp_No)->get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_Parnt', 'Prj_No', 'ID_No']);
 
         $dep_arr = [];
         foreach($projects as $project){

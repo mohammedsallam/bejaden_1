@@ -21,7 +21,7 @@ Route::group(['prefix'=>'admin'],function (){
         return back();
     });
 //    admin panal
-    Route::group(['middleware'=>'auth:admin'],function (){
+    Route::group(['middleware'=>'auth:admin'], function(){
 //        laguage
 //        dashboard
         Route::get('/dashboard','DashboardController@home')->name('admin.home');
@@ -70,6 +70,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
         Route::post('departments/getTree','Admin\Department\DepartmentsController@getTree')->name('getTree');
         Route::post('departments/initChartAcc','Admin\Department\DepartmentsController@initChartAcc')->name('initChartAcc');
+        Route::post('departments/getParentName','Admin\Department\DepartmentsController@getParentName')->name('getParentName');
 
 
         Route::get('departments/department/Review','Admin\Department\DepartmentsController@Review');
@@ -96,25 +97,14 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
         Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getEditBlade','Admin\Project\ProjectController@getEditBlade')->name('getEditBlade');
-        Route::post('projects/createNewAcc','Admin\Project\ProjectController@createNewAcc')->name('createNewAcc');
-        Route::post('projects/initChartAcc','Admin\Project\ProjectController@initChartAcc')->name('initChartAcc');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
+        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
+        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
+        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
 
 
         Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
         Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController@reviewdepartment')->name('reviewdepartment');
-
-
-//
-//        Route::resource('cc','Admin\Cc\CcController');
-//        Route::get('cc/report/motioncc','Admin\Cc\ReportController@motioncc');
-//        Route::get('cc/report/motioncc/show','Admin\Cc\ReportController@show');
-//        Route::get('cc/report/motioncc/details','Admin\Cc\ReportController@details');
-//        Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-//        Route::get('cc/report/checkReports','Admin\Cc\ReportController@checkReports');
-//        Route::get('cc/report/checkReports/show','Admin\Cc\ReportController@checkShow');
-//        Route::get('cc/report/checkReports/details','Admin\Cc\ReportController@checkDetails');
-//        Route::post('cc/report/checkReports/pdf','Admin\Cc\ReportController@print');
 
 
 
@@ -126,6 +116,7 @@ Route::group(['prefix'=>'admin'],function (){
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
+
         // Route::resource('relatedness','Admin\RelatednessController');
 
         Route::resource('systems','Admin\SystemController');
@@ -166,13 +157,15 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('delegates', 'Admin\Delegates\DelegatesController');
+        //Route::get('branch','Admin\Delegates\DelegatesController@getBranches')->name('getBranch');
+
 
         Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
 
 
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
-        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranches');
+        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
 
 //        report
@@ -190,6 +183,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        branches
         Route::resource('branches','Admin\Branches\BranchesController');
+        Route::post('branches/getBranchesAndStores','Admin\Branches\BranchesController@getBranchesAndStores')->name('getBranchesAndStores');
 
 
 //        funds and banks
@@ -217,8 +211,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('receiptsData/delete','Admin\banks\ReceiptController@delete');
         Route::post('receiptsData/singledelete','Admin\banks\ReceiptController@singledelete');
 
+        Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
+        Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
+        Route::get('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
 
-        //Edit by: Norhan Hesham Foda
+
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
         Route::get('banks/Receipt/receipts/catch/all','Admin\banks\ReceiptController@catch')->name('receipts.catch');

@@ -1,5 +1,7 @@
 @extends('admin.index')
 @section('title',trans('admin.projects'))
+@inject('customers', 'App\Models\Admin\MTsCustomer')
+@inject('delegates', 'App\Models\Admin\AstSalesman')
 @section('content')
 @push('js')
     <script>
@@ -7,10 +9,28 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
+            // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
+            $(document).on('change', '#Select_Cmp_No', function(){
+                $('#jstree').jstree('destroy');
+                var tree = [];
+                var Cmp_No = $('#Select_Cmp_No').val();
+                if(Cmp_No != null){
+                    $.ajax({
+                        url: "{{route('getTreePrj')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                        success: function(data){
+
+                            dataParse = JSON.parse(data);
+
+                            for(var i = 0; i < dataParse.length; i++){
+                                tree.push(dataParse[i])
+                            }
 
             $('#jstree').jstree({
                 "core" : {
-                    'data' : {!! load_prj('parent_id') !!},
+                    //'data' : {!! load_prj('parent_id', '', '') !!},
                     "themes" : {
                         "variant" : "large"
                     },
@@ -77,6 +97,10 @@
                 prevent = true;
                 handle_dbclick(e);
             });
+                        }
+                    });
+                }
+            });
 
 
             function handle_click(Prj_No, children){
@@ -86,7 +110,7 @@
                 // var type = node.attr('rel');
                 // var Prj_No = node[0].id;
                 $.ajax({
-                    url: "{{route('getEditBlade')}}",
+                    url: "{{route('getEditBladePrj')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Prj_No: Prj_No, children: children },
@@ -94,14 +118,14 @@
                         $('#chart_form').html(data);
                     }
                 });
-            }}
+            }
 
             function handle_dbclick(e){
                 var node = $(e.target).closest("li");
                 var type = node.attr('rel');
                 var Prj_No = node[0].id;
                 $.ajax({
-                    url: "{{route('createNewAcc')}}",
+                    url: "{{route('createNewAccPrj')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Prj_No: Prj_No },
@@ -185,10 +209,20 @@
         <div class="box-body table-responsive" id="create_chart">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="box-header">
-                        <h3 class="box-title" style="display: inline-block">{{$title}}</h3>
-                    </div>
                     <div id="parent_name" style="display: inline-block"></div>
+                    <div class="box-header">
+                        <div class="form-group row">
+                            <h3 class="box-title col-md-3">{{$title}}</h3>
+                            <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                <option value="">{{trans('admin.select_Cmp')}}</option>
+                                @if(count($cmps) > 0)
+                                    @foreach($cmps as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                     <div id="jstree" style="margin-top: 20px"></div>
                 </div>
                 <div class="col-md-6" id="chart_form">
@@ -204,29 +238,32 @@
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                             </div>
 
-                            {{-- رقم الحساب --}}
+                            {{-- رقم المشروع --}}
                             <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
                             <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-1" value="{{$Prj_No}}">
-                            {{-- رقم الحساب --}}
-
-                            {{-- رقم الشركه --}}
-                            <div class="form-group col-md-8">
-                                <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-                                <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">
-                                    <option value="">{{trans('admin.select')}}</option>
-                                    @if(count($cmps) > 0)
-                                        @foreach($cmps as $cmp)
-                                            <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                            {{-- نهاية رقم الشركه --}}
-
+                            {{-- نهاية رقم المشروع --}}
                             {{-- تصنيف الحساب --}}
                             <input type="text" value="{{0}}" name="Level_Status" hidden>
                             {{-- نهاية تصنيف الحساب --}}
                         </div>
+                            {{-- العميل --}}
+                            <div class="form-group row">
+                                <label class="col-md-2" for="Cstm_No">{{trans('admin.subscriper')}}:</label>
+                                <div class="col-md-9">{!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                    ])!!}</div>
+                            </div>
+                            {{-- نهاية العميل --}}
+
+                            {{-- المندوب --}}
+                            <div class="form-group row">
+                                <label class="col-md-2" for="Slm_No">{{trans('admin.slm_no')}}:</label>
+                                <div class="col-md-9">{!!Form::select('Slm_No', $delegates->pluck('Slm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                        'class'=>'form-control', 'placeholder'=>trans('admin.select')
+                                    ])!!}</div>
+                            </div>
+
+
 
                         {{-- اسم الحساب عربى --}}
                         <div class="form-group row">

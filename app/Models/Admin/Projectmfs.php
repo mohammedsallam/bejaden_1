@@ -34,8 +34,8 @@ class Projectmfs extends Model
         'Area_No',
         'Acc_DB',       //حساب المصاريف للمشاريع
         'Acc_CR',       //حساب الايرادات للمشاريع
-        'FBal_Db',      //اول المدة مدين
-        'FBal_Cr',      //اول المدة دائن
+        'FBal_DB',      //اول المدة مدين
+        'FBal_CR',      //اول المدة دائن
         'DB11',
         'DB12',
         'DB13',
@@ -66,8 +66,8 @@ class Projectmfs extends Model
         'Ordr_Dt',      //تاريخ التعميد
         'Prj_Adr',      //عنوان المشروع
         'Prj_Tel',      //هاتف المشروع
-        'Prj_Mobile',   //تليفون المشروع
-        'Prj_Mobile1',  //موبيل المشروع
+        'Prj_Mobile',   //موبيل المشروع
+        //'Prj_Mobile1',  //موبيل المشروع
         //'Nxt_Vst',      //الزيارة القادمة
         'Mnth_Year',    //سنة/شهر
         'Cntct_Prsn1',  //الشخص المسئول

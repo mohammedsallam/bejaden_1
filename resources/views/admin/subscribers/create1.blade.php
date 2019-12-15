@@ -29,7 +29,7 @@
             });
 
              $("#countries").change(function(){
-                //get governorates
+
                 var country_id = $(this).val();
 
                  if(country_id){
@@ -56,12 +56,11 @@
          // })
 
          $("#companies").change(function(){
-                //get governorates
-                var company_id = $(this).val();
 
-                 if(company_id){
+                var Cmp_No = $(this).val();
+                 if(Cmp_No){
                         $.ajax({
-                            url : "{{route('getBranches')}}",
+                            url : "{{route('getBranch')}}",
                             type : 'get',
                             dataType:'html',
                             data:{Cmp_No:Cmp_No},
@@ -70,12 +69,7 @@
                         }
                     })
                  }
-
-
             });
-
-
-
         })
 
 
@@ -219,11 +213,11 @@
                 </div>
                     <div class="col-md-12">
                         <div class="col-md-2" style="margin-right: -54px; left: -27px;">{!!Form::label('Tel1', trans('admin.tel_1'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel1', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel1', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-2" style="margin-right: -54px;left: -27px;">{!!Form::label('Tel2', trans('admin.mobile'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel2', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel2', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
                     </div>
                 <div class="row col-md-8">
                     <div class="col-md-12">
@@ -270,8 +264,8 @@
                         <div class="col-md-3" style="padding: 3px">{!!Form::label('City_No', trans('admin.city'))!!}</div>
                         <div class="col-md-9"  style="margin-bottom: 10px;">
                            <select class="form-control" name="City_No" id="cities">
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
+                                <option>{{trans('admin.select')}}</option>
+                            </select>
 
                         </div>
                     </div>
@@ -326,7 +320,7 @@
                         </div>
                         <div class="col-md-12">
                         <div class="col-md-3">{!!Form::label('Linv_Net', trans('admin.Linv_Net'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('Linv_Net', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Linv_Net', null, ['class'=>'form-control'])!!}</div>
                         </div>
                     </fieldset>
 
@@ -334,7 +328,7 @@
                         <legend>{{trans('admin.last_mo')}}</legend>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
-                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
+                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
                         </div>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>

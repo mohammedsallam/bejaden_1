@@ -195,4 +195,11 @@ class BranchesController extends Controller
         $branch->delete();
         return redirect(aurl('branches'));
     }
+
+    public function getBranchesAndStores(Request $request){
+        if($request->ajax()){
+            $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm'.ucfirst(session('lang'))]);
+            return view('admin.branches.dlv_stor', compact('branches'));
+        }
+    }
 }

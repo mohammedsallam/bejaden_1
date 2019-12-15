@@ -8,7 +8,7 @@ use App\Models\Admin\MainCompany;
 
 class MainBranch extends Model
 {
-    protected $table = 'MainBranch';
+    protected $table = 'mainbranch';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Cmp_No',

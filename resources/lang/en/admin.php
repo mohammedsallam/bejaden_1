@@ -736,6 +736,7 @@ return [
     'fund_and_banks'=>'Fund And Banks',
     'create_fund_and_banks'=>'Create New Fund And Banks',
     'create_catch_receipt'=>'Create Catch Receipt',
+    'Pymt_By' => 'Payment By',
     'create_receipt'=>'Create Receipt',
     'receipts'=>'Receipts',
     'receipt'=>'receipt',

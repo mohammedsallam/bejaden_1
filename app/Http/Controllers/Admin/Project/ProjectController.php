@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\project;
 
 use App\Branches;
 
+use App\city;
 use App\Contractors;
 
 use App\employee;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\levels;
 use App\limitationReceipts;
 use App\limitationsType;
+use App\Models\Admin\MainBranch;
 use App\operation;
 use App\pjitmmsfl;
 use App\receipts;
@@ -72,35 +74,28 @@ class ProjectController extends Controller
     }
 
     public function createNewPrj(Request $request){
+//dd($request->all());
         if($request->ajax()){
             if($request->parent){
-                $parent = Projectmfs::where('Prj_No', $request->parent)->get(['Prj_No', 'Cmp_No', 'Level_No'])->first();
+                $parent = Projectmfs::where('Prj_No', $request->parent)
+                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                    ->get(['Prj_No', 'Cmp_No', 'Level_No', 'Prj_Parnt'])
+                    ->first();
                 $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
                 $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
-                $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
-                $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+               // $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+               // $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+               // dd($parent->Prj_Parnt);
                 $Prj_No = $this->createPrjNo($parent->Prj_No);
+                //dd($Prj_No);
+                //dd($request->Level_No);
                 return view('admin.projects.create', ['title' => trans('admin.projects'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No,
-                    'balances' => $balances, 'incomes' => $incomes]);
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No]);
             }
-            // else{
-            //     return 'else';
-            //     if(session('Cmp_No') == -1){
-            //         $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            //     }
-            //     else{
-            //         $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-            //     }
-            //     $chart = Projectmfs::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-            //     $Acc_No = $this->createAccNo(0);
-            //     return view('admin.departments.create', ['title' => trans('admin.Departments'),
-            //                 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' => $Acc_No]);
-            // }
         }
     }
 
-    public function initChartAcc(){
+    public function initChartPrj(){
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
@@ -125,17 +120,18 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->Level_No);
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
-
+            //dd($request->all());
             $chart = new Projectmfs;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Prj_NmAr = $request->Prj_NmAr;
@@ -144,32 +140,25 @@ class ProjectController extends Controller
             $chart->Level_No = 1;
             $chart->Prj_Parnt = 0;
             $chart->User_ID = Auth::user()->id;
-            // $chart->Acc_No = $this->createAccNo($chart->Parnt_Acc);
             $chart->Prj_No = $request->Prj_No;
-            // $created_Acc_No = $this->createAccNo($chart->Parnt_Acc);
-            // if($request->Acc_No == $created_Acc_No){
-            //     $chart->Acc_No = $created_Acc_No;
-            // }
-            // else{
-            //     $chart->Acc_No = $request->Acc_No;
-            // }
             $chart->save();
             $chart->Tr_Dt = $chart->created_at;
             $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
             $chart->Opn_Date = $chart->updated_at;
             $chart->save();
+            //dd($chart);
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
         else if($request->Level_Status == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
                 'Prj_NmEn' => 'sometimes',
                 'Prj_Status' => 'sometimes',
                 'Level_Status' => 'sometimes',
                 //'Acc_Ntr' => 'required',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
                 'Prj_Status' => trans('admin.Prj_Status'),
@@ -177,14 +166,18 @@ class ProjectController extends Controller
                 //'Acc_Ntr' => trans('admin.category')
             ]);
 
-            // return $request;
+            //dd($request->parent);
             $chart = new Projectmfs;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Prj_NmAr = $request->Prj_NmAr;
             $chart->Prj_NmEn = $request->Prj_NmEn;
             $chart->Level_Status = $request->Level_Status;
+            //dd($request->parent);
             $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
+
+            //dd($parent);
             $chart->Level_No = $parent->Level_No + 1;
+            //$chart->Level_No = $chart->Level_No + 1;
             $chart->Prj_Parnt = $request->Prj_Parnt;
             $chart->Prj_Status = $request->Prj_Status;
             $chart->Costcntr_No = $request->Costcntr_No;  //مركز التكلفه
@@ -206,6 +199,7 @@ class ProjectController extends Controller
                 $parent_level->Level_Status = 0;
                 $parent_level->save();
             }
+
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
     }
@@ -258,8 +252,10 @@ class ProjectController extends Controller
             }
             $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
-            $chart = Projectmfs::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
-            $chart_item = Projectmfs::where('Acc_No', $request->Acc_No)->first();
+            $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
+            $chart_item =Projectmfs::where('Prj_No', $request->Prj_No)
+                ->where('Cmp_No', session('Chart_Cmp_No'))
+                ->first();
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.projects.edit', ['title' => trans('admin.projects'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
@@ -276,37 +272,44 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $chart = Projectmfs::where('Acc_No', $id)->first();
+        //dd($request->Level_No);
+        $chart = Projectmfs::where('Prj_No', $id)
+                           ->where('Cmp_No', session('Chart_Cmp_No'))
+                           ->first();
+        //dd($chart);
         // if($chart->Level_Status == 0){
+
         if($chart->Level_No == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'required',
                 'Prj_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
+                //'Cmp_No' => trans('admin.cmp_no'),
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
 
-            $chart->Cmp_No = $request->Cmp_No;
+            $chart->Cmp_No   = $request->Cmp_No;
             $chart->Prj_NmAr = $request->Prj_NmAr;
             $chart->Prj_NmEn = $request->Prj_NmEn;
-            $chart->Acc_No = $request->Acc_No;
+            $chart->Prj_No   = $request->Prj_No;
             // $chart->Parnt_Acc = 0;
-            $chart->User_ID = Auth::user()->id;
+            $chart->User_ID  = Auth::user()->id;
             $chart->save();
             $chart->Tr_Dt = $chart->created_at;
             $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
+            $chart->Updt_Date = $chart->updated_at;
             $chart->save();
 
-            // $children = $child = MtsChartAc::where('Acc_No', 'LIKE '.$chart->Acc_No.'%')->get(['Cmp_No']);
+            $children = $child = Projectmfs::where('Prj_No', 'LIKE '.$chart->Prj_No.'%')->get(['Cmp_No']);
             // return $children;
+
+
             if($request->children){
                 if(count($request->children) > 0){
-                    foreach($request->children as $acc_no){
-                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    foreach($request->children as $prj_no){
+                        $child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
                     }
                 }
             }
@@ -314,7 +317,7 @@ class ProjectController extends Controller
         }
         else{
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
+                //'Cmp_No' => 'required',
                 'Prj_NmAr' => 'required',
                 'Prj_NmEn' => 'sometimes',
                 'Acc_Typ' => 'sometimes',
@@ -329,7 +332,6 @@ class ProjectController extends Controller
                 //'Acc_Ntr' => trans('admin.category')
             ]);
 
-            // return $request->Fbal_DB;
             $chart->Cmp_No = $request->Cmp_No;
             $chart->Prj_NmAr = $request->Prj_NmAr;
             $chart->Prj_NmEn = $request->Prj_NmEn;
@@ -338,13 +340,11 @@ class ProjectController extends Controller
             // $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
             // $chart->Level_No = $parent->Level_No + 1;
             // $chart->Parnt_Acc = $request->Parnt_Acc;
-            $chart->Acc_Typ = $request->Acc_Typ;
-            //$chart->Clsacc_No1 = $request->Clsacc_No1;
-            //$chart->Clsacc_No2 = $request->Clsacc_No2;
+            //$chart->Acc_Typ = $request->Acc_Typ;
             $chart->Costcntr_No = $request->Costcntr_No;
             $chart->Prj_Actv = $request->Prj_Actv;
-            $chart->Cr_Blnc = $request->Cr_Blnc;
-            $chart->Acc_Ntr = $request->Acc_Ntr;
+            //$chart->Cr_Blnc = $request->Cr_Blnc;
+            //$chart->Acc_Ntr = $request->Acc_Ntr;
             $chart->Fbal_DB = $request->Fbal_DB;
             $chart->Fbal_CR = $request->Fbal_CR;
             $chart->User_ID = Auth::user()->id;
@@ -356,13 +356,13 @@ class ProjectController extends Controller
 
             if($request->children){
                 if(count($request->children) > 0){
-                    foreach($request->children as $acc_no){
-                        $child = MtsChartAc::where('Acc_No', $acc_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    foreach($request->children as $prj_no){
+                        $child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
                     }
                 }
             }
 
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_update')));
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
         }
     }
 
@@ -374,20 +374,20 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        $chart = MtsChartAc::where('Acc_No', $id)->first();
+        $chart = Projectmfs::where('Prj_No', $id)->first();
         if(count($chart->children) > 0){
             return back()->with(session()->flash('error',trans('admin.chart_has_children')));
         }
         else{
             $chart->delete();
-            return redirect(aurl('departments'))->with(session()->flash('message',trans('admin.success_deleted')));
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_deleted')));
         }
     }
 
     public function reports()
     {
         $title = trans('admin.Departments_reports');
-        return view('admin.departments.reports.index',compact('title'));
+        return view('admin.projects.reports.index',compact('title'));
     }
     public function print()
     {
@@ -705,13 +705,15 @@ class ProjectController extends Controller
             }
         }
         else{
-            $parent = Projectmfs::where('Prj_Parnt', $Prj_Parnt)->first();
+            $parent = Projectmfs::where('Prj_No', $Prj_Parnt)->first();
             if(count($parent->children) > 0){
-                $max = Projectmfs::where('Prj_Parnt', $parent->Prj_Parnt)->orderBy('Prj_Parnt', 'desc')->get(['Prj_Parnt'])->first();
-                return $max->Prj_Parnt + 1;
+                $max = Projectmfs::where('Prj_Parnt', $parent->Prj_No)
+                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                    ->orderBy('Prj_No', 'desc')->get(['Prj_No'])->first();
+                return $max->Prj_No + 1;
             }
             else{
-                $Prj_Parnt = (int)$Prj_Parnt.'01';
+                $Prj_No = (int)$Prj_Parnt.'01';
                 return $Prj_No;
             }
             // $chart = Projectmfs::where('Parnt_Acc', $Parnt_Acc)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
@@ -744,6 +746,23 @@ class ProjectController extends Controller
             'total_credit' => $total_credit,
             'total_balance' => $total_balance);
         return $total;
+    }
+    public function getTree(Request $request){
+        if($request->ajax()){
+            session(['Chart_Cmp_No' => $request->Cmp_No]);
+            $tree = load_prj('parent_id', null, $request->Cmp_No);
+            return $tree;
+        }
+    }
+
+
+    public function getBranches(Request $request)
+    {
+
+        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
+
+
+        return view('admin.projects.get_branches', compact('branches'));
     }
 
 }

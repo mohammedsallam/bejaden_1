@@ -14,7 +14,9 @@ class AstMarket extends Model
         'Mrkt_No',
         'Brn_No',
         'Mrkt_NmEn',
-        'Mrkt_NmAr'
+        'Mrkt_NmAr',
+        'Cmp_No',
+        'Mrkt_Active',
     ];
 
 }

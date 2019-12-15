@@ -226,24 +226,17 @@
                         <div class="box-header">
                             {{-- رقم الشركه --}}
                             <div class="form-group row">
-                                    <h3 class="box-title col-md-3">{{$title}}</h3>
-                                    <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
-                                        <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
-                                        @if(count($cmps) > 0)
-                                            @foreach($cmps as $cmp)
-                                                <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                                {{-- نهاية رقم الشركه --}}
-                            {{-- @if(count($cmps) > 0)
-                                @foreach($cmps as $cmp)
-                                    @if($cmp->Cmp_No == $chart_item->Cmp_No)
-                                        <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
+                                <h3 class="box-title col-md-3">{{$title}}</h3>
+                                <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                    <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
+                                    @if(count($cmps) > 0)
+                                        @foreach($cmps as $cmp)
+                                            <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                        @endforeach
                                     @endif
-                                @endforeach
-                            @endif --}}
+                                </select>
+                            </div>
+                            {{-- نهاية رقم الشركه --}}
                         </div>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
@@ -263,7 +256,7 @@
                         
                             {{-- رقم الحساب --}}
                             <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-                            <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-1" value="{{$Acc_No}}">
+                            <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$Acc_No}}">
                             {{-- رقم الحساب --}}
 
                             {{-- رقم الشركه --}}

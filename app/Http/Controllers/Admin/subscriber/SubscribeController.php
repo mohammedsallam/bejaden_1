@@ -144,8 +144,29 @@ class SubscribeController extends Controller
         ]);
 
         //$input = $request->all();
+        $sub = new MTsCustomer();
+        $sub->Cmp_No = $request->Cmp_No;
+        //$sub->Cstm_No = $this->createCstmNo($sub->Brn_No);
+        $sub->Brn_No = $request->Brn_No;
+        $sub->Cstm_Active = $request->Cstm_Active;
+        $sub->Cstm_Ctg = $request->Cstm_Ctg;
+        $sub->Cstm_Refno = $request->Cstm_Refno;
+        $sub->Acc_No = $request->Acc_No;
+        $sub->Cstm_NmEn = $request->Cstm_NmEn;
+        $sub->Cstm_NmAr = $request->Cstm_NmAr;
+        $sub->Catg_No = $request->Catg_No;
+        $sub->Slm_No = $request->Slm_No;
+        $sub->Mrkt_No = $request->Mrkt_No;
+        $sub->Nutr_No = $request->Nutr_No;
+        $sub->Cntry_No = $request->Cntry_No;
+        $sub->City_No = $request->City_No;
+        $sub->Area_No = $request->Area_No;
+        $sub->Credit_Value = $request->Credit_Value;
+        $sub->Credit_Days = $request->Credit_Days;
 
-        MTsCustomer::create($data);
+        $sub->save();
+
+
 
         return redirect(aurl('subscribers'))->with(session()->flash('message',trans('admin.success_add')));
 
@@ -233,7 +254,18 @@ class SubscribeController extends Controller
      */
     public function show($ID_No)
     {
-        $subscriber= MTsCustomer::findOrFail($ID_No);
+        $subscriber= MTsCustomer::findOrFail($ID_No); //id
+
+//        $subcriber = MTsCustomer::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
+//        if($subcriber){
+//            MTsCustomer::create([
+//                $cstm_No = cstm_No+1
+//            ]);
+//        }
+//        $brn =  $subscriber->Brn_No;
+//        //dd($brn);
+//        $brn_no =$brn*1000; //1*1000 = 1000
+//        $sub = $brn_no . $subscriber->ID_No; //رقم العميل
         return view('admin.subscribers.show1',compact('subscriber'));
     }
 
@@ -245,24 +277,9 @@ class SubscribeController extends Controller
      */
     public function edit($ID_No,state $state)
     {
-
-
-        /*$departments = Department::where('operation_id',2)->where('type','1')->pluck('dep_name_'.session('lang'),'id');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
-        $countries = country::pluck('country_name_'.session('lang'),'id');
-        $cities = city::pluck('city_name_'.session('lang'),'id');
-        $states = state::pluck('state_name_'.session('lang'),'id');
-        $employees = employee::where('sales_officer',1)->pluck('name_'.session('lang'),'id');
-        $activity_type = activity_type::pluck('name_'.session('lang'),'id');
-        $glccs = glcc::where('type','=','1')->pluck('name_'.session('lang'),'id');
-        $subscriber = subscription::findOrFail($id);
-        return view('admin.subscribers.edit',['title'=>trans('admin.Edit_Subscriber'),'states'=>$states,'branches'=>$branches,'subscriber'=>$subscriber,'state'=>$state,'departments'=>$departments,'countries'=>$countries,'cities'=>$cities,'employees'=>$employees,'activity_type'=>$activity_type,'glccs'=>$glccs]);*/
-
         $subscriber = MTsCustomer::findOrFail($ID_No);
 
-
-
-         return view('admin.subscribers.edit1',compact('subscriber'));
+        return view('admin.subscribers.edit1',compact('subscriber'));
     }
 
     /**
@@ -357,77 +374,7 @@ class SubscribeController extends Controller
         $subscriber->update($input);
 
         return redirect(aurl('subscribers'))->with(session()->flash('message',trans('admin.success_update')));
-//         $data = $this->validate($request,[
-//             'name_ar' => 'required',
-//             'name_en'=>'sometimes',
-//             'email'=>'sometimes',
-//             'address'=>'sometimes',
-//             'branches_id'=>'sometimes',
-//             'status'=>'sometimes',
-//             'phone_1'=>'sometimes',
-//             'phone_2'=>'sometimes',
-//             'phone_3'=>'sometimes',
-//             'phone_4'=>'sometimes',
-//             'per_status'=>'sometimes',
-//             'facebook'=>'sometimes',
-//             'twitter'=>'sometimes',
-//             'tax_num'=>'sometimes',
-//             'Discounts'=>'sometimes',
-//             'Commissions'=>'sometimes',
-//             'note'=>'sometimes',
-//             'debtor'=>'sometimes',
-//             'creditor'=>'sometimes',
-//             'user_id'=>'sometimes',
-//             'admin_id'=>'sometimes',
-//             'operation_id'=>'sometimes',
-//             'countries_id'=>'sometimes',
-//             'city_id'=>'sometimes',
-//             'employee_id'=>'sometimes',
-//             'activity_type_id'=>'sometimes',
-//             'state_id'=>'sometimes',
-//             'tree_id'=>'required',
-//             'credit_limit'=>'sometimes',
-//             'repayment_period'=>'sometimes',
-//             'discount'=>'sometimes',
-//         ],[],[
-//             'name_ar' => trans('admin.arabic_name'),
-//             'name_en' => trans('admin.english_name'),
-//             'email' => trans('admin.email'),
-//             'image' => trans('admin.image'),
-//             'address' => trans('admin.addriss'),
-//             'supervisor' => trans('admin.supervisor'),
-//             'pay_status' => trans('admin.pay_status'),
-//             'branches_id' => trans('admin.Branches'),
-//             'start' => trans('admin.startsub'),
-//             'end' => trans('admin.endsub'),
-//             'phone_1' => trans('admin.mob'),
-//             'phone_2' => trans('admin.phone'),
-//             'per_status' => trans('admin.status'),
-//             'age' => trans('admin.age'),
-//             'gender' => trans('admin.gender'),
-//             'facebook' => trans('admin.facebook'),
-//             'twitter' => trans('admin.twitter'),
-//             'admin_id'=>trans ('admin.assigned_by')
-//         ]);
 
-//         if ($request->Discounts){
-//             $data['Discounts'] = $request->Discounts;
-//         }else{
-//             $data['Discounts'] = 0;
-//         }
-
-//         if ($request->Commissions){
-//             $data['Commissions'] = $request->Commissions;
-//         }else{
-//             $data['Commissions'] = 0;
-//         }
-// //
-// //        if ($request->cc_type){
-// //            $data['cc_type'] = $request->cc_type;
-// //        }else{
-// //            $data['cc_type'] = 0;
-// //        }
-//         $subscriber->update($data);
 
     }
 
@@ -464,11 +411,30 @@ class SubscribeController extends Controller
 
     public function getBranches(Request $request)
     {
-        dd($request->Cmp_No);
+        //dd($request->Cmp_No);
         $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
 
         return view('admin.subscribers.get_branches', compact('branches'));
     }
+
+    public function createCstmNo(Request $request){
+        if($request->ajax()){
+            $last_no = 0;
+            if(count(MTsCustomer::all()) == 0){         //no records
+                $last_no = $request->Brn_No * 10000;
+            }else{
+                $last_cstm = MTsCustomer::where('Cstm_No', 'LIKE', $request->Brn_No.'%')->orderBy('Cstm_No', 'desc')->first();
+                if($last_cstm == null){
+                    $last_no = $request->Brn_No * 10000;
+                }
+                else{
+                    $last_no = $last_cstm->Cstm_No;
+                }
+            }
+            return $last_no + 1;
+        }
+    }
+
 
 
 }

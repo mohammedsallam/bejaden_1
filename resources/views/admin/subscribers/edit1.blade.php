@@ -243,7 +243,7 @@
                         </div>
                         <div class="col-md-12">
                         <div class="col-md-3">{!!Form::label('Linv_Net', trans('admin.Linv_Net'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('Linv_Net', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Linv_Net', null, ['class'=>'form-control'])!!}</div>
                         </div>
                     </fieldset>
 
@@ -251,7 +251,7 @@
                         <legend>{{trans('admin.last_mo')}}</legend>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_No', trans('admin.LRcpt_No'))!!}</div>
-                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::date('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
+                            <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('LRcpt_No', null, ['class'=>'form-control'])!!}</div>
                         </div>
                         <div class="col-md-12">
                             <div class="col-md-3">{!!Form::label('LRcpt_Dt', trans('admin.LRcpt_Dt'))!!}</div>

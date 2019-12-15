@@ -114,5 +114,13 @@ class SupervisorsController extends Controller
         return redirect(aurl('supervisors'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
+    public function getBranches(Request $request)
+    {
+        //dd($request->Cmp_No);
+        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
+
+        return view('admin.supervisors.get_branches', compact('branches'));
+    }
+
 
 }
