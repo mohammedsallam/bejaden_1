@@ -14,7 +14,10 @@
     <input type="text" name="Prj_Parnt" id="Prj_Parnt" value="{{0}}" hidden>
     <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
     <input type="text" name="Level_Status" id="Level_No" value="{{0}}" hidden>
-    {{-- Prj_Parnt ebd --}}
+    @foreach($cmps as $cmp)
+        <input type="text" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
+    @endforeach
+{{-- Prj_Parnt ebd --}}
 
 
 <!-- Nav tabs -->
