@@ -120,6 +120,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
         //dd($request->Level_No);
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
