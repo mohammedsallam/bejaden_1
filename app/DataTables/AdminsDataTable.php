@@ -22,7 +22,7 @@ class AdminsDataTable extends DataTable
                 return '<a href="admins/'.$query->id.'/edit" class="btn btn-success"><i class="fa fa-edit"></i> ' .trans('admin.edit') .'</a>';
             })
             ->addColumn('branches', function ($query) {
-                return $query->branches['name_'.session('lang')];
+                return $query->branches->{'Brn_Nm'.ucfirst(session('lang'))};
             })
             ->addColumn('delete', 'admin.admins.btn.delete')
             ->rawColumns([

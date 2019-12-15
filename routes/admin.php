@@ -221,7 +221,9 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
         Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
-        Route::get('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
+        Route::post('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
+        Route::post('createTrNo', 'Admin\banks\ReceiptCatchController@createTrNo')->name('createTrNo');
+        Route::post('getCustomers', 'Admin\banks\ReceiptCatchController@getCustomers')->name('getCustomers');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');

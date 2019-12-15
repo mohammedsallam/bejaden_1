@@ -44,6 +44,10 @@ class CreateGLJrnalsTable extends Migration
             $table->bigInteger('Emp_No')->nullable();//رقم الموظف
             $table->float('Tr_Db')->nullable();//الحركه مدين
             $table->float('Tr_Cr')->nullable();//الحركه دائن
+            $table->integer('Tr_Crncy')->nullable();//العمله
+            $table->integer('Tr_ExchRat')->nullable();//سعر الصرف
+            $table->float('Tr_TaxVal', 50, 10)->nullable();//الضريبه
+            $table->integer('Salman_No')->nullable();//مندوب المبيعات
             $table->timestamps();
         });
     }

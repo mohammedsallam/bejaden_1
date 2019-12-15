@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\DataTables\catchDataTable;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\AstSalesman;
+use App\Models\Admin\GLjrnTrs;
+use App\Models\Admin\MTsCustomer;
+use App\Models\Admin\MainBranch;
+use App\Models\Admin\MtsChartAc;
 
 class ReceiptCatchController extends Controller
 {
@@ -94,8 +98,36 @@ class ReceiptCatchController extends Controller
 
     public function getSalesMan(Request $request){
         if($request->ajax()){
-            $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Brn_No', $request->Brn_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
             return view('admin.banks.catch.salman', ['salesman' => $salesman]);
+        }
+    }
+
+    public function createTrNo(Request $request){
+        $last_no = 0;
+        if(count(GLjrnTrs::all()) == 0){
+            $last_no = 0;
+        }
+        else{
+            $last_trans = GLjrnTrs::where('Brn_No', $request->Brn_No)->orderBy('Tr_No', 'desc')->first();
+            if($last_trans){
+                $last_no = $last_trans->Tr_No;
+            }
+            else{
+                $last_no = 0;
+            }
+        }
+        return $last_no + 1;
+    }
+
+    public function getCustomers(Request $request){
+        if($request->ajax()){
+            $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
+                                    ->where('Brn_No', $request->Brn_No)
+                                    ->get(['Cstm_No', 'Cstm_Nm'.ucfirst(session('lang'))]);
+            $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Customer'])->first();
+            $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->Acc_Customer)->get(['Acc_Nm'.ucfirst(session('lang'))]);
+            return response()->json(['customers' => $customers, 'mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
         }
     }
 }
