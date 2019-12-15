@@ -57,7 +57,7 @@
         </div>
 
         <div class="box-body">
-            {!! Form::open(['method'=>'POST','route' => 'suppliers.store']) !!}
+            {!! Form::open(['method'=>'POST','route' => 'project_contract.store']) !!}
             {{ Form::button('<i class="fa fa-save"></i>', ['type' => 'submit', 'class' => 'btn btn-primary','style' => 'float:left;display:inline-block'] )  }}
 
             <br>

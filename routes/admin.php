@@ -147,6 +147,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Projcontractmfs
         Route::resource('project_contract','Admin\Projcontractmfs\ProjcontractmfsController');
+        Route::post('project_contract/getComp','Admin\Projcontractmfs\ProjcontractmfsController@getComp')->name('getComp');
 
 
 //        astsupctg
