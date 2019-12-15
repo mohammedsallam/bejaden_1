@@ -197,9 +197,10 @@ return [
         BusStatusType::weekend => 'نهاية الأسبوع',
     ],
     PayType::class => [
-        PayType::bank => 'بنك',
-        PayType::check => 'شيك',
-        PayType::cache => 'نقدي',
+        PayType::cache => 'نقدي',//1
+        PayType::check => 'شيك',//2
+        PayType::visa => 'فيزا',//3
+        PayType::bank => 'تحويل بنكى',//4
     ],
 
 //    data links

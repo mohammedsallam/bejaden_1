@@ -52,11 +52,11 @@ class Admin extends Authenticatable
 
 
     public function company(){
-        return $this->hasOne(MainCompany::class,'id','ID_No');
+        return $this->hasOne(MainCompany::class,'ID_No','id');
     }
 
     public function branches(){
-        return $this->hasMany(MainBranch::class, 'id', 'ID_No');
+        return $this->hasOne(MainBranch::class, 'ID_No', 'id');
     }
 
 }

@@ -3,14 +3,17 @@
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\MainBranch;
+use App\Models\Admin\Projectmfs;
+use App\Models\Admin\MTsCustomer;
 
 class Projcontractmfs extends Model
 {
-    protected $table = 'MainCompany';
+    protected $table = 'projcontractmfs';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Cmp_No',
-       ' Cntrct_No',
+        'Cntrct_No',
         'Rvisd_No',
         'Cntrct_Actv',
         'Tr_Dt',
@@ -74,4 +77,14 @@ class Projcontractmfs extends Model
         'User_ID',
         'Updt_Date',
     ];
+
+    public function branshe(){
+        return $this->hasMany('App\Models\Admin\MainBranch','ID_No','Brn_No');
+    }
+    public function project(){
+        return $this->hasMany('App\Models\Admin\Projectmfs','ID_No','Prj_No');
+    }
+    public function subscriber(){
+        return $this->hasMany('App\Models\Admin\MTsCustomer','ID_No','Cstm_No');
+    }
 }
