@@ -85,7 +85,7 @@ class astsupctgDataTable extends DataTable
                         ],
                         'buttons' => [
                             [
-                                'text' => '<i class="fa fa-plus"></i> ' . trans('admin.Add_New_Supplier'),
+                                'text' => '<i class="fa fa-plus"></i> ' . trans('admin.AddClassification_suppliers'),
                                 'className' => 'btn btn-primary create',
                                 'action' => 'function( e, dt, button, config){ 
                                              window.location = "astsupctg/create";

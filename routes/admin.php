@@ -135,6 +135,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
+
 
 
         //Projcontractmfs

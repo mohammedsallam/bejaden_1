@@ -11,6 +11,7 @@ use App\Models\Admin\MTsCustomer;
 use App\Admin\Projcontractmfs;
 use App\DataTables\ProjcontractmfsDataTable;
 use App\Http\Controllers\Controller;
+use App\Models\Admin\MtsSuplir;
 use App\Models\Admin\Projectmfs;
 use App\projectcontract;
 use Illuminate\Http\Request;
@@ -314,4 +315,6 @@ class ProjcontractmfsController extends Controller
         $Projcontractmfs->delete();
         return redirect(aurl('project_contract'));
     }
+
+
 }

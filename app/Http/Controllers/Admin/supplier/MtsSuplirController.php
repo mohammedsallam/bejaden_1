@@ -23,7 +23,7 @@ class MtsSuplirController extends Controller
      */
     public function index(supplierDataTable $supplier)
     {
-        return $supplier->render('admin.supplier.index',['title'=>trans('admin.bus_supplier')]);
+        return $supplier->render('admin.supplier.index',['title'=>trans('admin.suppliers')]);
     }
 
     /**
@@ -40,7 +40,13 @@ class MtsSuplirController extends Controller
         $branches = Branches::pluck('name_'.session('lang'),'id');
         $company = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
         $departments = Department::where('operation_id',1)->where('type','1')->pluck('dep_name_'.session('lang'),'id');
-        return view('admin.supplier.create',['title'=> trans('admin.create_new_suppliers'),'astsupctg' => $astsupctg,'company' => $company,'countries' => $countries,'departments' => $departments,'branches' => $branches]);
+        $Sup_No = MtsSuplir::orderByRaw('updated_at - created_at DESC')->pluck('Sup_No')->first();
+        if ($Sup_No < 0 || $Sup_No == null){
+            $suplir = 1;
+        }else{
+            $suplir = $Sup_No + 1;
+        }
+        return view('admin.supplier.create',['title'=> trans('admin.create_new_suppliers'),'suplir' => $suplir,'astsupctg' => $astsupctg,'company' => $company,'countries' => $countries,'departments' => $departments,'branches' => $branches]);
     }
 
     /**
@@ -110,7 +116,7 @@ class MtsSuplirController extends Controller
             'Opn_Date' => 'sometimes',
             'Opn_Time' => 'sometimes',
 
-            'Cntct_Prsn1' => 'sometimes',
+           // 'Cntct_Prsn1' => 'sometimes',
             'Cntct_Prsn2' => 'sometimes',
             'Cntct_Prsn3' => 'sometimes',
             'Cntct_Prsn4' => 'sometimes',
@@ -156,6 +162,7 @@ class MtsSuplirController extends Controller
         ]);
 
 //        dd($data);
+
         $supplier->create($data);
         return redirect(aurl('suppliers'))->with(session()->flash('message',trans('admin.success_add')));
 
@@ -316,5 +323,28 @@ class MtsSuplirController extends Controller
         $supplier = MtsSuplir::where('ID_No',$id);
         $supplier->delete();
         return redirect(aurl('suppliers'));
+    }
+
+
+    public function createSupNo(Request $request){
+        if($request->ajax()){
+            $last_no = 0;
+            if(count(MtsSuplir::all()) == 0){
+//                return 'first';
+                //no records
+                $last_no = $request->Brn_No * 10000;
+            }else{
+                $last_cstm = MtsSuplir::where('Brn_No',  $request->Brn_No)->orderBy('Sup_No', 'desc')->first();
+                if($last_cstm == null){
+//                    return 'else first';
+                    $last_no = $request->Brn_No * 10000;
+                }
+                else{
+//                    return 'else second';
+                    $last_no = $last_cstm->Cstm_No;
+                }
+            }
+            return $last_no + 1;
+        }
     }
 }
