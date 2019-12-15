@@ -73,6 +73,7 @@ class ProjectController extends Controller
 
     }
 
+
     public function createNewPrj(Request $request){
         //dd($request->all());
         if($request->ajax()){
@@ -100,7 +101,6 @@ class ProjectController extends Controller
 
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
@@ -124,7 +124,6 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
@@ -135,8 +134,13 @@ class ProjectController extends Controller
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
-            $chart = $request->all();
-            $chart['Cmp_No'] = $request->Select_Cmp_No;
+//            dd($request->Cmp_No);
+
+//            $chart = $request->all();
+//            dd($request->Cmp_No);
+//            $chart['Cmp_No'] = $request->Cmp_No;
+
+            $chart['Cmp_No'] = session('Chart_Cmp_No');
             $chart['Level_No'] = 1;
             $chart['Prj_Parnt'] = 0;
             $chart['User_ID'] = Auth::user()->id;
@@ -219,6 +223,7 @@ class ProjectController extends Controller
     public function getEditBlade(Request $request){
         if($request->ajax()){
             if(session('Cmp_No') == -1){
+
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
             else{
@@ -250,8 +255,6 @@ class ProjectController extends Controller
         $chart = Projectmfs::where('Prj_No', $id)
                            ->where('Cmp_No', session('Chart_Cmp_No'))
                            ->first();
-        //dd($chart);
-        // if($chart->Level_Status == 0){
 
         if($chart->Level_No == 1){
             $data = $this->validate($request,[
@@ -263,30 +266,21 @@ class ProjectController extends Controller
                 'Prj_NmAr' => trans('admin.project_name'),
                 'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
-
-            $chart->Cmp_No   = $request->Cmp_No;
-            $chart->Prj_NmAr = $request->Prj_NmAr;
-            $chart->Prj_NmEn = $request->Prj_NmEn;
-            $chart->Prj_No   = $request->Prj_No;
-            // $chart->Parnt_Acc = 0;
-            $chart->User_ID  = Auth::user()->id;
-            $chart->save();
-            $chart->Tr_Dt = $chart->created_at;
-            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
-            $chart->Updt_Date = $chart->updated_at;
-            $chart->save();
-
-            $children = $child = Projectmfs::where('Prj_No', 'LIKE '.$chart->Prj_No.'%')->get(['Cmp_No']);
-            // return $children;
-
+            //dd($request->Cmp_No);
+            $charts = $request->all();
+            $charts['Tr_Dt'] = $request->created_at;
+            $charts['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $charts['Opn_Date'] = $request->created_at;
+            $charts['Updt_Date'] = $request->updated_at;
 
             if($request->children){
                 if(count($request->children) > 0){
                     foreach($request->children as $prj_no){
-                        $child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                        //$child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
                     }
                 }
             }
+            $chart->update($charts);
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
         }
         else{
@@ -305,39 +299,25 @@ class ProjectController extends Controller
                 'Level_Status' => trans('admin.project_type'),
                 //'Acc_Ntr' => trans('admin.category')
             ]);
-
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Prj_NmAr = $request->Prj_NmAr;
-            $chart->Prj_NmEn = $request->Prj_NmEn;
-            // $chart->Level_Status = $request->Level_Status;
-            // return $request->Parnt_Acc;
-            // $parent = MtsChartAc::where('Acc_No', $request->Parnt_Acc)->get(['Level_No'])->first();
-            // $chart->Level_No = $parent->Level_No + 1;
-            // $chart->Parnt_Acc = $request->Parnt_Acc;
-            //$chart->Acc_Typ = $request->Acc_Typ;
-            $chart->Costcntr_No = $request->Costcntr_No;
-            $chart->Prj_Actv = $request->Prj_Actv;
-            //$chart->Cr_Blnc = $request->Cr_Blnc;
-            //$chart->Acc_Ntr = $request->Acc_Ntr;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-            $chart->User_ID = Auth::user()->id;
-            $chart->save();
-            $chart->Tr_Dt = $chart->created_at;
-            $chart->Tr_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Tr_Dt)));
-            $chart->Updt_Date = $chart->updated_at;
-            $chart->save();
+            $charts = $request->all();
+            $charts['Tr_Dt'] = $request->created_at;
+            $charts['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $charts['Opn_Date'] = $request->created_at;
+            $charts['Updt_Date'] = $request->updated_at;
 
             if($request->children){
                 if(count($request->children) > 0){
                     foreach($request->children as $prj_no){
-                        $child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                        //$child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
                     }
                 }
             }
-
+//            dd($chart);
+//dd($request->all());
+            $chart->update($charts);
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
         }
+
     }
 
     /**
