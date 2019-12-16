@@ -72,10 +72,12 @@
 
 
 
+
+
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist"  style="margin-bottom: 15px;">
-    <li role="presentation" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
-    <li role="presentation"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
+    <li role="tabpanel" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
+    <li role="tabpane2"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -600,9 +602,8 @@
         </div>
         {{-- نهاية الحركات --}}
     </div>
-    <div role="tabpanel" class="tab-pane active" id="responsible_persons">
-        <div>
-            <div class="box-body">
+    <div role="tabpane2" class="tab-pane" id="responsible_persons">
+            < class="box-body">
 
                 @can('single')
 
@@ -648,7 +649,6 @@
                     </div>
 
 
-            </div>
 
 
             {{Form::close()}}
@@ -658,7 +658,6 @@
             @endcan
 
 
-        </div>
     </div>
 </div>
 
@@ -670,281 +669,4 @@
     {{csrf_field()}}
     {{method_field('DELETE')}}
 </form>
- {{-- الحركات --}}
- <div class="col-md-12">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">الشهر</th>
-            <th scope="col">الحركة مدين</th>
-            <th scope="col">الحركة دائن</th>
-            <th scope="col">الرصيد الحالى</th>
-            <th scope="col"> رصيد تقديرى</th>
-        </tr>
-        </thead>
-        <tbody>
 
-        <tr>
-            <th scope="row">يناير</th>
-            <td>
-                @if($chart_item->DB11 == null)
-                    0.00
-                @else
-                    {{$chart_item->DB11}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR11 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR11}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB11 - $chart_item->CR11}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">فبراير</th>
-            <td>
-                @if($chart_item->DB12 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB12}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR12 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR12}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB12 - $chart_item->CR12}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">مارس</th>
-            <td>
-                @if($chart_item->DB13 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB13}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR13 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR13}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB13 - $chart_item->CR13}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">ابريل</th>
-            <td>
-                @if($chart_item->DB14 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB14}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR14 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR14}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB14 - $chart_item->CR14}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">مايو</th>
-            <td>
-                @if($chart_item->DB15 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB15}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR15 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR15}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB15 - $chart_item->CR15}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">يونيو</th>
-            <td>
-                @if($chart_item->DB16 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB16}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR16 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR16}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB16 - $chart_item->CR16}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">يوليو</th>
-            <td>
-                @if($chart_item->DB17 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB17}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR17 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR17}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB17 - $chart_item->CR17}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">اغسطس</th>
-
-            <td>
-                @if($chart_item->DB18 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB18}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR18 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR18}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB18 - $chart_item->CR18}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">سبتمبر</th>
-
-            <td>
-                @if($chart_item->DB19 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB19}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR19 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR19}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB19 - $chart_item->CR19}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">أكتوبر</th>
-
-            <td>
-                @if($chart_item->DB20 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB20}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR20 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR20}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB20 - $chart_item->CR20}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">نوفمبر</th>
-
-            <td>
-                @if($chart_item->DB21 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB21}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR21 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR21}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB21 - $chart_item->CR21}}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">ديسمبر</th>
-
-            <td>
-                @if($chart_item->DB22 == null )
-                    0.00
-                @else
-                    {{$chart_item->DB22}}
-                @endif
-            </td>
-            <td>
-                @if($chart_item->CR22 == null )
-                    0.00
-                @else
-                    {{$chart_item->CR22}}
-                @endif
-            </td>
-            <td>
-                {{$chart_item->DB22 - $chart_item->CR22}}
-            </td>
-        </tr>
-
-        <tr style="background-color: #d3d9df">
-            <th scope="row">الإجمالى</th>
-
-            <td>
-                {{count($total) > 0? $total[0]->total_debit : 0.00}}
-            </td>
-            <td>
-                {{count($total) > 0? $total[0]->total_credit : 0.00}}
-
-            </td>
-            <td>
-                {{count($total) > 0? $total[0]->total_balance : 0.00}}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-{{-- نهاية الحركات --}}

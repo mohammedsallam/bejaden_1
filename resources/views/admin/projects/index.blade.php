@@ -907,7 +907,7 @@
                             </div>
                             {{-- نهاية الحركات --}}
                         </div>
-                        <div role="tabpanel" class="tab-pane active" id="responsible_persons">
+                            <div role="tabpane2" class="tab-pane " id="responsible_persons">
                             <div>
                                 <div class="box-body">
 

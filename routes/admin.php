@@ -115,6 +115,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
+        Route::post('createCstmNo','Admin\subscriber\SubscribeController@createCstmNo')->name('createCstmNo');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
 
         // Route::resource('relatedness','Admin\RelatednessController');
@@ -134,6 +135,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
+
 
 
         //Projcontractmfs

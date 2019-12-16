@@ -67,10 +67,24 @@
                             success : function(res){
                                 $('#branches').html(res)
                         }
-                    })
+                    });
                  }
             });
-        })
+         $("#branches").change(function () {
+             $.ajax({
+                 url : "{{route('createCstmNo')}}",
+                 type : 'post',
+                 dataType:'json',
+                 data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val() },
+                 success : function(res){
+                     // alert();
+                     $('#Cstm_No').val(res)
+
+                 }
+
+             });
+         });
+        });
 
 
         </script>

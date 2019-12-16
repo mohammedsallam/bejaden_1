@@ -10,7 +10,7 @@ class CreateProjectmfsTable extends Migration {
 		Schema::create('projectmfs', function(Blueprint $table) {
 			$table->increments('ID_No');
 			$table->timestamps();
-			$table->integer('Cmp_No')->unsigned()->nullable()->index();
+			$table->integer('Cmp_No')->unsigned()->nullable();
 			$table->integer('Prj_No')->unsigned()->nullable();
 			$table->integer('Prj_Parnt')->nullable();
 			$table->boolean('Level_Status')->nullable();
