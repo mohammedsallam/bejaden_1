@@ -24,6 +24,7 @@ class ProjcontractmfsDataTable extends DataTable
                 return '<a href="project_contract/'.$query->ID_No.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
             })
             ->addColumn('branshes', function ($query) {
+
                 return $query->branshe->map(function($branshe) {
                     if (app()->getLocale() == 'ar') {
                         return $branshe->Brn_NmAr;
@@ -34,12 +35,13 @@ class ProjcontractmfsDataTable extends DataTable
                 })->implode(' ');
             })
             ->addColumn('projects', function ($query) {
-                return $query->project->map(function($project) {
+                return $query->project->map(function($projecte) {
+
                     if (app()->getLocale() == 'ar') {
-                        return $project->name_ar;
+                        return $projecte->Prj_NmAr;
                     }
                     if (app()->getLocale() == 'en') {
-                        return $project->name_en;
+                        return $projecte->Prj_NmEn;
                     }
                 })->implode(' ');
             })
@@ -148,7 +150,7 @@ class ProjcontractmfsDataTable extends DataTable
     {
         return [
             ['name'=>'branshes','data'=>'branshes','title'=>trans('admin.section')],
-            ['name'=>'Prj_No','data'=>'Prj_No','title'=>trans('admin.project_name')],
+            ['name'=>'projects','data'=>'projects','title'=>trans('admin.project_name')],
             ['name'=>'Tr_Dt','data'=>'Tr_Dt','title'=>trans('admin.Date_of_contract')],
             ['name'=>'CntCompL_Priod','data'=>'CntCompL_Priod','title'=>trans('admin.period_contract')],
             ['name'=>'Cstm_No','data'=>'Cstm_No','title'=>trans('admin.Subscribers')],

@@ -97,7 +97,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
         Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getComp')->name('getTreePrj');
+        Route::post('projects/getproj','Admin\Project\ProjectController@getproj')->name('getproj');
         Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
@@ -142,6 +143,8 @@ Route::group(['prefix'=>'admin'],function (){
         //Projcontractmfs
         Route::resource('project_contract','Admin\Projcontractmfs\ProjcontractmfsController');
         Route::post('project_contract/getComp','Admin\Projcontractmfs\ProjcontractmfsController@getComp')->name('getComp');
+        Route::post('getproj','Admin\Projcontractmfs\ProjcontractmfsController@getproj')->name('getproj');
+
 
 
 //        astsupctg
