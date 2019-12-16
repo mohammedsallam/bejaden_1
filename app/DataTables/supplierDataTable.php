@@ -23,10 +23,10 @@ class supplierDataTable extends DataTable
                 return CurrencyType::getDescription($query->currency);
             })
             ->addColumn('show', function ($query) {
-                return '<a href="suppliers/'.$query->ID_No.'" class="btn btn-info edit"><i class="fa fa-eye"></i> ' .trans('admin.show') . '</a>';
+                return '<a href="suppliers/'.$query->ID_No.'" class="btn btn-info edit"><i class="fa fa-eye"></i> '. '</a>';
             })
             ->addColumn('edit', function ($query) {
-                return '<a href="suppliers/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' .trans('admin.edit') . '</a>';
+                return '<a href="suppliers/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . '</a>';
             })
             ->addColumn('delete', 'admin.supplier.btn.delete')
             ->rawColumns([
@@ -99,7 +99,7 @@ class supplierDataTable extends DataTable
                             ['extend' => 'reload','className' => 'btn btn-info' , 'text' => '<i class="fa fa-refresh"></i>']
                         ],
                         "initComplete" => "function () {
-                                    this.api().columns([0,1,2,3,4,5,6,7,8,9,10]).every(function () {
+                                    this.api().columns([0,1,2,3,4]).every(function () {
                                         var column = this;
                                         var input = document.createElement(\"input\");
                                         $(input).appendTo($(column.footer()).empty())
@@ -125,7 +125,7 @@ class supplierDataTable extends DataTable
         return [
             ['name'=>'Sup_Nm'.ucfirst(session('lang')),'data'=>'Sup_Nm'.ucfirst(session('lang')),'title'=>trans('admin.name')],
             ['name'=>'Sup_Adr','data'=>'Sup_Adr','title'=>trans('admin.addriss')],
-            ['name'=>'Sup_Rsp','data'=>'Sup_Rsp','title'=>trans('admin.responsible')],
+            ['name'=>'Cntct_Prsn1','data'=>'Cntct_Prsn1','title'=>trans('admin.responsible')],
             ['name'=>'Sup_Email','data'=>'Sup_Email','title'=>trans('admin.email')],
             ['name'=>'Credit_Value','data'=>'Credit_Value','title'=>trans('admin.credit_limit')],
 //            ['name'=>'Fbal_Db','data'=>'Fbal_Db','title'=>trans('admin.debtor')],

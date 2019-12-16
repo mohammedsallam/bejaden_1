@@ -134,8 +134,8 @@ class SupervisorDataTable extends DataTable
     {
         return [
             ['name'=>'Mrkt_No','data'=>'Mrkt_No','title'=>trans('admin.Mrkt_No')],
-            ['name'=>'Mrkt_NmAr'.ucfirst(session('lang')),'data'=>'Mrkt_Nm'.ucfirst(session('lang')),'title'=>trans('admin.arabic_name')],
-            ['name'=>'Mrkt_NmEn'.ucfirst(session('lang')),'data'=>'Mrkt_Nm'.ucfirst(session('lang')),'title'=>trans('admin.english_name')],
+            ['name'=>'Mrkt_NmAr','data'=>'Mrkt_NmAr','title'=>trans('admin.arabic_name')],
+            ['name'=>'Mrkt_NmEn','data'=>'Mrkt_NmEn','title'=>trans('admin.english_name')],
             ['name'=>'Brn_No','data'=>'Brn_No','title'=>trans('admin.Brn_No')],
             ['name'=>'created_at','data'=>'created_at','title'=>trans('admin.created_at')],
             ['name'=>'updated_at','data'=>'updated_at','title'=>trans('admin.updated_at')],

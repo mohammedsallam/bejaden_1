@@ -387,12 +387,13 @@
                             @hasanyrole('writer|admin')
                             <li class="active"><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>
                             <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>
+                            <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
                             @endhasanyrole
                         </ul>
                     </li>
                     @endhasanyrole
                     {{-- نهاية اعدادات الحسابات --}}
-
+                    
                     {{-- اعدادات الموظفين --}}
                     @hasanyrole('writer|admin')
                     <li class="treeview {{ active_menu('employee_setting')[0]  }}">

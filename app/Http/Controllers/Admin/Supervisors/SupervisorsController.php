@@ -40,7 +40,14 @@ class SupervisorsController extends Controller
     public function create()
     {
         $supervisor = AstMarket::get();
-        return view('admin.supervisors.create', compact('supervisor'));
+        $last = AstMarket::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
+
+        if(!empty($last) || $last || $last < 0){
+            $last = $last->Mrkt_No+1;
+        }else{
+            $last =  1;
+        }
+        return view('admin.supervisors.create', compact('supervisor', 'last'));
     }
 
 

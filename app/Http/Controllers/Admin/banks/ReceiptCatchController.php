@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\banks;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\DataTables\catchDataTable;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\AstSalesman;
@@ -11,6 +12,7 @@ use App\Models\Admin\GLjrnTrs;
 use App\Models\Admin\MTsCustomer;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MtsChartAc;
+use App\Models\Admin\MtsSuplir;
 
 class ReceiptCatchController extends Controller
 {
@@ -120,14 +122,67 @@ class ReceiptCatchController extends Controller
         return $last_no + 1;
     }
 
-    public function getCustomers(Request $request){
+    public function getSubAcc(Request $request){
         if($request->ajax()){
-            $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                                    ->where('Brn_No', $request->Brn_No)
-                                    ->get(['Cstm_No', 'Cstm_Nm'.ucfirst(session('lang'))]);
-            $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Customer'])->first();
-            $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->Acc_Customer)->get(['Acc_Nm'.ucfirst(session('lang'))]);
-            return response()->json(['customers' => $customers, 'mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
+            //حسابات
+            if($request->Acc_Ty == 1){
+                $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
+                                    ->where('Level_Status', 1)
+                                    ->where('Acc_Typ', 1)
+                                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
+                return view('admin.banks.catch.SubAcc', ['subAccs' => $charts]);
+            }
+            // عملاء
+            else if($request->Acc_Ty == 2){
+                $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
+                                        ->where('Brn_No', $request->Brn_No)
+                                        ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
+                return view('admin.banks.catch.SubAcc', ['subAccs' => $customers]);
+
+            }
+            // موردين
+            else if($request->Acc_Ty == 3){
+                $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
+                                        ->where('Brn_No', $request->Brn_No)
+                                        ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
+                return view('admin.banks.catch.SubAcc', ['subAccs' => $suppliers]);
+            }
+            // موظفين
+            else if($request->Acc_Ty == 4){
+
+            }
+        }
+    }
+
+    public function getMainAccNo(Request $request){
+        if($request->ajax()){
+            // حسابات
+            if($request->Acc_Ty == 1){
+                $AccNm = MtsChartAc::where('Cmp_No', $request->Cmp_No)
+                                        ->where('Acc_No', $request->Acc_No)
+                                        ->get(['Parnt_Acc', 'CostCntr_Flag as cc_flag', 'Costcntr_No as cc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
+                                        ->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                $mainAccNo = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
+                                        ->get(['Acc_No as acc_no'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm, 'AccNm' => $AccNm] );
+            }
+            // عملاء
+            else if($request->Acc_Ty == 2){
+                $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Customer as acc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->acc_no)->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
+            }
+            // موردين
+            else if($request->Acc_Ty == 3){
+                $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Suplier as acc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->acc_no)->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
+            }
+            // موظفين
+            else if($request->Acc_Ty == 4){
+
+            }
         }
     }
 }

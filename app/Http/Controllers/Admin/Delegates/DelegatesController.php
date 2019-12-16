@@ -43,7 +43,17 @@ class DelegatesController extends Controller
     {
 
         $delegate = AstSalesman::get();
-        return view('admin.delegates.create', compact('delegate'));
+        $last = AstSalesman::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
+
+        //dd($Cstm_No = $brn*1000 . 1);
+        if(!empty($last) || $last || $last < 0){
+            $last = $last->Slm_No+1;
+        }else{
+            $last =  1;
+        }
+
+        //$no = $this->createDelegateNo('Slm_No');
+        return view('admin.delegates.create', compact('delegate', 'last'));
     }
 
 
@@ -80,7 +90,6 @@ class DelegatesController extends Controller
             'Updt_Date'=> trans('admin.Updt_Date'),
 
         ]);
-
         AstSalesman::create($data);
 
         return redirect(aurl('delegates'))->with(session()->flash('message',trans('admin.success_add')));
@@ -152,6 +161,41 @@ class DelegatesController extends Controller
         $delegate->delete();
         return redirect(aurl('delegates'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
+
+//    public function createDelegateNo($Slm_No)
+//    {
+//        $Slm_No = 0;
+//        $last = AstSalesman::orderBy('ID_No', 'DESC')->first()->Slm_No; //latest record
+//        //dd($last);
+//        $Slm_No = $last->Slm_No;
+//        //dd($Cstm_No = $brn*1000 . 1);
+//        if($Slm_No){
+//            $Slm_No = $Slm_No+1;
+//        }else{
+//            $Slm_No =  1;
+//        }
+//    }
+//    public function createDelegateNo(Request $request){
+//        if($request->ajax()){
+//            $last_no = 0;
+//            if(count(AstSalesman::all()) == 0){
+////                return 'first';
+//                //no records
+//                $last_no = $request->Slm_No;
+//            }else{
+//                $last_Slm = AstSalesman::where('Brn_No',  $request->Brn_No)->orderBy('Slm_No', 'desc')->first();
+//                if($last_cstm == null){
+////                    return 'else first';
+//                    $last_no = $request->Brn_No;
+//                }
+//                else{
+////                    return 'else second';
+//                    $last_no = $last_cstm->Slm_No;
+//                }
+//            }
+//            return $last_no + 1;
+//        }
+//    }
 
     public function getBranches(Request $request)
     {

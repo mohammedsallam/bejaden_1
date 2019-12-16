@@ -8,7 +8,22 @@
                 e.preventDefault()
                 $(this).tab('show')
             })
+
+            $("#branches").change(function () {
+            $.ajax({
+            url : "{{route('createSupNo')}}",
+            type : 'post',
+            dataType:'json',
+            data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val() },
+            success : function(res){
+            // alert();
+            $('#Sup_No').val(res)
+            }
+            });
+            });
+
         </script>
+
     @endpush
 
     @push('css')
@@ -76,12 +91,13 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="col-md-3">
-                                    {{ Form::label(trans('admin.Branches'), null, ['class' => 'control-label']) }}                                </div>
+                                    {{ Form::label(trans('admin.Branches'), null, ['class' => 'control-label']) }}
+                                </div>
                                 <div class="col-md-9">
                                     @if(auth()->guard('admin')->user()->branch_id == '-1')
-                                        {{ Form::select('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','placeholder'=>trans('admin.select')])) }}
+                                        {{ Form::select('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','id' => 'branches','placeholder'=>trans('admin.select')])) }}
                                     @else
-                                        {{ Form::text('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','placeholder'=>trans('admin.select')])) }}
+                                        {{ Form::text('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','id' => 'branches','placeholder'=>trans('admin.select')])) }}
                                     @endif
                                 </div>
                             </div>
@@ -91,7 +107,7 @@
                                     {{ Form::label(trans('admin.numb_sup'), null, ['class' => 'control-label']) }}
                                 </div>
                                 <div class="col-md-8">
-                                    {{ Form::text('Sup_No', old('Sup_No'), array_merge(['class' => 'form-control '])) }}
+                                    {{ Form::text('Sup_No',null, array_merge(['class' => 'form-control ','id' => 'Sup_No','readonly'])) }}
                                 </div>
                             </div>
                         </div>
@@ -227,7 +243,7 @@
                             </div>
                         </div>
 
-                        {{Form::submit(trans('admin.send'),['class'=>'btn btn-primary'])}}
+{{--                       // {{Form::submit(trans('admin.send'),['class'=>'btn btn-primary'])}}--}}
 
                     </div>
 
