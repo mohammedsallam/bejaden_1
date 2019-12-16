@@ -215,7 +215,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
         Route::post('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
         Route::post('createTrNo', 'Admin\banks\ReceiptCatchController@createTrNo')->name('createTrNo');
-        Route::post('getCustomers', 'Admin\banks\ReceiptCatchController@getCustomers')->name('getCustomers');
+        Route::post('getSubAcc', 'Admin\banks\ReceiptCatchController@getSubAcc')->name('getSubAcc');
+        Route::post('getMainAccNo', 'Admin\banks\ReceiptCatchController@getMainAccNo')->name('getMainAccNo');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
@@ -224,6 +225,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('banks/Receipt/receipts/caching/all','Admin\banks\ReceiptController@caching')->name('receipts.caching');
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
+
+        Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
