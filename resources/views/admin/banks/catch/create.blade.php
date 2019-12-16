@@ -4,9 +4,7 @@
     @push('js')
         <script>
             $(document).ready(function(){
-                $('#Acc_No_Select').select2({
-
-                });
+                $('#Acc_No_Select').select2({});
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){  
                     $.ajax({
@@ -32,11 +30,12 @@
                         }
                     });
 
+                    var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
                         url: "{{route('createTrNo')}}",
                         type: "POST",
                         dataType: 'json',
-                        data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val() },
+                        data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val(), Cmp_No: Cmp_No },
                         success: function(data){
                             $('#Tr_No').val(data);
                         }
@@ -58,22 +57,6 @@
                     dataType: 'json',
                     success: function (data) {
                         $('#Tr_DtAr').val(data);
-                    }
-                });
-
-                //add transaction row to table
-                $('#Tr_Ds1').keyup(function(e){
-                    if(e.keyCode == 13){
-                        $('#table tr:last').after(`<tr>
-                                                <td>id</td>
-                                                <td>acc_no</td>
-                                                <td>acc_nm</td>
-                                                <td>db</td>
-                                                <td>cr</td>
-                                                <td>note_ar</td>
-                                                <td>doc_no</td>
-                                                <td>note_en</td>
-                                                </tr>`);
                     }
                 });
 
@@ -158,6 +141,71 @@
                     $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
                 });
 
+                //رقم حساب الصندوق الرئيسى
+                $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
+                $('#Tr_Db_Select').change(function(){
+                    $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
+                });
+
+                //add transaction row to table
+                $('#Tr_Ds1').keyup(function(e){
+                    if(e.keyCode == 13){
+                        $.ajax({
+                            url: "{{route('rcatchs.store')}}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {"_token": "{{ csrf_token() }}", 
+                                            Cmp_No: $('#Cmp_No').children('option:selected').val(), 
+                                            Brn_No: $('#Dlv_Stor').children('option:selected').val(), 
+                                            Tr_No: $('#Tr_No').val(),
+                                            Tr_Dt: $('#Tr_Dt').val(), 
+                                            Tr_DtAr: $('#Tr_DtAr').val(), 
+                                            Jr_Ty: $('#Jr_Ty').children('option:selected').val(), 
+                                            Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
+                                            Tr_ExchRat: $('#Tr_ExchRat').val(), 
+                                            Tot_Amunt: $('#Tot_Amunt').val(), 
+                                            Tr_TaxVal: $('#Tr_TaxVal').val(), 
+                                            Rcpt_By: $('#Rcpt_By').val(),
+                                            Salman_No: $('#Salman_No').val(), 
+                                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
+                                            Sysub_Account: $('#Sysub_Account').val(),
+                                            Tr_Cr: $('#Tr_Cr').val(), 
+                                            Dc_No: $('#Dc_No').val(), 
+                                            Tr_Ds: $('#Tr_Ds').val(), 
+                                            Tr_Ds1: $('#Tr_Ds1').val(),
+                                            Acc_No: $('#Acc_No').val()
+                                },
+                            success: function(data){
+                                var form = $('#create_cache');
+                                console.log(form);
+                                // console.log(data);
+                                // $('#Cmp_No').val(null);
+                                // $('#Dlv_Stor').val(null);
+                                // $('#Tr_No').val('');
+                                // // $('#Jr_Ty').val(null);
+                                // $('#Tr_Crncy').val('');
+                                // $('#Tr_ExchRat').val('');
+                                // $('#Tot_Amunt').val('');
+                                // $('#Tr_TaxVal').val('');
+                                // $('#Rcpt_By').val('');
+                                // // $('#Salman_No_select').val(null);
+                                // // $('#Acc_No_Select').val(null);
+                                // $('#Salman_No').val('');
+                                // // $('#Ac_Ty').val(null);
+                                // $('#Sysub_Account').val('');
+                                // $('#Tr_Cr').val('');
+                                // $('#Dc_No').val('');
+                                // $('#Tr_Ds').val('');
+                                // $('#Tr_Ds1').val('');
+                                // $('#Tr_Db').val('');
+                                // $('#Tr_Cr').val('');
+                                // $('#Tr_Dif').val('');
+                                // $('#Crnt_Blnc').val('');
+                                // $('#Acc_No').val('');
+                            }
+                        });
+                    }
+                });
             });
         </script>
     @endpush
@@ -183,24 +231,24 @@
             {{-- الفرع --}}
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="Brn_No">{{trans('admin.section')}}</label>
+                    <label for="Dlv_Stor">{{trans('admin.section')}}</label>
                     <div id="Brn_No_content">
-                        <select name="Brn_No" id="Brn_No" class="form-control">
+                        <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
                             <option value="{{null}}">{{trans('admin.select')}}</option>
                         </select>
                     </div>
                 </div>
             </div>
             {{-- نهاية الفرع --}}
-            {{-- رقم السند --}}
+            {{-- رقم القيد --}}
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="Tr_No">{{trans('admin.number_of_receipt')}}</label>
+                    <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
                     <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control">
                 </div>
             </div>
-            {{-- نهاية رقم السند --}}
-            {{-- تاريخ السند --}}
+            {{-- نهاية رقم القيد --}}
+            {{-- تاريخ القيد --}}
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
@@ -213,7 +261,7 @@
                     <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
                 </div>
             </div>
-            {{-- نهاية تاريخ السند --}}
+            {{-- نهاية تاريخ القيد --}}
         </div>
     
         <div class="row">
@@ -382,14 +430,18 @@
                         <div class="row">
                             {{-- الصندوق الرئيسى --}}
                             <div class="col-md-6">
-                                <label for="">{{trans('admin.main_cache')}}</label>
-                                <select name="" id="" class="form-control">
-                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                <label for="Tr_Db_Select">{{trans('admin.main_cache')}}</label>
+                                <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control">
+                                    @if(count($banks) > 0)
+                                        @foreach($banks as $bnk)
+                                            <option value="{{$bnk->Acc_No}}">{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for=""></label>
-                                <input type="text" name="" id="" class="form-control">
+                                <label for="Tr_Db_Acc_No"></label>
+                                <input type="text" name="Tr_Db_Acc_No" id="Tr_Db_Acc_No" class="form-control">
                             </div>
                             {{-- بيانات الصندوق الرئيسى --}}
                             {{-- رقم المستند --}}

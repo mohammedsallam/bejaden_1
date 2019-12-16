@@ -230,6 +230,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
+        Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');
+        Route::post('accbanks/getCharts', 'Admin\setting\GLaccBnkCintroller@getCharts')->name('getCharts');
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');

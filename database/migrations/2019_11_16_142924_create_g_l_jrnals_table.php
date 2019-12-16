@@ -28,26 +28,28 @@ class CreateGLJrnalsTable extends Migration
             $table->string('Bnk_Nm')->nullable();//اسم البنك
             $table->datetime('Issue_Dt')->nullable();//تاريخ استحقاق الشيك
             $table->datetime('Due_Issue_Dt')->nullable();//تاريخ استلام الشيك
-            $table->bigInteger('Acc_No')->nullable();//رقم الحساب
+            $table->bigInteger('Acc_No')->nullable();//  رقم الحساب الفرعى - عملاء - موردين - موظفين - حسابات
             $table->string('Rcpt_By')->nullable();//المستلم
             $table->string('Pymt_To')->nullable();//ادفعوا لامر
             $table->string('Pymt_By')->nullable();//منصرف لواسطة
-            $table->boolean('Jv_Post')->nullable();//
-            $table->boolean('Trf_Post')->nullable();//
+            $table->boolean('Jv_Post')->nullable();//تم اقفال الحركه او لا 
             $table->string('User_ID')->nullable();//
             $table->string('Entr_Dt')->nullable();//
             $table->string('Entr_Time')->nullable();//
             $table->integer('Ac_Ty')->nullable();//نوع الحساب
-            $table->bigInteger('TrAcc_No')->nullable();//رقم الحساب
             $table->bigInteger('Cstm_No')->nullable();//رقم العميل
             $table->bigInteger('Sup_No')->nullable();//رقم المورد
             $table->bigInteger('Emp_No')->nullable();//رقم الموظف
+            $table->bigInteger('Chrt_No')->nullable();//رقم الحساب فى حالة كان نوع الحساب حسابات
             $table->float('Tr_Db')->nullable();//الحركه مدين
             $table->float('Tr_Cr')->nullable();//الحركه دائن
             $table->integer('Tr_Crncy')->nullable();//العمله
             $table->integer('Tr_ExchRat')->nullable();//سعر الصرف
             $table->float('Tr_TaxVal', 50, 10)->nullable();//الضريبه
             $table->integer('Salman_No')->nullable();//مندوب المبيعات
+            $table->float('Tot_Amunt', 50, 10)->nullable();//المبلغ المطلوب
+            $table->float('Tr_Dif', 50, 10)->nullable();//الفرق
+            $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
             $table->timestamps();
         });
     }

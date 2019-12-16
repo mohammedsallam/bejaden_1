@@ -10,7 +10,7 @@ class GLaccBnk extends Model
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Ln_No',
-        'ACC_No',
+        'Acc_No',
         'Acc_NmAr',
         'Acc_NmEn',
         'Acc_Bank_No',
