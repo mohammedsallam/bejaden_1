@@ -22,13 +22,13 @@ class CreateGLaccBnksTable extends Migration
             $table->string('Acc_Bank_No', 15)->nullable();//رقم حساب البنك
             // appearance falgs البيانات دى هتظهر معايا فى صفحات ايه؟ 1 - يظهر 0 يختفى
             // مثال: لو اخترت سند قبض نقدى يبقى البيانات هتظهر معايا فى صفحة اذافه سند قبض نقدى
-            $table->boolean('RcpCsh_Voucher')->nullable();//سند قبض نقدى
-            $table->boolean('RcpChk_Voucher')->nullable();//سند قبض شيك
-            $table->boolean('PymCsh_voucher')->nullable();//صرف نقدى
-            $table->boolean('PymChk_Voucher')->nullable();//صرف شيك
-            $table->boolean('Cash_Rpt')->nullable();//مجمع النقديه
-            $table->boolean('DB_Note')->nullable();//اشعار مدين
-            $table->boolean('CR_Note')->nullable();//اشعار دائن
+            $table->boolean('RcpCsh_Voucher')->nullable()->default(0);//سند قبض نقدى 
+            $table->boolean('RcpChk_Voucher')->nullable()->default(0);//سند قبض شيك
+            $table->boolean('PymCsh_voucher')->nullable()->default(0);//صرف نقدى
+            $table->boolean('PymChk_Voucher')->nullable()->default(0);//صرف شيك
+            $table->boolean('Cash_Rpt')->nullable()->default(0);//مجمع النقديه
+            $table->boolean('DB_Note')->nullable()->default(0);//اشعار مدين
+            $table->boolean('CR_Note')->nullable()->default(0);//اشعار دائن
             $table->timestamps();
         });
     }

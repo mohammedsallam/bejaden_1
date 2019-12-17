@@ -7,7 +7,7 @@ class CreateMTScustomerTable extends Migration {
 
 	public function up()
 	{
-		Schema::create('MTsCustomer', function(Blueprint $table) {
+		Schema::create('mtscustomer', function(Blueprint $table) {
 			$table->increments('ID_No');
 			$table->timestamps();
 			$table->integer('Cmp_No')->nullable();  //رقم الشركه
@@ -110,6 +110,6 @@ class CreateMTScustomerTable extends Migration {
 
 	public function down()
 	{
-		Schema::drop('MTsCustomer');
+		Schema::drop('mtscustomer');
 	}
 }
