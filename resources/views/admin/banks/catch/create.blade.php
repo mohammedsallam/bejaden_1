@@ -132,7 +132,7 @@
                         currentRow.onclick = createClickHandler(currentRow);
                     }
                 }
-                window.onload = addRowHandlers();
+                window.onload = addRowHandlers(); 
 
                 //add tax
                 $('#create_cache :checkbox[id=Tr_TaxVal_check]').change(function(){
