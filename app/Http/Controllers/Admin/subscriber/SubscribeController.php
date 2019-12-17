@@ -338,7 +338,6 @@ class SubscribeController extends Controller
 
     public function getBranches(Request $request)
     {
-        //dd($request->Cmp_No);
         $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
 
         return view('admin.subscribers.get_branches', compact('branches'));

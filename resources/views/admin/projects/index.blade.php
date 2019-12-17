@@ -31,6 +31,22 @@
 
             });
 
+            $("#Select_Cmp_No").change(function () {
+                var Cmp_No = $("#Select_Cmp_No").val();
+                if(Cmp_No){
+                    $.ajax({
+                       url: "{{route('getBranch')}}",
+                       type : 'get',
+                       datatype: 'html',
+                       data : {Cmp_No:Cmp_No},
+                       success : function (res) {
+                            $("#Brn_No").html(res)
+                            $("#Dlv_Stor").html(res)
+                       }
+                    });
+                }
+            });
+
             // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
 
@@ -243,7 +259,7 @@
                         <div class="form-group row">
                             <h3 class="box-title col-md-2">{{trans('admin.companies')}}</h3>
                             <select name="Cmp_No" id="Select_Cmp_No" class="form-control col-md-10">
-                                <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
+                                <option value="">{{trans('admin.select_prj')}}</option>
                                 @if(count($cmps) > 0)
                                     @foreach($cmps as $cmp)
                                         <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
@@ -267,10 +283,7 @@
                     {!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
                         {{csrf_field()}}
                         {{method_field('PUT')}}
-                    <form action="{{route('projects.destroy', $chart_item->Prj_No? $chart_item->Prj_No : null)}}" method="POST" id="delete_form">
-                        {{csrf_field()}}
-                        {{method_field('DELETE')}}
-                    </form>
+
 
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
@@ -294,7 +307,7 @@
 
                                 {{-- رقم المشروع --}}
                                 <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
-                                <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-2" value="{{$chart_item->Prj_No}}">
+                                <input type="text" name="Prj_No" id="Prj_No" disabled class="form-control col-md-2" value="{{$chart_item->Prj_No}}">
                                 {{-- رقم المشروع --}}
 
                                 {{-- تصنيف الحساب --}}
@@ -395,7 +408,7 @@
                                 {{-- اسم الحساب عربى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmAr">{{trans('admin.project_name')}}:</label>
-                                        <input type="text" name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control"
+                                        <input type="text" disabled name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control"
                                         value="{{$chart_item->Prj_NmAr? $chart_item->Prj_NmAr : null}}">
                                 </div>
                                 {{-- نهاية اشم الحساب عربى --}}
@@ -403,7 +416,7 @@
                                 {{-- اسم الحساب انجليزى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmEn">{{trans('admin.project_name_en')}}:</label>
-                                    <input type="text" name="Prj_NmEn" id="Prj_NmEn" class=" col-md-10 form-control"
+                                    <input type="text" disabled name="Prj_NmEn" id="Prj_NmEn" class=" col-md-10 form-control"
                                         value="{{$chart_item->Prj_NmEn? $chart_item->Prj_NmEn : null}}">
                                 </div>
                                 {{-- نهاية اسم الحساب انجليزى --}}
@@ -411,7 +424,7 @@
                                 {{-- قيمة المشروع --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
-                                    <input type="text" name="Prj_Value" id="Prj_Value" class="col-md-10 form-control"
+                                    <input type="text" disabled name="Prj_Value" id="Prj_Value" class="col-md-10 form-control"
                                            value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}">
                                 </div>
                                 {{-- نهاية قيمة المشروع --}}
@@ -419,7 +432,7 @@
                                     {{-- العنوان --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}:</label>
-                                    <input type="text" name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control"
+                                    <input type="text" disabled name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control"
                                            value="{{$chart_item->Prj_Adr? $chart_item->Prj_Adr : null}}">
                                 </div>
                                 {{-- نهاية العنوان --}}
@@ -427,7 +440,7 @@
                                 {{-- تليفون --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
-                                    <input type="text" name="Prj_Tel" id="Prj_Tel" class="col-md-10 form-control"
+                                    <input type="text" disabled name="Prj_Tel" id="Prj_Tel" class="col-md-10 form-control"
                                            value="{{$chart_item->Prj_Tel? $chart_item->Prj_Tel : null}}">
                                 </div>
                                 {{-- نهاية التليفون --}}
@@ -435,7 +448,7 @@
                                 {{-- الموبايل --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
-                                    <input type="text" name="Prj_Mobile" id="Prj_Mobile" class=" col-md-10 form-control" placeholder="010000 / 010001"
+                                    <input type="text" disabled name="Prj_Mobile" id="Prj_Mobile" class=" col-md-10 form-control" placeholder="010000 / 010001"
                                            value="{{$chart_item->Prj_Mobile? $chart_item->Prj_Mobile : null}}">
                                 </div>
                                 {{-- نهاية الموبايل --}}

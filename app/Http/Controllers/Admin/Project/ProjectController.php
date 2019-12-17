@@ -44,6 +44,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
+
         $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
         if(count($chart) > 0){
             if(session('Cmp_No') == -1){
@@ -125,6 +126,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         if($request->Level_Status == 0){
+            //dd('dd');
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
@@ -152,6 +154,7 @@ class ProjectController extends Controller
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
         else if($request->Level_Status == 1){
+            //dd($request->Level_Status);
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
                 'Prj_NmAr' => 'sometimes',
@@ -659,14 +662,19 @@ class ProjectController extends Controller
             }
         }
         else{
+            //dd('ff');
             $parent = Projectmfs::where('Prj_No', $Prj_Parnt)->first();
+            //dd($parent);
             if(count($parent->children) > 0){
+//                dd($parent->);
                 $max = Projectmfs::where('Prj_Parnt', $parent->Prj_No)
                     ->where('Cmp_No', session('Chart_Cmp_No'))
                     ->orderBy('Prj_No', 'desc')->get(['Prj_No'])->first();
+//                dd($max);
                 return $max->Prj_No + 1;
             }
             else{
+                //dd('fff');
                 $Prj_No = (int)$Prj_Parnt.'01';
                 return $Prj_No;
             }
@@ -710,14 +718,15 @@ class ProjectController extends Controller
     }
 
 
-    public function getBranches(Request $request)
-    {
-
-        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
-
-
-        return view('admin.projects.get_branches', compact('branches'));
-    }
+//    public function getBranches(Request $request)
+//    {
+//dd($request->Cmp_No);
+//        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
+//
+//
+//
+//        return view('admin.projects.get_branches', compact('branches'));
+//    }
 
 }
 

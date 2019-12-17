@@ -1397,7 +1397,8 @@ return [
     'show_details'       =>'عرض التفاصيل',
     'create_new_supervisor'=>'اضافة مشرف جديد',
     'show_supervisor'    =>'عرض المشرف-',
-    'edit_supervisor'      =>'تعديل المشرف-',
+    'edit_supervisor'    =>'تعديل المشرف-',
+    'select_prj'         =>'اختـر الشركه لعرض المشاريع',
 
 
 

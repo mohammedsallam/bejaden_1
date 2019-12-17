@@ -6,7 +6,26 @@
 <script>
     $(document).ready(function(){
         $('[data-toggle="save"]').tooltip();
+
+        $(document).on('change', '#Select_Cmp_No', function(){
+            var Cmp_No = $("#Select_Cmp_No").val();
+            if(Cmp_No){
+                $.ajax({
+                    url: "{{route('getBranch')}}",
+                    type : 'get',
+                    datatype: 'html',
+                    data : {Cmp_No:Cmp_No},
+                    success : function (res) {
+                        $("#Brn_No").html(res)
+                        $("#Dlv_Stor").html(res)
+                    }
+                });
+            }
+        });
     });
+
+
+
 </script>
 {!! Form::open(['method'=>'POST','route' => ['projects.store'], 'id' => 'edit_form', 'files' => true]) !!}
     {{csrf_field()}}
@@ -15,7 +34,7 @@
     <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
     <input type="text" name="Level_Status" id="Level_No" value="{{0}}" hidden>
     @foreach($cmps as $cmp)
-        <input type="text" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
+        <input type="text" name="Cmp_No" id="Select_Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
     @endforeach
 {{-- Prj_Parnt ebd --}}
 
@@ -44,14 +63,7 @@
 
         {{-- تصنيف الحساب --}}
         <div class="row">
-            <div class="form-group col-md-4 col-md-offset-2">
-                @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio"
-                           name="Level_Status" id="Level_Status" value="{{$key}}"
-                           style="margin: 3px;" @if($key == 1) checked @endif>
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
+
 
             <div class="form-group col-md-4">
                 @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
@@ -281,14 +293,14 @@
 
                 <div class="col-md-12 branch">
                     <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
-                    <select name="Brn_No" id="branches" class="form-control col-md-6">
+                    <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
 
                     </select>
                 </div>
                 <div class="col-md-12 branch">
                     <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
-                    <select name="Dlv_Stor" id="stores" class="form-control col-md-6">
+                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
 
                     </select>
