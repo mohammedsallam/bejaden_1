@@ -21,7 +21,7 @@ class CreateGLJrnalsTable extends Migration
             $table->bigInteger('Tr_No')->nullable();//رقم القيد
             $table->integer('Month_No')->nullable();//رقم الشهر
             $table->integer('Month_Jvno')->nullable();//رقم القيد\الشهر
-            $table->integer('Doc_Type')->nullable();//نوع المستند
+            $table->enum('Doc_Type', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])->nullable();//نوع المستند
             $table->datetime('Tr_Dt')->nullable();//تاريخ القيد
             $table->string('Tr_DtAr')->nullable();//تاريخ القيد هجرى
             $table->string('Chq_no')->nullable();//رقم الشيك
@@ -41,15 +41,17 @@ class CreateGLJrnalsTable extends Migration
             $table->bigInteger('Sup_No')->nullable();//رقم المورد
             $table->bigInteger('Emp_No')->nullable();//رقم الموظف
             $table->bigInteger('Chrt_No')->nullable();//رقم الحساب فى حالة كان نوع الحساب حسابات
-            $table->float('Tr_Db')->nullable();//الحركه مدين
-            $table->float('Tr_Cr')->nullable();//الحركه دائن
+            $table->float('Tr_Db', 50, 10)->nullable();//الحركه مدين
+            $table->float('Tr_Cr', 50, 10)->nullable();//الحركه دائن
             $table->integer('Tr_Crncy')->nullable();//العمله
             $table->integer('Tr_ExchRat')->nullable();//سعر الصرف
             $table->float('Tr_TaxVal', 50, 10)->nullable();//الضريبه
             $table->integer('Salman_No')->nullable();//مندوب المبيعات
             $table->float('Tot_Amunt', 50, 10)->nullable();//المبلغ المطلوب
-            $table->float('Tr_Dif', 50, 10)->nullable();//الفرق
             $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
+            $table->string('Tr_Ds', 200)->nullable();//البيان Ar 
+            $table->string('Tr_Ds1', 200)->nullable();//البيان EN 
+            $table->integer('Dc_No')->nullable();//رقم المستند 
             $table->timestamps();
         });
     }

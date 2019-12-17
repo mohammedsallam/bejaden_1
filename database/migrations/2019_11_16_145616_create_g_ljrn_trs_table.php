@@ -17,7 +17,7 @@ class CreateGLjrnTrsTable extends Migration
             $table->increments('ID_No');
             $table->integer('Cmp_No')->nullable();//الشركه
             $table->integer('Brn_No')->nullable();//الفروع
-            $table->enum('Jr_Ty', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])->nullable(); //نوع القيد TransactionType Enum
+            $table->integer('Jr_Ty')->nullable(); //نوع القيد TransactionType Enum
             $table->bigInteger('Tr_No')->nullable();//رقم القيد
             $table->integer('Ln_No')->nullable();//سطر
             $table->integer('Month_No')->nullable();//رقم الشهر
@@ -30,12 +30,12 @@ class CreateGLjrnTrsTable extends Migration
             $table->float('Tr_Db')->nullable();//الحركه مدين
             $table->float('Tr_Cr')->nullable();//الحركه دائن
             $table->string('Dc_No')->nullable();//رقم المستند
-            $table->string('Tr_Ds')->nullable();//البيان Ar
-            $table->string('Tr_Ds1')->nullable();//البيان En
+            $table->string('Tr_Ds', 200)->nullable();//البيان Ar
+            $table->string('Tr_Ds1', 200)->nullable();//البيان En
             $table->bigInteger('Clsacc_no1')->nullable();//بند الميزانيه
             $table->bigInteger('Clsacc_no2')->nullable();//بند قائمة الدخل
             $table->bigInteger('Costcntr_No')->nullable();//رقم مركز التكلفه
-            $table->integer('Doc_Type')->nullable();//نوع المستند
+            $table->enum('Doc_Type', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])->nullable();//نوع المستند
             $table->enum('Crncy_Ty', [0,1,2])->nullable()->default(0);//currency_type number (CurrencyType enum)
             $table->boolean('GL_Post')->nullable();//
             $table->boolean('JV_Post')->nullable();//

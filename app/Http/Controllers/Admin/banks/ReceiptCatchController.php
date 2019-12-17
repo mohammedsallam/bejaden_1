@@ -37,6 +37,7 @@ class ReceiptCatchController extends Controller
      */
     public function create()
     {
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
         $companies = MainCompany::get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))]);
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -46,7 +47,7 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
-        return view('admin.banks.catch.create', ['companies' => $companies, 'banks' => $banks]);
+        return view('admin.banks.catch.create', ['companies' => $companies, 'banks' => $banks, 'last_record' => $last_record]);
     }
 
     /**
@@ -98,15 +99,17 @@ class ReceiptCatchController extends Controller
             'Tr_Ds1' => trans('admin.note_en'),
             'Tr_Db_Acc_No' => trans('admin.main_cache'),
         ]);
-            // return $request;
+
+       
+        //Create header
         $header = GLJrnal::create([
             'Cmp_No' => $request->Cmp_No,
             'Brn_No' => $request->Brn_No,
-            'Jr_Ty' => $request->Jr_Ty,
+            'Jr_Ty' => 2,
             'Tr_No' => $request->Tr_No,
             'Month_No' => Carbon::now()->month,
             'Month_Jvno' => $request->Tr_No,
-            'Doc_Type' => 2,
+            'Doc_Type' => $request->Doc_Type,
             'Tr_Dt' => $request->Tr_Dt,
             'Tr_DtAr' => $request->Tr_DtAr,
             'Acc_No' => $request->Acc_No,
@@ -117,12 +120,17 @@ class ReceiptCatchController extends Controller
             'Tr_TaxVal' => $request->Tr_TaxVal,
             'Salman_No' => $request->Salman_No,
             'Tot_Amunt' => $request->Tot_Amunt,
+            'Tr_Ds' => $request->Tr_Ds,
+            'Tr_Ds1' => $request->Tr_Ds1,
+            'Dc_No' => $request->Dc_No,
+            'Chq_no' => $request->Chq_no,
+            'Bnk_Nm' => $request->Bnk_Nm,
+            'Issue_Dt' => $request->Issue_Dt,
+            'Due_Issue_Dt' => $request->Due_Issue_Dt,
+            'Rcpt_By' => $request->Rcpt_By,
+            'Pymt_To' => $request->Pymt_To,
         ]);
 
-        $brn = MainCompany::where('Cmp_No', $request->Cmp_No)->get(['JvAuto_Mnth'])->first();
-        // if($brn->JvAuto_Mnth == 1){
-        //     $header->Month_Jvno = $this->createMonthAccNo($header->Month_No);
-        // }
         $header->Entr_Dt = $header->created_at->format('Y-m-d');
         $header->Entr_Time = $header->created_at->format('H:i:s');
         if($request->Ac_Ty == 1){$header->Chrt_No = $request->Sysub_Account;}
@@ -131,7 +139,57 @@ class ReceiptCatchController extends Controller
         if($request->Ac_Ty == 4){$header->Emp_No = $request->Sysub_Account;}
         $header->save();
 
-        return 'done';
+        // Create transaction debt
+        $trans_db = GLjrnTrs::create([
+            'Cmp_No' => $request->Cmp_No,
+            'Brn_No' => $request->Brn_No,
+            'Jr_Ty' => 2,
+            'Tr_No' => $request->Tr_No,
+            'Month_No' => Carbon::now()->month,
+            'Tr_Dt' => $request->Tr_Dt,
+            'Tr_DtAr' => $request->Tr_DtAr,
+            'Ac_Ty' => $request->Ac_Ty,
+            'Sysub_Account' => $request->Sysub_Account,
+            'Acc_No' => $request->Acc_No,
+            'Tr_Db' => $request->Tr_Cr,
+            'Tr_Cr' => 0.00,
+            'Dc_No' => $request->Dc_No,
+            'Tr_Ds' => $request->Tr_Ds,
+            'Tr_Ds1' => $request->Tr_Ds1,
+            'Doc_Type' => $request->Doc_Type,
+            'User_ID' => auth::user()->id,
+            'Rcpt_Value' => $request->Tot_Amunt,
+        ]);
+        $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+        $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+        $trans_db->save();
+        
+        //Create transaction credit
+        $trans_cr = GLjrnTrs::create([
+            'Cmp_No' => $request->Cmp_No,
+            'Brn_No' => $request->Brn_No,
+            'Jr_Ty' => 2,
+            'Tr_No' => $request->Tr_No,
+            'Month_No' => Carbon::now()->month,
+            'Tr_Dt' => $request->Tr_Dt,
+            'Tr_DtAr' => $request->Tr_DtAr,
+            'Ac_Ty' => $request->Ac_Ty,
+            'Sysub_Account' => $request->Sysub_Account,
+            'Acc_No' => $request->Acc_No,
+            'Tr_Db' => 0.00,
+            'Tr_Cr' => $request->Tr_Cr,
+            'Dc_No' => $request->Dc_No,
+            'Tr_Ds' => $request->Tr_Ds,
+            'Tr_Ds1' => $request->Tr_Ds1,
+            'Doc_Type' => $request->Doc_Type,
+            'User_ID' => auth::user()->id,
+            'Rcpt_Value' => $request->Tot_Amunt,
+        ]);
+        $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+        $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+        $trans_cr->save();
+        // $records = GLJrnal::where('Tr_No' , '>', $request->last_record)->get();
+        // return view('admin.banks.catch.grid', compact('records'));  
     }
 
     /**
@@ -194,15 +252,16 @@ class ReceiptCatchController extends Controller
     public function createTrNo(Request $request){
         $flag = MainCompany::where('Cmp_No', $request->Cmp_No)->get(['JvAuto_Mnth'])->first();
         if($flag->JvAuto_Mnth == 1){
-            return $this->createMonthAccNo(Carbon::now()->month);
+            // return 'a';
+            return $this->createMonthAccNo(Carbon::now()->month, $request->Brn_No);
         }
         else{
             $last_no = 0;
-            if(count(GLjrnTrs::all()) == 0){
+            if(count(GLJrnal::all()) == 0){
                 $last_no = 0;
             }
             else{
-                $last_trans = GLjrnTrs::where('Brn_No', $request->Brn_No)->orderBy('Tr_No', 'desc')->first();
+                $last_trans = GLJrnal::where('Brn_No', $request->Brn_No)->orderBy('Tr_No', 'desc')->first();
                 if($last_trans){
                     $last_no = $last_trans->Tr_No;
                 }
@@ -278,12 +337,14 @@ class ReceiptCatchController extends Controller
         }
     }
 
-    public function createMonthAccNo($month){
+    public function createMonthAccNo($month, $Brn_No){
         if(count(GLJrnal::all()) == 0){
             $Month_Jvno = $month.'01';
         }
         else{
-            $gls = GLJrnal::where('Month_No', $month)->orderBy('Month_Jvno', 'desc')->get(['Month_Jvno'])->first();
+            $gls = GLJrnal::where('Month_No', $month)
+                            ->where('Brn_No', $Brn_No)
+                            ->orderBy('Month_Jvno', 'desc')->get(['Month_Jvno'])->first();
             if($gls){
                 $Month_Jvno = $gls->Month_Jvno + 1;
             }
@@ -292,5 +353,12 @@ class ReceiptCatchController extends Controller
             }
         }
         return $Month_Jvno;
+    }
+
+    public function getTaxValue(Request $request){
+        if($request->ajax()){
+            $cmp = MainCompany::where('Cmp_No', $request->Cmp_No)->get(['TaxExtra_Prct'])->first();
+            return $cmp->TaxExtra_Prct;
+        }
     }
 }

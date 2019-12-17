@@ -43,6 +43,9 @@ class GLJrnal extends Model
         'Salman_No',
         'Tot_Amunt',
         'Tr_Dif',
-        'Crnt_Blnc'
+        'Crnt_Blnc',
+        'Tr_Ds',
+        'Tr_Ds1',
+        'Dc_No',
     ];
 }
