@@ -19,11 +19,15 @@ class ActivitiesDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a href="activities/'.$query->id.'/edit" class="btn btn-success"><i class="fa fa-edit"></i> ' .trans('admin.edit') .'</a>';
+                return '<a  href="activities/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i></a>';
+            })
+            ->addColumn('details', function ($query) {
+                return '<a href="activities/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i></a>';
             })
             ->addColumn('delete', 'admin.activities.btn.delete')
             ->rawColumns([
                 'edit',
+                'details',
                 'delete',
             ]);
     }
@@ -36,7 +40,7 @@ class ActivitiesDataTable extends DataTable
      */
     public function query()
     {
-        return activity_type::query()->orderByDesc('id');
+        return AstNutrbusn::query()->orderByDesc('ID_No');
     }
     public static function lang(){
         $langJson = [
@@ -116,11 +120,11 @@ class ActivitiesDataTable extends DataTable
     {
         return [
             ['name'=>'Nutr_No','data'=>'Nutr_No','title'=>trans('admin.Nutr_No')],
-            ['name'=>'Nutr_Nm'.ucfirst(session('lang')),'data'=>'Nutr_Nm'.ucfirst(session('lang')),'title'=>trans('admin.arabic_name')],
-            ['name'=>'Nutr_Nm'.ucfirst(session('lang')),'data'=>'Nutr_Nm'.ucfirst(session('lang')),'title'=>trans('admin.english_name')],
-            ['name'=>'Short_'.ucfirst(session('lang')),'data'=>'Short_'.ucfirst(session('lang')),'title'=>trans('admin.Short_Arb')],
-            ['name'=>'Short_'.ucfirst(session('lang')),'data'=>'Short_'.ucfirst(session('lang')),'title'=>trans('admin.Short_Eng')],
+            ['name'=>'Nutr_NmAr','data'=>'Nutr_NmAr','title'=>trans('admin.arabic_name')],
+            ['name'=>'Short_Arb', 'data'=>'Short_Arb','title'=>trans('admin.Short_Arb')],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+            ['name'=>'details','data'=>'details','title'=>trans('admin.details'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
 
         ];

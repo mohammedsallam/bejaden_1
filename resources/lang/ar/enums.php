@@ -318,8 +318,8 @@ return [
         IncomeListType::operatingAccount => 'حساب تشغيل',
     ],
     StatusTreeType::class => [
-        StatusTreeType::active => 'نشط',
-        StatusTreeType::deactive => 'متوقف',
+        StatusTreeType::active => 'فعال',
+        StatusTreeType::deactive => 'غير فعال',
     ],
     LimitationsType::class => [
         LimitationsType::dailyLimitations => 'قيد يوميه',

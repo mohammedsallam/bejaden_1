@@ -28,7 +28,15 @@ class ActivitiesController extends Controller
      */
     public function create()
     {
-        return view('admin.activities.create',['title'=> trans('admin.add_type_of_activitie')]);
+
+        $last = AstNutrbusn::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
+
+        if(!empty($last) || $last || $last < 0){
+            $last = $last->Nutr_No+1;
+        }else{
+            $last =  1;
+        }
+        return view('admin.activities.create',['title'=> trans('admin.add_type_of_activitie')], compact('last'));
     }
 
     /**
@@ -56,9 +64,10 @@ class ActivitiesController extends Controller
      * @param  \App\activities  $activities
      * @return \Illuminate\Http\Response
      */
-    public function show(AstNutrbusn $activities)
+    public function show($ID_No)
     {
-        //
+        $activities= AstNutrbusn::findOrFail($ID_No);
+        return view('admin.activities.show',compact('activities'));
     }
 
     /**
@@ -67,7 +76,7 @@ class ActivitiesController extends Controller
      * @param  \App\activities  $activities
      * @return \Illuminate\Http\Response
      */
-    public function edit(AstNutrbusn $activities,$id)
+    public function edit($id)
     {
         $activitie  = AstNutrbusn::where('ID_No',$id)->first();
         return view('admin.activities.edit',['title'=> trans('admin.edit_type_of_activitie'),'activitie'=>$activitie]);
@@ -107,8 +116,8 @@ class ActivitiesController extends Controller
      */
     public function destroy($id)
     {
-        $activitie  = AstNutrbusn::findOrFail($id);
-        subscription::where('AstNutrbusn_id',$id)->update(['AstNutrbusn_id'=>null]);
+        $activitie  = AstNutrbusn::where('ID_No',$id);
+        //subscription::where('AstNutrbusn_id',$id)->update(['AstNutrbusn_id'=>null]);
         $activitie->delete();
         return redirect(aurl('activities'));
     }

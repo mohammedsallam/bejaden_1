@@ -25,23 +25,20 @@
 
             });
 
-            $('#companies').change(function(){
-                var Cmp_No = $(this).val();
-
+            $(document).on('change', '#Select_Cmp_No', function(){
+                var Cmp_No = $("#Select_Cmp_No").val();
                 if(Cmp_No){
                     $.ajax({
-                        url : "{{route('getBranch')}}",
+                        url: "{{route('getBranch')}}",
                         type : 'get',
-                        dataType:'html',
-                        data:{Cmp_No:Cmp_No},
-                        success : function(res){
-                            $('#branches').html(res)
-                            $('#stores').html(res)
+                        datatype: 'html',
+                        data : {Cmp_No:Cmp_No},
+                        success : function (res) {
+                            $("#Brn_No").html(res)
+                            $("#Dlv_Stor").html(res)
                         }
-                    })
+                    });
                 }
-
-
             });
         });
     </script>
@@ -50,7 +47,7 @@
 {{Form::open(['route'=>'projects.store','class'=>'form-group','files'=>true])}}
 {{csrf_field()}}
 <input type="text" name="Prj_Parnt" id="Prj_Parnt" value="{{$parent? $parent->Prj_No : null}}" hidden>
-<input type="text" name="Cmp_No" id="companies" value="{{$parent? $parent->Cmp_No : null}}" hidden>
+<input type="text" name="Cmp_No" id="Select_Cmp_No" value="{{$parent? $parent->Cmp_No : null}}" hidden>
 <input type="text" name="Level_No" id="Level_No" value="{{$parent? $parent->Level_No : null}}" hidden>
 <input type="text" name="Level_Status" id="Level_No" value="{{1}}" hidden>
 
@@ -79,15 +76,6 @@
 
                 {{-- تصنيف الحساب --}}
                 <div class="row">
-                    <div class="form-group col-md-4 col-md-offset-2">
-                        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                            <input class="checkbox-inline" type="radio"
-                                   name="Level_Status" id="Level_Status" value="{{$key}}"
-                                   style="margin: 3px;" @if($key == 1) checked @endif>
-                            <label>{{$value}}</label>
-                        @endforeach
-                    </div>
-
                     <div class="form-group col-md-4">
                         @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
                             <input class="checkbox-inline" type="radio"
@@ -244,7 +232,7 @@
                         <div class="col-md-12 branch">
                             <div class="form-group row">
                                 <label for="Area_No" class="col-md-5">{{trans('admin.area')}}</label>
-                                <input type="text" disabled name="Area_No" id="Area_No" value=''
+                                <input type="text" name="Area_No" id="Area_No" value=''
                                        class="form-control col-md-7">
                             </div>
                         </div>
@@ -254,7 +242,7 @@
                         <div class="col-md-12 branch">
                             <div class="form-group row">
                                 <label for="Acc_DB" class="col-md-5">{{trans('admin.Acc_DB')}}</label>
-                                <input type="text" disabled name="Acc_DB" id="Acc_DB" value=''
+                                <input type="text" name="Acc_DB" id="Acc_DB" value=''
                                        class="form-control col-md-7">
                             </div>
                         </div>
@@ -264,7 +252,7 @@
                         <div class="col-md-12 branch">
                             <div class="form-group row">
                                 <label for="Acc_CR" class="col-md-5">{{trans('admin.Acc_CR')}}</label>
-                                <input type="text" disabled name="Acc_CR" id="Acc_CR" value=''
+                                <input type="text" name="Acc_CR" id="Acc_CR" value=''
                                        class="form-control col-md-7">
                             </div>
                         </div>
@@ -275,7 +263,7 @@
                         <div class="col-md-12 branch">
                             <div class="form-group row">
                                 <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                                <input type="text" disabled name="Fbal_DB" id="Fbal_DB" value=''
+                                <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
                                        class="form-control col-md-7">
                             </div>
                         </div>
@@ -317,14 +305,14 @@
 
                         <div class="col-md-12 branch">
                             <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
-                            <select name="Brn_No" id="branches" class="form-control col-md-6">
+                            <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                                 <option value="">{{trans('admin.select')}}</option>
 
                             </select>
                         </div>
                         <div class="col-md-12 branch">
                             <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
-                            <select name="Dlv_Stor" id="stores" class="form-control col-md-6">
+                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                                 <option value="">{{trans('admin.select')}}</option>
 
                             </select>
@@ -378,7 +366,7 @@
                         {{-- رصيد اول المده دائن --}}
                         <div class="col-md-12 branch" style="top: 22px;">
                             <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                            <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value=''
+                            <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
                                    class="form-control col-md-6">
                         </div>
                         {{-- نهاية رصيد اول المده دائن --}}

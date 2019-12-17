@@ -48,21 +48,21 @@
          //    alert($(this).val())
          // })
 
-         $("#companies").change(function(){
-                //get governorates
-                var company_id = $(this).val();
+            $('#companies').change(function(){
+                var Cmp_No = $(this).val();
 
-                 if(company_id){
-                        $.ajax({
-                            url : "{{route('getBranches')}}",
-                            type : 'get',
-                            dataType:'html',
-                            data:{Cmp_No:Cmp_No},
-                            success : function(res){
-                                $('#branches').html(res)
+                if(Cmp_No){
+                    $.ajax({
+                        url : "{{route('getBranch')}}",
+                        type : 'get',
+                        dataType:'html',
+                        data:{Cmp_No:Cmp_No},
+                        success : function(res){
+                            $('#branches').html(res)
+                            $('#stores').html(res)
                         }
                     })
-                 }
+                }
 
 
             });
@@ -106,7 +106,7 @@
                         <div class="form-group row col-md-12">
                             <div class="col-md-10">
                                 <div class="col-md-3">{!!Form::label('Slm_No', trans('admin.Slm_No'))!!}</div>
-                                <div class="col-md-9">{!!Form::text('Slm_No', null, ['class'=>'form-control'])!!}</div>
+                                <div class="col-md-9">{!!Form::text('Slm_No', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
 
                             </div>
                             <div class="col-md-2">
@@ -134,7 +134,7 @@
                         <div class="form-group row col-md-12">
                             <div class="col-md-3">{!!Form::label('StoreNo', trans('admin.StoreNo'))!!}</div>
                             <div class="col-md-9">
-                                <select class="form-control" name="StoreNo" id="branches">
+                                <select class="form-control" name="StoreNo" id="stores">
                                     <option>{{trans('admin.select')}}</option>
                                 </select>
                             </div>

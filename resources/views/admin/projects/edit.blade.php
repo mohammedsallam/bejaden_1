@@ -9,7 +9,7 @@
         });
     });
 
-    $('#Clsacc_No1_Check').on('change', function(){
+        $('#Clsacc_No1_Check').on('change', function(){
         if($(this).is(':checked')){
             $('#Clsacc_No1').removeClass('hidden');
         }
@@ -71,9 +71,6 @@
     @endif
 
 
-
-
-
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist"  style="margin-bottom: 15px;">
     <li role="tabpanel" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
@@ -98,16 +95,6 @@
 
         {{-- تصنيف الحساب --}}
         <div class="row">
-            <div class="form-group col-md-4 col-md-offset-2">
-                @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio"
-                           name="Level_Status" id="Level_Status" value="{{$key}}"
-                           style="margin: 3px;"
-                           @if ($chart_item->Level_Status == $key) checked @endif>
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-
             <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
                 @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
                     <input class="checkbox-inline" type="radio"
@@ -327,9 +314,7 @@
                 <div class="col-md-12 branch">
                     <label for="Prj_Status" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Status')}}</label>
                     <div class="form-group">
-                        <select name="Prj_Status" id="Prj_Status" class="form-control col-md-6"
-                            {{-- @if($chart_item->Level_No == 1) disabled @endif--}}
-                        >
+                        <select name="Prj_Status" id="Prj_Status" class="form-control col-md-6">
                             <option value="{{null}}">{{trans('admin.select')}}</option>
                             @foreach(\App\Enums\PrjStatus::toSelectArray() as $key => $value)
                                 <option value="{{$key}}">{{$value}}</option>
@@ -405,7 +390,7 @@
                 {{-- رصيد اول المده دائن --}}
                 <div class="col-md-12 branch" style="top: 22px;">
                     <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                    <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value=''
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
                            class="form-control col-md-6">
                 </div>
                 {{-- نهاية رصيد اول المده دائن --}}
@@ -603,7 +588,7 @@
         {{-- نهاية الحركات --}}
     </div>
     <div role="tabpane2" class="tab-pane" id="responsible_persons">
-            < class="box-body">
+            <div class="box-body">
 
                 @can('single')
 

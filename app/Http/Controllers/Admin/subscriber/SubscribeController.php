@@ -171,79 +171,6 @@ class SubscribeController extends Controller
         return redirect(aurl('subscribers'))->with(session()->flash('message',trans('admin.success_add')));
 
 
-//        dd($request->all());
-//         $data = $this->validate($request,[
-//             'name_ar' => 'required',
-//             'name_en'=>'sometimes',
-//             'email'=>'sometimes',
-//             'address'=>'sometimes',
-//             'branches_id'=>'sometimes',
-//             'status'=>'sometimes',
-//             'phone_1'=>'sometimes',
-//             'phone_2'=>'sometimes',
-//             'phone_3'=>'sometimes',
-//             'phone_4'=>'sometimes',
-//             'per_status'=>'sometimes',
-//             'facebook'=>'sometimes',
-//             'twitter'=>'sometimes',
-//             'tax_num'=>'sometimes',
-//             'Discounts'=>'sometimes',
-//             'Commissions'=>'sometimes',
-//             'note'=>'sometimes',
-//             'debtor'=>'required',
-//             'creditor'=>'required',
-//             'user_id'=>'sometimes',
-//             'admin_id'=>'sometimes',
-//             'operation_id'=>'sometimes',
-//             'countries_id'=>'sometimes',
-//             'city_id'=>'sometimes',
-//             'employee_id'=>'sometimes',
-//             'activity_type_id'=>'sometimes',
-//             'state_id'=>'sometimes',
-//             'tree_id'=>'required',
-//             'credit_limit'=>'sometimes',
-//             'repayment_period'=>'sometimes',
-//             'discount'=>'sometimes',
-//         ],[],[
-//             'name_ar' => trans('admin.arabic_name'),
-//             'name_en' => trans('admin.english_name'),
-//             'email' => trans('admin.email'),
-//             'image' => trans('admin.image'),
-//             'address' => trans('admin.addriss'),
-//             'supervisor' => trans('admin.supervisor'),
-//             'pay_status' => trans('admin.pay_status'),
-//             'branches_id' => trans('admin.Branches'),
-//             'start' => trans('admin.startsub'),
-//             'end' => trans('admin.endsub'),
-//             'phone_1' => trans('admin.mob'),
-//             'phone_2' => trans('admin.phone'),
-//             'per_status' => trans('admin.status'),
-//             'age' => trans('admin.age'),
-//             'gender' => trans('admin.gender'),
-//             'facebook' => trans('admin.facebook'),
-//             'twitter' => trans('admin.twitter'),
-//             'admin_id'=>trans ('admin.assigned_by')
-//         ]);
-
-//         if ($request->Discounts){
-//             $data['Discounts'] = $request->Discounts;
-//         }else{
-//             $data['Discounts'] = 0;
-//         }
-
-//         if ($request->Commissions){
-//             $data['Commissions'] = $request->Commissions;
-//         }else{
-//             $data['Commissions'] = 0;
-//         }
-
-// //        if ($request->cc_type){
-// //            $data['cc_type'] = $request->cc_type;
-// //        }else{
-// //            $data['cc_type'] = 0;
-// //        }
-//         $subscription->create($data);
-//         return redirect(aurl('subscribers'))->with(session()->flash('message',trans('admin.success_add')));
     }
 
     /**
@@ -411,7 +338,6 @@ class SubscribeController extends Controller
 
     public function getBranches(Request $request)
     {
-        //dd($request->Cmp_No);
         $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
 
         return view('admin.subscribers.get_branches', compact('branches'));

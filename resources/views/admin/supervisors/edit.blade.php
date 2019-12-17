@@ -84,7 +84,7 @@
     <button class="btn btn-primary" style="float: left;"><i class="fa fa-save"></i></button>
     <div class="panel panel-default">
         <div class="panel-heading">
-        <h5>{{trans('admin.edit_supervisor').$superviosr->Mrkt_Nm.ucfirst(session('lang'))}}</h5>
+        <h5>{{trans('admin.edit_supervisor').$supervisor->Mrkt_Nm.ucfirst(session('lang'))}}</h5>
         </div>
         <div class="panel-body">
             @can('single')
@@ -93,7 +93,7 @@
                     <div class="form-group row col-md-12">
                         <div class="col-md-9">
                             <div class="col-md-4">{!!Form::label('Mrkt_No', trans('admin.Mrkt_No'))!!}</div>
-                            <div class="col-md-8">{!!Form::text('Mrkt_No', null, ['class'=>'form-control'])!!}</div>
+                            <div class="col-md-8">{!!Form::text('Mrkt_No', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
 
                         </div>
                         <div class="col-md-3">

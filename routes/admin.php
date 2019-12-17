@@ -160,7 +160,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('delegates', 'Admin\Delegates\DelegatesController');
-        //Route::get('branch','Admin\Delegates\DelegatesController@getBranches')->name('getBranch');
+
 
 
         Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
@@ -168,7 +168,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
-        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
+        Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
 
 //        report

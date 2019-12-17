@@ -178,7 +178,7 @@
                     @endhasanyrole
                     {{-- نهاية الموظفين --}}
 
-                    {{-- لمشرفين --}}
+                    {{-- المشرفين --}}
                     @hasanyrole('writer|admin')
                     <li class="treeview {{ active_menu('supervisors')[0]  }}">
                         <a href="#">
@@ -393,7 +393,7 @@
                     </li>
                     @endhasanyrole
                     {{-- نهاية اعدادات الحسابات --}}
-                    
+
                     {{-- اعدادات الموظفين --}}
                     @hasanyrole('writer|admin')
                     <li class="treeview {{ active_menu('employee_setting')[0]  }}">
