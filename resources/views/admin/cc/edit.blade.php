@@ -21,52 +21,25 @@
     </div>
 
     {{-- رقم الحساب --}}
-    <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-    <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-2" value="{{$chart_item->Costcntr_No}}">
-
-<div class="form-group">
-        {{-- <label for="Level_Status">{{trans('admin.department_type')}}:</label><br> --}}
-        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-            <input class="checkbox-inline" type="radio"
-                name="Level_Status" id="Level_Status" value="{{$key}}"
-                style="margin: 3px;" disabled
-                @if ($chart_item->Level_Status == $key) checked @endif >
-            <label>{{$value}}</label>
-        @endforeach
-        <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
-            @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio"
-                    name="Acc_Actv" id="Acc_Actv" value="{{$key}}"
-                    style="margin: 3px;" @if($chart_item->Acc_Actv == $key) checked @endif>
-                <label>{{$value}}</label>
-            @endforeach
-        </div>
+    <div class="form-group row">
+        <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
+        <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-2" value="{{$chart_item->Costcntr_No}}">
     </div>
     {{-- نهاية تصنيف الحساب --}}
 
     {{-- رقم الشركه --}}
     <input type="text" name="Cmp_No" id="Cmp_No" value="{{$chart_item->Cmp_No}}" hidden>
-{{--    --}}{{-- <div class="col-md-4">--}}
-{{--        <div class="form-group">--}}
-{{--            <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>--}}
-{{--            <select name="Cmp_No" id="Cmp_No" class="form-control">--}}
-{{--                <option value="">{{trans('admin.select')}}</option>--}}
-{{--                @if(count($cmps) > 0)--}}
-{{--                    @foreach($cmps as $cmp)--}}
-{{--                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}" @if($chart_item->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>--}}
-{{--                    @endforeach--}}
-{{--                @endif--}}
-{{--            </select>--}}
-{{--        </div>--}}
-{{--    </div> --}}
-    {{-- نهاية رقم الشركه --}}
+
 
     {{-- اسم الحساب عربى --}}
-    <div class="form-group row">
-        <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
-            <input type="text" name="Costcntr_Nmar" id="Acc_NmAr" class="col-md-9 form-control"
-            value="{{$chart_item->Costcntr_Nmar? $chart_item->Costcntr_Nmar : null}}">
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
         </div>
+        <div class="col-md-9">
+            <input type="text" name="Costcntr_Nmar" id="Acc_NmAr" class="col-md-9 form-control" value="{{$chart_item->Costcntr_Nmar? $chart_item->Costcntr_Nmar : null}}">
+        </div>
+    </div>
     {{-- نهاية اشم الحساب عربى --}}
 
     {{-- اسم الحساب انجليزى --}}

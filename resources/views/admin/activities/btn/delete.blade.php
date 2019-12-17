@@ -1,3 +1,4 @@
+
 <script>
     $(document).ready(function(){
         // For A Delete Record Popup
@@ -20,9 +21,7 @@
     });
 </script>
 
-
-<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('activities.destroy', $id) }}" data-id="{{$id}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i> {{trans('admin.delete')}}</a>
-
+<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('activities.destroy', $ID_No) }}" data-id="{{$ID_No}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i></a>
 
 <form action="" method="POST" class="remove-record-model">
     <div id="custom-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel" aria-hidden="true" style="display: none;">

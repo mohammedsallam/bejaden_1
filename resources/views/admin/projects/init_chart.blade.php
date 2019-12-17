@@ -12,6 +12,43 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
+
+            $(document).on('change', '#Select_Cmp_No', function(){
+                var Cmp_No = $("#Select_Cmp_No").val();
+                if(Cmp_No){
+                    $.ajax({
+                        url: "{{route('getBranch')}}",
+                        type : 'get',
+                        datatype: 'html',
+                        data : {Cmp_No:Cmp_No},
+                        success : function (res) {
+                            $("#Brn_No").html(res)
+                            $("#Dlv_Stor").html(res)
+                        }
+                    });
+                }
+            });
+
+            $(document).ready(function(){
+
+                $(document).on('change', '#Country_No', function(){
+                    var Country_No = $(this).val();
+                    if(Country_No){
+                        $.ajax({
+                            url : "{{route('getCity')}}",
+                            type : 'get',
+                            dataType:'html',
+                            data:{Country_No:Country_No},
+                            success : function(res){
+                                $('#City_No').html(res)
+                            }
+                        })
+                    }
+
+                });
+
+            });
+
             // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
                 $('#jstree').jstree('destroy');
@@ -214,7 +251,7 @@
                         <input type="text" name="Prj_Parnt" id="Prj_Parnt" value="{{0}}" hidden>
                         <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
                         @foreach($cmps as $cmp)
-                            <input type="text" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
+                            <input type="text" id="Select_Cmp_N" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
                         @endforeach
 
                     <div class="col-md-6">
@@ -262,14 +299,6 @@
 
                                 {{-- تصنيف الحساب --}}
                                 <div class="row">
-                                    <div class="form-group col-md-4 col-md-offset-2">
-                                        @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                                            <input class="checkbox-inline" type="radio"
-                                                   name="Level_Status" id="Level_Status" value="{{$key}}"
-                                                   style="margin: 3px;" @if($key == 1) checked @endif>
-                                            <label>{{$value}}</label>
-                                        @endforeach
-                                    </div>
 
                                     <div class="form-group col-md-4">
                                         @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
@@ -405,8 +434,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
-                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
-                                                'class'=>'col-md-7', 'id'=>'countries','placeholder'=>trans('admin.select')])!!}
+                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,['class'=>'col-md-7', 'id'=>'Country_No','placeholder'=>trans('admin.select')])!!}
                                             </div>
                                         </div>
                                         {{-- نهاية الدوله --}}
@@ -415,8 +443,9 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="City_No" class="col-md-5">{{trans('admin.city')}}</label>
-                                                <select class="col-md-7" name="City_No" id="cities">
+                                                <select class="col-md-7" name="City_No" id="City_No">
                                                     <option>{{trans('admin.select')}}</option>
+
                                                 </select>
 
                                             </div>
@@ -427,7 +456,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Area_No" class="col-md-5">{{trans('admin.area')}}</label>
-                                                <input type="text" disabled name="Area_No" id="Area_No" value=''
+                                                <input type="text" name="Area_No" id="Area_No" value=''
                                                        class="form-control col-md-7">
                                             </div>
                                         </div>
@@ -437,7 +466,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Acc_DB" class="col-md-5">{{trans('admin.Acc_DB')}}</label>
-                                                <input type="text" disabled name="Acc_DB" id="Acc_DB" value=''
+                                                <input type="text" name="Acc_DB" id="Acc_DB" value=''
                                                        class="form-control col-md-7">
                                             </div>
                                         </div>
@@ -447,7 +476,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Acc_CR" class="col-md-5">{{trans('admin.Acc_CR')}}</label>
-                                                <input type="text" disabled name="Acc_CR" id="Acc_CR" value=''
+                                                <input type="text" name="Acc_CR" id="Acc_CR" value=''
                                                        class="form-control col-md-7">
                                             </div>
                                         </div>
@@ -458,7 +487,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                                                <input type="text" disabled name="Fbal_DB" id="Fbal_DB" value=''
+                                                <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
                                                        class="form-control col-md-7">
                                             </div>
                                         </div>
@@ -500,14 +529,14 @@
 
                                         <div class="col-md-12 branch">
                                             <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
-                                            <select name="Brn_No" id="branches" class="form-control col-md-6">
+                                            <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                                                 <option value="">{{trans('admin.select')}}</option>
 
                                             </select>
                                         </div>
                                         <div class="col-md-12 branch">
                                             <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
-                                            <select name="Dlv_Stor" id="stores" class="form-control col-md-6">
+                                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                                                 <option value="">{{trans('admin.select')}}</option>
 
                                             </select>
@@ -561,7 +590,7 @@
                                         {{-- رصيد اول المده دائن --}}
                                         <div class="col-md-12 branch" style="top: 22px;">
                                             <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                                            <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value=''
+                                            <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
                                                    class="form-control col-md-6">
                                         </div>
                                         {{-- نهاية رصيد اول المده دائن --}}

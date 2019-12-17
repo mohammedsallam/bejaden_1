@@ -102,7 +102,7 @@
                         <div class="form-group row col-md-12">
                             <div class="col-md-9">
                                 <div class="col-md-4">{!!Form::label('Mrkt_No', trans('admin.Mrkt_No'))!!}</div>
-                                <div class="col-md-8">{!!Form::text('Mrkt_No', null, ['class'=>'form-control'])!!}</div>
+                                <div class="col-md-8">{!!Form::text('Mrkt_No', $last, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
 
                             </div>
                             <div class="col-md-3">

@@ -1,15 +1,36 @@
 @inject('customers', 'App\Models\Admin\MTsCustomer')
 @inject('delegates', 'App\Models\Admin\AstSalesman')
-
+@inject('countries', 'App\country')
+@inject('cities', 'App\city')
 <script>
     $(document).ready(function(){
         $('#delete_button').click(function(e){
             e.preventDefault();
             $('#delete_form').submit()
         });
+
+        $(document).ready(function(){
+
+            $(document).on('change', '#Country_No', function(){
+                var Country_No = $(this).val();
+                if(Country_No){
+                    $.ajax({
+                        url : "{{route('getCity')}}",
+                        type : 'get',
+                        dataType:'html',
+                        data:{Country_No:Country_No},
+                        success : function(res){
+                            $('#City_No').html(res)
+                        }
+                    })
+                }
+
+            });
+
+        });
     });
 
-    $('#Clsacc_No1_Check').on('change', function(){
+        $('#Clsacc_No1_Check').on('change', function(){
         if($(this).is(':checked')){
             $('#Clsacc_No1').removeClass('hidden');
         }
@@ -60,7 +81,7 @@
 </script>
 
 
-{!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
+{!! Form::model(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
 {{csrf_field()}}
 {{method_field('PUT')}}
 
@@ -69,9 +90,6 @@
             <input type="hidden" name="children[]" value='{{$child}}'>
         @endforeach
     @endif
-
-
-
 
 
 <!-- Nav tabs -->
@@ -98,16 +116,6 @@
 
         {{-- تصنيف الحساب --}}
         <div class="row">
-            <div class="form-group col-md-4 col-md-offset-2">
-                @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio"
-                           name="Level_Status" id="Level_Status" value="{{$key}}"
-                           style="margin: 3px;"
-                           @if ($chart_item->Level_Status == $key) checked @endif>
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-
             <div class="form-group col-md-offset-3" @if($chart_item->Level_No == 1) hidden @endif>
                 @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)
                     <input class="checkbox-inline" type="radio"
@@ -248,8 +256,8 @@
                 <div class="col-md-12 branch">
                     <div class="form-group row">
                         <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
-                        <input type="text" name="Country_No" id="Country_No" value=''
-                               class="form-control col-md-7">
+                        {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
+                                'class'=>'col-md-7', 'id'=>'Country_No','placeholder'=>trans('admin.select')])!!}
                     </div>
                 </div>
                 {{-- نهاية الدوله --}}
@@ -258,8 +266,9 @@
                 <div class="col-md-12 branch">
                     <div class="form-group row">
                         <label for="City_No" class="col-md-5">{{trans('admin.city')}}</label>
-                        <input type="text" name="City_No" id="City_No" value=''
-                               class="form-control col-md-7">
+                        <select class="col-md-7" name="City_No" id="City_No">
+                            <option>{{trans('admin.select')}}</option>
+                        </select>
                     </div>
                 </div>
                 {{-- نهاية المدينه --}}
@@ -327,9 +336,7 @@
                 <div class="col-md-12 branch">
                     <label for="Prj_Status" class="col-md-5 col-md-offset-1">{{trans('admin.Prj_Status')}}</label>
                     <div class="form-group">
-                        <select name="Prj_Status" id="Prj_Status" class="form-control col-md-6"
-                            {{-- @if($chart_item->Level_No == 1) disabled @endif--}}
-                        >
+                        <select name="Prj_Status" id="Prj_Status" class="form-control col-md-6">
                             <option value="{{null}}">{{trans('admin.select')}}</option>
                             @foreach(\App\Enums\PrjStatus::toSelectArray() as $key => $value)
                                 <option value="{{$key}}">{{$value}}</option>
@@ -346,14 +353,18 @@
                     <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
                     <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
-
+                        @foreach($bran as $branch)
+                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_NmAr}}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-12 branch">
                     <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
                     <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
-
+                        @foreach($bran as $branch)
+                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_Nm.ucfirst(session('lang'))}}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -405,7 +416,7 @@
                 {{-- رصيد اول المده دائن --}}
                 <div class="col-md-12 branch" style="top: 22px;">
                     <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                    <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value=''
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
                            class="form-control col-md-6">
                 </div>
                 {{-- نهاية رصيد اول المده دائن --}}
@@ -603,7 +614,7 @@
         {{-- نهاية الحركات --}}
     </div>
     <div role="tabpane2" class="tab-pane" id="responsible_persons">
-            < class="box-body">
+            <div class="box-body">
 
                 @can('single')
 

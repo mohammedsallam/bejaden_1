@@ -84,6 +84,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cc/reports/details','Admin\Cc\CcController@details')->name('cc.details');
         Route::post('cc/reports/pdf','Admin\Cc\CcController@pdf');
         Route::post('cc/getEditBlade','Admin\Cc\CcController@getEditBlade')->name('getCcEditBlade');
+        Route::post('cc/getCc','Admin\Cc\CcController@getCc')->name('getCc');
+
         Route::post('cc/createNewAcc','Admin\Cc\CcController@createNewAcc')->name('createCcNewAcc');
         Route::post('cc/initChartAcc','Admin\Cc\CcController@initChartAcc')->name('initCcChartAcc');
 
@@ -97,11 +99,13 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
         Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getComp')->name('getTreePrj');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
         Route::post('projects/getproj','Admin\Project\ProjectController@getproj')->name('getproj');
         Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
+
+        Route::get('getCity','Admin\Project\ProjectController@getCities')->name('getCity');
 
 
         Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
@@ -163,7 +167,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('delegates', 'Admin\Delegates\DelegatesController');
-        //Route::get('branch','Admin\Delegates\DelegatesController@getBranches')->name('getBranch');
+
 
 
         Route::resource('supervisors', 'Admin\Supervisors\supervisorsController');
@@ -171,7 +175,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
-        Route::get('branch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
+        Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
 
 //        report
@@ -221,7 +225,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
         Route::post('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
         Route::post('createTrNo', 'Admin\banks\ReceiptCatchController@createTrNo')->name('createTrNo');
-        Route::post('getCustomers', 'Admin\banks\ReceiptCatchController@getCustomers')->name('getCustomers');
+        Route::post('getSubAcc', 'Admin\banks\ReceiptCatchController@getSubAcc')->name('getSubAcc');
+        Route::post('getMainAccNo', 'Admin\banks\ReceiptCatchController@getMainAccNo')->name('getMainAccNo');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
@@ -230,6 +235,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('banks/Receipt/receipts/caching/all','Admin\banks\ReceiptController@caching')->name('receipts.caching');
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
+
+        Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');

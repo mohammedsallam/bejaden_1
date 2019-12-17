@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin\cc;
+namespace App\Http\Controllers\Admin\project;
 
 
 use App\Branches;
-use App\Models\Admin\MtsCostcntr;
-use App\Project;
+
+use App\city;
 use App\Contractors;
 
 use App\employee;
@@ -16,14 +16,17 @@ use App\Http\Controllers\Controller;
 use App\levels;
 use App\limitationReceipts;
 use App\limitationsType;
+use App\Models\Admin\MainBranch;
 use App\operation;
 use App\pjitmmsfl;
 use App\receipts;
 use App\receiptsData;
 use App\receiptsType;
 use App\supplier;
+//use App\Models\Admin\Projectmfs;
 use App\Models\Admin\MtsClosAcc;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\Projectmfs;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,16 +35,17 @@ use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use Up;
 
 
-class CcController extends Controller
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Department $department)
+    public function index()
     {
-        $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Costcntr_No']);
+
+        $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
         if(count($chart) > 0){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -49,10 +53,11 @@ class CcController extends Controller
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
             }
-            $chart_item = MtsCostcntr::first();
+            $chart_item = Projectmfs::first();
             $total = $this->getTotalTransaction($chart_item);
-            return view('admin.cc.index', ['title' => trans('admin.cc'),
-                'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total]);
+            $children = [];
+            return view('admin.projects.index', ['title' => trans('admin.projects'),
+                'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
         }
         else{
             if(session('Cmp_No') == -1){
@@ -61,38 +66,53 @@ class CcController extends Controller
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
             }
-            $Costcntr_No = $this->createAccNo(0);
-            return view('admin.cc.init_chart', ['title' => trans('admin.cc')
-                , 'cmps' => $cmps, 'Costcntr_No' => $Costcntr_No]);
+            $Prj_No = $this->createPrjNo(0);
+            return view('admin.projects.init_chart', ['title' => trans('admin.projects')
+                , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
+
         }
 
     }
 
-    public function createNewAcc(Request $request){
+
+    public function createNewPrj(Request $request){
+        //dd($request->all());
         if($request->ajax()){
             if($request->parent){
-                $parent = MtsCostcntr::where('Costcntr_No', $request->parent)->get(['Costcntr_No', 'Cmp_No', 'Level_No'])->first();
+                $parent = Projectmfs::where('Prj_No', $request->parent)
+                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                    ->get(['Prj_No', 'Cmp_No', 'Level_No', 'Prj_Parnt'])
+                    ->first();
                 $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
-                $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Costcntr_No']);
-                $Costcntr_No = $this->createAccNo($parent->Costcntr_No);
-                return view('admin.cc.create', ['title' => trans('admin.cc'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Costcntr_No' =>  $Costcntr_No,
-                     ]);
-            }
+                $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
+               // $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+               // $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+               // dd($parent->Prj_Parnt);
+                $Prj_No = $this->createPrjNo($parent->Prj_No);
+                $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
 
+                //dd($Prj_No);
+                //dd($request->Level_No);
+                return view('admin.projects.create', ['title' => trans('admin.projects'),
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No, 'bran'=>$bran]);
+            }
         }
     }
 
-    public function initChartAcc(){
+    public function initChartPrj(Request $request){
+        //dd($request->all());
+
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
-        $Costcntr_No = $this->createAccNo(0);
-        return view('admin.cc.create_main_chart', ['title' => trans('admin.cc')
-            , 'cmps' => $cmps, 'Costcntr_No' => $Costcntr_No]);
+        $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
+        $Prj_No = $this->createPrjNo(0);
+        //dd($request->all());
+        return view('admin.projects.create_main_chart', ['title' => trans('admin.projects')
+            , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'bran' => $bran]);
     }
 
     /**
@@ -100,110 +120,97 @@ class CcController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Department $department)
+    public function create()
     {
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request,Department $department)
+
+    public function store(Request $request)
     {
+//        dd($request->all());
+
         if($request->Level_Status == 0){
+            //dd('dd');
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
-                'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmen' => 'required',
+                'Prj_NmAr' => 'sometimes',
+                'Prj_NmEn' => 'sometimes',
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
-                'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmen' => trans('admin.english_name'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
+//            dd($request->Cmp_No);
 
-            $chart = new MtsCostcntr;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
-            $chart->Fbal_CR = $request->Fbal_CR;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Level_No = 1;
-            $chart->Parnt_Acc = 0;
-            $chart->Level_Status = 0;
-//            $chart->User_Id = Auth::user()->id;
-             $chart->Costcntr_No = $this->createAccNo($chart->Parnt_Acc);
-//            $chart->Costcntr_No = $request->Costcntr_No;
+            $chart = $request->all();
+//            dd($request->Cmp_No);
+//            $chart['Cmp_No'] = $request->Cmp_No;
 
-            $chart->save();
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            return redirect(aurl('cc'))->with(session()->flash('message',trans('admin.success_add')));
+            $chart['Cmp_No'] = session('Chart_Cmp_No');
+            $chart['Level_No'] = 1;
+            $chart['Prj_Parnt'] = 0;
+            $chart['User_ID'] = Auth::user()->id;
+            $chart['Tr_Dt'] = $request->created_at;
+            $chart['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $chart['Opn_Date'] = $request->created_at;
+            $chart['Updt_Date'] = $request->updated_at;
+            Projectmfs::create($chart);
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
         else if($request->Level_Status == 1){
+            //dd($request->Level_Status);
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
-                'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmen' => 'required',
-
+                'Prj_NmAr' => 'sometimes',
+                'Prj_NmEn' => 'sometimes',
+                'Prj_Status' => 'sometimes',
+                'Level_Status' => 'sometimes',
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
-                'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmen' => trans('admin.english_name'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+                'Prj_Status' => trans('admin.Prj_Status'),
+                'Level_Status' => trans('admin.Level_Status'),
             ]);
 
-            // return $request;
-            $chart = new MtsCostcntr;
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
-            $chart->Level_Status = $request->Level_Status;
-            $parent = MtsCostcntr::where('Costcntr_No', $request->Parnt_Acc)->get(['Level_No'])->first();
-            $chart->Level_No = $parent->Level_No + 1;
-            $chart->Parnt_Acc = $request->Parnt_Acc;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-//            $chart->User_Id = Auth::user()->id;
-            // $chart->Costcntr_No = $this->createAccNo($chart->Parnt_Acc);
-            $chart->Costcntr_No = $request->Costcntr_No;
-            $chart->save();
-//            $chart->Acc_Dt = $chart->created_at;
-//            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            $parent_level = MtsCostcntr::where('Costcntr_No', $request->Parnt_Acc)->first();
+            $chart = $request->all();
+
+            $chart['User_ID'] = Auth::user()->id;
+            $chart['Tr_Dt'] = $request->created_at;
+            $chart['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $chart['Opn_Date'] = $request->created_at;
+            $chart['Updt_Date'] = $request->updated_at;
+            $parent = Projectmfs::where('Prj_No', $request->Prj_Parnt)->get(['Level_No'])->first();
+            $chart['Level_No'] = $parent->Level_No +1;
+            $parent_level = Projectmfs::where('Prj_No', $request->Prj_Parnt)->first();
             if($parent_level){
                 $parent_level->Level_Status = 0;
                 $parent_level->save();
             }
-            return redirect(aurl('cc'))->with(session()->flash('message',trans('admin.success_add')));
+            //dd($chart);
+            Projectmfs::create($chart);
+
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Request $request)
     {
         if($request->ajax()){
             $search = $request->search;
             if ($search != null){
                 if ($search == 0){
-                    $max_count = DB::table('cc')->max('level_id');
-                    $contents = view('admin.cc.reports.show', compact('max_count','search'))->render();
+                    $max_count = DB::table('projectmfs')->max('Level_No');
+                    $contents = view('admin.projects.reports.show', compact('max_count','search'))->render();
                     return $contents;
                 }
                 if ($search == '1'){
-                    $max_count = MtsCostcntr::where('type',1)->pluck('Costcntr_Nm'.session('lang'),'id');
-                    $contents = view('admin.cc.reports.show', compact('max_count','search'))->render();
+                    $max_count = Projectmfs::where('type',1)->pluck('dep_name_'.session('lang'),'id');
+                    $contents = view('admin.projects.reports.show', compact('max_count','search'))->render();
                     return $contents;
                 }else{
-                    $contents = view('admin.cc.reports.details',compact('search'))->render();
+                    $contents = view('admin.projects.reports.details',compact('search'))->render();
                     return $contents;
                 }
             }
@@ -219,29 +226,29 @@ class CcController extends Controller
      */
     public function edit($id)
     {
-        // $ccs = glcc::where('type','1')->pluck('name_'.session('lang'),'id');
-        // $department = Department::findOrFail($id);
-        // $parents = $department->parents->pluck('Costcntr_Nm'.session('lang'),'id');
-        // $operations = operation::pluck('name_'.session('lang'),'id');
-        // return view('admin.cc.edit',['title'=> trans('admin.edit_department') ,'department'=>$department,'parents'=>$parents,'operations'=>$operations,'ccs'=>$ccs]);
     }
 
     public function getEditBlade(Request $request){
         if($request->ajax()){
             if(session('Cmp_No') == -1){
+
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
-            $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Costcntr_No']);
-            $chart_item =MtsCostcntr::where('Costcntr_No', $request->Costcntr_No)
+            $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+            $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+            $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
+            $chart_item =Projectmfs::where('Prj_No', $request->Prj_No)
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->first();
             $total = $this->getTotalTransaction($chart_item);
-            return view('admin.cc.edit', ['title' => trans('admin.cc'),
+            $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
+
+            return view('admin.projects.edit', ['title' => trans('admin.projects'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                ]);
+                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children, 'bran'=>$bran]);
         }
     }
 
@@ -254,61 +261,75 @@ class CcController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request->Level_No);
+        $chart = Projectmfs::where('Prj_No', $id)
+                           ->where('Cmp_No', session('Chart_Cmp_No'))
+                           ->first();
 
-        $chart = MtsCostcntr::where('Costcntr_No', $id)->where('Cmp_No', session('Chart_Cmp_No'))->first();
-        if($chart->Level_Status == 0){
-
+        if($chart->Level_No == 1){
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmen' => 'sometimes',
+                //'Cmp_No' => 'required',
+                'Prj_NmAr' => 'required',
+                'Prj_NmEn' => 'sometimes',
             ],[],[
-                'Cmp_No' => trans('admin.cmp_no'),
-                'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmen' => trans('admin.english_name'),
+                //'Cmp_No' => trans('admin.cmp_no'),
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
             ]);
+            //dd($request->Cmp_No);
+            $charts = $request->all();
+            $chart['Cmp_No'] = session('Chart_Cmp_No');
 
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
-            $chart->Costcntr_No = $request->Costcntr_No;
-            // $chart->Parnt_Acc = 0;
-//            $chart->User_Id = Auth::user()->id;
-            $chart->save();
-//            $chart->Acc_Dt = $chart->created_at;
-//            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-            return redirect(aurl('cc'))->with(session()->flash('message',trans('admin.success_update')));
+            $charts['Tr_Dt'] = $request->created_at;
+            $charts['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $charts['Opn_Date'] = $request->created_at;
+            $charts['Updt_Date'] = $request->updated_at;
+
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $prj_no){
+                        //$child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
+            $chart->update($charts);
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
         }
         else{
             $data = $this->validate($request,[
-                'Cmp_No' => 'required',
-                'Costcntr_Nmar' => 'required',
-                'Costcntr_Nmen' => 'sometimes',
-
+                //'Cmp_No' => 'required',
+                'Prj_NmAr' => 'required',
+                'Prj_NmEn' => 'sometimes',
+                'Acc_Typ' => 'sometimes',
+                'Level_Status' => 'sometimes',
+                //'Acc_Ntr' => 'required',
             ],[],[
                 'Cmp_No' => trans('admin.cmp_no'),
-                'Costcntr_Nmar' => trans('admin.arabic_name'),
-                'Costcntr_Nmen' => trans('admin.english_name'),
-
+                'Prj_NmAr' => trans('admin.project_name'),
+                'Prj_NmEn' => trans('admin.project_name_en'),
+                'Acc_Typ' => trans('admin.account_type'),
+                'Level_Status' => trans('admin.project_type'),
+                //'Acc_Ntr' => trans('admin.category')
             ]);
+            $charts = $request->all();
+            $charts['Tr_Dt'] = $request->created_at;
+            $charts['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
+            $charts['Opn_Date'] = $request->created_at;
+            $charts['Updt_Date'] = $request->updated_at;
 
-            $chart->Cmp_No = $request->Cmp_No;
-            $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
-            $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
-//            $chart->Acc_Typ = $request->Acc_Typ;
-            $chart->Fbal_DB = $request->Fbal_DB;
-            $chart->Fbal_CR = $request->Fbal_CR;
-//            $chart->User_Id = Auth::user()->id;
-            $chart->save();
-//            $chart->Acc_Dt = $chart->created_at;
-//            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));
-            $chart->Updt_Time = $chart->updated_at;
-            $chart->save();
-
-            return redirect(aurl('cc'))->with(session()->flash('message',trans('admin.success_update')));
+            if($request->children){
+                if(count($request->children) > 0){
+                    foreach($request->children as $prj_no){
+                        //$child = Projectmfs::where('Prj_No', $prj_no)->first()->update(['Cmp_No' => $request->Cmp_No]);
+                    }
+                }
+            }
+//            dd($chart);
+//dd($request->all());
+            $chart->update($charts);
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_update')));
         }
+
     }
 
     /**
@@ -319,33 +340,35 @@ class CcController extends Controller
      */
     public function destroy($id)
     {
-        $chart = MtsCostcntr::where('Costcntr_No', $id)->first();
+        $chart = Projectmfs::where('Prj_No', $id)->first();
         if(count($chart->children) > 0){
             return back()->with(session()->flash('error',trans('admin.chart_has_children')));
         }
         else{
             $chart->delete();
-            return redirect(aurl('cc'))->with(session()->flash('message',trans('admin.success_deleted')));
+            return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_deleted')));
         }
     }
 
     public function reports()
     {
-        $title = trans('admin.cc_reports');
-        return view('admin.cc.reports.index',compact('title'));
+        $title = trans('admin.Departments_reports');
+        return view('admin.projects.reports.index',compact('title'));
     }
     public function print()
     {
 
-        $cc = Department::orderBy('code')->get();
+//        $departments = sumdepartment(15);
+        $departments = Department::orderBy('code')->get();
 
+//        dd($departments);
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = Pdf::loadView('admin.cc.print', compact('cc'),[], $config);
+        $pdf = Pdf::loadView('admin.departments.print', compact('departments'),[], $config);
         return $pdf->stream();
     }
     public function details(Request $request)
@@ -354,14 +377,14 @@ class CcController extends Controller
             $typeRange = $request->typeRange;
             $type = $request->type;
             if ($typeRange != null){
-                $contents = view('admin.cc.reports.details', compact('typeRange', 'type'))->render();
+                $contents = view('admin.departments.reports.details', compact('typeRange', 'type'))->render();
                 return $contents;
 
             }
 
             if ($type != null){
 
-                $contents = view('admin.cc.reports.details', compact('typeRange', 'type'))->render();
+                $contents = view('admin.departments.reports.details', compact('typeRange', 'type'))->render();
                 return $contents;
             }
         }
@@ -372,37 +395,37 @@ class CcController extends Controller
         $type = $request->type;
         $search = $request->search;
         if ($search == 6){
-            $cc = Department::where('cc_id','!=',null)->get();
+            $departments = Department::where('cc_id','!=',null)->get();
             $config = ['instanceConfigurator' => function($mpdf) {
                 $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                         <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = PDF::loadView('admin.cc.reports.pdf.report', compact('cc'), [], $config);
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
             return $pdf->stream();
         }
         if ($typeRange != null){
-            $cc = Department::where('level_id',$typeRange)->get();
+            $departments = Department::where('level_id',$typeRange)->get();
             $config = ['instanceConfigurator' => function($mpdf) {
                 $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                         <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = PDF::loadView('admin.cc.reports.pdf.report', compact('cc'), [], $config);
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
             return $pdf->stream();
         }
         if ($type != null){
             $products = [];
-            $cc = Department::where('id',$type)->get();
-            while(count($cc) > 0){
+            $departments = Department::where('id',$type)->get();
+            while(count($departments) > 0){
                 $nextCategories = [];
-                foreach ($cc as $category) {
+                foreach ($departments as $category) {
                     $products = array_merge($products, $category->children->all());
                     $nextCategories = array_merge($nextCategories, $category->children->all());
                 }
-                $cc = $nextCategories;
+                $departments = $nextCategories;
             }
             $config = ['instanceConfigurator' => function($mpdf) {
                 $mpdf->SetHTMLFooter('
@@ -410,27 +433,27 @@ class CcController extends Controller
                         <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = PDF::loadView('admin.cc.reports.pdf.report', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('products'), [], $config);
             return $pdf->stream();
         }
 
         if ($search == '2'){
-            $cc = Department::where('category','0')->get();
+            $departments = Department::where('category','0')->get();
         }elseif ($search == '3'){
-            $cc = Department::where('category','1')->get();
+            $departments = Department::where('category','1')->get();
         }elseif ($search == '4'){
-            $cc = Department::where('type','0')->get();
+            $departments = Department::where('type','0')->get();
         }elseif ($search == '5'){
-            $cc = Department::where('type','1')->get();
+            $departments = Department::where('type','1')->get();
         }elseif ($search == '6'){
-            $cc = glcc::where('type','1')->get();
+            $departments = glcc::where('type','1')->get();
             $config = ['instanceConfigurator' => function($mpdf) {
                 $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = PDF::loadView('admin.cc.reports.pdf.cc', compact('cc'), [], $config);
+            $pdf = PDF::loadView('admin.departments.reports.pdf.cc', compact('departments'), [], $config);
             return $pdf->stream();
         }
         $config = ['instanceConfigurator' => function($mpdf) {
@@ -439,15 +462,16 @@ class CcController extends Controller
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = PDF::loadView('admin.cc.reports.pdf.report', compact('cc'), [], $config);
+        $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
         return $pdf->stream();
     }
     public function Review( )
     {
-
+//        $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');
+//        $branches = Branches::pluck('name_'.session('lang'),'id');
         $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
         $title = trans('admin.daily_report');
-        return view('admin.cc.review',compact('limitationReceipts'));
+        return view('admin.departments.review',compact('limitationReceipts'));
     }
 
     public function reviewdepartment(Request $request)
@@ -463,12 +487,12 @@ class CcController extends Controller
         $receipts_1 = [];
         $receipts_2 = [];
         $receipts_3= [];
-//dd(Costcntr_Nmar != name_ar);
+//dd(dep_name_ar != name_ar);
         $limitations_1 = limitationsType::where('operation_id', '=', 4)
             ->where('limitations_type.tree_id', '=', \DB::raw('limitations_type.relation_id'))
-            ->whereHas('cc', function ($qu) {
+            ->whereHas('departments', function ($qu) {
 
-                $qu->where('Costcntr_Nmar', '!=', \DB::raw('limitations_type.name_ar'));
+                $qu->where('dep_name_ar', '!=', \DB::raw('limitations_type.name_ar'));
             })->whereHas('limitations',
                 function ($q) use ($type) {
 
@@ -485,6 +509,14 @@ class CcController extends Controller
             })->get();
 
 
+//        $limitations_2 = limitationsType::where('operation_id', '=', 4)->where('limitations_type.tree_id', '!=', \DB::raw('limitations_type.relation_id'))->whereHas('limitations',
+//            function ($query) use ($type) {
+//                $query->where('limitationsType_id', '=', $type);
+//
+//
+//            })->get();
+
+//dd(tree_id  != relation_id);
 
 
         $Errorlimitations_3 = limitationsType::whereHas('limitations',
@@ -552,9 +584,9 @@ class CcController extends Controller
 
         $receipts_2 = receiptsType::where('operation_id', '=', 4)
             ->where('receipts_type.tree_id', '=', \DB::raw('receipts_type.relation_id'))
-            ->whereHas('cc', function ($qu) {
+            ->whereHas('departments', function ($qu) {
 
-                $qu->where('Costcntr_Nmar', '!=', \DB::raw('receipts_type.name_ar'));
+                $qu->where('dep_name_ar', '!=', \DB::raw('receipts_type.name_ar'));
             })->whereHas('receipts',
                 function ($q) use ($type) {
 
@@ -620,37 +652,52 @@ class CcController extends Controller
 
         }
 
-        return view('admin.cc.ajax.error', compact('receipts_1','receipts_2','receipts_3', 'limitations_1', 'limitations_2', 'limitations_3'))->render();
+        return view('admin.departments.ajax.error', compact('receipts_1','receipts_2','receipts_3', 'limitations_1', 'limitations_2', 'limitations_3'))->render();
 
 
     }
 
-    //create new Costcntr_No
-    public function createAccNo($Parnt_Acc){
-        if($Parnt_Acc == 0){
-            $chart = MtsCostcntr::where('Parnt_Acc', 0)->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
+    //create new Acc_No
+    public function createPrjNo($Prj_Parnt){
+        if($Prj_Parnt == 0){
+            $chart = Projectmfs::where('Prj_Parnt', 0)->orderBy('Prj_No', 'desc')->get(['Prj_No'])->first();
             if($chart){
-                $Costcntr_No = $chart->Costcntr_No + 1;
-                return $Costcntr_No;
+                $Prj_No = $chart->Prj_No + 1;
+                return $Prj_No;
             }
             else{
-                $Costcntr_No = 1;
-                return $Costcntr_No;
+                $Prj_No = 1;
+                return $Prj_No;
             }
         }
         else{
-            $parent = MtsCostcntr::where('Costcntr_No', $Parnt_Acc)->first();
+            //dd('ff');
+            $parent = Projectmfs::where('Prj_No', $Prj_Parnt)->first();
+            //dd($parent);
             if(count($parent->children) > 0){
-                $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)
+//                dd($parent->);
+                $max = Projectmfs::where('Prj_Parnt', $parent->Prj_No)
                     ->where('Cmp_No', session('Chart_Cmp_No'))
-                    ->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
-                return $max->Costcntr_No + 1;
+                    ->orderBy('Prj_No', 'desc')->get(['Prj_No'])->first();
+//                dd($max);
+                return $max->Prj_No + 1;
             }
             else{
-                $Costcntr_No = (int)$Parnt_Acc.'01';
-                return $Costcntr_No;
+                //dd('fff');
+                $Prj_No = (int)$Prj_Parnt.'01';
+                return $Prj_No;
             }
-
+            // $chart = Projectmfs::where('Parnt_Acc', $Parnt_Acc)->orderBy('Acc_No', 'desc')->get(['Acc_No'])->first();
+            // if($chart){
+            //     $index = explode('0', $chart->Acc_No);
+            //     $counter = (int)$index[count($index)-1] + 1;
+            //     $Acc_No = (int)$Parnt_Acc.'0'.$counter;
+            //     return $Acc_No;
+            // }
+            // else{
+            //     $Acc_No = (int)$Parnt_Acc.'01';
+            //     return $Acc_No;
+            // }
         }
     }
 
@@ -671,14 +718,31 @@ class CcController extends Controller
             'total_balance' => $total_balance);
         return $total;
     }
-
-    public function getCc(Request $request){
+    public function getTree(Request $request){
         if($request->ajax()){
             session(['Chart_Cmp_No' => $request->Cmp_No]);
-            $tree = load_cc('Parnt_Acc', null, $request->Cmp_No);
+            $tree = load_prj('Prj_Parnt', null, $request->Cmp_No);
             return $tree;
         }
     }
+
+
+    public function getCities(Request $request)
+    {
+        $cities = city::where('country_id', $request->Country_No)->get();
+        return view('admin.subscribers.get_cities',compact('cities'));
+
+    }
+
+//    public function getBranches(Request $request)
+//    {
+//dd($request->Cmp_No);
+//        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
+//
+//
+//
+//        return view('admin.projects.get_branches', compact('branches'));
+//    }
 
 }
 

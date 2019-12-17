@@ -4,6 +4,9 @@
     @push('js')
         <script>
             $(document).ready(function(){
+                $('#Acc_No_Select').select2({
+
+                });
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){  
                     $.ajax({
@@ -77,27 +80,44 @@
                 $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
+                    var Acc_Ty = $(this).val();
 
-                    if($(this).val() == 1){
-                        alert('accounts');
-                    }
-                    else if($(this).val() == 2){
-                        $.ajax({
-                            url: "{{route('getCustomers')}}",
-                            type: "POST",
-                            dataType: 'json',
-                            data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No },
-                            success: function(data){
-                                console.log(data);
+                    $.ajax({
+                        url: "{{route('getSubAcc')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty},
+                        success: function(data){
+                            $('#Acc_No_Select').html(data);
+                        }
+                    });
+                });
+
+                $(document).on('change', '#Acc_No_Select', function(){
+                    var Cmp_No = $('#Cmp_No').children('option:selected').val();
+                    var Brn_No = $('#Dlv_Stor').children('option:selected').val();
+                    var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
+                    var Acc_No = $(this).val();
+
+                    $.ajax({
+                        url: "{{route('getMainAccNo')}}",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty, Acc_No: Acc_No },
+                        success: function(data){
+                            $('#Sysub_Account').val($('#Acc_No_Select').val());
+                            $('#Acc_No').val(data.mainAccNo.acc_no);
+                            $('#main_acc').val(data.mainAccNm.acc_name);
+
+                            if(data.AccNm && data.AccNm.cc_flag && data.AccNm.cc_no){
+                                $('#Costcntr_No_content').removeClass('hidden');
                             }
-                        });
-                    }
-                    else if($(this).val() == 3){
-                        alert('suppliers');
-                    }
-                    else if($(this).val() == 4){
-                        alert('employees');
-                    }
+                            else{
+                                $('#Costcntr_No_content').addClass('hidden');
+                                $('#Costcntr_No').val(null);
+                            }
+                        }
+                    });
                 });
 
                 function addRowHandlers() {
@@ -129,6 +149,13 @@
                         $('#Tr_TaxVal').attr('disabled','disabled');
                         $('#Tr_TaxVal').val(null);
                     }
+                });
+
+                $('#Tr_TaxVal').change(function(){
+                    var amount = $('#Tot_Amunt').val();
+                    var tax = $(this).val();
+                    var total_amount = ((tax * amount) / 100);
+                    $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
                 });
 
             });
@@ -218,8 +245,8 @@
             {{-- نهاية سعر الصرف --}}
             {{-- المبلغ المطلوب --}}
             <div class="col-md-2">
-                <label for="Tr_Cr">{{trans('admin.amount')}}</label>
-                <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
+                <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
+                <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
             </div>
             {{-- نهاية المبلغ المطلوب --}}
             {{-- الضريبه --}}
@@ -269,11 +296,11 @@
                                 <input type="text" name="main_acc" id="main_acc" class="form-control">
                             </div>
                             <div class="col-md-4">
-                                <label for=""></label>
-                                <input type="text" name="TrAcc_No" id="TrAcc_No" class="form-control">
+                                <label for="Acc_No"></label>
+                                <input type="text" name="Acc_No" id="Acc_No" class="form-control">
                             </div>
                         </div>
-                        {{-- نهاسة الحساب الرئيسى --}}
+                        {{-- نهاية الحساب الرئيسى --}}
                         {{-- نوع الحساب --}}
                         <div class="row">
                             {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
@@ -287,14 +314,14 @@
                                 </select>
                             </div>
                             {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
-                            <div class="col-md-8">
-                                <label for="Acc_No"></label>
-                                <select name="Acc_No" id="Acc_No" class="form-control">
+                            <div class="col-md-7">
+                                <label for="Acc_No_Select"></label>
+                                <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
                                 </select>
                             </div>
                             {{-- رقم العميل - رقم المورد - رقم الموظف --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="Sysub_Account"></label>
                                 <input type="text" name="Sysub_Account" id="Sysub_Account" class="form-control">
                             </div>
@@ -304,8 +331,8 @@
                         <div class="row">
                             {{-- المبلغ دائن --}}
                             <div class="col-md-4">
-                                <label for="Rcpt_Value">{{trans('admin.amount_cr')}}</label>
-                                <input type="text" name="Rcpt_Value" id="Rcpt_Value" class="form-control">
+                                <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
+                                <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
                             </div>
                             {{-- نهاية المبلغ دائن --}}
                             {{-- رقم المستند --}}
@@ -315,7 +342,7 @@
                             </div>
                             {{-- نهاية رقم المستند --}}
                             {{-- مركز التكلفه --}}
-                            <div class="col-md-4">
+                            <div class="col-md-4 hidden" id="Costcntr_No_content">
                                 <label for="Costcntr_No">{{trans('admin.with_cc')}}</label>
                                 <select name="Costcntr_No" id="Costcntr_No" class="form-control">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -326,14 +353,16 @@
                         <div class="row">
                             {{-- البيان عربى --}}
                             <div class="col-md-12">
-                                <label for="Tr_Ds">{{trans('admin.Statement_ar')}}</label>
-                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control">
+                                <br>
+                                <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
+                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10">
                             </div>
                             {{-- نهاية البيان عربى --}}
                             {{-- البيان انجليزى --}}
                             <div class="col-md-12">
-                                <label for="Tr_Ds1">{{trans('admin.Statement_en')}}</label>
-                                <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control">
+                                <br>
+                                <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
+                                <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-10">
                             </div>
                             {{-- نهاية البيان انجليزى --}}
                         </div>
@@ -373,8 +402,9 @@
                         {{-- البيان --}}
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="">{{trans('admin.note_ar')}}</label>
-                                <input type="text" name="" id="" class="form-control">
+                                <br>
+                                <label for="Tr_Ds" class="col-md-2">{{trans('admin.note_ar')}}</label>
+                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10">
                             </div>
                         </div>
                         {{-- البيان --}}
@@ -390,17 +420,29 @@
                                 </div>
                                 <div class="panel-body">
                                     {{-- مدين --}}
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label for="Tr_Db">{{trans('admin.Fbal_Db_')}}</label>
                                         <input type="text" name="Tr_Db" id="Tr_Db" class="form-control">
                                     </div>
                                     {{-- نهاية مدين --}}
                                     {{-- دائن --}}
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label for="Tr_Cr">{{trans('admin.Fbal_CR_')}}</label>
                                         <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
                                     </div>
                                     {{-- نهاية دائن --}}
+                                    {{-- الفرق --}}
+                                    <div class="col-md-3">
+                                        <label for="Tr_Dif">{{trans('admin.subtract')}}</label>
+                                        <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control">
+                                    </div>
+                                    {{-- نهاية الفرق --}}
+                                    {{-- الرصيد الحالى --}}
+                                    <div class="col-md-3">
+                                        <label for="Crnt_Blnc">{{trans('admin.current_balance')}}</label>
+                                        <input type="text" name="Crnt_Blnc" id="Crnt_Blnc" class="form-control">
+                                    </div>
+                                    {{-- نهاية الرصيد الحالى --}}
                                 </div>
                             </div>
                         </div>
