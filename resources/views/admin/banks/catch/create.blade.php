@@ -31,16 +31,6 @@
 
                 //get salesmen of specific branch selection
                 $(document).on('change', '#Dlv_Stor', function(){
-                    $.ajax({
-                        url: "{{route('getSalesMan')}}",
-                        type: "POST",
-                        dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val() },
-                        success: function(data){
-                            $('#salman_No_content').html(data);
-                        }
-                    });
-
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
                         url: "{{route('createTrNo')}}",
@@ -76,6 +66,7 @@
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $(this).val();
 
+                    //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
                     $.ajax({
                         url: "{{route('getSubAcc')}}",
                         type: "POST",
@@ -93,6 +84,7 @@
                     var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
                     var Acc_No = $(this).val();
 
+                    //get parent account number on account select
                     $.ajax({
                         url: "{{route('getMainAccNo')}}",
                         type: "POST",
@@ -112,6 +104,19 @@
                             }
                         }
                     });
+
+                    //get salesman in case Acc_Ty == 2 (customers)
+                    if(Acc_Ty == 2){
+                            $.ajax({
+                                url: "{{route('getSalesMan')}}",
+                                type: "POST",
+                                dataType: 'html',
+                                data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
+                                success: function(data){
+                                    $('#salman_No_content').html(data);
+                                }
+                        });
+                    }
                 });
 
                 function addRowHandlers() {
