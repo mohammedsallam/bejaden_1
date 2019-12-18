@@ -282,12 +282,6 @@
 
                 {{-- form start --}}
                 <div class="col-md-6" id="chart_form">
-                    {!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
-                        {{csrf_field()}}
-                        {{method_field('PUT')}}
-
-
-                        <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
                             <li role="presentation" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
                             <li role="presentation"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
