@@ -58,6 +58,7 @@ class ProjectController extends Controller
             $chart_item = Projectmfs::first();
             $total = $this->getTotalTransaction($chart_item);
             $children = [];
+//            dd($cmps);
             return view('admin.projects.index', ['title' => trans('admin.projects'),
                 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
         }
