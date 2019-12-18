@@ -48,7 +48,7 @@ class CreateGLJrnalsTable extends Migration
             $table->float('Tr_TaxVal', 50, 10)->nullable();//الضريبه
             $table->integer('Salman_No')->nullable();//مندوب المبيعات
             $table->float('Tot_Amunt', 50, 10)->nullable();//المبلغ المطلوب
-            $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
+            // $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
             $table->string('Tr_Ds', 200)->nullable();//البيان Ar 
             $table->string('Tr_Ds1', 200)->nullable();//البيان EN 
             $table->integer('Dc_No')->nullable();//رقم المستند 
