@@ -459,26 +459,29 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
-                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
-                                                        'class'=>'form-control col-md-7', 'id'=>'countries','placeholder'=>trans('admin.select')
-                                                ])!!}
+
+                                                <input type="text" class="form-control col-md-7" disabled name="Country_No" value="{{$chart_item->Country_No? $chart_item->country->country_name_ar : null}}">
+{{--                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[--}}
+{{--                                                        'class'=>'form-control col-md-7', 'id'=>'countries','placeholder'=>trans('admin.select')--}}
+{{--                                                ])!!}--}}
                                             </div>
                                         </div>
                                         {{-- نهاية الدوله --}}
 
                                         {{-- المدينه --}}
                                         <div class="col-md-12 branch">
-                                            <input class="form-group row">
+                                            <div class="form-group row">
                                                 <label for="City_No" class="col-md-5">{{trans('admin.city')}}</label>
-                                                <select class="form-control col-md-7" name="City_No" id="cities">
-                                                    <option>{{trans('admin.select')}}</option>
-                                                </select>
+                                            <input type="text" class="form-control col-md-7" disabled name="City_No" value="{{$chart_item->City_No? $chart_item->city->city_name_ar : null}}">
+{{--                                                <select class="form-control col-md-7" name="City_No" id="cities">--}}
+{{--                                                    <option>{{trans('admin.select')}}</option>--}}
+{{--                                                </select>--}}
                                             </div>
                                         </div>
                                         {{-- نهاية المدينه --}}
 
                                         {{-- المنطقه --}}
-                                        <div class="col-md-12 branch">
+                                        <div class="form-group col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Area_No" class="col-md-5">{{trans('admin.area')}}</label>
                                                 <input type="text" name="Area_No" id="Area_No" value='{{$chart_item->Area_No? $chart_item->Area_No : null}}'
@@ -500,7 +503,7 @@
                                         {{-- نهاية حساب المصاريف للمشاريع --}}
 
                                         {{-- حساب الايرادات للمشاريع --}}
-                                        <div class="col-md-12 branch">
+                                        <div class="form-group col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Acc_CR" class="col-md-5">{{trans('admin.Acc_CR')}}</label>
                                                 <input type="text" disabled name="Acc_CR" id="Acc_CR" value='{{$chart_item->Acc_CR? $chart_item->Acc_CR : 0}}'
@@ -512,7 +515,7 @@
 
                                         <hr style="border: 1px;">
                                         {{-- رصيد اول المده مدين --}}
-                                        <div class="col-md-12 branch">
+                                        <div class="form-group col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
                                                 <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
@@ -559,19 +562,13 @@
                                         {{-- رقم الفرع و المستودع --}}
 
 
-                                            <div class="col-md-12 branch">
+                                            <div class="form-group col-md-12 branch">
                                                 <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
-                                                <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
-                                                    <option value="">{{trans('admin.select')}}</option>
-
-                                                </select>
+                                                <input type="text" class="form-control col-md-6" disabled name="Brn_No" value="{{$chart_item->Brn_No? $chart_item->branch->Brn_NmAr : null}}">
                                             </div>
-                                            <div class="col-md-12 branch">
+                                            <div class="form-group col-md-12 branch">
                                                 <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
-                                                <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
-                                                    <option value="">{{trans('admin.select')}}</option>
-
-                                                </select>
+                                                <input type="text" class="form-control col-md-6" disabled name="Dlv_Stor" value="{{$chart_item->Dlv_Stor? $chart_item->branch->Brn_NmAr : null}}">
                                             </div>
 
                                         {{-- امر التوريد --}}
@@ -591,8 +588,7 @@
                                         {{-- نهاية امر التوريد --}}
 
                                         {{-- قيمة التوريد --}}
-                                        <div class="col-md-12 branch">
-
+                                        <div class="form-group col-md-12 branch">
                                             <label for="Ordr_Value" class="col-md-5 col-md-offset-1">{{trans('admin.Ordr_Value')}}</label>
                                             <input type="text" name="Ordr_Value" id="Ordr_Value" class="form-control col-md-6"
                                                    value="{{$chart_item->Ordr_Value? $chart_item->Ordr_Value : null}}"

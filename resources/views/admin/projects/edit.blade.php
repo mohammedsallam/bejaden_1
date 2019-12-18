@@ -363,7 +363,7 @@
                     <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
                         @foreach($bran as $branch)
-                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_Nm.ucfirst(session('lang'))}}</option>
+                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_NmAr}}</option>
                         @endforeach
                     </select>
                 </div>

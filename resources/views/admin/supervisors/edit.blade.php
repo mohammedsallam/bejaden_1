@@ -4,7 +4,7 @@
 @inject('companies', 'App\Models\Admin\MainCompany')
 
 
-@section('title',trans('admin.create_new_delegate'))
+@section('title',trans('admin.create_new_supervisor'))
 @section('content')
     @push('js')
         <script>
@@ -84,7 +84,7 @@
     <button class="btn btn-primary" style="float: left;"><i class="fa fa-save"></i></button>
     <div class="panel panel-default">
         <div class="panel-heading">
-        <h5>{{trans('admin.edit_supervisor').$supervisor->Mrkt_Nm.ucfirst(session('lang'))}}</h5>
+        <h5>{{trans('admin.edit_supervisor').$supervisor->Mrkt_NmAr}}</h5>
         </div>
         <div class="panel-body">
             @can('single')
@@ -127,14 +127,7 @@
                         <div class="col-md-9">{!!Form::text('Mrkt_NmEn', null, ['class'=>'form-control'])!!}</div>
                     </div>
 
-                    <div class="form-group row col-md-12">
-                        <div class="col-md-3">{!!Form::label('Mark_No', trans('admin.Mark_No'))!!}</div>
-                        <div class="col-md-9">
-                            {!!Form::select('Mark_No' ,$supervisors->pluck('Mrkt_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                'class'=>'form-control','placeholder'=>trans('admin.select')
-                            ])!!}
-                        </div>
-                    </div>
+
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">{{trans('admin.add')}}</button>
                     </div>

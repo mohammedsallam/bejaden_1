@@ -8,6 +8,7 @@ use App\Branches;
 use App\city;
 use App\Contractors;
 
+use App\country;
 use App\employee;
 use App\Department;
 use App\glcc;
@@ -17,6 +18,7 @@ use App\levels;
 use App\limitationReceipts;
 use App\limitationsType;
 use App\Models\Admin\MainBranch;
+use App\Models\Admin\MtsCostcntr;
 use App\operation;
 use App\pjitmmsfl;
 use App\receipts;
@@ -85,7 +87,11 @@ class ProjectController extends Controller
                     ->first();
                 $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
                 $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
-               // $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+                $costCenter = MtsCostcntr::where('Parnt_Acc', 0)->get();
+
+//                dd($costCenter);
+
+                // $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                // $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                // dd($parent->Prj_Parnt);
                 $Prj_No = $this->createPrjNo($parent->Prj_No);
@@ -94,7 +100,8 @@ class ProjectController extends Controller
                 //dd($Prj_No);
                 //dd($request->Level_No);
                 return view('admin.projects.create', ['title' => trans('admin.projects'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No, 'bran'=>$bran]);
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No,
+                    'bran'=>$bran, 'costCenter'=>$costCenter]);
             }
         }
     }
@@ -226,6 +233,12 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
+//        $countries =country::pluck('country_name_'.session('lang'),'id')->toArray();
+//        $cities =city::pluck('city_name_'.session('lang'),'id')->toArray();
+//        $branches = MainBranch::pluck('Brn_NmAr');
+////        $company = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
+//        return view('admin.projects.edit', ['title' => trans('admin.projects'),
+//            'countries' => $countries, 'cities' => $cities, 'branches' =>$branches]);
     }
 
     public function getEditBlade(Request $request){
@@ -239,6 +252,7 @@ class ProjectController extends Controller
             }
             $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+
             $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
             $chart_item =Projectmfs::where('Prj_No', $request->Prj_No)
                 ->where('Cmp_No', session('Chart_Cmp_No'))
@@ -248,7 +262,8 @@ class ProjectController extends Controller
 
             return view('admin.projects.edit', ['title' => trans('admin.projects'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children, 'bran'=>$bran]);
+                 'bran'=>$bran,'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children
+                ]);
         }
     }
 
