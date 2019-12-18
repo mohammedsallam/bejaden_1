@@ -129,6 +129,8 @@ class ReceiptCatchController extends Controller
             'Due_Issue_Dt' => $request->Due_Issue_Dt,
             'Rcpt_By' => $request->Rcpt_By,
             'Pymt_To' => $request->Pymt_To,
+            'Tr_Db' => $request->Tr_Cr,
+            'Tr_Cr' => $request->Tr_Cr,
         ]);
 
         $header->Entr_Dt = $header->created_at->format('Y-m-d');
@@ -148,9 +150,9 @@ class ReceiptCatchController extends Controller
             'Month_No' => Carbon::now()->month,
             'Tr_Dt' => $request->Tr_Dt,
             'Tr_DtAr' => $request->Tr_DtAr,
-            'Ac_Ty' => $request->Ac_Ty,
-            'Sysub_Account' => $request->Sysub_Account,
-            'Acc_No' => $request->Acc_No,
+            'Ac_Ty' => 1,
+            'Sysub_Account' => 0,
+            'Acc_No' => $request->Tr_Db_Acc_No,
             'Tr_Db' => $request->Tr_Cr,
             'Tr_Cr' => 0.00,
             'Dc_No' => $request->Dc_No,
@@ -245,7 +247,8 @@ class ReceiptCatchController extends Controller
     public function getSalesMan(Request $request){
         if($request->ajax()){
             $customer = MTsCustomer::where('Cstm_No', $request->Acc_No)->get(['Slm_No'])->first();
-            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))])->first();
+            // return $salesman->{'Slm_Nm'.ucfirst(session('lang'))};
             return view('admin.banks.catch.salman', ['salesman' => $salesman]);
         }
     }
@@ -359,7 +362,12 @@ class ReceiptCatchController extends Controller
     public function getTaxValue(Request $request){
         if($request->ajax()){
             $cmp = MainCompany::where('Cmp_No', $request->Cmp_No)->get(['TaxExtra_Prct'])->first();
-            return $cmp->TaxExtra_Prct;
+            if($cmp){
+                return $cmp->TaxExtra_Prct;
+            }
+            else{
+                return null;
+            }
         }
     }
 }

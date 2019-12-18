@@ -5,6 +5,10 @@
         <script>
             $(document).ready(function(){
                 $('#Acc_No_Select').select2({});
+
+                var old_Tr_Db_Db = $('#Tr_Db_Db');
+                var old_Tr_Cr_Db = $('#Tr_Cr_Db');
+
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){  
                     $.ajax({
@@ -41,13 +45,7 @@
                             $('#Tr_No').val(data);
                         }
                     });
-                })
-
-                //get number of selected salesman
-                $(document).on('change', '#Salman_No_select', function(){
-                    var Salman_No = $(this).val();
-                    $('#Salman_No').val(Salman_No);
-                }); 
+                }) 
 
                 // convert Tr_Dt ro hijry
                 let Hijri = $('input#Tr_Dt').val();
@@ -113,7 +111,7 @@
                                 dataType: 'html',
                                 data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                                 success: function(data){
-                                    $('#salman_No_content').html(data);
+                                    $('#sales_man_content').html(data);
                                 }
                         });
                     }
@@ -149,14 +147,23 @@
                         $('#Tr_TaxVal').attr('disabled','disabled');
                         $('#Tr_Cr').val($('#Tot_Amunt').val());
                     }
+                    var cr = $('#Tr_Cr').val();
+                    $('#Tr_Db_Db').val(cr);
+                    $('#Tr_Cr_Db').val(cr);
                 });
 
                 $('#Tot_Amunt').change(function(){
                     calcTax();
+                    var cr = $('#Tr_Cr').val();
+                    $('#Tr_Db_Db').val(cr);
+                    $('#Tr_Cr_Db').val(cr);
                 });
 
                 $('#Tr_TaxVal').change(function(){
                     calcTax();
+                    var cr = $('#Tr_Cr').val();
+                    $('#Tr_Db_Db').val(cr);
+                    $('#Tr_Cr_Db').val(cr);
                 });
 
                 $('#Dc_No').change(function(){
@@ -172,20 +179,26 @@
                     $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
                 });
 
-                //add transaction row to table
-                $('#Tr_Ds1').keyup(function(e){
-                    if(e.keyCode == 13){
+                //اضافة سطر فى الجدول
+                $('#add_line').click(function(e){
+                    e.preventDefault();
+                    var new_Tr_Db_Db = $('#Tr_Db_Db').val();
+                    var new_Tr_Cr_Db = $('#Tr_Cr_Db').val();
+                    $('#Tr_Db_Db').val(new_Tr_Db_Db + old_Tr_Db_Db);
+                    $('#Tr_Cr_Db').val(new_Tr_Cr_Db + old_Tr_Cr_Db);
+
+                    if($('#Tot_Amunt').val() && $('#Tr_Ds').val()){
                         $('#table').append(`
-                                    <tr>
-                                        <td>`+$('#Tr_No').val()+`</td>
-                                        <td>`+$('#Sysub_Account').val()+`</td>
-                                        <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                        <td>0.00</td>
-                                        <td>`+$('#Tr_Cr').val()+`</td>
-                                        <td>`+$('#Tr_Ds').val()+`</td>
-                                        <td>`+$('#Dc_No').val()+`</td>
-                                        <td>`+$('#Tr_Ds1').val()+`</td>
-                                    </tr>`);
+                            <tr>
+                                <td>`+$('#Tr_No').val()+`</td>
+                                <td>`+$('#Sysub_Account').val()+`</td>
+                                <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                                <td>0.00</td>
+                                <td>`+$('#Tr_Cr').val()+`</td>
+                                <td>`+$('#Tr_Ds').val()+`</td>
+                                <td>`+$('#Dc_No').val()+`</td>
+                                <td>`+$('#Tr_Ds1').val()+`</td>
+                            </tr>`);
                         $.ajax({
                             url: "{{route('rcatchs.store')}}",
                             type: "post",
@@ -217,6 +230,7 @@
                                         Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                                         Rcpt_By: $('#Rcpt_By').val(),
                                         Pymt_To: $('#Pymt_To').val(),
+                                        Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                     },
                             success: function(data){
                                 // $('#Cmp_No').val(null);
@@ -239,7 +253,8 @@
                                 $('#Acc_No_Select').val(null);
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
-                                $('#Salman_No_select').val(null);
+                                $('#Salman_No_Name').val(null);
+                                $('#Salman_No').val(null);
                                 $('#Chq_no').val(null);
                                 $('#Bnk_Nm').val(null);
                                 $('#Issue_Dt').val(null);
@@ -283,13 +298,15 @@
                         $('#Tr_Cr').val(parseFloat(amount));
                     }
                 }
+
+                $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
         </script>
     @endpush
 
     <form action="{{route('rcatchs.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
-        <input hidden type="text" name="last_record" id="last_record" value={{$last_record ? $last_record->Tr_No : null}}>
+        <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
         <div class="row">
             {{-- الشركه --}}
             <div class="col-md-4">
@@ -322,7 +339,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
-                    <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control">
+                    <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
                 </div>
             </div>
             {{-- نهاية رقم القيد --}}
@@ -389,18 +406,16 @@
             </div>
             {{-- نهاية منصرف بواسطة --}}
             {{-- مندوب المبيعات --}}
-            <div class="col-md-2">
-                <label for="Salman_No_select">{{trans('admin.sales_officer2')}}</label>
-                <div id="salman_No_content">
-                    <select name="Salman_No_select" id="Salman_No_select" class="form-control">
-                        <option value="{{null}}">{{trans('admin.select')}}</option>
-                    </select>
+            <div id="sales_man_content">
+                <div class="col-md-2">
+                    <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
+                    <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
                 </div>
-            </div>
-            <div class="col-md-1">
-                <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control">
-                <br>
+                <div class="col-md-1">
+                    <label for=""></label>
+                    <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
+                    <br>
+                </div>
             </div>
             {{-- نهاية مندوب المبيعات --}}
         </div>
@@ -520,19 +535,24 @@
                         </div>
                         <div class="row">
                             {{-- البيان عربى --}}
-                            <div class="col-md-12">
+                            <div class="col-md-10">
                                 <br>
                                 <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
                                 <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10">
                             </div>
                             {{-- نهاية البيان عربى --}}
                             {{-- البيان انجليزى --}}
-                            <div class="col-md-12">
+                            <div class="col-md-10">
                                 <br>
                                 <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
                                 <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-10">
                             </div>
                             {{-- نهاية البيان انجليزى --}}
+                            {{-- اضافة سطر --}}
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" id="add_line">{{trans('admin.add_line')}}</button>
+                            </div>
+                            {{-- نهاية اضافة سطر --}}
                         </div>
                     </div>
                 </div>
@@ -593,14 +613,14 @@
                                 <div class="panel-body">
                                     {{-- مدين --}}
                                     <div class="col-md-3">
-                                        <label for="Tr_Db">{{trans('admin.Fbal_Db_')}}</label>
-                                        <input type="text" name="Tr_Db" id="Tr_Db" class="form-control">
+                                        <label for="Tr_Db_Db">{{trans('admin.Fbal_Db_')}}</label>
+                                        <input type="text" name="Tr_Db_Db" id="Tr_Db_Db" class="form-control">
                                     </div>
                                     {{-- نهاية مدين --}}
                                     {{-- دائن --}}
                                     <div class="col-md-3">
-                                        <label for="Tr_Cr">{{trans('admin.Fbal_CR_')}}</label>
-                                        <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
+                                        <label for="Tr_Cr_Db">{{trans('admin.Fbal_CR_')}}</label>
+                                        <input type="text" name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control">
                                     </div>
                                     {{-- نهاية دائن --}}
                                     {{-- الفرق --}}
@@ -610,10 +630,10 @@
                                     </div>
                                     {{-- نهاية الفرق --}}
                                     {{-- الرصيد الحالى --}}
-                                    <div class="col-md-3">
+                                    {{-- <div class="col-md-3">
                                         <label for="Crnt_Blnc">{{trans('admin.current_balance')}}</label>
                                         <input type="text" name="Crnt_Blnc" id="Crnt_Blnc" class="form-control">
-                                    </div>
+                                    </div> --}}
                                     {{-- نهاية الرصيد الحالى --}}
                                 </div>
                             </div>
