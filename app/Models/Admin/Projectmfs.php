@@ -92,5 +92,24 @@ class Projectmfs extends Model
     public function children(){
         return $this->hasMany(Projectmfs::class, 'Prj_Parnt', 'Prj_No');
     }
+    public function country()
+    {
+        return $this->belongsTo('App\country','Country_No', 'id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo('App\city','City_No', 'id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo('App\Models\Admin\MainBranch','Brn_No','ID_No');
+    }
+
+    public function costCenter()
+    {
+        return $this->belongsTo('App\Models\Admin\MtsCostcntr','Costcntr_No','ID_No');
+    }
 
 }

@@ -136,14 +136,6 @@
                             <div class="col-md-9">{!!Form::text('Mrkt_NmEn', null, ['class'=>'form-control'])!!}</div>
                         </div>
 
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Mark_No', trans('admin.Mark_No'))!!}</div>
-                            <div class="col-md-9">
-                                {!!Form::select('Mark_No' ,$supervisors->pluck('Mrkt_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                    'class'=>'form-control','placeholder'=>trans('admin.select')
-                                ])!!}
-                            </div>
-                        </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">{{trans('admin.add')}}</button>
                         </div>

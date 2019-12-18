@@ -212,7 +212,7 @@
                         {{-- نهاية المدينه --}}
 
                         {{-- المنطقه --}}
-                        <div class="col-md-12 branch">
+                        <div class="form-group col-md-12 branch">
                             <div class="form-group row">
                                 <label for="Area_No" class="col-md-5">{{trans('admin.area')}}</label>
                                 <input type="text" name="Area_No" id="Area_No" value=''
@@ -286,7 +286,7 @@
                         {{-- رقم الفرع و المستودع --}}
 
 
-                        <div class="col-md-12 branch">
+                        <div class="form-group col-md-12 branch">
                             <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
                             <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                                 <option value="">{{trans('admin.select')}}</option>
@@ -295,7 +295,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-12 branch">
+                        <div class="form-group col-md-12 branch">
                             <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
                             <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                                 <option value="">{{trans('admin.select')}}</option>
@@ -320,7 +320,7 @@
                         {{-- نهاية امر التوريد --}}
 
                         {{-- قيمة التوريد --}}
-                        <div class="col-md-12 branch">
+                        <div class="form-group col-md-12 branch">
 
                             <label for="Ordr_Value" class="col-md-5 col-md-offset-1">{{trans('admin.Ordr_Value')}}</label>
                             <input type="text" name="Ordr_Value" id="Ordr_Value" class="form-control col-md-6"
@@ -336,12 +336,15 @@
                         <div class="col-md-12 branch">
                             <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'
                                    >
-                            <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
+                            <label for="Costcntr_No" class="col-md-5">{{trans('admin.with_cc')}}</label>
 
                             <div class="form-group">
-                                <select name="cc_type" id="cc_type" class="form-control col-md-6">
+                                <select name="Costcntr_No" id="cc_type" class="form-control col-md-6">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
-                                    {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
+                                    @foreach($costCenter as $costCenters)
+                                    <option value="{{$costCenters}}">{{$costCenters->costCenter->Costcntr_Nmar}}</option>
+                                    @endforeach
+                                        {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
                                         <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
                                     @endforeach --}}
                                 </select>
