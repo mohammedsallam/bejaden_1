@@ -260,10 +260,12 @@
                             <h3 class="box-title col-md-2">{{trans('admin.companies')}}</h3>
                             <select name="Cmp_No" id="Select_Cmp_No" class="form-control col-md-10">
                                 <option value="">{{trans('admin.select_prj')}}</option>
-                                @if(count($cmps) > 0)
-                                    @foreach($cmps as $cmp)
-                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                                    @endforeach
+                                @if(!empty($cmps))
+                                    @if(count($cmps) > 0)
+                                        @foreach($cmps as $cmp)
+                                            <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                        @endforeach
+                                    @endif
                                 @endif
                             </select>
                         </div>
