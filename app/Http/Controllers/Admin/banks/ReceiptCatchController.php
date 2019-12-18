@@ -57,7 +57,7 @@ class ReceiptCatchController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   dd($request->all());
         $data = $this->validate($request, [
             'Cmp_No' => 'required',
             'Brn_No' => 'required',

@@ -86,7 +86,9 @@
                                             @if(count($company) > 0)
                                                 <option value="">{{trans('admin.select')}}</option>
                                                 @foreach($company as $cmp)
-                                                    <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                                    <option value="{{$cmp->Cmp_No}}" @if($cmp->Cmp_No == $branch->Cmp_No) selected @endif>
+                                                        {{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}
+                                                    </option>
                                                 @endforeach
                                             @else
                                                 <option value="">{{trans('admin.nodata')}}</option>
