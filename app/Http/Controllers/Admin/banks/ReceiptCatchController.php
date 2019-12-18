@@ -244,7 +244,8 @@ class ReceiptCatchController extends Controller
 
     public function getSalesMan(Request $request){
         if($request->ajax()){
-            $salesman = AstSalesman::where('Brn_No', $request->Brn_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            $customer = MTsCustomer::where('Cstm_No', $request->Acc_No)->get(['Slm_No'])->first();
+            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
             return view('admin.banks.catch.salman', ['salesman' => $salesman]);
         }
     }
