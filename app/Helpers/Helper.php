@@ -658,8 +658,9 @@ if (!function_exists('load_prj')){
 }
 
 if (!function_exists('load_cc')){
-    function load_cc($select = null,$cc_hide = null){
-        $departments = \App\Models\Admin\MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Costcntr_No', 'ID_No']);
+    function load_cc($select = null , $cc_hide = null, $Cmp_No){
+
+        $departments = \App\Models\Admin\MtsCostcntr::where('Cmp_No', $Cmp_No)->get(['Costcntr_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Costcntr_No', 'ID_No']);
 
         $dep_arr = [];
         foreach($departments as $department){

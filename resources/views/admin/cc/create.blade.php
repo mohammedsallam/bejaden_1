@@ -18,27 +18,9 @@
     </div>
     {{-- رقم الحساب --}}
 
-    {{-- رقم الشركه --}}
-    <div class="row">
-        <div class="form-group">
-            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-8">
-                <option value="{{$cmps->Cmp_No? $cmps->Cmp_No : null}}">{{$cmps->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-            </select>
-        </div>
-    </div>
-    {{-- نهاية رقم الشركه --}}
 
     {{-- تصنيف الحساب --}}
     <div class="row">
-        <div class="form-group col-md-4 col-md-offset-2">
-            @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio"
-                    name="Level_Status" id="Level_Status" value="{{$key}}"
-                    style="margin: 3px;" @if($key == 1) checked @endif>
-                <label>{{$value}}</label>
-            @endforeach
-        </div>
 
         <div class="form-group col-md-4">
             @foreach(\App\Enums\dataLinks\StatusTreeType::toSelectArray() as $key => $value)

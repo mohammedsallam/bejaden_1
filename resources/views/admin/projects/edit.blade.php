@@ -1,11 +1,32 @@
 @inject('customers', 'App\Models\Admin\MTsCustomer')
 @inject('delegates', 'App\Models\Admin\AstSalesman')
-
+@inject('countries', 'App\country')
+@inject('cities', 'App\city')
 <script>
     $(document).ready(function(){
         $('#delete_button').click(function(e){
             e.preventDefault();
             $('#delete_form').submit()
+        });
+
+        $(document).ready(function(){
+
+            $(document).on('change', '#Country_No', function(){
+                var Country_No = $(this).val();
+                if(Country_No){
+                    $.ajax({
+                        url : "{{route('getCity')}}",
+                        type : 'get',
+                        dataType:'html',
+                        data:{Country_No:Country_No},
+                        success : function(res){
+                            $('#City_No').html(res)
+                        }
+                    })
+                }
+
+            });
+
         });
     });
 
@@ -60,7 +81,7 @@
 </script>
 
 
-{!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
+{!! Form::model(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
 {{csrf_field()}}
 {{method_field('PUT')}}
 
@@ -235,8 +256,8 @@
                 <div class="col-md-12 branch">
                     <div class="form-group row">
                         <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
-                        <input type="text" name="Country_No" id="Country_No" value=''
-                               class="form-control col-md-7">
+                        {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
+                                'class'=>'col-md-7', 'id'=>'Country_No','placeholder'=>trans('admin.select')])!!}
                     </div>
                 </div>
                 {{-- نهاية الدوله --}}
@@ -245,8 +266,9 @@
                 <div class="col-md-12 branch">
                     <div class="form-group row">
                         <label for="City_No" class="col-md-5">{{trans('admin.city')}}</label>
-                        <input type="text" name="City_No" id="City_No" value=''
-                               class="form-control col-md-7">
+                        <select class="col-md-7" name="City_No" id="City_No">
+                            <option>{{trans('admin.select')}}</option>
+                        </select>
                     </div>
                 </div>
                 {{-- نهاية المدينه --}}
@@ -331,14 +353,18 @@
                     <label for="Brn_No" class="col-md-5 col-md-offset-1">{{trans('admin.Brn_No')}}</label>
                     <select name="Brn_No" id="Brn_No" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
-
+                        @foreach($bran as $branch)
+                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_NmAr}}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-12 branch">
                     <label for="Dlv_Stor" class="col-md-5 col-md-offset-1">{{trans('admin.Dlv_Stor')}}</label>
                     <select name="Dlv_Stor" id="Dlv_Stor" class="form-control col-md-6">
                         <option value="">{{trans('admin.select')}}</option>
-
+                        @foreach($bran as $branch)
+                            <option name="Brn_No" value="{{$branch->ID_No}}">{{$branch->Brn_Nm.ucfirst(session('lang'))}}</option>
+                        @endforeach
                     </select>
                 </div>
 

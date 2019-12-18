@@ -8,9 +8,96 @@
         var prevent = false;
         $(document).ready(function () {
 
+            $(document).on('change', '#Select_Cmp_No', function(){
+                $('#jstree').jstree('destroy');
+                var tree = [];
+                var Cmp_No = $('#Select_Cmp_No').val();
+                if(Cmp_No != null){
+                    $.ajax({
+                        url: "{{route('getCc')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                        success: function(data){
+
+                            dataParse = JSON.parse(data);
+
+                            for(var i = 0; i < dataParse.length; i++){
+                                tree.push(dataParse[i])
+                            }
+
+                            $('#jstree').jstree({
+                                "core" : {
+                                    // 'data' : "{!! load_cc('parent_id', '', '') !!}",
+                                    'data' : tree,
+                                    "themes" : {
+                                        "variant" : "large"
+                                    },
+                                    "multiple" : false,
+                                    "animation" : 300
+                                },
+                                "checkbox" : {
+                                    "keep_selected_style" : false
+                                },
+                                "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                            });
+
+                            //close or open all nodes on jstree load -opened by default-
+                            $('#jstree').on('loaded.jstree', function() {
+                                $('#jstree').jstree('open_all');
+                            });
+
+                            $('#jstree').on("changed.jstree", function (e, data) {
+                                var i, j, r = [];
+                                var name = [];
+                                for (i=0,j=data.selected.length;i < j;i++){
+                                    r.push(data.instance.get_node(data.selected[i]).id);
+                                    name.push(data.instance.get_node(data.selected[i]).text);
+                                }
+                                $('#parent_name').text(name);
+
+                                //get all direct and undirect children of selected node
+                                var currentNode = data.node;
+                                var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                                // var result = [currentNode.id];
+                                var result = [];
+                                allChildren.find('li').addBack().each(function(index, element) {
+                                    if ($(this).jstree(true).is_leaf(element)) {
+                                        // result.push(element.textContent);
+                                        result.push(parseInt(element.id));
+                                    } else {
+                                        var nod = $(this).jstree(true).get_node(element);
+                                        // result.push(nod.text);
+                                        result.push(parseInt(nod.id));
+                                    }
+                                });
+
+                                //handle click event
+                                // timer = setTimeout(function() {
+                                // if (!prevent) {
+                                handle_click(r[0], result);
+                                // }
+                                // prevent = false;
+                                // }, delay);
+                            });
+
+
+                            //handle tree double click event
+                            $('#jstree').on("dblclick.jstree", function (e){
+                                clearTimeout(timer);
+                                prevent = true;
+                                handle_dbclick(e);
+                            });
+                        }
+                    });
+                }
+            });
+
+
+
             $('#jstree').jstree({
                 "core" : {
-                    'data' : {!! load_cc('parent_id') !!},
+                    'data' : {!! load_cc('parent_id', '', '') !!},
                     "themes" : {
                         "variant" : "large"
                     },
@@ -55,15 +142,15 @@
             });
 
 
-            function handle_click(e){
-                var node = $(e.target).closest("li");
-                var type = node.attr('rel');
-                var Costcntr_No = node[0].id;
+            function handle_click(Costcntr_No, children){
+                // var node = $(e.target).closest("li");
+                // var type = node.attr('rel');
+                // var Costcntr_No = node[0].id;
                 $.ajax({
                     url: "{{route('getCcEditBlade')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Costcntr_No: Costcntr_No },
+                    data: {"_token": "{{ csrf_token() }}", Costcntr_No: Costcntr_No, children: children },
                     success: function(data){
                         $('#chart_form').html(data);
                     }
@@ -155,19 +242,22 @@
                 {{-- chart tree start --}}
                 <div class="col-md-6">
                     <div class="box-header">
-                        <h3 class="box-title" style="display: inline-block">{{$title}}</h3>
-                        @if(count($cmps) > 0)
-                            @foreach($cmps as $cmp)
-                                @if($cmp->Cmp_No == $chart_item->Cmp_No)
-                                    <div id="Cmp_No" style="display: inline-block">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</div>
+                        <div class="form-group row">
+                            <h3 class="box-title col-md-2">{{trans('admin.companies')}}</h3>
+                            <select name="Cmp_No" id="Select_Cmp_No" class="form-control col-md-10">
+                                <option value="">{{trans('admin.select_prj')}}</option>
+                                @if(count($cmps) > 0)
+                                    @foreach($cmps as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
                                 @endif
-                            @endforeach
-                        @endif
+                            </select>
+                        </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-body">
+                            <a class="btn btn-primary" id="initChartAcc">{{trans('admin.Create_New_cc')}}</a>
                             <div id="parent_name" style="display: inline-block"></div>
-                                <a class="btn btn-primary" id="initChartAcc">{{trans('admin.Create_New_cc')}}</a>
                             <div id="jstree" style="margin-top: 20px"></div>
                         </div>
                     </div>
@@ -180,14 +270,14 @@
                         {{csrf_field()}}
                         {{method_field('PUT')}}
 
-                        <div class="col-md-3 pull-left">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                        </div>
+{{--                        <div class="col-md-3 pull-left">--}}
+{{--                            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>--}}
+{{--                            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>--}}
+{{--                        </div>--}}
 
                         {{-- رقم الحساب --}}
                         <label for="Costcntr_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
-                        <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-1" value="{{$chart_item->Costcntr_No}}">
+                        <input disabled type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-1" value="{{$chart_item->Costcntr_No}}">
                         {{-- رقم الحساب --}}
 
                         {{-- تصنيف الحساب --}}
@@ -226,7 +316,7 @@
                         {{-- اسم الحساب عربى --}}
                         <div class="form-group row">
                             <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
-                                <input type="text" name="Costcntr_Nmar" id="Costcntr_Nmar" class="col-md-9 form-control"
+                                <input disabled type="text" name="Costcntr_Nmar" id="Costcntr_Nmar" class="col-md-9 form-control"
                                 value="{{$chart_item->Costcntr_Nmar? $chart_item->Costcntr_Nmar : null}}">
                             </div>
                         {{-- نهاية اشم الحساب عربى --}}
@@ -234,7 +324,7 @@
                         {{-- اسم الحساب انجليزى --}}
                         <div class="form-group row">
                             <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.account_name_en')}}:</label>
-                            <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control"
+                            <input disabled type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control"
                                 value="{{$chart_item->Costcntr_Nmen? $chart_item->Costcntr_Nmen : null}}">
                         </div>
                         {{-- نهاية اسم الحساب انجليزى --}}

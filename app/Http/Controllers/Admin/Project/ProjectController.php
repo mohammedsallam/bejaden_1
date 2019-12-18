@@ -89,10 +89,12 @@ class ProjectController extends Controller
                // $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                // dd($parent->Prj_Parnt);
                 $Prj_No = $this->createPrjNo($parent->Prj_No);
+                $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
+
                 //dd($Prj_No);
                 //dd($request->Level_No);
                 return view('admin.projects.create', ['title' => trans('admin.projects'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No]);
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No, 'bran'=>$bran]);
             }
         }
     }
@@ -106,10 +108,11 @@ class ProjectController extends Controller
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
+        $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
         $Prj_No = $this->createPrjNo(0);
         //dd($request->all());
         return view('admin.projects.create_main_chart', ['title' => trans('admin.projects')
-            , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
+            , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'bran' => $bran]);
     }
 
     /**
@@ -125,6 +128,8 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+//        dd($request->all());
+
         if($request->Level_Status == 0){
             //dd('dd');
             $data = $this->validate($request,[
@@ -239,9 +244,11 @@ class ProjectController extends Controller
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->first();
             $total = $this->getTotalTransaction($chart_item);
+            $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
+
             return view('admin.projects.edit', ['title' => trans('admin.projects'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
+                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children, 'bran'=>$bran]);
         }
     }
 
@@ -271,6 +278,8 @@ class ProjectController extends Controller
             ]);
             //dd($request->Cmp_No);
             $charts = $request->all();
+            $chart['Cmp_No'] = session('Chart_Cmp_No');
+
             $charts['Tr_Dt'] = $request->created_at;
             $charts['Tr_DtAr'] = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Tr_Dt)));
             $charts['Opn_Date'] = $request->created_at;
@@ -717,6 +726,13 @@ class ProjectController extends Controller
         }
     }
 
+
+    public function getCities(Request $request)
+    {
+        $cities = city::where('country_id', $request->Country_No)->get();
+        return view('admin.subscribers.get_cities',compact('cities'));
+
+    }
 
 //    public function getBranches(Request $request)
 //    {

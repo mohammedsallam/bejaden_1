@@ -65,7 +65,6 @@ class SubscribeController extends Controller
     public function store(Request $request,subscription $subscription)
     {
 
-        //dd($request->all());
         $data = $this->validate($request, [
             'Cmp_No'     => 'sometimes',
             'Brn_No'    => 'sometimes',
@@ -329,7 +328,6 @@ class SubscribeController extends Controller
     //For fetching cities
     public function getCities(Request $request)
     {
-
         $cities = city::where('country_id', $request->country_id)->get();
 
         return view('admin.subscribers.get_cities',compact('cities'));

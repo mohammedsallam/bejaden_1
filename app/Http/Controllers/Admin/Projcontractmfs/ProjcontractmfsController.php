@@ -182,6 +182,13 @@ class ProjcontractmfsController extends Controller
 
     }
 
+
+    public function getproj( Request $request){
+        $projects = \App\Models\Admin\Projectmfs::where('Cmp_No', $request->Cmp_No)->get();
+        return view('admin.Projcontractmfs.getProject',compact('projects'));
+
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

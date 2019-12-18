@@ -300,10 +300,10 @@
                                     <input type="hidden" name="children[]" value='{{$child}}'>
                                 @endforeach
 
-                                <div class="col-md-3 pull-left">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                                    <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                </div>
+{{--                                <div class="col-md-3 pull-left">--}}
+{{--                                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>--}}
+{{--                                    <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>--}}
+{{--                                </div>--}}
 
                                 {{-- رقم المشروع --}}
                                 <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
@@ -332,7 +332,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Prj_Refno" class="col-md-5">{{trans('admin.Prj_Refno')}}</label>
-                                                <input type="text" name="Prj_Refno" id="Prj_Refno" class="form-control col-md-7"
+                                                <input type="text" name="Prj_Refno" id="Prj_Refno" disabled class="form-control col-md-7"
                                                        value="{{$chart_item->Prj_Refno? $chart_item->Prj_Refno : null}}"
                                                        @if($chart_item->Level_No == 1) disabled @endif>
                                             </div>
@@ -343,7 +343,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Prj_Year" class="col-md-5">{{trans('admin.Prj_Year')}}</label>
-                                                <input type="text" name="Prj_Year" id="Prj_Year" class="form-control col-md-7"
+                                                <input type="text" name="Prj_Year" id="Prj_Year" disabled class="form-control col-md-7"
                                                        value="{{$chart_item->Prj_Year? $chart_item->Prj_Year : null}}"
                                                        @if($chart_item->Level_No == 1) disabled @endif>
                                             </div>
@@ -370,7 +370,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                             <label for="Tr_Dt" class="col-md-5">{{trans('admin.Tr_Dt')}}</label>
-                                            <input type="date" name="Tr_Dt" id="Tr_Dt" class="form-control col-md-7"
+                                            <input type="date" name="Tr_Dt" id="Tr_Dt" disabled class="form-control col-md-7"
                                                    value="{{$chart_item->Tr_Dt? $chart_item->Tr_Dt : null}}"
                                                    @if($chart_item->Level_No == 1) disabled @endif>
                                             </div>
@@ -382,7 +382,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                             <label for="Tr_DtAr" class="col-md-5">{{trans('admin.Tr_DtAr')}}</label>
-                                            <input type="date" name="Tr_DtAr" id="Tr_DtAr" class="form-control col-md-7"
+                                            <input type="date" name="Tr_DtAr" id="Tr_DtAr" disabled class="form-control col-md-7"
                                                    value="{{$chart_item->Tr_DtAr? $chart_item->Tr_DtAr : null}}"
                                                    @if($chart_item->Level_No == 1) disabled @endif>
                                             </div>
@@ -468,7 +468,7 @@
 
                                         {{-- المدينه --}}
                                         <div class="col-md-12 branch">
-                                            <div class="form-group row">
+                                            <input class="form-group row">
                                                 <label for="City_No" class="col-md-5">{{trans('admin.city')}}</label>
                                                 <select class="form-control col-md-7" name="City_No" id="cities">
                                                     <option>{{trans('admin.select')}}</option>

@@ -29,19 +29,24 @@
                 }
             });
 
-            $("#Country_No").change(function () {
-                var Country_No = $("#Country_No").val();
-                if(Country_No){
-                    $.ajax({
-                        url: "{{route('getCities')}}",
-                        type : 'get',
-                        datatype: 'html',
-                        data : {"_token": "{{ csrf_token() }}", Country_No:Country_No },
-                        success : function (data) {
-                            $("#City_No").html(data)
-                        }
-                    });
-                }
+            $(document).ready(function(){
+
+                $(document).on('change', '#Country_No', function(){
+                    var Country_No = $(this).val();
+                    if(Country_No){
+                        $.ajax({
+                            url : "{{route('getCity')}}",
+                            type : 'get',
+                            dataType:'html',
+                            data:{Country_No:Country_No},
+                            success : function(res){
+                                $('#City_No').html(res)
+                            }
+                        })
+                    }
+
+                });
+
             });
 
             // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
@@ -429,8 +434,7 @@
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
                                                 <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
-                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
-                                                'class'=>'col-md-7', 'id'=>'Country_No','placeholder'=>trans('admin.select')])!!}
+                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,['class'=>'col-md-7', 'id'=>'Country_No','placeholder'=>trans('admin.select')])!!}
                                             </div>
                                         </div>
                                         {{-- نهاية الدوله --}}
@@ -586,7 +590,7 @@
                                         {{-- رصيد اول المده دائن --}}
                                         <div class="col-md-12 branch" style="top: 22px;">
                                             <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                                            <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value=''
+                                            <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
                                                    class="form-control col-md-6">
                                         </div>
                                         {{-- نهاية رصيد اول المده دائن --}}

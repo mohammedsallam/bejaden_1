@@ -132,9 +132,10 @@ class CcController extends Controller
             $chart->Fbal_DB = $request->Fbal_DB;
             $chart->Level_No = 1;
             $chart->Parnt_Acc = 0;
+            $chart->Level_Status = 0;
 //            $chart->User_Id = Auth::user()->id;
-//             $chart->Costcntr_No = $this->createAccNo($chart->Parnt_Acc);
-            $chart->Costcntr_No = $request->Costcntr_No;
+             $chart->Costcntr_No = $this->createAccNo($chart->Parnt_Acc);
+//            $chart->Costcntr_No = $request->Costcntr_No;
 
             $chart->save();
             $chart->Updt_Time = $chart->updated_at;
@@ -234,7 +235,9 @@ class CcController extends Controller
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
             $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Costcntr_No']);
-            $chart_item = MtsCostcntr::where('Costcntr_No', $request->Costcntr_No)->first();
+            $chart_item =MtsCostcntr::where('Costcntr_No', $request->Costcntr_No)
+                ->where('Cmp_No', session('Chart_Cmp_No'))
+                ->first();
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.cc.edit', ['title' => trans('admin.cc'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
@@ -251,7 +254,8 @@ class CcController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $chart = MtsCostcntr::where('Costcntr_No', $id)->first();
+
+        $chart = MtsCostcntr::where('Costcntr_No', $id)->where('Cmp_No', session('Chart_Cmp_No'))->first();
         if($chart->Level_Status == 0){
 
             $data = $this->validate($request,[
@@ -637,7 +641,9 @@ class CcController extends Controller
         else{
             $parent = MtsCostcntr::where('Costcntr_No', $Parnt_Acc)->first();
             if(count($parent->children) > 0){
-                $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
+                $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)
+                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                    ->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
                 return $max->Costcntr_No + 1;
             }
             else{
@@ -664,6 +670,14 @@ class CcController extends Controller
             'total_credit' => $total_credit,
             'total_balance' => $total_balance);
         return $total;
+    }
+
+    public function getCc(Request $request){
+        if($request->ajax()){
+            session(['Chart_Cmp_No' => $request->Cmp_No]);
+            $tree = load_cc('Parnt_Acc', null, $request->Cmp_No);
+            return $tree;
+        }
     }
 
 }

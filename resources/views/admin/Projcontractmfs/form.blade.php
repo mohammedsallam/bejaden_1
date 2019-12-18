@@ -1,6 +1,6 @@
 @push('js')
     <script>
-        $(document).on('change', '#Cmp_No', function() {
+        $(document).change('#Cmp_No', function() {
             var Cmp_No = $('#Cmp_No').val();
             if (Cmp_No != null) {
                 $.ajax({
@@ -13,8 +13,22 @@
                     }
                 });
             }
-        });
+        })
 
+        $('#Cmp_No').change(function () {
+            var Cmp_No = $('#Cmp_No').val();
+            if(Cmp_No != null) {
+                $.ajax({
+                    url: "{{route('getproj')}}",
+                    type:"post",
+                    dataType:'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
+                    success:function (res) {
+                         $('#projects').html(res);
+                    }
+                })
+            }
+        });
 
 
         $(document).on('keyup', '.Cnt_Bdgt, .Cnt_Vl', function() {
@@ -204,11 +218,10 @@
         </div>
 
             <div class="col-md-4">
-                {{ Form::label('project_id',trans('admin.project_name') , ['class' => 'control-label']) }}
-                {{ Form::select('Prj_No',$Projects , old('Prj_No'), array_merge(['class' => 'form-control selected','placeholder'=>trans('admin.select')])) }}
-                @if ($errors->has('Prj_No'))
-                    <div class="alert alert-danger" style="margin-top: 10px">{{ $errors->first('Prj_No') }}</div>
-                @endif
+                {{ Form::label('Prj_No',trans('admin.project_name') , ['class' => 'control-label']) }}
+                <select class="form-control" id="projects" name="Prj_No">
+                    <option>اختر المشروع</option>
+                </select>
             </div>
 
     </div>

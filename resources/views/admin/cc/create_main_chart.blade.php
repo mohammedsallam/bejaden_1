@@ -4,6 +4,8 @@
     <input type="text" name="Parnt_Acc" id="Parnt_Acc" value="{{0}}" hidden>
     <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
     <input type="text" name="Level_Status" id="Level_No" value="{{0}}" hidden>
+    <input type="text" name="Cmp_No" id="Select_Cmp_No" value="{{session('Chart_Cmp_No')}}" hidden>
+
     {{-- Parnt_Acc ebd --}}
 
     <div class="row">
@@ -17,17 +19,7 @@
         {{-- رقم الحساب --}}
 
         {{-- رقم الشركه --}}
-        <div class="col-md-8 form-group">
-            <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
-            <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">
-                <option value="">{{trans('admin.select')}}</option>
-                @if(count($cmps) > 0)
-                    @foreach($cmps as $cmp)
-                        <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
+
         {{-- نهاية رقم الشركه --}}
 
         {{-- تصنيف الحساب --}}
@@ -44,15 +36,15 @@
 
     {{-- اسم الحساب عربى --}}
     <div class="form-group row">
-        <label class="col-md-2" for="Acc_NmAr">{{trans('admin.account_name')}}:</label>
-            <input type="text" name="Acc_NmAr" id="Acc_NmAr" class="col-md-9 form-control">
+        <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
+            <input type="text" name="Costcntr_Nmar" class="col-md-9 form-control">
         </div>
     {{-- نهاية اشم الحساب عربى --}}
 
     {{-- اسم الحساب انجليزى --}}
     <div class="form-group row">
-        <label class="col-md-2" for="Acc_NmEn">{{trans('admin.account_name_en')}}:</label>
-        <input type="text" name="Acc_NmEn" id="Acc_NmEn" class=" col-md-9 form-control">
+        <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.account_name_en')}}:</label>
+        <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control">
     </div>
     {{-- نهاية اسم الحساب انجليزى --}}
 
