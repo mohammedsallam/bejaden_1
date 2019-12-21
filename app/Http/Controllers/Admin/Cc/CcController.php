@@ -272,8 +272,6 @@ class CcController extends Controller
             $chart->Costcntr_Nmar = $request->Costcntr_Nmar;
             $chart->Costcntr_Nmen = $request->Costcntr_Nmen;
             $chart->Costcntr_No = $request->Costcntr_No;
-            // $chart->Parnt_Acc = 0;
-//            $chart->User_Id = Auth::user()->id;
             $chart->save();
 //            $chart->Acc_Dt = $chart->created_at;
 //            $chart->Acc_DtAr = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($chart->Acc_Dt)));

@@ -17,7 +17,7 @@ class CreateProjectmfsTable extends Migration {
 			$table->integer('Level_No')->nullable();
 			$table->integer('Costcntr_No')->nullable();
 			$table->boolean('Prj_Actv')->nullable();
-			$table->date('Prj_Year');
+			$table->date('Prj_Year')->nullable();
 			$table->enum('Prj_Status',[0,1,2,3,4,5,6])->nullable();   //PrjStatus Enum
 			$table->date('Tr_Dt')->nullable();
 			$table->date('Tr_DtAr')->nullable();

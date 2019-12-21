@@ -341,12 +341,10 @@
                             <div class="form-group">
                                 <select name="Costcntr_No" id="cc_type" class="form-control col-md-6">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
-                                    @foreach($costCenter as $costCenters)
-                                    <option value="{{$costCenters}}">{{$costCenters->costCenter->Costcntr_Nmar}}</option>
-                                    @endforeach
-                                        {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                        <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                    @endforeach --}}
+{{--                                    @foreach($costCenter as $costCenters)--}}
+{{--                                    <option value="{{$costCenters}}">{{$costCenters->costCenter->Costcntr_Nmar}}</option>--}}
+{{--                                    @endforeach--}}
+
                                 </select>
                             </div>
                         </div>
