@@ -81,7 +81,6 @@ class DepartmentsController extends Controller
                 $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                 $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                 $Acc_No = $this->createAccNo($parent->Acc_No);
-                dd($request->Level_No);
                 return view('admin.departments.create', ['title' => trans('admin.Departments'),
                             'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' =>  $Acc_No,
                             'balances' => $balances, 'incomes' => $incomes]);
