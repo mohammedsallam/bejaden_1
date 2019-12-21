@@ -197,8 +197,8 @@
                                 <td>`+$('#Dc_No').val()+`</td>
                                 <td>`+$('#Tr_Ds1').val()+`</td>
                             </tr>`);
-
-                        catch_data.push({
+                        
+                        var item = {
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                 Tr_No: $('#Tr_No').val(),
@@ -228,7 +228,9 @@
                                 Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            });
+                            };
+
+                        catch_data.push(item);
 
                         var new_Tr_No = parseInt($('#Tr_No').val()) + 1;
                         $('#Tr_No').val(new_Tr_No);
@@ -287,7 +289,7 @@
                         $.ajax({
                             url: "{{route('rcatchs.store')}}",
                             type: "post",
-                            dataType: 'json',
+                            dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
                                 // $('#Cmp_No').val(null);
@@ -318,6 +320,20 @@
                                 $('#Due_Issue_Dt').val(null);
                                 $('#Rcpt_By').val(null);
                                 $('#Pymt_To').val(null);
+                                $('#Tr_Db_Db').val(null);
+                                $('#Tr_Cr_Db').val(null);
+                                $('#table_view').html(`<table class="table" id="table"> 
+                                                        <thead>
+                                                            <th>{{trans('admin.id')}}</th>
+                                                            <th>{{trans('admin.account_number')}}</th>
+                                                            <th>{{trans('admin.account_name')}}</th>
+                                                            <th>{{trans('admin.motion_debtor')}}</th>
+                                                            <th>{{trans('admin.motion_creditor')}}</th>
+                                                            <th>{{trans('admin.note_ar')}}</th>
+                                                            <th>{{trans('admin.receipt_number')}}</th>
+                                                            <th>{{trans('admin.note_en')}}</th>
+                                                        </thead>
+                                                    </table>`);
                             }
                         });
                     }
@@ -672,7 +688,7 @@
         </div>
     
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12" id="table_view">
                 <table class="table" id="table"> 
                     <thead>
                         <th>{{trans('admin.id')}}</th>
