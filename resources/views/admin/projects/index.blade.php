@@ -462,7 +462,7 @@
                                             <div class="form-group row">
                                                 <label for="Country_No" class="col-md-5">{{trans('admin.country')}}</label>
 
-                                                <input type="text" class="form-control col-md-7" disabled name="Country_No" value="{{$chart_item->Country_No? $chart_item->country->country_name_ar : null}}">
+                                                <input type="text" class="form-control col-md-7" disabled name="Country_No" value="{{$chart_item->Country_No? $chart_item->country->country_name_ar :'' }}">
 {{--                                                {!!Form::select('Country_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[--}}
 {{--                                                        'class'=>'form-control col-md-7', 'id'=>'countries','placeholder'=>trans('admin.select')--}}
 {{--                                                ])!!}--}}

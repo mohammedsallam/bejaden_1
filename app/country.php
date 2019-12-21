@@ -28,6 +28,11 @@ class country extends Model
         'logo'
     ];
 
+    public function project()
+    {
+        return $this->hasMany('App\Admin\Projectmfs','Country_No', 'id');
+    }
+
 
 
 }
