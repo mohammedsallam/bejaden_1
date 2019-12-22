@@ -455,7 +455,23 @@
                                 </div>
                                 {{-- نهاية الموبايل --}}
 
-                                <div class="col-md-6">
+                                {{-- مركز التكلفه --}}
+                                <div class="form-group col-md-12 row">
+                                    <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
+
+                                    <div class="form-group">
+                                        <select name="cc_type" id="cc_type" class="col-md-10 form-control">
+                                            <option value="{{null}}">{{trans('admin.select')}}</option>
+                                            @foreach($cc as $ccr)
+                                                <option name="cc_type" value="{{$ccr->ID_No}}">{{$ccr->Costcntr_Nmar}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                                {{-- نهاية مركز التكلفه --}}
+
+                                    <div class="col-md-6">
                                     <div class="row">
                                         {{-- الدوله --}}
                                         <div class="col-md-12 branch">
@@ -602,23 +618,7 @@
                                         {{-- نهاية قيمة التوريد --}}
 
 
-                                        {{-- مركز التكلفه --}}
-                                        <div class="col-md-12 branch">
-                                            <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'
-                                                @if($chart_item->Level_No == 1) disabled @endif>
-                                            <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
 
-                                            <div class="form-group">
-                                                <select name="cc_type" id="cc_type" class="form-control col-md-6"
-                                                    @if($chart_item->Level_No == 1) disabled @endif>
-                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                                    {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                                        <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                                    @endforeach --}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        {{-- نهاية مركز التكلفه --}}
 
                                         <hr>
                                         {{-- رصيد اول المده دائن --}}
