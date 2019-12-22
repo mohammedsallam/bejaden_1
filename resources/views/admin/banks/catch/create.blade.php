@@ -8,6 +8,7 @@
 
                 var catch_data = [];
                 var old = 0;
+                var Ln_No = 1;
     
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){  
@@ -185,21 +186,13 @@
                 $('#add_line').click(function(e){
                     e.preventDefault();
 
-                    if($('#Tot_Amunt').val() && $('#Tr_Ds').val()){
-                        $('#table').append(`
-                            <tr>
-                                <td>`+$('#Tr_No').val()+`</td>
-                                <td>`+$('#Sysub_Account').val()+`</td>
-                                <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                <td>0.00</td>
-                                <td>`+$('#Tr_Cr').val()+`</td>
-                                <td>`+$('#Tr_Ds').val()+`</td>
-                                <td>`+$('#Dc_No').val()+`</td>
-                                <td>`+$('#Tr_Ds1').val()+`</td>
-                            </tr>`);
-                        
-                        var item = {
-                                Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                    Ln_No = Ln_No + 1;
+
+                    $.ajax({
+                        url: "{{route('validateCache')}}",
+                        type: "post",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                 Tr_No: $('#Tr_No').val(),
                                 Tr_Dt: $('#Tr_Dt').val(), 
@@ -224,17 +217,69 @@
                                 Issue_Dt: $('#Issue_Dt').val(),
                                 Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                                 Rcpt_By: $('#Rcpt_By').val(),
-                                Pymt_To: $('#Pymt_To').val(),
                                 Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            };
+                                Ln_No: Ln_No },
+                        success: function(data){
+                            var response = JSON.parse(data);
+                            if(response.success == true){
+                                $('#table').append(`
+                                    <tr>
+                                        <td>`+$('#Tr_No').val()+`</td>
+                                        <td>`+$('#Sysub_Account').val()+`</td>
+                                        <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                                        <td>0.00</td>
+                                        <td>`+$('#Tr_Cr').val()+`</td>
+                                        <td>`+$('#Tr_Ds').val()+`</td>
+                                        <td>`+$('#Dc_No').val()+`</td>
+                                        <td>`+$('#Tr_Ds1').val()+`</td>
+                                    </tr>`);
+                            
+                                var item = {
+                                    Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                    Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                                    Tr_No: $('#Tr_No').val(),
+                                    Tr_Dt: $('#Tr_Dt').val(), 
+                                    Tr_DtAr: $('#Tr_DtAr').val(),
+                                    Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                                    Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
+                                    Tr_ExchRat: $('#Tr_ExchRat').val(), 
+                                    Tot_Amunt: $('#Tot_Amunt').val(),
+                                    Tr_TaxVal: $('#Tr_TaxVal').val(),
+                                    Rcpt_By: $('#Rcpt_By').val(),
+                                    Salman_No: $('#Salman_No').val(), 
+                                    Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
+                                    Sysub_Account: $('#Sysub_Account').val(),
+                                    Tr_Cr: $('#Tr_Cr').val(),
+                                    Dc_No: $('#Dc_No').val(),
+                                    Tr_Ds: $('#Tr_Ds').val(), 
+                                    Tr_Ds1: $('#Tr_Ds1').val(),
+                                    Acc_No: $('#Acc_No').val(),
+                                    last_record : $('#last_record').val(),
+                                    Chq_no: $('#Chq_no').val(),
+                                    Bnk_Nm: $('#Bnk_Nm').val(),
+                                    Issue_Dt: $('#Issue_Dt').val(),
+                                    Due_Issue_Dt: $('#Due_Issue_Dt').val(),
+                                    Rcpt_By: $('#Rcpt_By').val(),
+                                    Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                                    Tr_Db_Db: $('#Tr_Db_Db').val(),
+                                    Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                    Ln_No: Ln_No,
+                                };
 
-                        catch_data.push(item);
-
-                        var new_Tr_No = parseInt($('#Tr_No').val()) + 1;
-                        $('#Tr_No').val(new_Tr_No);
-                    }
+                                catch_data.push(item);
+                            }
+                            else{
+                                $('#alert').removeClass('hidden');
+                                $('#alert').html(``);
+                                var errors = Object.values(response.data);
+                                for(var i = 0; i < errors.length; i++){
+                                    $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
+                                }
+                            }
+                        } 
+                    });
 
                     old = $('#Tr_Db_Db').val();
                 });
@@ -251,7 +296,6 @@
                         $('#Issue_Dt').val(null);
                         $('#Due_Issue_Dt').val(null);
                         $('#Rcpt_By').val(null);
-                        $('#Pymt_To').val(null);
                     }
                 });
 
@@ -292,6 +336,7 @@
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
+                                $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
                                 // $('#Cmp_No').val(null);
                                 // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
@@ -319,7 +364,6 @@
                                 $('#Issue_Dt').val(null);
                                 $('#Due_Issue_Dt').val(null);
                                 $('#Rcpt_By').val(null);
-                                $('#Pymt_To').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#table_view').html(`<table class="table" id="table"> 
@@ -342,7 +386,7 @@
             });
         </script>
     @endpush
-
+    <div class="hidden" id="alert"></div>
     <form action="{{route('rcatchs.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         <div class="col-md-12">
@@ -488,18 +532,6 @@
                 <input type="text" name="Due_Issue_Dt" id="Due_Issue_Dt" class="form-control datepicker">
             </div>
             {{-- نهاية تاريخ استلام الشيك --}}
-            {{-- المستلم --}}
-            <div class="col-md-2">
-                <label for="Rcpt_By">{{trans('admin.person_received')}}</label>
-                <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
-            </div>
-            {{-- نهاية المستلم --}}
-            {{-- ادفعوا لامر --}}
-            <div class="col-md-2">
-                <label for="Pymt_To">{{trans('admin.Pymt_To')}}</label>
-                <input type="text" name="Pymt_To" id="Pymt_To" class="form-control">
-            </div>
-            {{-- نهاية ادفعوا لامر --}}
         </div>
         {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
     

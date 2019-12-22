@@ -228,6 +228,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('getSubAcc', 'Admin\banks\ReceiptCatchController@getSubAcc')->name('getSubAcc');
         Route::post('getMainAccNo', 'Admin\banks\ReceiptCatchController@getMainAccNo')->name('getMainAccNo');
         Route::post('getTaxValue', 'Admin\banks\ReceiptCatchController@getTaxValue')->name('getTaxValue');
+        Route::post('validateCache', 'Admin\banks\ReceiptCatchController@validateCache')->name('validateCache');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\banks;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\DataTables\catchDataTable;
 use App\Models\Admin\MainCompany;
@@ -58,51 +59,8 @@ class ReceiptCatchController extends Controller
      */
     public function store(Request $request)
     {   
-        // $data = $this->validate($request, [
-        //     'Cmp_No' => 'required',
-        //     'Brn_No' => 'required',
-        //     'Tr_No' => 'sometimes',
-        //     'Tr_Dt' => 'sometimes',
-        //     'Tr_DtAr' => 'sometimes',
-        //     'Jr_Ty' => 'sometimes',
-        //     'Tr_Crncy' => 'sometimes',
-        //     'Tr_ExchRat' => 'sometimes',
-        //     'Tot_Amunt' => 'required',
-        //     'Tr_TaxVal' => 'sometimes',
-        //     'Rcpt_By' => 'sometimes',
-        //     'Salman_No' => 'sometimes',
-        //     'Ac_Ty' => 'required',
-        //     'Sysub_Account' => 'required',
-        //     'Tr_Cr' => 'required',
-        //     'Dc_No' => 'sometimes',
-        //     'Tr_Ds' => 'required',
-        //     'Tr_Ds1' => 'sometimes',
-        //     'Tr_Db_Acc_No' => 'sometimes',
-        // ], [], [
-        //     'Cmp_No' => trans('admin.Cmp_No'),
-        //     'Brn_No' => trans('admin.branche'),
-        //     'Tr_No' => trans('admin.number_of_receipt'),
-        //     'Tr_Dt' => trans('admin.receipt_date'),
-        //     'Tr_DtAr' => trans('admin.higri_date'),
-        //     'Jr_Ty' => trans('admin.receipts_type'),
-        //     'Tr_Crncy' => trans('admin.currency'),
-        //     'Tr_ExchRat' => trans('admin.exchange_rate'),
-        //     'Tot_Amunt' => trans('admin.amount'),
-        //     'Tr_TaxVal' => trans('admin.tax'),
-        //     'Rcpt_By' => trans('admin.Rcpt_By'),
-        //     'Salman_No' => trans('admin.sales_officer2'),
-        //     'Ac_Ty' => trans('admin.Level_Status'),
-        //     // 'Sysub_Account' => trans('admin.'),
-        //     'Tr_Cr' => trans('admin.amount_cr'),
-        //     'Dc_No' => trans('admin.receipt_number'),
-        //     'Tr_Ds' => trans('admin.note_ar'),
-        //     'Tr_Ds1' => trans('admin.note_en'),
-        //     'Tr_Db_Acc_No' => trans('admin.main_cache'),
-        // ]);
-
-
         $catch_data = json_decode($request->catch_data);
-
+       
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -132,7 +90,6 @@ class ReceiptCatchController extends Controller
                 'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
                 'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
                 'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
-                'Pymt_To' => $catch_data[$last_index]->Pymt_To,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
@@ -150,31 +107,36 @@ class ReceiptCatchController extends Controller
         if($request->catch_data){
             foreach($catch_data as $data){
 
-                // Create transaction debt
-                $trans_db = GLjrnTrs::create([
-                    'Cmp_No' => $data->Cmp_No,
-                    'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => 2,
-                    'Tr_No' => $data->Tr_No,
-                    'Month_No' => Carbon::now()->month,
-                    'Tr_Dt' => $data->Tr_Dt,
-                    'Tr_DtAr' => $data->Tr_DtAr,
-                    'Ac_Ty' => 1,
-                    'Sysub_Account' => 0,
-                    'Acc_No' => $data->Tr_Db_Acc_No,
-                    'Tr_Db' => $data->Tr_Cr,
-                    'Tr_Cr' => 0.00,
-                    'Dc_No' => $data->Dc_No,
-                    'Tr_Ds' => $data->Tr_Ds,
-                    'Tr_Ds1' => $data->Tr_Ds1,
-                    'Doc_Type' => $data->Doc_Type,
-                    'User_ID' => auth::user()->id,
-                    'Rcpt_Value' => $data->Tot_Amunt,
-                ]);
+                $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                if(!$debt){
+                    // Create transaction debt
+                    $trans_db = GLjrnTrs::create([
+                        'Cmp_No' => $data->Cmp_No,
+                        'Brn_No' => $data->Brn_No,
+                        'Jr_Ty' => 2,
+                        'Tr_No' => $data->Tr_No,
+                        'Month_No' => Carbon::now()->month,
+                        'Tr_Dt' => $data->Tr_Dt,
+                        'Tr_DtAr' => $data->Tr_DtAr,
+                        'Ac_Ty' => 1,
+                        'Sysub_Account' => 0,
+                        'Acc_No' => $data->Tr_Db_Acc_No,
+                        'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                        'Tr_Cr' => 0.00,
+                        'Dc_No' => $data->Dc_No,
+                        'Tr_Ds' => $data->Tr_Ds,
+                        'Tr_Ds1' => $data->Tr_Ds1,
+                        'Doc_Type' => $data->Doc_Type,
+                        'User_ID' => auth::user()->id,
+                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Ln_No' => 1,
+                    ]);
 
-                $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
-                $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
-                $trans_db->save();
+                    $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+                    $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+                    $trans_db->save();
+                }
                 
                 //Create transaction credit
                 $trans_cr = GLjrnTrs::create([
@@ -196,12 +158,13 @@ class ReceiptCatchController extends Controller
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
+                    'Ln_No' => $data->Ln_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
             }
-        }        
+        } 
         
     }
 
@@ -379,6 +342,67 @@ class ReceiptCatchController extends Controller
             else{
                 return null;
             }
+        }
+    }
+
+    public function validateCache(Request $request){
+        if($request->ajax()){
+            $validator = Validator::make($request->all(), [
+                'Cmp_No' => 'required',
+                'Brn_No' => 'required',
+                'Tr_No' => 'sometimes',
+                'Tr_Dt' => 'sometimes',
+                'Tr_DtAr' => 'sometimes',
+                'Jr_Ty' => 'sometimes',
+                'Tr_Crncy' => 'sometimes',
+                'Tr_ExchRat' => 'sometimes',
+                'Tot_Amunt' => 'required',
+                'Tr_TaxVal' => 'sometimes',
+                'Rcpt_By' => 'sometimes',
+                'Salman_No' => 'sometimes',
+                'Ac_Ty' => 'required',
+                'Sysub_Account' => 'required',
+                'Tr_Cr' => 'required',
+                'Dc_No' => 'sometimes',
+                'Tr_Ds' => 'required',
+                'Tr_Ds1' => 'sometimes',
+                'Tr_Db_Acc_No' => 'sometimes',
+            ], [], [
+                'Cmp_No' => trans('admin.Cmp_No'),
+                'Brn_No' => trans('admin.branche'),
+                'Tr_No' => trans('admin.number_of_receipt'),
+                'Tr_Dt' => trans('admin.receipt_date'),
+                'Tr_DtAr' => trans('admin.higri_date'),
+                'Jr_Ty' => trans('admin.receipts_type'),
+                'Tr_Crncy' => trans('admin.currency'),
+                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Tot_Amunt' => trans('admin.amount'),
+                'Tr_TaxVal' => trans('admin.tax'),
+                'Rcpt_By' => trans('admin.Rcpt_By'),
+                'Salman_No' => trans('admin.sales_officer2'),
+                'Ac_Ty' => trans('admin.Level_Status'),
+                // 'Sysub_Account' => trans('admin.'),
+                'Tr_Cr' => trans('admin.amount_cr'),
+                'Dc_No' => trans('admin.receipt_number'),
+                'Tr_Ds' => trans('admin.note_ar'),
+                'Tr_Ds1' => trans('admin.note_en'),
+                'Tr_Db_Acc_No' => trans('admin.main_cache'),
+            ]);
+
+            // dd($validator->messages());
+                
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'data' => $validator->messages(),
+                ]);
+            }
+            else{
+                    return response([
+                    'success' => true,
+                    'data' => $validator->messages(),
+                ]);
+            } 
         }
     }
 }
