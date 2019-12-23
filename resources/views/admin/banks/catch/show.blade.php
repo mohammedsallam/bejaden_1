@@ -16,7 +16,6 @@
     </div>
     <div class="col-md-3 pull-left">
         <small>{{trans('admin.date')}}: {{$gl->Entr_Dt}}</small>
-        <img src="{{asset('storage/companies/logo.png')}}" style="max-width:100px;margin:15px 0">
     </div>
 </div>
 <hr>
