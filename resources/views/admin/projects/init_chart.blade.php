@@ -414,19 +414,37 @@
                                 </div>
                                 {{-- نهاية العنوان --}}
 
-                                {{-- تليفون --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
-                                    <input type="text" name="Prj_Tel" id="Prj_Tel" class="col-md-10 form-control" placeholder="010000 / 010001">
-                                </div>
-                                {{-- نهاية التليفون --}}
+                                <div class="form-group row">
+                                    {{-- تليفون --}}
+                                    <div class="col-md-6 ">
+                                        <label class="col-md-4" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
+                                        <input type="text"  name="Prj_Tel" id="Prj_Tel" class="col-md-8 form-control">
+                                    </div>
+                                    {{-- نهاية التليفون --}}
 
-                                {{-- الموبايل --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
-                                    <input type="text" name="Prj_Mobile" id="Prj_Mobile" class="col-md-10 form-control">
+                                    {{-- الموبايل --}}
+                                    <div style="left:25px" class="col-md-6">
+                                        <label class="col-md-4" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
+                                        <input type="text"  name="Prj_Mobile" id="Prj_Mobile" class=" col-md-8 form-control" placeholder="010000 / 010001">
+                                    </div>
+                                    {{-- نهاية الموبايل --}}
                                 </div>
-                                {{-- نهاية الموبايل --}}
+
+                                {{-- مركز التكلفه --}}
+                                <div class="form-group col-md-12 row">
+                                    <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
+
+                                    <div class="form-group">
+                                        <select name="cc_type" id="cc_type" class="col-md-10 form-control">
+                                            <option value="{{null}}">{{trans('admin.select')}}</option>
+                                            @foreach($cc as $ccr)
+                                                <option name="cc_type" value="{{$ccr->ID_No}}">{{$ccr->Costcntr_Nmar}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                                {{-- نهاية مركز التكلفه --}}
                                 <hr>
                                 <div class="col-md-6">
                                     <div class="row">
@@ -567,25 +585,6 @@
                                             </div>
                                         </div>
                                         {{-- نهاية قيمة التوريد --}}
-
-
-                                        {{-- مركز التكلفه --}}
-                                        <div class="col-md-12 branch">
-                                            <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'
-                                            >
-                                            <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
-
-                                            <div class="form-group">
-                                                <select name="cc_type" id="cc_type" class="form-control col-md-6">
-                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                                    {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                                        <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                                    @endforeach --}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        {{-- نهاية مركز التكلفه --}}
-
 
                                         {{-- رصيد اول المده دائن --}}
                                         <div class="col-md-12 branch" style="top: 22px;">

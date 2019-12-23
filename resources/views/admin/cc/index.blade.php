@@ -329,52 +329,34 @@
                         </div>
                         {{-- نهاية اسم الحساب انجليزى --}}
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="row">
-                                {{-- طبيعة الحساب --}}
-                                <div class="form-group col-md-12 branch">
-                                    <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                                    @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                                        <input class="checkbox-inline" type="radio"
-                                            name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                                            style="margin: 3px;"
-                                            @if($chart_item->Level_No == 1) disabled @endif
-                                            @if ($chart_item->Acc_Ntr == $key) checked @endif>
-                                        <label>{{$value}}</label>
-                                    @endforeach
-                                </div>
-                                {{-- نهاية طبيعة الحساب --}}
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        {{-- رصيد اول المده مدين --}}
+                                        <div style="left: 21px" class="col-md-6 branch">
+                                            <div class="row">
+                                                <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                                                <input disabled style="left: 10px" type="text" name="Fbal_DB" id="Fbal_DB" class="form-control col-md-7" value="{{0}}">
+                                            </div>
+                                        </div>
+                                        {{-- نهايةرصيد اول المده مدين --}}
 
-                                {{-- رصيد اول المده مدين --}}
-                                <div class="col-md-12 branch">
-                                    <div class="form-group row">
-                                        <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                                        <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
-                                        class="form-control col-md-7"
-                                        @if($chart_item->Level_No == 1) disabled @endif>
+                                        {{-- رصيد اول المده دائن --}}
+                                        <div style="left: 21px" class="col-md-6 branch">
+                                            <div class="row">
+                                                <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
+                                                <input disabled style="left: 10px" type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
+                                            </div>
+                                        </div>
+                                        {{-- نهاية رصيد اول المده دائن --}}
                                     </div>
+                                    {{-- رصيد اول المده دائن --}}
                                 </div>
-                                {{-- نهايةرصيد اول المده مدين --}}
-
-                                {{-- رصيد اول المده دائن --}}
-                                <div class="col-md-12 branch">
-                                    <div class="form-group row">
-                                        <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
-                                        <input type="text" disabled name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
-                                        class="form-control col-md-7"
-                                        @if($chart_item->Level_No == 1) disabled @endif>
-                                    </div>
-                                </div>
-                                {{-- نهاية رصيد اول المده دائن --}}
-
-                                {{-- رصيد اول المده دائن --}}
-                                <div class="col-md-12 branch">
-                                    <div class="form-group row">
-                                        <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
-                                        <input type="text" disabled name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
-                                        class="form-control col-md-7"
-                                        @if($chart_item->Level_No == 1) disabled @endif>
-                                    </div>
+                                <br><br><br>
+                                <div class="form-group row">
+                                    <label for="Cr_Blnc" class="col-md-2">{{trans('admin.credit_balance')}}</label>
+                                    <input disabled type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-9">
                                 </div>
                                 {{-- نهاية رصيد اول المده دائن --}}
                             </div>

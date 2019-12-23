@@ -32,71 +32,43 @@
 
 
     {{-- اسم الحساب عربى --}}
-    <div class="form-group col-md-12">
-        <div class="col-md-3">
-            <label for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
-        </div>
-        <div class="col-md-9">
+        <div class="form-group row">
+            <label class="col-md-2" for="Costcntr_Nmar">{{trans('admin.account_name')}}:</label>
             <input type="text" name="Costcntr_Nmar" id="Acc_NmAr" class="col-md-9 form-control" value="{{$chart_item->Costcntr_Nmar? $chart_item->Costcntr_Nmar : null}}">
         </div>
-    </div>
     {{-- نهاية اشم الحساب عربى --}}
 
     {{-- اسم الحساب انجليزى --}}
     <div class="form-group row">
         <label class="col-md-2" for="Costcntr_Nmen">{{trans('admin.account_name_en')}}:</label>
-        <input type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control"
+        <input  type="text" name="Costcntr_Nmen" id="Costcntr_Nmen" class=" col-md-9 form-control"
             value="{{$chart_item->Costcntr_Nmen? $chart_item->Costcntr_Nmen : null}}">
     </div>
     {{-- نهاية اسم الحساب انجليزى --}}
 
-    <div class="col-md-6">
-        <div class="row">
-            {{-- طبيعة الحساب --}}
-            <div class="form-group col-md-12 branch">
-                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio"
-                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                        style="margin: 3px;"
-                        @if($chart_item->Level_No == 1) disabled @endif
-                        @if ($chart_item->Acc_Ntr == $key) checked @endif>
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-            {{-- نهاية طبيعة الحساب --}}
-
+        <div class="form-group row">
             {{-- رصيد اول المده مدين --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
+                <div  style="left: 21px" class=" col-md-6">
                     <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                    <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
+                    <input style="left: 10px" type="text" name="Fbal_DB" id="Fbal_DB" value='{{$chart_item->Fbal_DB? $chart_item->Fbal_DB : 0}}'
                     class="form-control col-md-7"
                     @if($chart_item->Level_No == 1) disabled @endif>
                 </div>
-            </div>
-            {{-- نهايةرصيد اول المده مدين --}}
 
-            {{-- رصيد اول المده دائن --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
+                <div  style="left: 23px" class="col-md-6">
                     <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
-                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
-                    class="form-control col-md-7"
-                    @if($chart_item->Level_No == 1) disabled @endif>
+                    <input style="left: 10px" type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
+                           class="form-control col-md-7"
+                           @if($chart_item->Level_No == 1) disabled @endif>
                 </div>
-            </div>
-            {{-- نهاية رصيد اول المده دائن --}}
+        </div>
+        <div class="form-group row">
+            <label for="Cr_Blnc" class="col-md-2">{{trans('admin.credit_balance')}}</label>
+            <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
+            class="form-control col-md-9"
+            @if($chart_item->Level_No == 1) disabled @endif>
+        </div>
 
-            {{-- رصيد اول المده دائن --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
-                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
-                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
-                    class="form-control col-md-7"
-                    @if($chart_item->Level_No == 1) disabled @endif>
-                </div>
-            </div>
             {{-- نهاية رصيد اول المده دائن --}}
         </div>
     </div>

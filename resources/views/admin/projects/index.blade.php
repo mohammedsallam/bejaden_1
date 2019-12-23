@@ -309,7 +309,7 @@
 
                                 {{-- رقم المشروع --}}
                                 <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
-                                <input type="text" name="Prj_No" id="Prj_No" disabled class="form-control col-md-2" value="{{$chart_item->Prj_No}}">
+                                <input style="right: 20px ; margin-left: 77px;width: 152px;" type="text" name="Prj_No" id="Prj_No" disabled class="form-control col-md-2" value="{{$chart_item->Prj_No}}">
                                 {{-- رقم المشروع --}}
 
                                 {{-- تصنيف الحساب --}}
@@ -352,16 +352,15 @@
                                         </div>
                                         {{-- نهاية سنة المشروع --}}
 
-                                        {{-- العميل --}}
+                                        {{-- قيمة المشروع --}}
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
-                                                <label class="col-md-5" for="">{{trans('admin.subscriper')}}:</label>
-                                                {!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                                'class'=>'form-control col-md-7','placeholder'=>trans('admin.select')
-                                                ])!!}
+                                                <label class="col-md-5" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
+                                                <input type="text" disabled name="Prj_Value" id="Prj_Value" class="col-md-7 form-control"
+                                                       value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}">
                                             </div>
                                         </div>
-                                        {{-- نهاية العميل --}}
+                                        {{-- نهاية قيمة المشروع --}}
                                     </div>
 
                                 </div>
@@ -410,7 +409,7 @@
                                 {{-- اسم الحساب عربى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmAr">{{trans('admin.project_name')}}:</label>
-                                        <input type="text" disabled name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control"
+                                        <input style="right:29px" type="text" disabled name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control"
                                         value="{{$chart_item->Prj_NmAr? $chart_item->Prj_NmAr : null}}">
                                 </div>
                                 {{-- نهاية اشم الحساب عربى --}}
@@ -418,44 +417,63 @@
                                 {{-- اسم الحساب انجليزى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmEn">{{trans('admin.project_name_en')}}:</label>
-                                    <input type="text" disabled name="Prj_NmEn" id="Prj_NmEn" class=" col-md-10 form-control"
+                                    <input style="right:29px" type="text" disabled name="Prj_NmEn" id="Prj_NmEn" class=" col-md-10 form-control"
                                         value="{{$chart_item->Prj_NmEn? $chart_item->Prj_NmEn : null}}">
                                 </div>
                                 {{-- نهاية اسم الحساب انجليزى --}}
-
-                                {{-- قيمة المشروع --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
-                                    <input type="text" disabled name="Prj_Value" id="Prj_Value" class="col-md-10 form-control"
-                                           value="{{$chart_item->Prj_Value? $chart_item->Prj_Value : null}}">
-                                </div>
-                                {{-- نهاية قيمة المشروع --}}
+                                    {{-- العميل --}}
+                                    <div class="form-group col-md-12 row">
+                                            <label class="col-md-2" for="">{{trans('admin.subscriper')}}:</label>
+                                            {!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                            'class'=>'form-control col-md-10','style' => 'right:29px','placeholder'=>trans('admin.select')
+                                            ])!!}
+                                    </div>
+                                    {{-- نهاية العميل --}}
 
                                     {{-- العنوان --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}:</label>
-                                    <input type="text" disabled name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control"
+                                    <input style="right:29px" type="text" disabled name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control"
                                            value="{{$chart_item->Prj_Adr? $chart_item->Prj_Adr : null}}">
                                 </div>
                                 {{-- نهاية العنوان --}}
 
-                                {{-- تليفون --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
-                                    <input type="text" disabled name="Prj_Tel" id="Prj_Tel" class="col-md-10 form-control"
-                                           value="{{$chart_item->Prj_Tel? $chart_item->Prj_Tel : null}}">
-                                </div>
-                                {{-- نهاية التليفون --}}
+                                    <div class="form-group row">
+                                        {{-- تليفون --}}
+                                        <div class="col-md-6 ">
+                                            <label class="col-md-4" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
+                                            <input style="right:29px" type="text" disabled name="Prj_Tel" id="Prj_Tel" class="col-md-8 form-control"
+                                                   value="{{$chart_item->Prj_Tel? $chart_item->Prj_Tel : null}}">
+                                        </div>
+                                        {{-- نهاية التليفون --}}
 
-                                {{-- الموبايل --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
-                                    <input type="text" disabled name="Prj_Mobile" id="Prj_Mobile" class=" col-md-10 form-control" placeholder="010000 / 010001"
-                                           value="{{$chart_item->Prj_Mobile? $chart_item->Prj_Mobile : null}}">
-                                </div>
-                                {{-- نهاية الموبايل --}}
+                                        {{-- الموبايل --}}
+                                        <div style="left:25px" class="col-md-6">
+                                            <label style="right:20px" class="col-md-4" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
+                                            <input style="right:24px" type="text" disabled name="Prj_Mobile" id="Prj_Mobile" class=" col-md-8 form-control" placeholder="010000 / 010001"
+                                                   value="{{$chart_item->Prj_Mobile? $chart_item->Prj_Mobile : null}}">
+                                        </div>
+                                        {{-- نهاية الموبايل --}}
+                                    </div>
 
-                                <div class="col-md-6">
+
+                                {{-- مركز التكلفه --}}
+                                <div class="form-group col-md-12 row">
+                                    <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
+
+                                    <div class="form-group">
+                                        <select style="right:29px" name="cc_type" id="cc_type" class="col-md-10 form-control">
+                                            <option value="{{null}}">{{trans('admin.select')}}</option>
+                                            @foreach($cc as $ccr)
+                                                <option name="cc_type" value="{{$ccr->ID_No}}">{{$ccr->Costcntr_Nmar}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                                {{-- نهاية مركز التكلفه --}}
+
+                                    <div class="col-md-6">
                                     <div class="row">
                                         {{-- الدوله --}}
                                         <div class="col-md-12 branch">
@@ -602,23 +620,7 @@
                                         {{-- نهاية قيمة التوريد --}}
 
 
-                                        {{-- مركز التكلفه --}}
-                                        <div class="col-md-12 branch">
-                                            <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'
-                                                @if($chart_item->Level_No == 1) disabled @endif>
-                                            <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
 
-                                            <div class="form-group">
-                                                <select name="cc_type" id="cc_type" class="form-control col-md-6"
-                                                    @if($chart_item->Level_No == 1) disabled @endif>
-                                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                                    {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                                        <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                                    @endforeach --}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        {{-- نهاية مركز التكلفه --}}
 
                                         <hr>
                                         {{-- رصيد اول المده دائن --}}

@@ -57,10 +57,12 @@ class ProjectController extends Controller
             }
             $chart_item = Projectmfs::first();
             $total = $this->getTotalTransaction($chart_item);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
+
             $children = [];
 //            dd($cmps);
             return view('admin.projects.index', ['title' => trans('admin.projects'),
-                'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
+                'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children, 'cc' => $cc]);
         }
         else{
             if(session('Cmp_No') == -1){
@@ -70,8 +72,10 @@ class ProjectController extends Controller
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
             }
             $Prj_No = $this->createPrjNo(0);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'ID_No']);
+
             return view('admin.projects.init_chart', ['title' => trans('admin.projects')
-                , 'cmps' => $cmps, 'Prj_No' => $Prj_No]);
+                , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'cc' => $cc]);
 
         }
 
@@ -97,12 +101,13 @@ class ProjectController extends Controller
                // dd($parent->Prj_Parnt);
                 $Prj_No = $this->createPrjNo($parent->Prj_No);
                 $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
+                $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'ID_No']);
 
                 //dd($Prj_No);
                 //dd($request->Level_No);
                 return view('admin.projects.create', ['title' => trans('admin.projects'),
                     'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Prj_No' =>  $Prj_No,
-                    'bran'=>$bran, 'costCenter'=>$costCenter]);
+                    'bran'=>$bran, 'costCenter'=>$costCenter, 'cc'=>$cc]);
             }
         }
     }
@@ -116,11 +121,12 @@ class ProjectController extends Controller
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
+        $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
         $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
         $Prj_No = $this->createPrjNo(0);
         //dd($request->all());
         return view('admin.projects.create_main_chart', ['title' => trans('admin.projects')
-            , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'bran' => $bran]);
+            , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'bran' => $bran, 'cc' => $cc]);
     }
 
     /**
@@ -136,8 +142,6 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
-
         if($request->Level_Status == 0){
             //dd('dd');
             $data = $this->validate($request,[
@@ -152,7 +156,7 @@ class ProjectController extends Controller
 //            dd($request->Cmp_No);
 
             $chart = $request->all();
-//            dd($request->Cmp_No);
+//            dd($chart);
 //            $chart['Cmp_No'] = $request->Cmp_No;
 
             $chart['Cmp_No'] = session('Chart_Cmp_No');
@@ -165,6 +169,24 @@ class ProjectController extends Controller
             $chart['Opn_Date'] = $request->created_at;
             $chart['Updt_Date'] = $request->updated_at;
             Projectmfs::create($chart);
+
+////            ---------------------------------------
+///
+///
+            $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first()->Costcntr_No;
+
+
+            $Mtscc = MtsCostcntr::create([
+                'Cmp_No'=>session('Chart_Cmp_No'),
+                'Level_Status'=> 1,
+                'Level_No'=> 2,
+                'Parnt_Acc'=> $request->Costcntr_No,
+                'Costcntr_No'=> $Costcntr_No +1,
+                'Costcntr_Nmar'=>$request->Prj_NmAr,
+                'Costcntr_Nmen'=>$request->Prj_NmEn,
+                'Fbal_DB'=>$request->Fbal_DB,
+                'Fbal_CR'=>$request->Fbal_CR,
+            ]);
             return redirect(aurl('projects'))->with(session()->flash('message',trans('admin.success_add')));
         }
         else if($request->Level_Status == 1){
@@ -258,9 +280,11 @@ class ProjectController extends Controller
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->first();
             $total = $this->getTotalTransaction($chart_item);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
+
             $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
             return view('admin.projects.edit', ['title' => trans('admin.projects'),
-                'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
+                'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'cc' => $cc,
                  'bran'=>$bran, 'children' => $request->children
                 ]);
         }
@@ -688,7 +712,7 @@ class ProjectController extends Controller
             else{
                 //dd('fff');
                 $Prj_No = (int)$Prj_Parnt.'01';
-                return $Prj_No;
+                return $Prj_No;//
             }
         }
     }
@@ -710,7 +734,7 @@ class ProjectController extends Controller
             'total_balance' => $total_balance);
         return $total;
     }
-    public function getTree(Request $request){
+    public function getTree(Request $request){ //
         if($request->ajax()){
             session(['Chart_Cmp_No' => $request->Cmp_No]);
             $tree = load_prj('Prj_Parnt', null, $request->Cmp_No);
@@ -726,15 +750,23 @@ class ProjectController extends Controller
 
     }
 
-//    public function getBranches(Request $request)
-//    {
-//dd($request->Cmp_No);
-//        $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get();
-//
-//
-//
-//        return view('admin.projects.get_branches', compact('branches'));
-//    }
+    public function createAccNo($Parnt_Acc){
+
+            $parent = MtsCostcntr::where('Costcntr_No', $Parnt_Acc)->first();
+            if(count($parent->children) > 0){
+                $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)
+                    ->where('Cmp_No', session('Chart_Cmp_No'))
+                    ->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();
+                return $max->Costcntr_No + 1;
+            }
+            else{
+                $Costcntr_No = (int)$Parnt_Acc.'01';
+                return $Costcntr_No;
+            }
+
+    }
+
+
 
 }
 

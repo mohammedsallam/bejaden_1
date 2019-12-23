@@ -113,6 +113,7 @@ class CcController extends Controller
      */
     public function store(Request $request,Department $department)
     {
+        //dd($request->all());
         if($request->Level_Status == 0){
             $data = $this->validate($request,[
                 'Cmp_No' => 'required',
