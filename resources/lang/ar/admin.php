@@ -1382,9 +1382,9 @@ return [
     'rvisd_No'           =>'نسخة العقد',
     'Prj_Status'         =>'وضع المشروع',/////// لسه الانجلش بتاعهم
     'Level_Status'       =>'نوع الحساب',
-//    'project_name'       =>'وصف المشروع عربي',
-    'project_name_en'    =>'وصف المشروع En',
-    'project_name'       =>'وصف المشروع عربي',
+//    'project_name'       =>'وصف  عربي',
+    'project_name_en'    =>'وصف En',
+    'project_name'       =>'الوصف Ar',
     'project_name_en'    =>'En',
     'project_number'     =>'رقم المشروع',
     'project_type'       =>'تصنيف المشروع',

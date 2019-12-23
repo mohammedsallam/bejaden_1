@@ -47,36 +47,34 @@
     </div>
     {{-- نهاية اسم الحساب انجليزى --}}
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="row">
             {{-- رصيد اول المده مدين --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
+            <div style="left: 21px" class="col-md-6 branch">
+                <div class="row">
                     <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                    <input type="text" name="Fbal_DB" id="Fbal_DB" class="form-control col-md-7" value="{{0}}">
+                    <input style="left: 10px" type="text" name="Fbal_DB" id="Fbal_DB" class="form-control col-md-7" value="{{0}}">
                 </div>
             </div>
             {{-- نهايةرصيد اول المده مدين --}}
 
             {{-- رصيد اول المده دائن --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
+            <div style="left: 21px" class="col-md-6 branch">
+                <div class="row">
                     <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
-                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
-                </div>
-            </div>
-            {{-- نهاية رصيد اول المده دائن --}}
-
-            {{-- رصيد اول المده دائن --}}
-            <div class="col-md-12 branch">
-                <div class="form-group row">
-                    <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
-                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-7">
+                    <input style="left: 10px" type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
                 </div>
             </div>
             {{-- نهاية رصيد اول المده دائن --}}
         </div>
+            {{-- رصيد اول المده دائن --}}
     </div>
+<br><br><br>
+           <div class="form-group row">
+               <label for="Cr_Blnc" class="col-md-2">{{trans('admin.credit_balance')}}</label>
+               <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-9">
+           </div>
+            {{-- نهاية رصيد اول المده دائن --}}
 
 
 

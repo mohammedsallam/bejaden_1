@@ -48,22 +48,22 @@
     </div>
     {{-- نهاية اسم الحساب انجليزى --}}
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="row">
-            {{-- طبيعة الحساب --}}
-            <div class="form-group col-md-12 branch hidden">
-                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                    <input class="checkbox-inline" type="radio"
-                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                        style="margin: 3px;">
-                    <label>{{$value}}</label>
-                @endforeach
-            </div>
-            {{-- نهاية طبيعة الحساب --}}
+{{--            --}}{{-- طبيعة الحساب --}}
+{{--            <div class="form-group col-md-12 branch hidden">--}}
+{{--                <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>--}}
+{{--                @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)--}}
+{{--                    <input class="checkbox-inline" type="radio"--}}
+{{--                        name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"--}}
+{{--                        style="margin: 3px;">--}}
+{{--                    <label>{{$value}}</label>--}}
+{{--                @endforeach--}}
+{{--            </div>--}}
+{{--            --}}{{-- نهاية طبيعة الحساب --}}
 
             {{-- رصيد اول المده مدين --}}
-            <div class="col-md-12 branch">
+            <div class="col-md-6 branch">
                 <div class="form-group row">
                     <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
                     <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{0}}' class="form-control col-md-7">
@@ -72,7 +72,7 @@
             {{-- نهايةرصيد اول المده مدين --}}
 
             {{-- رصيد اول المده دائن --}}
-            <div class="col-md-12 branch">
+            <div class="col-md-6 branch">
                 <div class="form-group row">
                     <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
                     <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">

@@ -414,19 +414,21 @@
                                 </div>
                                 {{-- نهاية العنوان --}}
 
-                                {{-- تليفون --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
-                                    <input type="text" name="Prj_Tel" id="Prj_Tel" class="col-md-10 form-control" placeholder="010000 / 010001">
-                                </div>
-                                {{-- نهاية التليفون --}}
+                                <div class="form-group row">
+                                    {{-- تليفون --}}
+                                    <div class="col-md-6 ">
+                                        <label class="col-md-4" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
+                                        <input type="text"  name="Prj_Tel" id="Prj_Tel" class="col-md-8 form-control">
+                                    </div>
+                                    {{-- نهاية التليفون --}}
 
-                                {{-- الموبايل --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
-                                    <input type="text" name="Prj_Mobile" id="Prj_Mobile" class="col-md-10 form-control">
+                                    {{-- الموبايل --}}
+                                    <div style="left:25px" class="col-md-6">
+                                        <label class="col-md-4" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
+                                        <input type="text"  name="Prj_Mobile" id="Prj_Mobile" class=" col-md-8 form-control" placeholder="010000 / 010001">
+                                    </div>
+                                    {{-- نهاية الموبايل --}}
                                 </div>
-                                {{-- نهاية الموبايل --}}
 
                                 {{-- مركز التكلفه --}}
                                 <div class="form-group col-md-12 row">

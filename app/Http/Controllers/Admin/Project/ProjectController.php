@@ -57,7 +57,7 @@ class ProjectController extends Controller
             }
             $chart_item = Projectmfs::first();
             $total = $this->getTotalTransaction($chart_item);
-            $cc = MtsCostcntr::where('Parnt_Acc',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
 
             $children = [];
 //            dd($cmps);
@@ -72,7 +72,7 @@ class ProjectController extends Controller
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
             }
             $Prj_No = $this->createPrjNo(0);
-            $cc = MtsCostcntr::where('Parnt_Acc',0)->get(['Costcntr_Nmar', 'ID_No']);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'ID_No']);
 
             return view('admin.projects.init_chart', ['title' => trans('admin.projects')
                 , 'cmps' => $cmps, 'Prj_No' => $Prj_No, 'cc' => $cc]);
@@ -101,7 +101,7 @@ class ProjectController extends Controller
                // dd($parent->Prj_Parnt);
                 $Prj_No = $this->createPrjNo($parent->Prj_No);
                 $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
-                $cc = MtsCostcntr::where('Parnt_Acc',0)->get(['Costcntr_Nmar', 'ID_No']);
+                $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'ID_No']);
 
                 //dd($Prj_No);
                 //dd($request->Level_No);
@@ -121,7 +121,7 @@ class ProjectController extends Controller
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
-        $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Parnt_Acc',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
+        $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
         $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
         $Prj_No = $this->createPrjNo(0);
         //dd($request->all());
@@ -172,16 +172,16 @@ class ProjectController extends Controller
 
 ////            ---------------------------------------
 ///
-
-            $parent = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first()->Costcntr_No;
+///
+            $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first()->Costcntr_No;
 
 
             $Mtscc = MtsCostcntr::create([
                 'Cmp_No'=>session('Chart_Cmp_No'),
                 'Level_Status'=> 1,
                 'Level_No'=> 2,
-                'Parnt_Acc'=> $parent + 1,
-                'Costcntr_No'=>$this->createAccNo($request->Costcntr_No),
+                'Parnt_Acc'=> $request->Costcntr_No,
+                'Costcntr_No'=> $Costcntr_No +1,
                 'Costcntr_Nmar'=>$request->Prj_NmAr,
                 'Costcntr_Nmen'=>$request->Prj_NmEn,
                 'Fbal_DB'=>$request->Fbal_DB,
@@ -280,9 +280,11 @@ class ProjectController extends Controller
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->first();
             $total = $this->getTotalTransaction($chart_item);
+            $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
+
             $bran = MainBranch::where('Cmp_No', session('Chart_Cmp_No'))->get(['Brn_Nm'.ucfirst(session('lang')), 'ID_No']);
             return view('admin.projects.edit', ['title' => trans('admin.projects'),
-                'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
+                'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'cc' => $cc,
                  'bran'=>$bran, 'children' => $request->children
                 ]);
         }

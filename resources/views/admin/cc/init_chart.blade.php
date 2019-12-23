@@ -104,7 +104,7 @@
 
             $('#jstree').jstree({
                 "core" : {
-                    'data' : {!! load_cc('parent_id') !!},
+                    //'data' : {!! load_cc('parent_id', '', '') !!},
                     "themes" : {
                         "variant" : "large"
                     },
@@ -264,11 +264,11 @@
                             <div class="form-group row">
                                 <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>
 
-                                @foreach($cmps as $cmp)
-                                    <input type="text" id="Select_Cmp_N" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>
-                                @endforeach
+{{--                                @foreach($cmps as $cmp)--}}
+{{--                                    <input type="text" id="Select_Cmp_N" name="Cmp_No" value="{{$cmp->Cmp_No}}" hidden>--}}
+{{--                                @endforeach--}}
 
-                                <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
+                                <select name="Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
                                     <option value="">{{trans('admin.select_Cmp')}}</option>
                                     @if(count($cmps) > 0)
                                         @foreach($cmps as $cmp)
@@ -302,19 +302,6 @@
                             <input type="text" name="Costcntr_No" id="Costcntr_No" class="form-control col-md-1" value="{{$Costcntr_No}}">
                             {{-- رقم الحساب --}}
 
-                            {{-- رقم الشركه --}}
-{{--                            <div class="form-group col-md-8">--}}
-{{--                                <label for="Cmp_No" class="col-md-2">{{trans('admin.cmp_no')}}</label>--}}
-{{--                                <select name="Cmp_No" id="Cmp_No" class="form-control col-md-10">--}}
-{{--                                    <option value="">{{trans('admin.select')}}</option>--}}
-{{--                                    @if(count($cmps) > 0)--}}
-{{--                                        @foreach($cmps as $cmp)--}}
-{{--                                            <option value="{{$cmp->Cmp_No? $cmp->Cmp_No : null}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>--}}
-{{--                                        @endforeach--}}
-{{--                                    @endif--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
-                            {{-- نهاية رقم الشركه --}}
 
                             {{-- تصنيف الحساب --}}
                             <input type="text" value="{{0}}" name="Level_Status" hidden>
@@ -335,44 +322,36 @@
                         </div>
                         {{-- نهاية اسم الحساب انجليزى --}}
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="row">
-                                {{-- طبيعة الحساب --}}
-                                <div class="form-group col-md-12 branch hidden">
-                                    <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
-                                    @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                                        <input class="checkbox-inline" type="radio"
-                                            name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                                            style="margin: 3px;">
-                                        <label>{{$value}}</label>
-                                    @endforeach
-                                </div>
-                                {{-- نهاية طبيعة الحساب --}}
 
                                 {{-- رصيد اول المده مدين --}}
-                                <div class="col-md-12 branch">
-                                    <div class="form-group row">
-                                        <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                                        <input type="text" name="Fbal_DB" id="Fbal_DB" value='{{0}}' class="form-control col-md-7">
-                                    </div>
-                                </div>
-                                {{-- نهايةرصيد اول المده مدين --}}
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        {{-- رصيد اول المده مدين --}}
+                                        <div style="left: 21px" class="col-md-6 branch">
+                                            <div class="row">
+                                                <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                                                <input style="left: 10px" type="text" name="Fbal_DB" id="Fbal_DB" class="form-control col-md-7" value="{{0}}">
+                                            </div>
+                                        </div>
+                                        {{-- نهايةرصيد اول المده مدين --}}
 
-                                {{-- رصيد اول المده دائن --}}
-                                <div class="col-md-12 branch">
-                                    <div class="form-group row">
-                                        <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
-                                        <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
+                                        {{-- رصيد اول المده دائن --}}
+                                        <div style="left: 21px" class="col-md-6 branch">
+                                            <div class="row">
+                                                <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
+                                                <input style="left: 10px" type="text" name="Fbal_CR" id="Fbal_CR" value='{{0}}' class="form-control col-md-7">
+                                            </div>
+                                        </div>
+                                        {{-- نهاية رصيد اول المده دائن --}}
                                     </div>
+                                    {{-- رصيد اول المده دائن --}}
                                 </div>
-                                {{-- نهاية رصيد اول المده دائن --}}
-
-                                {{-- رصيد  تقديرى --}}
-                                <div class="col-md-12 branch hidden">
-                                    <div class="form-group row">
-                                        <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
-                                        <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-7">
-                                    </div>
+                                <br><br><br>
+                                <div class="form-group row">
+                                    <label for="Cr_Blnc" class="col-md-2">{{trans('admin.credit_balance')}}</label>
+                                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{0}}' class="form-control col-md-9">
                                 </div>
                                 {{-- نهاية رصيد  تقديرى --}}
                             </div>
