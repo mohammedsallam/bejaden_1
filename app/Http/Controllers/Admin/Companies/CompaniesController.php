@@ -126,9 +126,9 @@ class CompaniesController extends Controller
                 'path'=>'companies',
                 'upload_type' => 'single',
                 'delete_file'=> $cmp->Picture
-            ]);
-            
+            ]);   
         }
+        
         $cmp->Local_Lang = $request->Local_Lang;
         $cmp->Cmp_AddAr = $request->Cmp_AddAr;
         $cmp->Sys_SetupNo = $request->Sys_SetupNo;

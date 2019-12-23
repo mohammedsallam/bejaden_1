@@ -210,8 +210,8 @@ Route::group(['prefix'=>'admin'],function (){
 //        edit by Ibrahim El Monier
         Route::post('banks/Receipt/receipts/pdf/{id}','Admin\banks\ReceiptController@pdf');
 //        end edit by Ibrahim El Monier
-        Route::post('banks/Receipt/receipts/print/{id}','Admin\banks\ReceiptController@print');
-        Route::get('banks/Receipt/receipts/print/{id}','Admin\banks\ReceiptController@print')->name('receipts.print');
+        // Route::post('banks/Receipt/receipts/print/{id}','Admin\banks\ReceiptController@print');
+        // Route::get('banks/Receipt/receipts/print/{id}','Admin\banks\ReceiptController@print')->name('receipts.print');
         Route::get('banks/Receipt/receipts','Admin\banks\ReceiptController@receipts')->name('receipts');
         Route::post('receiptsData/editdatatable','Admin\banks\ReceiptController@editdatatable');
         Route::post('receiptsData/select','Admin\banks\ReceiptController@select');
@@ -229,6 +229,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('getMainAccNo', 'Admin\banks\ReceiptCatchController@getMainAccNo')->name('getMainAccNo');
         Route::post('getTaxValue', 'Admin\banks\ReceiptCatchController@getTaxValue')->name('getTaxValue');
         Route::post('validateCache', 'Admin\banks\ReceiptCatchController@validateCache')->name('validateCache');
+        Route::post('getCatchRecpt', 'Admin\banks\ReceiptCatchController@getCatchRecpt')->name('getCatchRecpt');
+        Route::get('printCatchRecpt/{id}','Admin\banks\ReceiptCatchController@print')->name('printCatchRecpt');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');

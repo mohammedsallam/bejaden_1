@@ -18,6 +18,7 @@ use App\Models\Admin\MtsSuplir;
 use App\Models\Admin\GLaccBnk;
 use Carbon\Carbon;
 use Auth;
+use niklasravnsborg\LaravelPdf\Facades\Pdf;
 
 class ReceiptCatchController extends Controller
 {
@@ -26,9 +27,17 @@ class ReceiptCatchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(catchDataTable $receipts)
+    public function index()
     {
-        return $receipts->render('admin.banks.invoice.index',['title'=>trans('admin.catch_receipt')]);
+        if(session('Cmp_No') == -1){
+            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+        }
+        else{
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+        }
+        return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
     }
 
     /**
@@ -38,8 +47,13 @@ class ReceiptCatchController extends Controller
      */
     public function create()
     {
-        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
-        $companies = MainCompany::get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))]);
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first(); 
+        if(session('Cmp_No') == -1){
+            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        }
+        else{
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+        }
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
         $banks = [];
@@ -48,7 +62,7 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
-        return view('admin.banks.catch.create', ['companies' => $companies, 'banks' => $banks, 'last_record' => $last_record]);
+        return view('admin.banks.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record]);
     }
 
     /**
@@ -176,7 +190,16 @@ class ReceiptCatchController extends Controller
      */
     public function show($id)
     {
-        //
+        $gl = GLJrnal::where('Tr_No', $id)->first();
+        $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+        $debt_acc_no = GLjrnTrs::where('Sysub_Account', 0)
+                                ->where('Tr_No', $gl->Tr_No)
+                                ->where('Ln_No', 1)
+                                ->pluck('Acc_No')->first();
+        $debt = MtsChartAc::where('Acc_No', $debt_acc_no)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
+        $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['License_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
+        $brn = MainBranch::where('Cmp_No', $gl->Cmp_No)->get(['Brn_Nm'.ucfirst(session('lang'))])->first();
+        return view('admin.banks.catch.show', ['gl' => $gl, 'gltrns' => $gltrns, 'cmp' => $cmp, 'brn' => $brn, 'debt' => $debt]);
     }
 
     /**
@@ -404,5 +427,64 @@ class ReceiptCatchController extends Controller
                 ]);
             } 
         }
+    }
+
+    public function getCatchRecpt(Request $request){
+        if($request->ajax()){
+            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', $request->Cmp_No)->paginate(6);
+            return view('admin.banks.catch.rcpts', ['gls' => $gls]);
+        }
+    }
+
+    public function print($id){
+        $gl = GLJrnal::where('Tr_No',$id)->first();
+        $gltrns = GLjrnTrs::where('Tr_No',$id)->get();
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+            <div dir="ltr" style="text-align: right">{DATE j-m-Y H:m}</div>
+            <div dir="ltr" style="text-align: center">{PAGENO} of {nbpg}</div>'
+            );
+        }];
+        $pdf = PDF::loadView('admin.banks.invoice.pdf.multi_report', compact('gl', 'gltrns'),[],['format' => 'A4'], $config);
+        return $pdf->stream();
+        // $receiptsData = $receipts->receiptsData;
+        // $data = $receipts->receipts_type;
+        // if (count($data) > 1){
+        //     if ($receipts->limitationReceipts['limitationReceiptsId'] == 0 || $receipts->limitationReceipts['limitationReceiptsId'] == 1){
+                
+        //         $pdf = PDF::loadView('admin.banks.invoice.pdf.multi_report', compact('receiptsData','data','receipts'),[],['format' => 'A4'], $config);
+        //         return $pdf->stream();
+        //     }else{
+        //         $config = ['instanceConfigurator' => function($mpdf) {
+        //             $mpdf->SetHTMLFooter('
+        //             <div dir="ltr" style="text-align: right">{DATE j-m-Y H:m}</div>
+        //             <div dir="ltr" style="text-align: center">{PAGENO} of {nbpg}</div>'
+        //             );
+        //         }];
+        //         $pdf = PDF::loadView('admin.banks.invoice.pdf.multi_report2', compact('receiptsData','data','receipts'),[],['format' => 'A4'], $config);
+        //         return $pdf->stream();
+        //     }
+        // }elseif(count($data) == 1){
+        //     if ($receipts->limitationReceipts['limitationReceiptsId'] == 0 || $receipts->limitationReceipts['limitationReceiptsId'] == 1){
+        //         $config = ['instanceConfigurator' => function($mpdf) {
+        //             $mpdf->SetHTMLFooter('
+        //             <div dir="ltr" style="text-align: right">{DATE j-m-Y H:m}</div>
+        //             <div dir="ltr" style="text-align: center">{PAGENO} of {nbpg}</div>'
+        //             );
+        //         }];
+        //         $pdf = PDF::loadView('admin.banks.invoice.pdf.report', compact('receiptsData','data','receipts'),[],['format' => 'A4'], $config);
+        //         return $pdf->stream();
+        //     }else{
+        //         $config = ['instanceConfigurator' => function($mpdf) {
+        //             $mpdf->SetHTMLFooter('
+        //             <div dir="ltr" style="text-align: right">{DATE j-m-Y H:m}</div>
+        //             <div dir="ltr" style="text-align: center">{PAGENO} of {nbpg}</div>'
+        //             );
+        //         }];
+        //         $pdf = PDF::loadView('admin.banks.invoice.pdf.report2', compact('receiptsData','data','receipts'),[],['format' => 'A4'], $config);
+        //         return $pdf->stream();
+        //     }
+        // }
+
     }
 }

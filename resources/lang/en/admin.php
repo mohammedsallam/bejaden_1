@@ -738,6 +738,7 @@ return [
     'create_catch_receipt'=>'Create Catch Receipt',
     'Pymt_By' => 'Payment By',
     'create_receipt'=>'Create Receipt',
+    'Ln_No' => 'Line No.',
     'receipts'=>'Receipts',
     'receipt'=>'receipt',
     'account_type'=>'Account Type',
