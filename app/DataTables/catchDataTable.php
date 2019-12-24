@@ -4,6 +4,8 @@ namespace App\DataTables;
 
 use App\limitationReceipts;
 use App\receipts;
+use App\Models\Admin\GLJrnal;
+use App\Models\Admin\MtsChartAc;
 use App\User;
 use Yajra\DataTables\Services\DataTable;
 
@@ -19,40 +21,26 @@ class catchDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('show', function ($query) {
-                return '<a href="../../receipts/'.$query->id.'" class="btn btn-info">' . '<i class="fa fa-eye"></i>' . '</a>';
+                return '<a href="'.route('rcatchs.show', $query->Tr_No).'" class="btn btn-info">' . '<i class="fa fa-eye"></i>' . '</a>';
             })
             ->addColumn('print', function ($query) {
-                return '<a href="../../receipts/print/'.$query->id.'" class="btn btn-info" target="_blanck">' .'<i class="fa fa-print"></i>'  . '</a>';
+                return '<a href="../../receipts/print/'.$query->Tr_No.'" class="btn btn-info" target="_blanck">' .'<i class="fa fa-print"></i>'  . '</a>';
             })
-
-
-            ->addColumn('receiptsType', function ($query) {
-                return session_lang(limitationReceipts::where('id',$query->receiptsType_id)->first()->name_en,limitationReceipts::where('id',$query->receiptsType_id)->first()->name_ar);
+            ->addColumn('Doc_Type', function ($query) {
+                return \App\Enums\PayType::getDescription(GLJrnal::where('Tr_No', $query->Tr_No)
+                                                            ->pluck('Doc_Type')->first());
             })
-            ->addColumn('department_name', function ($query) {
-                 $cc_id= \App\receiptsType::where('invoice_id',$query->invoice_id)->first()->cc_id;
-                 $glcc= \App\glcc::where('id',$cc_id)->first()['name_ar'];
-                return session_lang(\App\receiptsType::where('invoice_id',$query->invoice_id)->first()->name_en,\App\receiptsType::where('invoice_id',$query->invoice_id)->first()->name_ar);
-//                    . $glcc ?  $glcc: null;
-
-
-
-
-
-
-//                 session_lang(\App\glcc::where('id',$cc_id)->first()->id,\App\glcc::where('id',$cc_id)->first()->id);
-
-
-
-
+            ->addColumn('Sysub_Account', function ($query) {
+                $trans = GLJrnal::where('Tr_No', $query->Tr_No)
+                                    ->get(['Acc_No'])->first();
+                return MtsChartAc::where('Acc_No', $trans->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
             })
             ->addColumn('edit', function ($query) {
-                return '<a href="../../receipts/'.$query->id.'/edit" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
+                return '<a href="'.route('rcatchs.edit', $query->Tr_No).'" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
             })
-            ->editColumn('created_at', function ($query)
-            {
-//change over here
-                return date('Y/m/d', strtotime($query->created_at));
+            ->editColumn('Entr_Dt', function ($query){
+                return GLJrnal::where('Tr_No', $query->Tr_No)
+                                ->pluck('Entr_Dt')->first();
             })
 
             ->addColumn('delete', 'admin.banks.btn.delete')
@@ -75,7 +63,7 @@ class catchDataTable extends DataTable
     public function query()
     {
 //        return receipts::query()->orderByDesc('created_at')->where('status',1)->whereIn('receiptsType_id',[1,2]);
-        return receipts::query()->orderBy('receiptId','Desc')->where('status',1)->whereIn('receiptsType_id',[1,2]);
+        return GLJrnal::query()->orderBy('Tr_No','Desc')->where('Jr_Ty', 2);
     }
     public static function lang(){
         $langJson = [
@@ -154,12 +142,11 @@ class catchDataTable extends DataTable
     {
         return [
 
-            ['name'=>'receiptId','data'=>'receiptId','title'=>trans('admin.number_of_receipt')],
+            ['name'=>'Tr_No','data'=>'Tr_No','title'=>trans('admin.number_of_receipt')],
 //            ['name'=>'invoice_id','data'=>'invoice_id','title'=>trans('admin.invoice')],
-            ['name'=>'receiptsType','data'=>'receiptsType','title'=>trans('admin.receipt_type')],
-            ['name'=>'created_at','data'=>'created_at'
-                ,'title'=>trans('admin.receipt_created_at')],
-            ['name'=>'department_name','data'=>'department_name','title'=>trans('admin.department_name')],
+            ['name'=>'Doc_Type','data'=>'Doc_Type','title'=>trans('admin.receipt_type')],
+            ['name'=>'Entr_Dt','data'=>'Entr_Dt','title'=>trans('admin.receipt_created_at')],
+            ['name'=>'Acc_Nm'.ucfirst(session('lang')),'data'=>'Sysub_Account','title'=>trans('admin.department_name')],
 
             ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'print','data'=>'print','title'=>trans('admin.print'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
