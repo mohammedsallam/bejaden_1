@@ -213,6 +213,18 @@
                 }
             });
 
+            $('#Actvty_No').change(function(){
+                $.ajax({
+                    url: "{{route('getCompanies')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Actvty_No: $(this).val() },
+                    success: function(data){
+                        $('#Select_Cmp_No').html(data);
+                    }
+                });
+            });
+
         });
 
     </script>
@@ -224,16 +236,29 @@
             <div class="row">
                 <div class="col-md-6">
                         <div class="box-header">
+                            {{-- نوع النشاط --}}
+                            <div class="form-group row">
+                                <h3 class="box-title col-md-3">{{trans('admin.activity_type')}}</h3>
+                                <select name="Actvty_No" id="Actvty_No" class="form-control col-md-9">
+                                    <option value="">{{trans('admin.select')}}</option>
+                                    @if(count($acts) > 0)
+                                        @foreach($acts as $act)
+                                            <option value="{{$act->Actvty_No}}">{{$act->{'Name_'.ucfirst(session('lang'))} }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            {{-- نوع النشاط --}}
                             {{-- رقم الشركه --}}
                             <div class="form-group row">
-                                <h3 class="box-title col-md-3">{{$title}}</h3>
+                                <h3 class="box-title col-md-3">{{trans('admin.cmp_no')}}</h3>
                                 <select name="Select_Cmp_No" id="Select_Cmp_No" class="form-control col-md-9">
-                                    <option value="">{{trans('admin.select_Chart_Cmp')}}</option>
-                                    @if(count($cmps) > 0)
+                                    <option value="">{{trans('admin.select')}}</option>
+                                    {{-- @if(count($cmps) > 0)
                                         @foreach($cmps as $cmp)
                                             <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
-                                    @endif
+                                    @endif --}}
                                 </select>
                             </div>
                             {{-- نهاية رقم الشركه --}}

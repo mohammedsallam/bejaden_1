@@ -6,6 +6,7 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
+    'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',
     'sZeroRecords' => 'لا يوجد تسجيلات',
@@ -260,7 +261,7 @@ return [
     'create_new_schedule' => 'انشاء حركه جديده بالباص',
     'edit_schedule' => 'تعديل الموعد',
     'select_a_schedule' => 'اختر الميعاد',
-    'select_cmp' => 'اختر الشركه!',
+    'select_cmp' => 'اختر النشاط ثم الشركه !',
     'first_analysis' => 'التحليلى الاول',
     'second_analysis' => 'التحليلى الثانى',
     // carts // show

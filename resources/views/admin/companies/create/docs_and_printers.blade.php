@@ -1,8 +1,10 @@
 
 <div class="tab-pane fade in" id="menu5">
-    <div class="panel panel-default">
-        <div class="panel-header">
-            <h4>{{trans('admin.docs')}}</h4>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                {{trans('admin.docs')}}
+            </div>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -75,9 +77,11 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-header">
-            <h4>{{trans('admin.printers')}}</h4>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                {{trans('admin.printers')}}
+            </div>
         </div>
         <div class="panel-body">
             <div class="row">

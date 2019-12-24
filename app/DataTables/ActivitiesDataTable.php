@@ -4,6 +4,7 @@ namespace App\DataTables;
 use App\activity_type;
 use App\User;
 use App\Models\Admin\AstNutrbusn;
+use App\Models\Admin\ActivityTypes;
 
 use Yajra\DataTables\Services\DataTable;
 
@@ -18,11 +19,11 @@ class ActivitiesDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
+            ->addColumn('details', function ($query) {
+                return '<a href="activities/'.$query->ID_No.'" class="btn btn-info"><i class="fa fa-search"></i></a>';
+            })
             ->addColumn('edit', function ($query) {
                 return '<a  href="activities/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i></a>';
-            })
-            ->addColumn('details', function ($query) {
-                return '<a href="activities/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i></a>';
             })
             ->addColumn('delete', 'admin.activities.btn.delete')
             ->rawColumns([
@@ -40,7 +41,7 @@ class ActivitiesDataTable extends DataTable
      */
     public function query()
     {
-        return AstNutrbusn::query()->orderByDesc('ID_No');
+        return ActivityTypes::query()->orderByDesc('ID_No');
     }
     public static function lang(){
         $langJson = [
@@ -119,12 +120,10 @@ class ActivitiesDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            ['name'=>'Nutr_No','data'=>'Nutr_No','title'=>trans('admin.Nutr_No')],
-            ['name'=>'Nutr_NmAr','data'=>'Nutr_NmAr','title'=>trans('admin.arabic_name')],
-            ['name'=>'Short_Arb', 'data'=>'Short_Arb','title'=>trans('admin.Short_Arb')],
-            ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+            ['name'=>'Actvty_No','data'=>'Actvty_No','title'=>trans('admin.Nutr_No')],
+            ['name'=>'Name_Ar','data'=>'Name_'.ucfirst(session('lang')),'title'=>trans('admin.arabic_name')],
             ['name'=>'details','data'=>'details','title'=>trans('admin.details'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
-
+            ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
 
         ];
