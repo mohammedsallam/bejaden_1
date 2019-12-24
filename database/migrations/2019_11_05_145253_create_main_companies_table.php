@@ -20,6 +20,7 @@ class CreateMainCompaniesTable extends Migration
             $table->integer('Cmp_No')->nullable()->unique();//رقم الشركه و يتم انشاءه يدوي
             $table->integer('Local_Lang')->nullable()->default('0');// رقم اللغه
             $table->integer('Sys_SetupNo')->nullable();//النظام المستخدم
+            $table->integer('Actvty_No')->nullable();//طبيعة النشاط
             $table->string('Cmp_ShrtNm')->nullable();//الاسم المختصر للشركه
 
             $table->integer('Start_Month')->nullable();//شهر البدايه للسنه الماليه

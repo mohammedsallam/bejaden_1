@@ -24,6 +24,7 @@ use App\supplier;
 use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsClosAcc;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\activitytypes;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,28 +44,38 @@ class DepartmentsController extends Controller
     {
         $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
         if(count($chart) > 0){
-            if(session('Cmp_No') == -1){
+            if(session('Cmp_No') == -1 || session('Actvty_No' == -1)){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $acts = activitytypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))
+                                    ->where('Actvty_No', session('Actvty_No'))
+                                    ->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $acts = activitytypes::where('Actvty_No', session('Actvty_No'))
+                                    ->get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             $chart_item = MtsChartAc::first();
             $total = $this->getTotalTransaction($chart_item);
             $children = [];
             return view('admin.departments.index', ['title' => trans('admin.Departments'),
-                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children]);
+                        'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total, 'children' => $children, 'acts' => $acts]);
         }
         else{
-            if(session('Cmp_No') == -1){
+            if(session('Cmp_No') == -1 || session('Actvty_No' == -1)){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $acts = activitytypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))
+                                    ->where('Actvty_No', session('Actvty_No'))
+                                    ->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+                $acts = activitytypes::where('Actvty_No', session('Actvty_No'))
+                                    ->get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             $Acc_No = $this->createAccNo(0);
             return view('admin.departments.init_chart', ['title' => trans('admin.Departments')
-                        , 'cmps' => $cmps, 'Acc_No' => $Acc_No]);
+                        , 'cmps' => $cmps, 'Acc_No' => $Acc_No, 'acts' => $acts]);
         }
 
     }

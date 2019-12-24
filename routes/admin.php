@@ -11,6 +11,7 @@ Route::group(['prefix'=>'admin'],function (){
     Route::post('forgetPassword','Admin\AdminAuth@forgetPasswordPost');
     Route::get('reset/password/{token}','Admin\AdminAuth@reset_password');
     Route::post('reset/password/{token}','Admin\AdminAuth@reset_password_post');
+    Route::post('getCompanies','Admin\AdminAuth@getCompanies')->name('getCompanies');
 
 
 

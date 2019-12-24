@@ -1,66 +1,43 @@
 @extends('admin.index')
-@section('title', trans('admin.show_activity').$activities->Nutr_NmAr)
+@section('title', trans('admin.activity_type'))
 @section('content')
-@can('create')
+
 
     @include('admin.layouts.message')
 
-        {{Form::model($activities,['method'=>'PUT','route'=>['activities.show',$activities->ID_No],'class'=>'form-group','files'=>true])}}
-            <div class="panel panel-default">
-            <div class="panel-heading">
-                <h5>{{trans('admin.show_activity').$activities->Nutr_NmAr}}</h5>
-            </div>
-            <div class="panel-body">
-                @can('single')
-
-                    <div class="form-group col-md-8">
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-9">
-                                <div class="col-md-4">{!!Form::label('Nutr_No', trans('admin.Nutr_No'))!!}</div>
-                                <div class="col-md-8">{!!Form::text('Nutr_No', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Nutr_NmAr', trans('admin.arabic_name'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Nutr_NmAr', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
-                        </div>
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Nutr_NmEn', trans('admin.english_name'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Nutr_NmEn', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
-                        </div>
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Short_Arb', trans('admin.Short_Arb'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Short_Arb', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
-                        </div>
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Short_Eng', trans('admin.Short_Eng'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Short_Eng', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-
-                        @else
-                            <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
-
-                        @endcan
-                    </div>
-
-
-                    {{ Form::close() }}
-
+    <div class="panel panel-primary" style="width:50%; margin:auto auto;    ">
+        <div class="panel-heading">
+            <div class="panel-title">
+                {{trans('admin.trad_actitvities')}}
             </div>
         </div>
-    @endcan
-
-
-
-
-
-
-
+        <div class="panel-body">
+            <div class="row pull-left">
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary" disabled><i class="fa fa-floppy-o"></i></button>
+                </div>  
+            </div>
+            {{-- رقم النشاط --}}
+            <div class="row">
+                <br><br>
+                <label for="Actvty_No" class="col-md-2">{{trans('admin.Nutr_No')}}</label>
+                <input type="text" name="Actvty_No" id="Actvty_No" class="form-control col-md-2" disabled value="{{$act->Actvty_No}}">
+            </div>
+            {{-- نهاية رقم النشاط --}}
+            {{-- اسم الحساب عربى --}}
+            <div class="row">
+                <br>
+                <label for="Name_Ar" class="col-md-2">{{trans('admin.subscriber_name_ar')}}</label>
+                <input type="text" name="Name_Ar" id="Name_Ar" class="form-control col-md-9" disabled value="{{$act->Name_Ar}}">
+            </div>
+            {{-- نهاية اسم الحساب عربى --}}
+            {{-- اسم الحساب انجليزى --}}
+            <div class="row">
+                <br>
+                <label for="Name_En" class="col-md-2">{{trans('admin.subscriber_name_en')}}</label>
+                <input type="text" name="Name_En" id="Name_En" class="form-control col-md-9" disabled value="{{$act->Name_En}}">
+            </div>
+            {{-- نهاية اسم الحساب انجليزى --}}
+        </div>
+    </div>
 @endsection
