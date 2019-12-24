@@ -54,6 +54,7 @@ use App\Enums\dataLinks\LimitationsType;
 use App\Enums\dataLinks\MonthType;
 use App\Enums\dataLinks\DepartmentReportType;
 use App\Enums\PrjStatus;
+use App\Enums\NotiType;
 
 
 return [
@@ -471,6 +472,11 @@ return [
         PrjStatus::under_work => 'تحت التشغيل',//4
         PrjStatus::completed  => 'انتهاء المشروع',//5
         PrjStatus::warnty     => 'الضمان',//6
+    ],
+
+    NotiType::class => [
+        NotiType::Creditor    => 'دائن',    //0
+        NotiType::Debit       => 'مدين',     //1
     ],
 
 ];
