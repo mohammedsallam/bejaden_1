@@ -155,7 +155,7 @@
                     <div class="form-group">
                         <div class="col-md-2" style="margin-right: -38px;left: -21px;">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
                         @if(auth()->user()->company_id == '-1')
-                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::select('Cmp_No', $companies->pluck('Cmp_ShrtNm', 'ID_NO')->toArray(),null,[
+                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::select('Cmp_No', $companies->pluck('Cmp_NmAr', 'ID_NO')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')
                         ])!!}</div>
                         @else

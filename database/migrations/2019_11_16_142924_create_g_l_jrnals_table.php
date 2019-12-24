@@ -18,6 +18,7 @@ class CreateGLJrnalsTable extends Migration
             $table->integer('Cmp_No')->nullable();//الشركه
             $table->integer('Brn_No')->nullable();//الفرع
             $table->integer('Jr_Ty')->nullable();//نوع القيد
+            $table->enum('noti_Ty', [1,2])->nullable(); //نوع الاشعار
             $table->bigInteger('Tr_No')->nullable();//رقم القيد
             $table->integer('Month_No')->nullable();//رقم الشهر
             $table->integer('Month_Jvno')->nullable();//رقم القيد\الشهر
@@ -32,7 +33,7 @@ class CreateGLJrnalsTable extends Migration
             $table->string('Rcpt_By')->nullable();//المستلم
             $table->string('Pymt_To')->nullable();//ادفعوا لامر
             $table->string('Pymt_By')->nullable();//منصرف لواسطة
-            $table->boolean('Jv_Post')->nullable();//تم اقفال الحركه او لا 
+            $table->boolean('Jv_Post')->nullable();//تم اقفال الحركه او لا
             $table->string('User_ID')->nullable();//
             $table->string('Entr_Dt')->nullable();//
             $table->string('Entr_Time')->nullable();//
@@ -49,9 +50,9 @@ class CreateGLJrnalsTable extends Migration
             $table->integer('Salman_No')->nullable();//مندوب المبيعات
             $table->float('Tot_Amunt', 50, 10)->nullable();//المبلغ المطلوب
             // $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
-            $table->string('Tr_Ds', 200)->nullable();//البيان Ar 
-            $table->string('Tr_Ds1', 200)->nullable();//البيان EN 
-            $table->integer('Dc_No')->nullable();//رقم المستند 
+            $table->string('Tr_Ds', 200)->nullable();//البيان Ar
+            $table->string('Tr_Ds1', 200)->nullable();//البيان EN
+            $table->integer('Dc_No')->nullable();//رقم المستند
             $table->timestamps();
         });
     }

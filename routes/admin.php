@@ -246,6 +246,24 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');
         Route::post('accbanks/getCharts', 'Admin\setting\GLaccBnkCintroller@getCharts')->name('getCharts');
 
+
+
+        //Notices
+        Route::resource('notice', 'Admin\Notice\NoticeController');
+        Route::get('hijri', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijri');
+        Route::post('getSalesMan', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesMan');
+        Route::post('createTrNo', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNo');
+        Route::post('getSubAcc', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAcc');
+        Route::post('getMainAccNo', 'Admin\Notice\NoticeController@getMainAccNo')->name('getMainAccNo');
+        Route::post('getTaxValue', 'Admin\Notice\NoticeController@getTaxValue')->name('getTaxValue');
+        Route::post('validateCache', 'Admin\Notice\NoticeController@validateCache')->name('validateCache');
+        Route::post('getCatchRecpt', 'Admin\Notice\NoticeController@getCatchRecpt')->name('getCatchRecpt');
+        Route::get('printCatchRecpt/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecpt');
+        Route::post('branchForEdit','Admin\Notice\NoticeController@branchForEdit')->name('branchForEdit');
+        Route::post('getRcptDetails','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetails');
+
+
+
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
         Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
