@@ -42,6 +42,8 @@
 <ul class="nav nav-tabs" role="tablist"  style="margin-bottom: 15px;">
     <li role="presentation" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
     <li role="presentation"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
+    <li role="presentation"><a href="#movements" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.movements')}}</a></li>
+
 </ul>
 
 <!-- Tab panes -->
@@ -167,12 +169,22 @@
             ])!!}
         </div>
         {{-- نهاية العميل --}}
-        {{-- قيمة المشروع --}}
+
+        {{-- مركز التكلفه --}}
         <div class="form-group col-md-12 row">
-            <label class="col-md-2" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
-            <input style="right:29px" type="text" name="Prj_Value" id="Prj_Value" class="col-md-10 form-control">
+            <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
+
+            <div class="form-group">
+                <select style="right:29px" name="Costcntr_No" id="cc_type" class="col-md-10 form-control">
+                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                    @foreach($cc as $ccr)
+                        <option name="Costcntr_No" value="{{$ccr->Costcntr_No}}">{{$ccr->Costcntr_Nmar}}</option>
+                    @endforeach
+                </select>
+            </div>
+
         </div>
-        {{-- نهاية قيمة المشروع --}}
+        {{-- نهاية مركز التكلفه --}}
 
         {{-- العنوان --}}
         <div class="form-group col-md-12 row">
@@ -199,21 +211,7 @@
             {{-- نهاية الموبايل --}}
         </div>
 
-        {{-- مركز التكلفه --}}
-        <div class="form-group col-md-12 row">
-            <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
 
-            <div class="form-group">
-                <select style="right:29px" name="Costcntr_No" id="cc_type" class="col-md-10 form-control">
-                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                    @foreach($cc as $ccr)
-                        <option name="Costcntr_No" value="{{$ccr->Costcntr_No}}">{{$ccr->Costcntr_Nmar}}</option>
-                    @endforeach
-                </select>
-            </div>
-
-        </div>
-        {{-- نهاية مركز التكلفه --}}
 
         <hr>
         <div class="col-md-6">
@@ -378,8 +376,89 @@
             <div class="col-md-6"></div>
         </div>
 
-        {!! Form::close() !!}
 
+
+    </div>
+    <div role="tabpanel" class="tab-pane active" id="responsible_persons">
+        <div>
+            <div class="box-body">
+
+                @can('single')
+
+
+
+                    <div class="form-group row col-md-6">
+                        <div class="col-md-12" style="text-align: center;">
+                            {!!Form::label('Cntct_Prsn1', trans('admin.person_dep_1'))!!}
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn1', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
+
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn2', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                    </div>
+                    <div class="form-group row col-md-6">
+                        <div class="col-md-12" style="text-align: center;">
+                            {!!Form::label('TitL1', trans('admin.Title_1'))!!}
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL1', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL2', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+
+                    </div>
+                    <div class="form-group row col-md-6">
+                        <div class="col-md-12" style="text-align: center;">
+                            {!!Form::label('Mobile1', trans('admin.mobile_1'))!!}
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile1', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile2', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                    </div>
+                    <div class="form-group row col-md-6">
+                        <div class="col-md-12" style="text-align: center;">
+                            {!!Form::label('Email1', trans('admin.email_1'))!!}
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email1', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email2', null, ['class'=>'form-control'])!!}</div>
+                        </div>
+                    </div>
+
+
+            </div>
+
+
+            {{Form::close()}}
+            @else
+                <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
+
+            @endcan
+
+
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane active" id="movements">
+        <div class="row col-md-12">
+            {{-- رصيد اول المده مدين --}}
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                    <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
+                           class="form-control col-md-7">
+                </div>
+            </div>
+
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-6">
+                <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
+                <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
+                       class="form-control col-md-6">
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+        </div>
         {{-- الحركات --}}
         <div class="col-md-12">
             <table class="table table-striped">
@@ -562,66 +641,7 @@
         </div>
         {{-- نهاية الحركات --}}
     </div>
-    <div role="tabpanel" class="tab-pane active" id="responsible_persons">
-        <div>
-            <div class="box-body">
 
-                @can('single')
-
-
-
-                    <div class="form-group row col-md-6">
-                        <div class="col-md-12" style="text-align: center;">
-                            {!!Form::label('Cntct_Prsn1', trans('admin.person_dep_1'))!!}
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn1', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                        <div class="col-md-12">
-
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn2', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-md-6">
-                        <div class="col-md-12" style="text-align: center;">
-                            {!!Form::label('TitL1', trans('admin.Title_1'))!!}
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL1', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL2', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-
-                    </div>
-                    <div class="form-group row col-md-6">
-                        <div class="col-md-12" style="text-align: center;">
-                            {!!Form::label('Mobile1', trans('admin.mobile_1'))!!}
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile1', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile2', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-md-6">
-                        <div class="col-md-12" style="text-align: center;">
-                            {!!Form::label('Email1', trans('admin.email_1'))!!}
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email1', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email2', null, ['class'=>'form-control'])!!}</div>
-                        </div>
-                    </div>
-
-
-            </div>
-
-
-            {{Form::close()}}
-            @else
-                <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
-
-            @endcan
-
-
-        </div>
-    </div>
 </div>
 
 

@@ -95,7 +95,10 @@
 <ul class="nav nav-tabs" role="tablist"  style="margin-bottom: 15px;">
     <li role="tabpanel" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
     <li role="tabpane2"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
+    <li role="presentation"><a href="#movements" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.movements')}}</a></li>
+
 </ul>
+
 
 <!-- Tab panes -->
 
@@ -678,7 +681,6 @@
 
 
 
-            {{Form::close()}}
             @else
                 <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
 
@@ -687,13 +689,217 @@
 
     </div>
 </div>
+    <div role="tabpanel" class="tab-pane active" id="movements">
+        <div class="row col-md-12">
+            {{-- رصيد اول المده مدين --}}
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                    <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
+                           class="form-control col-md-7">
+                </div>
+            </div>
+
+
+            {{-- رصيد اول المده دائن --}}
+            <div class="col-md-6">
+                <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
+                <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
+                       class="form-control col-md-6">
+            </div>
+            {{-- نهاية رصيد اول المده دائن --}}
+        </div>
+        {{-- الحركات --}}
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">الشهر</th>
+                    <th scope="col">الحركة مدين</th>
+                    <th scope="col">الحركة دائن</th>
+                    <th scope="col">الرصيد الحالى</th>
+                    <th scope="col"> رصيد تقديرى</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <th scope="row">يناير</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">فبراير</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">مارس</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">ابريل</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">مايو</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">يونيو</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">يوليو</th>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">اغسطس</th>
+
+                    <td>
+                        0.0
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">سبتمبر</th>
+
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">أكتوبر</th>
+
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">نوفمبر</th>
+
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">ديسمبر</th>
+
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0.00
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+
+                <tr style="background-color: #d3d9df">
+                    <th scope="row">الإجمالى</th>
+
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        0
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        {{-- نهاية الحركات --}}
+    </div>
 
 
 
-{{-- form end --}}
+
+    {{-- form end --}}
 {!! Form::close() !!}
 <form action="{{route('projects.destroy', $chart_item->Prj_No? $chart_item->Prj_No : null)}}" method="POST" id="delete_form">
     {{csrf_field()}}
     {{method_field('DELETE')}}
 </form>
 
+</div>

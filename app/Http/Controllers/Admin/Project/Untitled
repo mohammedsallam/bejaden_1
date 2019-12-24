@@ -173,15 +173,15 @@ class ProjectController extends Controller
 ////            ---------------------------------------
 ///
 ///
-            $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first()->Costcntr_No;
-
+          //  dd($request->Costcntr_No);
+            $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first();
 
             $Mtscc = MtsCostcntr::create([
                 'Cmp_No'=>session('Chart_Cmp_No'),
                 'Level_Status'=> 1,
                 'Level_No'=> 2,
                 'Parnt_Acc'=> $request->Costcntr_No,
-                'Costcntr_No'=> $Costcntr_No +1,
+                'Costcntr_No'=> $this->createAccNo($request->Costcntr_No),
                 'Costcntr_Nmar'=>$request->Prj_NmAr,
                 'Costcntr_Nmen'=>$request->Prj_NmEn,
                 'Fbal_DB'=>$request->Fbal_DB,

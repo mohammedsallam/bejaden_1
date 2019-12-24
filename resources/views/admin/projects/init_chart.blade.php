@@ -279,6 +279,7 @@
                         <ul class="nav nav-tabs" role="tablist"  style="margin-bottom: 15px;">
                             <li role="presentation" class="active"><a href="#main_data" aria-controls="home" role="tab" data-toggle="tab">{{trans('admin.main_data')}}</a></li>
                             <li role="presentation"><a href="#responsible_persons" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.responsible_persons')}}</a></li>
+                            <li role="presentation"><a href="#movements" aria-controls="profile" role="tab" data-toggle="tab">{{trans('admin.movements')}}</a></li>
                         </ul>
 
                         <!-- Tab panes -->
@@ -294,7 +295,7 @@
 
                                 {{-- رقم المشروع --}}
                                 <label for="Prj_No" class="col-md-2">{{trans('admin.project_number')}}:</label>
-                                <input type="text" name="Prj_No" id="Prj_No" class="form-control col-md-3" value="{{$Prj_No}}">
+                                <input style="right: 20px ; margin-left: 77px;width: 152px;" type="text" name="Prj_No" id="Prj_No" class="form-control col-md-3" value="{{$Prj_No}}">
                                 {{-- رقم المشروع --}}
 
                                 {{-- تصنيف الحساب --}}
@@ -333,16 +334,15 @@
                                         </div>
                                         {{-- نهاية سنة المشروع --}}
 
-                                        {{-- العميل --}}
+                                        {{-- قيمة المشروع --}}
                                         <div class="col-md-12 branch">
                                             <div class="form-group row">
-                                                <label class="col-md-5" for="">{{trans('admin.subscriper')}}:</label>
-                                                {!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                                'class'=>'form-control col-md-7','placeholder'=>trans('admin.select')
-                                                ])!!}
+                                                <label class="col-md-5" for="Prj_Value">{{trans('admin.Prj_Value')}}:</label>
+                                                <input type="text" name="Prj_Value" id="Prj_Value" class="col-md-7 form-control">
                                             </div>
                                         </div>
-                                        {{-- نهاية العميل --}}
+                                        {{-- نهاية قيمة المشروع --}}
+
                                     </div>
 
                                 </div>
@@ -389,62 +389,64 @@
                                 {{-- اسم الحساب عربى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmAr">{{trans('admin.project_name')}}</label>
-                                    <input type="text" name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control">
+                                    <input style="right:29px" type="text" name="Prj_NmAr" id="Prj_NmAr" class="col-md-10 form-control">
                                 </div>
                                 {{-- نهاية اشم الحساب عربى --}}
 
                                 {{-- اسم الحساب انجليزى --}}
                                 <div class="form-group col-md-12 row">
                                     <label class="col-md-2" for="Prj_NmEn">{{trans('admin.project_name_en')}}</label>
-                                    <input type="text" name="Prj_NmEn" id="Prj_NmEn" class="col-md-10 form-control">
+                                    <input style="right:29px" type="text" name="Prj_NmEn" id="Prj_NmEn" class="col-md-10 form-control">
                                 </div>
                                 {{-- نهاية اسم الحساب انجليزى --}}
-
-                                {{-- قيمة المشروع --}}
+                                {{-- العميل --}}
                                 <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Value">{{trans('admin.Prj_Value')}}</label>
-                                    <input type="text" name="Prj_Value" id="Prj_Value" class="col-md-10 form-control">
+                                    <label class="col-md-2" for="">{{trans('admin.subscriper')}}:</label>
+                                    {!!Form::select('Cstm_No', $customers->pluck('Cstm_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                                    'class'=>'form-control col-md-10','style' => 'right:29px','placeholder'=>trans('admin.select')
+                                    ])!!}
                                 </div>
-                                {{-- نهاية قيمة المشروع --}}
-
-                                {{-- العنوان --}}
-                                <div class="form-group col-md-12 row">
-                                    <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}</label>
-                                    <input type="text" name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control">
-                                </div>
-                                {{-- نهاية العنوان --}}
-
-                                <div class="form-group row">
-                                    {{-- تليفون --}}
-                                    <div class="col-md-6 ">
-                                        <label class="col-md-4" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
-                                        <input type="text"  name="Prj_Tel" id="Prj_Tel" class="col-md-8 form-control">
-                                    </div>
-                                    {{-- نهاية التليفون --}}
-
-                                    {{-- الموبايل --}}
-                                    <div style="left:25px" class="col-md-6">
-                                        <label class="col-md-4" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
-                                        <input type="text"  name="Prj_Mobile" id="Prj_Mobile" class=" col-md-8 form-control" placeholder="010000 / 010001">
-                                    </div>
-                                    {{-- نهاية الموبايل --}}
-                                </div>
-
+                                {{-- نهاية العميل --}}
                                 {{-- مركز التكلفه --}}
                                 <div class="form-group col-md-12 row">
-                                    <label for="cc_type" class="col-md-2">{{trans('admin.with_cc')}}</label>
+                                    <label for="Costcntr_No" class="col-md-2">{{trans('admin.with_cc')}}</label>
 
                                     <div class="form-group">
-                                        <select name="cc_type" id="cc_type" class="col-md-10 form-control">
+                                        <select style="right:29px" name="Costcntr_No" id="cc_type" class="col-md-10 form-control">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
                                             @foreach($cc as $ccr)
-                                                <option name="cc_type" value="{{$ccr->ID_No}}">{{$ccr->Costcntr_Nmar}}</option>
+                                                <option name="Costcntr_No" value="{{$ccr->Costcntr_No}}">{{$ccr->Costcntr_Nmar}}</option>
                                             @endforeach
                                         </select>
                                     </div>
 
                                 </div>
                                 {{-- نهاية مركز التكلفه --}}
+
+                                <div class="form-group row">
+                                    {{-- تليفون --}}
+                                    <div class="col-md-6 ">
+                                        <label class="col-md-4" for="Prj_Tel">{{trans('admin.Prj_Tel')}}:</label>
+                                        <input style="right:29px" type="text" name="Prj_Tel" id="Prj_Tel" class="col-md-8 form-control">
+                                    </div>
+                                    {{-- نهاية التليفون --}}
+
+                                    {{-- الموبايل --}}
+                                    <div style="left:25px" class="col-md-6">
+                                        <label style="right:20px" class="col-md-4" for="Prj_Mobile">{{trans('admin.Prj_Mobile')}}:</label>
+                                        <input style="right:24px" type="text" name="Prj_Mobile" id="Prj_Mobile" class=" col-md-8 form-control" placeholder="010000 / 010001">
+                                    </div>
+                                    {{-- نهاية الموبايل --}}
+                                </div>
+                                {{-- العنوان --}}
+                                <div class="form-group col-md-12 row">
+                                    <label class="col-md-2" for="Prj_Adr">{{trans('admin.Prj_Adr')}}</label>
+                                    <input style="right:29px" type="text" name="Prj_Adr" id="Prj_Adr" class="col-md-10 form-control">
+                                </div>
+                                {{-- نهاية العنوان --}}
+
+
+
                                 <hr>
                                 <div class="col-md-6">
                                     <div class="row">
@@ -501,14 +503,7 @@
                                         {{-- نهاية حساب الايرادات للمشاريع --}}
 
 
-                                        {{-- رصيد اول المده مدين --}}
-                                        <div class="col-md-12 branch">
-                                            <div class="form-group row">
-                                                <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
-                                                <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
-                                                       class="form-control col-md-7">
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
 
@@ -586,14 +581,6 @@
                                         </div>
                                         {{-- نهاية قيمة التوريد --}}
 
-                                        {{-- رصيد اول المده دائن --}}
-                                        <div class="col-md-12 branch" style="top: 22px;">
-                                            <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
-                                            <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
-                                                   class="form-control col-md-6">
-                                        </div>
-                                        {{-- نهاية رصيد اول المده دائن --}}
-
 
                                     </div>
                                 </div>
@@ -604,6 +591,87 @@
 
                                 {!! Form::close() !!}
 
+                            </div>
+                            <div role="tabpanel" class="tab-pane active" id="responsible_persons">
+                                <div>
+                                    <div class="box-body">
+
+                                        @can('single')
+
+
+
+                                            <div class="form-group row col-md-6">
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    {!!Form::label('Cntct_Prsn1', trans('admin.person_dep_1'))!!}
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn1', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                                <div class="col-md-12">
+
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn2', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row col-md-6">
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    {!!Form::label('TitL1', trans('admin.Title_1'))!!}
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL1', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL2', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row col-md-6">
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    {!!Form::label('Mobile1', trans('admin.mobile_1'))!!}
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile1', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile2', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row col-md-6">
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    {!!Form::label('Email1', trans('admin.email_1'))!!}
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email1', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email2', null, ['class'=>'form-control'])!!}</div>
+                                                </div>
+                                            </div>
+
+
+                                    </div>
+
+
+{{--                                    {{Form::close()}}--}}
+                                    @else
+                                        <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
+
+                                    @endcan
+
+
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane active" id="movements">
+                                <div class="row col-md-12">
+                                    {{-- رصيد اول المده مدين --}}
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="Fbal_DB" class="col-md-5">{{trans('admin.first_date_debtor')}}</label>
+                                            <input type="text" name="Fbal_DB" id="Fbal_DB" value=''
+                                                   class="form-control col-md-7">
+                                        </div>
+                                    </div>
+
+
+                                    {{-- رصيد اول المده دائن --}}
+                                    <div class="col-md-6">
+                                        <label for="Fbal_CR" class="col-md-6">{{trans('admin.first_date_creditor')}}</label>
+                                        <input type="text" name="Fbal_CR" id="Fbal_CR" value=''
+                                               class="form-control col-md-6">
+                                    </div>
+                                    {{-- نهاية رصيد اول المده دائن --}}
+                                </div>
                                 {{-- الحركات --}}
                                 <div class="col-md-12">
                                     <table class="table table-striped">
@@ -786,253 +854,12 @@
                                 </div>
                                 {{-- نهاية الحركات --}}
                             </div>
-                            <div role="tabpanel" class="tab-pane active" id="responsible_persons">
-                                <div>
-                                    <div class="box-body">
-
-                                        @can('single')
-
-
-
-                                            <div class="form-group row col-md-6">
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    {!!Form::label('Cntct_Prsn1', trans('admin.person_dep_1'))!!}
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn1', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                                <div class="col-md-12">
-
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cntct_Prsn2', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row col-md-6">
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    {!!Form::label('TitL1', trans('admin.Title_1'))!!}
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL1', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('TitL2', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-
-                                            </div>
-                                            <div class="form-group row col-md-6">
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    {!!Form::label('Mobile1', trans('admin.mobile_1'))!!}
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile1', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Mobile2', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row col-md-6">
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    {!!Form::label('Email1', trans('admin.email_1'))!!}
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email1', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::email('Email2', null, ['class'=>'form-control'])!!}</div>
-                                                </div>
-                                            </div>
-
-
-                                    </div>
-
-
-                                    {{Form::close()}}
-                                    @else
-                                        <div class="alert alert-danger">{{trans('admin.you_cannt_see_invoice_because_you_dont_have_role_to_access')}}</div>
-
-                                    @endcan
-
-
-                                </div>
-                            </div>
                         </div>
 
 
-                        {!! Form::close() !!}
-                        {{-- الحركات --}}
-                            <div class="col-md-6">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col">الشهر</th>
-                                    <th scope="col">الحركة مدين</th>
-                                    <th scope="col">الحركة دائن</th>
-                                    <th scope="col">الرصيد الحالى</th>
-                                    <th scope="col"> رصيد تقديرى</th>
-                                </tr>
-                                </thead>
-                                <tbody>
 
-                                <tr>
-                                    <th scope="row">يناير</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">فبراير</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">مارس</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">ابريل</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">مايو</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">يونيو</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">يوليو</th>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">اغسطس</th>
-
-                                    <td>
-                                        0.0
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">سبتمبر</th>
-
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">أكتوبر</th>
-
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">نوفمبر</th>
-
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">ديسمبر</th>
-
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0.00
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-
-                                <tr style="background-color: #d3d9df">
-                                    <th scope="row">الإجمالى</th>
-
-                                    <td>
-                                        0
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
-
-                    {{-- نهاية الحركات --}}
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
