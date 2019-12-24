@@ -81,7 +81,7 @@
     <div style="float:left;font-weight:bold;width:50%;text-align:left">{{\App\Models\Admin\MainCompany::where('Cmp_No', $gl->Cmp_No)->pluck('Cmp_NmEn')->first()}}</div>
 </div>
 <div style="text-align:center">
-    {{\App\Models\Admin\MainCompany::where('Cmp_No', $gl->Cmp_No)->pluck('Picture')->first()}}
+    {{-- {{\App\Models\Admin\MainCompany::where('Cmp_No', $gl->Cmp_No)->pluck('Picture')->first()}} --}}
     <img src="{{asset('public/storage/companies/logo.png')}}" style="max-width:100px;margin:15px 0">
 </div>
 
@@ -115,7 +115,8 @@
                         <th>{{trans('admin.account_number')}}</th>
                         <th>{{trans('admin.account_name')}}</th>
                     </tr>
-                    <div class="hidden">{{ $i = 1 }}
+                    <div class="hidden">
+                        {{-- {{ $i = 1 }} --}}
                         {{$balance = 0}}
                         {{$dataDebtor = 0}}
                         {{$dataCredit = 0}}
@@ -123,7 +124,8 @@
                     @foreach($gltrns as $trns)
                         <tr>
                             <td>
-                                {{$i++}}
+                                {{$trns->Ln_No}}
+                                {{-- {{$i++}} --}}
                             </td>
                             <td>
                                 {{$trns->Acc_No}}
@@ -164,7 +166,7 @@
                     @endforeach
                     <tr>
                         <td>
-                            {{$i++}}
+                            {{-- {{$i++}} --}}
                         </td>
                         <td>
                             {{$trns->Sysub_Account}}
@@ -186,13 +188,13 @@
                                     @endif
                                 </td>
                                 <td>
+                                    {{$trns->Tr_Ds}}
+                                </td>
+                                <td>
                                     {{$trns->Tr_Db}}
                                 </td>
                                 <td>
                                     {{$trns->Tr_Cr}}
-                                </td>
-                                <td>
-                                    {{$trns->Tr_Ds}}
                                 </td>
                             @endif
                         </td>
@@ -212,8 +214,8 @@
 
                     <tr>
                         <th colspan="5" class="th-empty">{{trans('admin.Total_motion')}}</th>
-                        {{-- <th>{{$data->sum('debtor') + $receiptsData->debtor}}</th>
-                        <th>{{$data->sum('creditor') + $receiptsData->creditor}}</th> --}}
+                        <th>{{$gl->Tot_Amunt}}</th>
+                        <th>{{$gl->Tot_Amunt}}</th>
                     </tr>
                 </table>
             </div>

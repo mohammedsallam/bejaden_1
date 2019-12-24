@@ -11,7 +11,7 @@
             {!! Form::model($admin,['method'=>'PUT','route' => ['admins.update',$admin->id],'files'=>true]) !!}
             <div class="form-group">
                 {{ Form::label('admin.Branches', trans('admin.Branches') , ['class' => 'control-label']) }}
-                {{ Form::select('branches_id', $branches,$admin->branches_id, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+                {{ Form::select('branches_id', $branch,$admin->branches_id, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
             </div>
             <div class="form-group">
                 {{ Form::label( trans('admin.name'), null, ['class' => 'control-label']) }}
