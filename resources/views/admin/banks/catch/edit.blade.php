@@ -138,6 +138,7 @@
                     for (var j = 0; j < table.rows[i].cells.length; j++)
                     table.rows[i].onclick = function () {
                         tableText(this);
+                        this.parentNode.removeChild(this);
                     };
                 }
             }
@@ -249,7 +250,7 @@
                         if(response.success == true){
                             $('#table').append(`
                                 <tr>
-                                    <td>`+$('#Tr_No').val()+`</td>
+                                    <td>`+Ln_No+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
                                     <td>0.00</td>
