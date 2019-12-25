@@ -97,7 +97,6 @@ class ReceiptCatchController extends Controller
                 'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
                 'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
                 'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
@@ -118,10 +117,8 @@ class ReceiptCatchController extends Controller
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $catch_data[$last_index]->Sysub_Account;}
             $header->save();
-    
-        }
 
-        if($request->catch_data){
+
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -176,13 +173,15 @@ class ReceiptCatchController extends Controller
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
+                    'Salman_No' => $data->Salman_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
             }
-        } 
-        
+    
+        }
+
     }
 
     /**
@@ -220,6 +219,7 @@ class ReceiptCatchController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
+        // $salesman = AstSalesman::where('Slm_No', $gl->Salman_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -241,7 +241,10 @@ class ReceiptCatchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+    }
+
+    public function updateTrns(Request $request){
+        dd('update');
     }
 
     /**
@@ -504,12 +507,15 @@ class ReceiptCatchController extends Controller
             $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
                             ->where('Tr_No', $request->Tr_No)
                             ->first();
-            $request = new Request;
-            $request->Acc_Ty = $trns->Ac_Ty;
-            $request->Cmp_No = $trns->Cmp_No;
-            $request->Brn_No = $trns->Brn_No;
-            $subAccs = $this->getSubAcc($request);
+
+            $new_request = new Request;
+            $new_request->Acc_Ty = $trns->Ac_Ty;
+            $new_request->Cmp_No = $trns->Cmp_No;
+            $new_request->Brn_No = $trns->Brn_No;
+            $subAccs = $this->getSubAcc($new_request);
+
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+
             return view('admin.banks.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
     }

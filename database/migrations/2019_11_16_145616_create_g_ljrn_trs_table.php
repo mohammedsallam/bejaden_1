@@ -46,6 +46,7 @@ class CreateGLjrnTrsTable extends Migration
             $table->integer('Acc_Type')->nullable();//
             $table->float('Rcpt_Value')->nullable();//
             $table->float('RetPur_Sal')->nullable();//
+            $table->integer('Salman_No')->nullable();//مندوب المبيعات
             $table->timestamps();
         });
     }
