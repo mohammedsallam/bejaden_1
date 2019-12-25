@@ -185,9 +185,8 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
-
                 Ln_No = Ln_No + 1;
-
+                
                 $.ajax({
                     url: "{{route('validateCache')}}",
                     type: "post",
@@ -226,7 +225,7 @@
                         if(response.success == true){
                             $('#table').append(`
                                 <tr>
-                                    <td>`+$('#Tr_No').val()+`</td>
+                                    <td>`+Ln_No+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
                                     <td>0.00</td>
@@ -235,7 +234,7 @@
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
                                 </tr>`);
-                        
+
                             var item = {
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
