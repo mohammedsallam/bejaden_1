@@ -14,12 +14,27 @@
     @include('admin.layouts.message')
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-header">
-                    <h4>{{trans('admin.company_data')}}</h3>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        {{trans('admin.company_data')}}
+                    </div>
                 </div>
                 <div class="row">
                     <div class="panel-body">
+                        {{-- نوع النشاط --}}
+                        <div class="col-md-12">
+                            <label for="Actvty_No">{{trans('admin.activity_type')}}</label>
+                            <select name="Actvty_No" id="Actvty_No" class="form-control">
+                                <option value="{{null}}">{{trans('admin.select')}}</option>
+                                @if(count($acts) > 0)  
+                                    @foreach($acts as $act)
+                                        <option value="{{$act->Actvty_No}}" @if($act->Actvty_No == $cmp->Actvty_No) selected @endif>{{$act->{'Name_'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        {{-- نهاية نوع النشاط --}}
                         {{-- رقم الشركه --}}
                         <div class="col-md-4">
                             <div class="form-group">
@@ -153,7 +168,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-body">
                     {{-- بدايه و نهاية السنه الماليه ميلادى و هجرى --}}
                     <div class="row">
@@ -222,7 +237,7 @@
             </div>
             
             {{-- مستندات الشركه --}}
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-body">  
                     <div class="row">
                         <div class="col-md-2">
@@ -260,7 +275,7 @@
             </div>
             {{-- نهاية مستندات الشركه --}}
 
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-body">
                     <div class="row">
                         @foreach(\App\Enums\OptionsType::toArray() as $index => $flag)

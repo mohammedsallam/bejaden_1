@@ -18,6 +18,7 @@ class CreateMainBranchesTable extends Migration
             $table->integer('Cmp_No')->nullable()->index(); //رقم الشركه
             $table->foreign('Cmp_No')->references('Cmp_No')->on('maincompany')->onDelete('cascade');
             $table->integer('Brn_No')->nullable(); //رقم الفرع
+            $table->integr('Cmp_Actvty_No')->nullable(); //طبيعة النشاط
             $table->integer('Main_Brn')->nullable(); //الفرع الرئيسى
             $table->integer('Dlv_Stor')->nullable();//مستودع التسليم للفرع
             $table->boolean('Actvty_No')->nullable();//الفرع فعال - غير فعال

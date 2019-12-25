@@ -34,23 +34,31 @@
     <div class="login-logo">
         <a href="../../index2.html"><b>Info</b>SAS</a>
     </div>
+
 @include('admin.layouts.message')
 
     <!-- /.login-logo -->
     <div class="login-box-body">
         {!! Form::open(['method'=>'post','action'=>'Admin\AdminAuth@dologin']) !!}
             <div class="form-group has-feedback">
+                <label for="Actvty_No">{{trans('admin.activity_type')}}</label>
+                <select name="Actvty_No" id="Actvty_No" class="form-control">
+                    <option value="">{{trans('admin.select')}}</option>
+                    @if(count($acts) > 0)
+                        <option value={{-1}}>{{trans('admin.allactivities')}}</option>
+                        @foreach($acts as $act)
+                            <option value="{{$act->Actvty_No}}">{{$act->{'Name_'.ucfirst(session('lang'))} }}</option>
+                        @endforeach
+                    @else
+                        <option value={{-1}}>{{trans('admin.allactivities')}}</option>
+                    @endif
+                </select>
+            </div>
+            <div class="form-group has-feedback">
                 <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>
                 <select name="Cmp_No" id="Cmp_No" class="form-control">
                     <option value="">{{trans('admin.select')}}</option>
-                    @if(count($companies) > 0)
-                        <option value={{-1}}>{{trans('admin.allCompanies')}}</option>
-                        @foreach($companies as $cmp)
-                            <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                        @endforeach
-                    @else
-                        <option value={{-1}}>{{trans('admin.allCompanies')}}</option>
-                    @endif
+                    <option value={{-1}}>{{trans('admin.allCompanies')}}</option>
                 </select>
             </div>
             <div class="form-group has-feedback">
@@ -92,11 +100,24 @@
 <!-- iCheck -->
 <script src="{{url('/')}}/adminlte/plugins/iCheck/icheck.min.js"></script>
 <script>
-    $(function () {
+
+    $(document).ready(function(){
         $('input').iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%' /* optional */
+        });
+
+        $('#Actvty_No').change(function(){
+            $.ajax({
+                url: "{{route('getCompanies')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Actvty_No: $(this).val() },
+                success: function(data){
+                    $('#Cmp_No').html(data);
+                }
+            });
         });
     });
 </script>

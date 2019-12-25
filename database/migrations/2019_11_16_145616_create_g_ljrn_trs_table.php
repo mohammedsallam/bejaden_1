@@ -18,6 +18,7 @@ class CreateGLjrnTrsTable extends Migration
             $table->integer('Cmp_No')->nullable();//الشركه
             $table->integer('Brn_No')->nullable();//الفروع
             $table->integer('Jr_Ty')->nullable(); //نوع القيد TransactionType Enum
+            $table->enum('noti_Ty', [1,2])->nullable(); //نوع الاشعار
             $table->bigInteger('Tr_No')->nullable();//رقم القيد
             $table->integer('Ln_No')->nullable();//سطر
             $table->integer('Month_No')->nullable();//رقم الشهر

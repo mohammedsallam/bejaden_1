@@ -9,7 +9,7 @@
             $(".remove-record-model").attr("action",url);
             $('body').find('.remove-record-model').append('<input name="_token" type="hidden" value="'+ token +'">');
             $('body').find('.remove-record-model').append('<input name="_method" type="hidden" value="DELETE">');
-            $('body').find('.remove-record-model').append('<input name="id" type="hidden" value="'+ id +'">');
+            $('body').find('.remove-record-model').append('<input name="id" type="hidden" value="'+ ID_No +'">');
         });
 
         $('.remove-data-from-delete-form').click(function() {

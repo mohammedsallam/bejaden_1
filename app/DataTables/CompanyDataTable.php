@@ -35,7 +35,12 @@ class CompanyDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return MainCompany::all();
+        if(session('Actvty_No') == -1){
+            return MainCompany::all();
+        }
+        else{
+            return MainCompany::where('Actvty_No', session('Actvty_No'));
+        }
     }
 
     public static function lang(){

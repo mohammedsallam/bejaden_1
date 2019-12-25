@@ -48,7 +48,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="panel panel-default">
+                        <div class="panel panel-primary">
                             <div class="panel-body">
                                 <div class="row">
                                     {{-- رقم الفرع --}}
@@ -182,7 +182,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="panel panel-default">
+                        <div class="panel panel-primary">
                             {{-- checkboxes --}}
                             <div class="panel-body">
                                 <div class="row">
@@ -253,8 +253,12 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading"><strong>{{trans('admin.accounting')}}</strong></div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    {{trans('admin.accounting')}}
+                                </div>
+                            </div>
                             <div class="panel-body">
                                 <div class="row">
                                     {{-- المبيعات و المشتريات --}}

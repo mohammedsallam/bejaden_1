@@ -6,6 +6,7 @@ use App\activities;
 use App\DataTables\ActivitiesDataTable;
 use App\subscription;
 use App\Models\Admin\AstNutrbusn;
+use App\Models\Admin\activitytypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,6 +19,9 @@ class ActivitiesController extends Controller
      */
     public function index(ActivitiesDataTable $activities)
     {
+        $id = activitytypes::where('Name_Ar','=',null)->orWhere('Name_Ar','=','')->pluck('ID_No');
+        DB::table('activitytypes')->where('Name_En',null)->where('Name_Ar',null)->orWhere('Name_Ar','=','')->delete();
+
         return $activities->render('admin.activities.index',['title'=>trans('admin.types_of_activities')]);
     }
 
@@ -29,13 +33,14 @@ class ActivitiesController extends Controller
     public function create()
     {
 
-        $last = AstNutrbusn::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
+        $last = activitytypes::orderBy('Actvty_No', 'desc')->latest()->first(); //latest record
 
         if(!empty($last) || $last || $last < 0){
-            $last = $last->Nutr_No+1;
+            $last = $last->Actvty_No+1;
         }else{
             $last =  1;
         }
+
         return view('admin.activities.create',['title'=> trans('admin.add_type_of_activitie')], compact('last'));
     }
 
@@ -48,13 +53,11 @@ class ActivitiesController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request,[
-            'Nutr_No'  =>'sometimes',
-            'Short_Arb'=>'sometimes',
-            'Short_Eng'=>'sometimes',
-            'Nutr_NmAr'=>'required',
-            'Nutr_NmEn'=>'required',
+            'Actvty_No'  =>'sometimes',
+            'Name_Ar'=>'required',
+            'Name_En'=>'required',
         ]);
-        AstNutrbusn::create($data);
+        $act = activitytypes::create($data);
         return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_add')));
     }
 
@@ -64,10 +67,10 @@ class ActivitiesController extends Controller
      * @param  \App\activities  $activities
      * @return \Illuminate\Http\Response
      */
-    public function show($ID_No)
+    public function show($id)
     {
-        $activities= AstNutrbusn::findOrFail($ID_No);
-        return view('admin.activities.show',compact('activities'));
+        $act= activitytypes::findOrFail($id);
+        return view('admin.activities.show',compact('act'));
     }
 
     /**
@@ -78,8 +81,8 @@ class ActivitiesController extends Controller
      */
     public function edit($id)
     {
-        $activitie  = AstNutrbusn::where('ID_No',$id)->first();
-        return view('admin.activities.edit',['title'=> trans('admin.edit_type_of_activitie'),'activitie'=>$activitie]);
+        $act= activitytypes::findOrFail($id);
+        return view('admin.activities.edit',['title'=> trans('admin.edit_type_of_activitie'),'act'=>$act]);
     }
 
     /**
@@ -90,21 +93,15 @@ class ActivitiesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-
     {
+        $data = $this->validate($request,[
+            'Actvty_No'  =>'sometimes',
+            'Name_Ar'=>'required',
+            'Name_En'=>'required',
+        ]);
 
-        $activitie  = AstNutrbusn::where('ID_No',$id)->first();
-
-          $activitie->Nutr_No= $request->Nutr_No;
-          $activitie->Short_Arb = $request->Short_Arb;
-          $activitie->Short_Eng = $request->Short_Eng;
-          $activitie->Nutr_NmAr  = $request->Nutr_NmAr;
-          $activitie->Nutr_NmEn = $request->Nutr_NmEn;
-
-
-          $activitie->save();
-
-
+        $act  = activitytypes::where('ID_No',$id)->first();
+        $act->update($data);
         return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_update')));
     }
 
@@ -116,7 +113,7 @@ class ActivitiesController extends Controller
      */
     public function destroy($id)
     {
-        $activitie  = AstNutrbusn::where('ID_No',$id);
+        $activitie  = activitytypes::where('ID_No',$id);
         //subscription::where('AstNutrbusn_id',$id)->update(['AstNutrbusn_id'=>null]);
         $activitie->delete();
         return redirect(aurl('activities'));

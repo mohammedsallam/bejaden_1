@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\MainBranch;
+use App\Models\Admin\ActivityTypes;
 
 class AdminAuth extends Controller
 {
@@ -22,7 +23,7 @@ class AdminAuth extends Controller
      */
     public function __construct()
     {
-        $this->middleware('admin')->except('a_logout');
+        $this->middleware('admin')->except('a_logout', 'getCompanies');
     }
 
     public function login( Request $request){
@@ -95,16 +96,18 @@ class AdminAuth extends Controller
             \Artisan::call('config:clear');
         }
 
-        //return selectComp blade with a list of all companies to enable user to select a company
+        //return a list of all company actitvity types to enable user to select
+        $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
         $companies = MainCompany::get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))]);
-        return view('admin.login', compact('companies'));
+        return view('admin.login', compact('companies', 'acts'));
     }
 
     public function dologin(Request $request){
-        if($request->Cmp_No === null){
+        if($request->Cmp_No === null || $request->Actvty_No == null){
             return redirect(aurl('/'))->with(session()->flash('message', trans('admin.select_cmp')));
         }
         session(['Cmp_No' => $request->Cmp_No]);
+        session(['Actvty_No' => $request->Actvty_No]);
 
         $rememberme = $request->remmberme == 1 ? true : false;
         if (admin()->attempt(['email'=>$request->email,'password'=>$request->password],$rememberme)){
@@ -161,6 +164,19 @@ class AdminAuth extends Controller
             return redirect('admin');
         }else{
             return redirect(aurl('forget/password'));
+        }
+    }
+
+    public function getCompanies(Request $request){
+        if($request->ajax()){
+            if($request->Actvty_No == -1){
+                $companies = MainCompany::get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))]);
+                return view('admin.companies', compact('companies'));
+            }
+            else{
+                $companies = MainCompany::where('Actvty_No', $request->Actvty_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))]);
+                return view('admin.companies', compact('companies'));
+            }
         }
     }
 

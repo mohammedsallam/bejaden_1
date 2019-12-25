@@ -8,6 +8,7 @@ use App\Models\Admin\MainCompany;
 use Up;
 use App\DataTables\CompanyDataTable;
 use Illuminate\Support\Facades\DB;
+use App\Models\Admin\ActivityTypes;
 
 class CompaniesController extends Controller
 {
@@ -53,8 +54,8 @@ class CompaniesController extends Controller
         if (!empty($company)){
             $company->Cmp_No = $Cmp_No;
             $company->save();
-            return redirect(aurl('companies/' . $company->ID_No . '/edit'));
         }
+        return redirect(aurl('companies/' . $company->ID_No . '/edit'));
     }
 
     /**
@@ -88,7 +89,12 @@ class CompaniesController extends Controller
     public function edit($id)
     {
         $cmp = MainCompany::where('ID_No', $id)->first();
-        return view('admin.companies.create',['title'=> trans('admin.company_fixed_data')])->with('cmp', $cmp);
+
+        $id = ActivityTypes::where('Name_Ar','=',null)->orWhere('Name_Ar','=','')->pluck('ID_No');
+        DB::table('activitytypes')->where('Name_En',null)->where('Name_En',null)->orWhere('Name_Ar','=','')->delete();
+        $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
+
+        return view('admin.companies.create',['title'=> trans('admin.company_fixed_data'), 'cmp' => $cmp, 'acts' => $acts]);
     }
 
     /**
@@ -104,6 +110,7 @@ class CompaniesController extends Controller
 
         //ثوابت الشركه
         $data = $this->validate($request,[
+            'Actvty_No' => 'required',
             'Local_Lang' => 'required',
             'Cmp_NmAr' => 'required',
             'Cmp_NmEn' => 'required',
@@ -111,6 +118,7 @@ class CompaniesController extends Controller
             'Cmp_Tel' => 'required',
            
         ],[],[
+            'Actvty_No' => trans('admin.activity_type'),
             'Local_Lang' => trans('admin.main_lang'),
             'Cmp_NmAr' => trans('admin.arabic_name'),
             'Cmp_NmEn' => trans('admin.english_name'),
@@ -128,7 +136,8 @@ class CompaniesController extends Controller
                 'delete_file'=> $cmp->Picture
             ]);   
         }
-        
+
+        $cmp->Actvty_No = $request->Actvty_No;
         $cmp->Local_Lang = $request->Local_Lang;
         $cmp->Cmp_AddAr = $request->Cmp_AddAr;
         $cmp->Sys_SetupNo = $request->Sys_SetupNo;
