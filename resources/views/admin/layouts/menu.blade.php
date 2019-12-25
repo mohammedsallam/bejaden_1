@@ -323,7 +323,7 @@
                     <li><a href="{{url('admin/limitations/notice/noticedebt')}}"><i class="fa fa-circle-o"></i>{{trans('admin.debt_limitations')}}</a></li>
                     {{-- <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li> --}}
                     <li><a href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a></li>
-                    <li><a href="{{url('/admin/banks/Receipt/receipts/caching/all')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>
+                    <li><a href="{{route('receiptCash.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>
                     <li><a href="{{url('/admin/limitations/dept/create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_debt_limitations')}} </a></li>
                 </ul>
             </li>

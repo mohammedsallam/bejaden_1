@@ -234,6 +234,19 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('branchForEdit','Admin\banks\ReceiptCatchController@branchForEdit')->name('branchForEdit');
         Route::post('getRcptDetails','Admin\banks\ReceiptCatchController@getRcptDetails')->name('getRcptDetails');
 
+        Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
+        Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
+        Route::post('getSalesManC', 'Admin\Cash\receiptCashController@getSalesMan')->name('getSalesManC');
+        Route::post('createTrNoC', 'Admin\Cash\receiptCashController@createTrNo')->name('createTrNoC');
+        Route::post('getSubAccC', 'Admin\Cash\receiptCashController@getSubAcc')->name('getSubAccC');
+        Route::post('getMainAccNoC', 'Admin\Cash\receiptCashController@getMainAccNo')->name('getMainAccNoC');
+        Route::post('getTaxValueC', 'Admin\Cash\receiptCashController@getTaxValue')->name('getTaxValueC');
+        Route::post('validateCacheC', 'Admin\Cash\receiptCashController@validateCache')->name('validateCacheC');
+        Route::post('getCatchRecptC', 'Admin\Cash\receiptCashController@getCatchRecpt')->name('getCatchRecptC');
+        Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
+        Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
+        Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');
+
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
