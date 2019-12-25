@@ -6,7 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\AstNutrbusn')
+@inject('activities', 'App\Models\Admin\ActivityTypes')
 @inject('countries', 'App\country')
 @inject('cities', 'App\city')
 @section('title',trans('admin.show_profile_to') .session_lang($subscriber->Cstm_NmEr,$subscriber->Cstm_NmAr))
@@ -32,7 +32,7 @@
 @endpush
 
 
-        <div class="row">
+    <div class="row">
 
         <div>
           <!-- Nav tabs -->
@@ -55,22 +55,22 @@
 
                 <div class="col-md-6">
 
-                <div class="form-group row col-md-12">
+                <div class="form-group row">
 
-                    <div class="form-group">
-                        <div class="col-md-2" style="margin-right: -38px;left: -21px;">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
                         @if(auth()->user()->company_id == '-1')
-                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::select('Cmp_No', $companies->pluck('Cmp_ShrtNm', 'ID_NO')->toArray(),null,[
+                        <div class="col-md-10">{!!Form::select('Cmp_No', $companies->pluck('Cmp_ShrtNm', 'ID_NO')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select'),'readonly'=>'true'
                         ])!!}</div>
                         @else
-                            <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::text('Cmp_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                            <div class="col-md-10">{!!Form::text('Cmp_No', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                         @endif
                     </div>
 
-                    <div class="form-group">
-                        <div class="col-md-2" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 38px;">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
+                        <div class="col-md-10">
                             <select class="form-control" name="Brn_No" id="branches" readonly>
                                <option>{{trans('admin.select')}}</option>
                            </select>
@@ -80,79 +80,76 @@
 
                 </div>
                 <div class="form-group row">
-                    <div class="form-group row col-md-6">
-                        <div class="col-md-3">
-                            {!!Form::label('Cstm_No', trans('admin.subscriber_no'))!!}
-                        </div>
-                        <div class="col-md-9">
-                            <input type="text" disabled name="Cstm_No" value="{{$last_no}}">
-                        </div>
-
+                    <div class="form-group col-md-6">
+                        <div class="col-md-3">{!!Form::label('Cstm_No', trans('admin.subscriber_no'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_No', old('Cstm_No'), ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
                     </div>
 
                     <div class="form-group col-md-6">
-                        <div class="col-md-3" style="margin-right: -22px;">{!!Form::label('Cstm_Refno', trans('admin.customer_Ref_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_Refno', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Refno', trans('admin.customer_Ref_no'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_Refno', old('Cstm_Refno'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
 
                 </div>
-                <div class="form-group row col-md-12">
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_NmAr', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                <div class="form-group row">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_NmAr', old('Cstm_NmAr'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_NmEn', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_NmEn', old('Cstm_NmEn'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_Email', trans('admin.email'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_Email', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_Email', trans('admin.email'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_Email', old('Cstm_Email'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_Adr', trans('admin.address'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_Adr', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_Adr', trans('admin.address'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_Adr', old('Cstm_Adr'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
 
                     </div>
                 </div>
-                <div class="row col-md-12">
+                <div class="form-group row">
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -26px;">{!!Form::label('Cstm_POBox', trans('admin.mail_box'))!!}</div>
-                        <div class="col-md-9">{!!Form::text('Cstm_POBox', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_POBox', trans('admin.mail_box'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_POBox', old('Cstm_POBox'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-2" style="margin-right: -29px; left: 16px;">{!!Form::label('Cstm_ZipCode', trans('admin.mail_area'))!!}</div>
-                        <div class="col-md-9">{!!Form::text('Cstm_ZipCode', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_ZipCode', trans('admin.mail_area'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_ZipCode', old('Cstm_ZipCode'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
                 </div>
-                <div class="row col-md-12">
+                <div class="form-group row">
 
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -26px;">{!!Form::label('Cstm_Tel', trans('admin.tel'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_Tel', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Tel', trans('admin.tel'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_Tel', old('Cstm_Tel'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -45px;">{!!Form::label('Cstm_Fax', trans('admin.fax'))!!}</div>
-                        <div class="col-md-9">{!!Form::text('Cstm_Fax', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Fax', trans('admin.fax'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_Fax', old('Cstm_Fax'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
                 </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -54px; left: -27px;">{!!Form::label('Tel1', trans('admin.tel_1'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel1', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-2">{!!Form::label('Tel1', trans('admin.tel_1'))!!}</div>
+                            <div class="col-md-10">{!!Form::text('Tel1', old('Tel1'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="col-md-2">{!!Form::label('Tel2', trans('admin.mobile'))!!}</div>
+                            <div class="col-md-10">{!!Form::text('Tel2', old('Tel2'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                        </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -54px;left: -27px;">{!!Form::label('Tel2', trans('admin.mobile'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel2', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
-                    </div>
-                <div class="row col-md-8">
-                    <div class="col-md-12">
-                        <div class="col-md-3" style="margin-right: -43px;left: -19px;">{!!Form::label('Credit_Value', trans('admin.credit_value'))!!}</div>
-                        <div class="col-md-9">{!!Form::text('Credit_Value', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                <div class="form-group row col-md-8">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-3">{!!Form::label('Credit_Value', trans('admin.credit_value'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Credit_Value', old('Credit_Value'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
 
-                    <div class="col-md-12">
-                        <div class="col-md-3" style="margin-right: -43px;left: -19px;">{!!Form::label('Credit_Days', trans('admin.credit_days'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Credit_Days', null, ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-3">{!!Form::label('Credit_Days', trans('admin.credit_days'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Credit_Days', old('Credit_Days'), ['class'=>'form-control' ,'readonly'=>'true'])!!}</div>
                     </div>
                 </div>
                 <div class="row col-md-4">
@@ -176,10 +173,10 @@
                 </div>
 
 
-                <div class="form-group row col-md-12">
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -48px;left: -19px;">{!!Form::label('Notes', trans('admin.Notes'))!!}</div>
-                        <div class="col-md-10">{!!Form::textarea('Notes', null, ['class'=>'form-control', 'rows' => 4, 'cols' => 54 ,'readonly'=>'true'])!!}</div>
+                <div class="form-group row">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Notes', trans('admin.Notes'))!!}</div>
+                        <div class="col-md-10">{!!Form::textarea('Notes', old('Notes'), ['class'=>'form-control', 'rows' => 4, 'cols' => 54 ,'readonly'=>'true'])!!}</div>
                     </div>
                 </div>
 
@@ -192,7 +189,7 @@
                         <div class="col-md-3" style="left: 11px;">{!!Form::label('Cntry_No', trans('admin.country'))!!}</div>
                         <div class="col-md-9" style="margin-bottom: 10px;">
                             @if($subscriber->Cntry_No==null)
-                                {!! Form::text('Cntry_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                                {!! Form::text('Cntry_No', old('Cntry_No'), ['class' =>'form-control', 'readonly'=>'true']) !!}
 
                             @else
                             {!! Form::text('Cntry_No', $subscriber->country->country_name_ar, ['class' =>'form-control', 'readonly'=>'true']) !!}
@@ -202,16 +199,14 @@
                     <div class="col-md-12">
                         <div class="col-md-3" style="padding: 3px">{!!Form::label('City_No', trans('admin.city'))!!}</div>
                         <div class="col-md-9"  style="margin-bottom: 10px;">
-                           <select class="form-control" name="City_No" id="cities" readonly>
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
+                            {!! Form::text('City_No', old('City_No'), ['class' =>'form-control', 'readonly'=>'true']) !!}
 
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="padding: 1px;">{!!Form::label('Area_No', trans('admin.area'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;"><select class="form-control" name="Area_No" id="area" readonly>
-                        </select></div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            {!! Form::text('Area_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}</div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Slm_No', trans('admin.slm_no'))!!}</div>
@@ -242,7 +237,7 @@
                                 {!! Form::text('Nutr_No', null, ['class' =>'form-control', 'readonly'=>'true']) !!}
 
                             @else
-                                {!! Form::text('Nutr_No', $subscriber->activity->Nutr_NmAr, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                                {!! Form::text('Nutr_No', $subscriber->activity->Name_Ar, ['class' =>'form-control', 'readonly'=>'true']) !!}
                             @endif
                         </div>
                     </div>
@@ -729,16 +724,8 @@
 
         </div>
             </div>
-           </div>
+          </div>
 
    </div>
 </div>
-    </div>
-          </div>
-
-        </div>
-
-
-
-
 @endsection

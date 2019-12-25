@@ -9,8 +9,12 @@ use App\country;
 use App\DataTables\subcriberDataTable;
 use App\Department;
 use App\employee;
+use App\Http\Controllers\Admin\Country\CountryController;
+use App\Models\Admin\Astsupctg;
+use App\Models\Admin\MainCompany;
 use App\Models\Admin\MTsCustomer;
 use App\Models\Admin\MainBranch;
+use App\Models\Admin\ActivityTypes;
 
 use App\Enums\TypeType;
 use App\glcc;
@@ -40,20 +44,19 @@ class SubscribeController extends Controller
 
     public function create()
     {
-        // $branches = Branches::pluck('name_'.session('lang'),'id');
-        // $departments = Department::where('operation_id',2)->where('type','1')->pluck('dep_name_'.session('lang'),'id');
-        // $countries = country::pluck('country_name_'.session('lang'),'id');
-        // $cities = city::pluck('city_name_'.session('lang'),'id');
-        // $states = state::pluck('state_name_'.session('lang'),'id');
-        // $employees = employee::where('sales_officer',1)->pluck('name_'.session('lang'),'id');
-        // $glccs = glcc::where('type','=','1')->pluck('name_'.session('lang'),'id');
-        // $activity_type = activity_type::pluck('name_'.session('lang'),'id');
+      //  $countries = country::pluck('country_name_'.session('lang'),'id');
+        $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
+        $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
+        $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
+        //$companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
+        $countries = country::pluck('country_name_ar','id');
 
         // return view('admin.subscribers.create1',
         //             ['title'=>trans('admin.create_new_subscriber'),'states'=>$states,'branches'=>$branches,'departments'=>$departments,'countries'=>$countries,'cities'=>$cities,'employees'=>$employees,'activity_type'=>$activity_type,'glccs'=>$glccs]);
 
+        $br = MainBranch::orderBy('ID_No', 'DESC')->first()->ID_No;
         $subscriber = MTsCustomer::get();
-        return view('admin.subscribers.create1', compact('subscriber'));
+        return view('admin.subscribers.create1', compact('subscriber'),['astsupctg' => $astsupctg,'countries' => $countries,'branches' => $branches, 'activities'=>$activities, 'br'=>$br]);
     }
 
     /**
@@ -142,10 +145,12 @@ class SubscribeController extends Controller
 
         ]);
 
+
         //$input = $request->all();
         $sub = new MTsCustomer();
+
         $sub->Cmp_No = $request->Cmp_No;
-        //$sub->Cstm_No = $this->createCstmNo($sub->Brn_No);
+        $sub->Cstm_No = $request->Cstm_No;
         $sub->Brn_No = $request->Brn_No;
         $sub->Cstm_Active = $request->Cstm_Active;
         $sub->Cstm_Ctg = $request->Cstm_Ctg;
@@ -181,18 +186,12 @@ class SubscribeController extends Controller
     public function show($ID_No)
     {
         $subscriber= MTsCustomer::findOrFail($ID_No); //id
-
-//        $subcriber = MTsCustomer::orderBy('ID_No', 'DESC')->latest()->first(); //latest record
-//        if($subcriber){
-//            MTsCustomer::create([
-//                $cstm_No = cstm_No+1
-//            ]);
-//        }
-//        $brn =  $subscriber->Brn_No;
-//        //dd($brn);
-//        $brn_no =$brn*1000; //1*1000 = 1000
-//        $sub = $brn_no . $subscriber->ID_No; //رقم العميل
-        return view('admin.subscribers.show1',compact('subscriber'));
+        $countries = country::pluck('country_name_'.session('lang'),'id');
+        $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
+        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
+        $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
+        return view('admin.subscribers.show1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
     }
 
     /**
@@ -204,8 +203,13 @@ class SubscribeController extends Controller
     public function edit($ID_No,state $state)
     {
         $subscriber = MTsCustomer::findOrFail($ID_No);
+        $countries = country::pluck('country_name_'.session('lang'),'id');
+        $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
+        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
+        $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
 
-        return view('admin.subscribers.edit1',compact('subscriber'));
+        return view('admin.subscribers.edit1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
     }
 
     /**
@@ -348,6 +352,7 @@ class SubscribeController extends Controller
 //                return 'first';
                 //no records
                 $last_no = $request->Brn_No * 10000;
+
             }else{
                 $last_cstm = MTsCustomer::where('Brn_No',  $request->Brn_No)->orderBy('Cstm_No', 'desc')->first();
                 if($last_cstm == null){

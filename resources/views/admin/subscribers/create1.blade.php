@@ -6,8 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\AstNutrbusn')
-@inject('countries', 'App\country')
+@inject('activities', 'App\Models\Admin\ActivityTypes')
 @inject('cities', 'App\city')
 
 @section('title',trans('admin.Create_New_Subscriber'))
@@ -150,22 +149,22 @@
 
                 <div class="col-md-6">
 
-                <div class="form-group row col-md-12">
+                <div class="form-group row">
 
-                    <div class="form-group">
-                        <div class="col-md-2" style="margin-right: -38px;left: -21px;">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
                         @if(auth()->user()->company_id == '-1')
-                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::select('Cmp_No', $companies->pluck('Cmp_NmAr', 'ID_NO')->toArray(),null,[
+                        <div class="col-md-10">{!!Form::select('Cmp_No', $companies->pluck('Cmp_NmAr', 'ID_NO')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')
                         ])!!}</div>
                         @else
-                            <div class="col-md-10" style="margin-bottom: 10px; padding-left: 1px;">{!!Form::text('Cmp_No', null, ['class'=>'form-control'])!!}</div>
+                            <div class="col-md-10">{!!Form::text('Cmp_No', null, ['class'=>'form-control'])!!}</div>
                         @endif
                     </div>
 
-                    <div class="form-group">
-                        <div class="col-md-2" style="left: 8px;">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px; padding-left: 38px;">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
+                        <div class="col-md-10">
                             <select class="form-control" name="Brn_No" id="branches">
                                <option>{{trans('admin.select')}}</option>
                            </select>
@@ -175,73 +174,75 @@
 
                 </div>
                 <div class="form-group row">
-                    <div class="form-group row col-md-6">
+                    <div class="form-group col-md-6">
                         <div class="col-md-3">{!!Form::label('Cstm_No', trans('admin.subscriber_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_No', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_No', null, ['class'=>'form-control','readonly'=>'true'])!!}</div>
                     </div>
                     <div class="form-group col-md-6">
-                        <div class="col-md-3" style="margin-right: -22px;">{!!Form::label('Cstm_Refno', trans('admin.customer_Ref_no'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_Refno', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Refno', trans('admin.customer_Ref_no'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_Refno', null, ['class'=>'form-control'])!!}</div>
                     </div>
 
                 </div>
-                <div class="form-group row col-md-12">
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_NmAr', null, ['class'=>'form-control'])!!}</div>
+                <div class="form-group row">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_NmAr', null, ['class'=>'form-control'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_NmEn', null, ['class'=>'form-control'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_NmEn', trans('admin.subscriber_name_en'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_NmEn', null, ['class'=>'form-control'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_Email', trans('admin.email'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_Email', null, ['class'=>'form-control'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_Email', trans('admin.email'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_Email', null, ['class'=>'form-control'])!!}</div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -47px;left: -18px;">{!!Form::label('Cstm_Adr', trans('admin.address'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Cstm_Adr', null, ['class'=>'form-control'])!!}</div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Cstm_Adr', trans('admin.address'))!!}</div>
+                        <div class="col-md-10">{!!Form::text('Cstm_Adr', null, ['class'=>'form-control'])!!}</div>
 
                     </div>
                 </div>
-                <div class="row col-md-12">
+                <div class="form-group row">
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -26px;">{!!Form::label('Cstm_POBox', trans('admin.mail_box'))!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_POBox', trans('admin.mail_box'))!!}</div>
                         <div class="col-md-9">{!!Form::text('Cstm_POBox', null, ['class'=>'form-control'])!!}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-2" style="margin-right: -29px; left: 16px;">{!!Form::label('Cstm_ZipCode', trans('admin.mail_area'))!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_ZipCode', trans('admin.mail_area'))!!}</div>
                         <div class="col-md-9">{!!Form::text('Cstm_ZipCode', null, ['class'=>'form-control'])!!}</div>
                     </div>
                 </div>
-                <div class="row col-md-12">
+                <div class="form-group row">
 
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -26px;">{!!Form::label('Cstm_Tel', trans('admin.tel'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Cstm_Tel', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Tel', trans('admin.tel'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Cstm_Tel', null, ['class'=>'form-control'])!!}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-3" style="margin-right: -45px;">{!!Form::label('Cstm_Fax', trans('admin.fax'))!!}</div>
+                        <div class="col-md-3">{!!Form::label('Cstm_Fax', trans('admin.fax'))!!}</div>
                         <div class="col-md-9">{!!Form::text('Cstm_Fax', null, ['class'=>'form-control'])!!}</div>
                     </div>
                 </div>
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -54px; left: -27px;">{!!Form::label('Tel1', trans('admin.tel_1'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel1', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-2">{!!Form::label('Tel1', trans('admin.tel_1'))!!}</div>
+                            <div class="col-md-10">{!!Form::text('Tel1', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="col-md-2">{!!Form::label('Tel2', trans('admin.mobile'))!!}</div>
+                            <div class="col-md-10">{!!Form::text('Tel2', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
+                        </div>
                     </div>
+                <div class="form-group row col-md-8">
                     <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -54px;left: -27px;">{!!Form::label('Tel2', trans('admin.mobile'))!!}</div>
-                        <div class="col-md-10" style="margin-bottom: 10px;">{!!Form::text('Tel2', null, ['class'=>'form-control', 'placeholder'=>'0100000/0111111'])!!}</div>
-                    </div>
-                <div class="row col-md-8">
-                    <div class="col-md-12">
-                        <div class="col-md-3" style="margin-right: -43px;left: -19px;">{!!Form::label('Credit_Value', trans('admin.credit_value'))!!}</div>
+                        <div class="col-md-3">{!!Form::label('Credit_Value', trans('admin.credit_value'))!!}</div>
                         <div class="col-md-9">{!!Form::text('Credit_Value', null, ['class'=>'form-control'])!!}</div>
                     </div>
 
                     <div class="col-md-12">
-                        <div class="col-md-3" style="margin-right: -43px;left: -19px;">{!!Form::label('Credit_Days', trans('admin.credit_days'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::text('Credit_Days', null, ['class'=>'form-control'])!!}</div>
+                        <div class="col-md-3">{!!Form::label('Credit_Days', trans('admin.credit_days'))!!}</div>
+                        <div class="col-md-9">{!!Form::text('Credit_Days', null, ['class'=>'form-control'])!!}</div>
                     </div>
                 </div>
                 <div class="row col-md-4">
@@ -256,9 +257,9 @@
                 </div>
 
 
-                <div class="form-group row col-md-12">
-                    <div class="col-md-12">
-                        <div class="col-md-2" style="margin-right: -48px;left: -19px;">{!!Form::label('Notes', trans('admin.Notes'))!!}</div>
+                <div class="form-group row">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-2">{!!Form::label('Notes', trans('admin.Notes'))!!}</div>
                         <div class="col-md-10">{!!Form::textarea('Notes', null, ['class'=>'form-control', 'rows' => 4, 'cols' => 54])!!}</div>
                     </div>
                 </div>
@@ -270,7 +271,8 @@
                 <div class="col-md-6">
                     <div class="col-md-12">
                         <div class="col-md-3" style="left: 11px;">{!!Form::label('Cntry_No', trans('admin.country'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Cntry_No', $countries->pluck('country_name_'.session('lang'),'id')->toArray(),null,[
+                        <div class="col-md-9" style="margin-bottom: 10px;">
+                            {!!Form::select('Cntry_No', $countries,null,[
                                 'class'=>'form-control', 'id'=>'countries','placeholder'=>trans('admin.select')
                         ])!!}</div>
                     </div>
@@ -285,8 +287,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="padding: 1px;">{!!Form::label('Area_No', trans('admin.area'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;"><select class="form-control" name="Area_No" id="area">
-                        </select></div>
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!! Form::text('Area_No', null, ['class' =>'form-control']) !!}</div>
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Slm_No', trans('admin.slm_no'))!!}</div>
@@ -304,7 +305,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="col-md-3" style="left:12px;">{!!Form::label('Nutr_No', trans('admin.Nutr_No'))!!}</div>
-                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Nutr_No' ,$activities->pluck('Nutr_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
+                        <div class="col-md-9" style="margin-bottom: 10px;">{!!Form::select('Nutr_No' ,$activities->pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
                                 'class'=>'form-control','placeholder'=>trans('admin.select')
                             ])!!}
                         </div>
