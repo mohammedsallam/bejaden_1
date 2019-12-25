@@ -910,7 +910,7 @@ return [
     'tax_income' => 'الضريبه المضافه - ايرادات',
     'future_sales' => 'مبيعات آجله',
     'sales_returns' => 'مرتجع المبيعات',
-    'allowed_cash_disc' => 'خصم المبيعات',
+    'allowed_cash_disc' => 'خصم مسموح به',
     'cash_sales' => 'مبيعات نقديه',
     'cost_of_sales' => 'تكلفة المبيعات',
     'inventory_at_cost' => 'تكلفة المخزون',
@@ -922,7 +922,7 @@ return [
     'future_purchases' => 'مشتريات آجله',
     'purchases_returns' => 'مرتجع مشتريات',
     'cash_purchases' => 'مشتريات نقديه',
-    'cash_discount' => 'خصم المشتريات',
+    'cash_discount' => 'خصم مكتسب',
     'inventory_running' => 'المخزون تحت التشغيل',
     'raw_material_stock' => 'مخزون المواد الخام',
     'full_production_stock' => 'مخزون الانتاج التام',
@@ -1421,7 +1421,11 @@ return [
     'show_supervisor'    =>'عرض المشرف-',
     'edit_supervisor'    =>'تعديل المشرف-',
     'select_prj'         =>'اختـر الشركه لعرض المشاريع',
-
+    'noti_type'          =>'نوع الاشعار',
+    'allowed'            =>'خصم مسموح به',
+    'gain'               =>'خصـم مكتسب',
+    'create_Notice_creditor' =>'اشعارات بالخصم / اضافـه ',
+    'data_notice'        =>'البيانات الاساسيه لاشعارات الخصم/الاضافه',
 
 
 
