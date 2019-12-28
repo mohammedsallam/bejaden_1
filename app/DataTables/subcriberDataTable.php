@@ -27,22 +27,9 @@ class subcriberDataTable extends DataTable
             ->addColumn('branches', function ($query) {
                 return session_lang($query->branches['name_en'],$query->branches['name_ar']);
             })
-//            ->addColumn('departs', function ($query) {
-//                    return session_lang($query->departs['state_name_en'],$query->departs['state_name_ar']);
-//            })
-//            ->addColumn('desnames', function ($query) {
-//                    return session_lang($query->desnames['state_name_en'],$query->desnames['state_name_ar']);
-//            })
             ->addColumn('details', function ($query) {
                 return '<a href="subscribers/'.$query->ID_No.'" class="btn btn-primary"><i class="fa fa-info"></i> ' . trans('admin.information_details') .' </a>';
             })
-//            ->addColumn('cart', function ($query) {
-//                if(subscription::where('id',$query->id)->first()->status == 1) {
-//                    return '<a href = "cart/'.$query->id.'" class="btn btn-info remove-record" ><i class="fa fa-credit-card" ></i > ' . trans('admin.receipt') . '</a>';
-//                }elseif (subscription::where('id',$query->id)->first()->status == 0) {
-//                    return '<a href = "cart/'.$query->id.'" class="btn btn-success remove-record" ><i class="fa fa-shopping-cart" ></i > ' . trans('admin.issuance_receipts') . ' </a >';
-//                }
-//            })
 
             ->addColumn('delete', 'admin.subscribers.btn.delete')
             ->addColumn('status', 'admin.subscribers.status')
@@ -149,8 +136,6 @@ class subcriberDataTable extends DataTable
         return [
             ['name'=>'ID_No','data'=>'ID_No','title'=>trans('admin.id')],
             ['name'=>'Cstm_Nm'.ucfirst(session('lang')),'data'=>'Cstm_Nm'.ucfirst(session('lang')),'title'=>trans('admin.name')],
-            //['name'=>'Brn_No','data'=>'Brn_No','title'=>trans('admin.Branches')],
-            //['name'=>'Cmp_No','data'=>'company.Cmp_Nm'.ucfirst(session('lang')),'title'=>trans('admin.company')],
             ['name'=>'Cstm_No','data'=>'Cstm_No','title'=>trans('admin.subscriber_no')],
             //['name'=>'Cstm_Active','data'=>'Cstm_Active','title'=>trans('admin.active')],
             //['name'=>'Cstm_Ctg','data'=>'Cstm_Ctg','title'=>trans('admin.customer_catg')],
@@ -174,50 +159,8 @@ class subcriberDataTable extends DataTable
             ['name'=>'Cstm_Email','data'=>'Cstm_Email','title'=>trans('admin.email')],
             ['name'=>'Cstm_Tel','data'=>'Cstm_Tel','title'=>trans('admin.tel')],
             ['name'=>'Cstm_Fax','data'=>'Cstm_Fax','title'=>trans('admin.fax')],
-//            ['name'=>'Cntct_Prsn1','data'=>'Cntct_Prsn1','title'=>trans('admin.person_dep_1')],
-//            ['name'=>'Cntct_Prsn2','data'=>'Cntct_Prsn2','title'=>trans('admin.person_dep_1')],
-//            ['name'=>'Cntct_Prsn3','data'=>'Cntct_Prsn3','title'=>trans('admin.person_dep_1')],
-//            ['name'=>'Cntct_Prsn4','data'=>'Cntct_Prsn4','title'=>trans('admin.person_dep_1')],
-//            ['name'=>'Cntct_Prsn5','data'=>'Cntct_Prsn5','title'=>trans('admin.person_dep_1')],
-//            ['name'=>'TitL1','data'=>'TitL1','title'=>trans('admin.Title_1')],
-//            ['name'=>'TitL2','data'=>'TitL2','title'=>trans('admin.Title_1')],
-//            ['name'=>'TitL3','data'=>'TitL3','title'=>trans('admin.Title_1')],
-//            ['name'=>'TitL4','data'=>'TitL4','title'=>trans('admin.Title_1')],
-//            ['name'=>'TitL5','data'=>'TitL5','title'=>trans('admin.Title_1')],
-//            ['name'=>'Mobile1','data'=>'Mobile1','title'=>trans('admin.mobile_1')],
-//            ['name'=>'Mobile2','data'=>'Mobile2','title'=>trans('admin.mobile_1')],
-//            ['name'=>'Mobile3','data'=>'Mobile3','title'=>trans('admin.mobile_1')],
-//            ['name'=>'Mobile4','data'=>'Mobile4','title'=>trans('admin.mobile_1')],
-//            ['name'=>'Mobile5','data'=>'Mobile5','title'=>trans('admin.mobile_1')],
-//            ['name'=>'Email1','data'=>'Email1','title'=>trans('admin.email_1')],
-//            ['name'=>'Email2','data'=>'Email2','title'=>trans('admin.email_1')],
-//            ['name'=>'Email3','data'=>'Email3','title'=>trans('admin.email_1')],
-//            ['name'=>'Email4','data'=>'Email4','title'=>trans('admin.email_1')],
-//            ['name'=>'Email5','data'=>'Email5','title'=>trans('admin.email_1')],
             ['name'=>'Tel1','data'=>'Tel1','title'=>trans('admin.tel_1')],
-            //['name'=>'Tel2','data'=>'Tel2','title'=>trans('admin.tel_2')],
-            //['name'=>'Tel3','data'=>'Tel3','title'=>trans('admin.tel_3')],
-            //['name'=>'Mobile','data'=>'Mobile','title'=>trans('admin.main_mobile')],
-            //['name'=>'Fbal_Db','data'=>'Fbal_Db','title'=>trans('admin.Fbal_Db')],
-            //['name'=>'Fbal_CR','data'=>'Fbal_CR','title'=>trans('admin.Fbal_CR')],
 
-
-            //['name'=>'Opn_Date','data'=>'Opn_Date','title'=>trans('admin.Opn_Date')],
-            //['name'=>'Opn_Time','data'=>'Opn_Time','title'=>trans('admin.Opn_Time')],
-            //['name'=>'User_ID','data'=>'User_ID','title'=>trans('admin.User_ID')],
-            //['name'=>'Updt_Date','data'=>'Updt_Date','title'=>trans('admin.Updt_Date')],
-            //['name'=>'Cstm_Agrmnt','data'=>'Cstm_Agrmnt','title'=>trans('admin.Cstm_Agrmnt')],
-            //['name'=>'Disc_prct','data'=>'Disc_prct','title'=>trans('admin.Disc_prct')],
-            //['name'=>'Itm_Sal','data'=>'Itm_Sal','title'=>trans('admin.Itm_Sal')],
-            //['name'=>'Linv_No','data'=>'Linv_No','title'=>trans('admin.Linv_No')],
-            //['name'=>'Linv_Dt','data'=>'Linv_Dt','title'=>trans('admin.Linv_Dt')],
-            //['name'=>'Linv_Net','data'=>'Linv_Net','title'=>trans('admin.Linv_Net')],
-            //['name'=>'LRcpt_No','data'=>'LRcpt_No','title'=>trans('admin.LRcpt_No')],
-            //['name'=>'LRcpt_Dt','data'=>'LRcpt_Dt','title'=>trans('admin.LRcpt_Dt')],
-            //['name'=>'LRcpt_Db','data'=>'LRcpt_Db','title'=>trans('admin.LRcpt_Db')],
-            //['name'=>'LRcpt_Dt','data'=>'LRcpt_Dt','title'=>trans('admin.LRcpt_Dt')],
-            //['name'=>'Tax_No','data'=>'Tax_No','title'=>trans('admin.Tax_No')],
-            //['name'=>'Notes','data'=>'Notes','title'=>trans('admin.Notes')],
 
             ['name'=>'created_at','data'=>'created_at','title'=>trans('admin.created_at')],
             ['name'=>'updated_at','data'=>'updated_at','title'=>trans('admin.updated_at')],

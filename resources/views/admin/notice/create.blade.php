@@ -64,7 +64,7 @@
                 // convert Tr_Dt ro hijry
                 let Hijri = $('input#Tr_Dt').val();
                 $.ajax({
-                    url: "{{route('hijri')}}",
+                    url: "{{route('hijriNoti')}}",
                     type: 'get',
                     data:{Hijri: Hijri},
                     dataType: 'json',
