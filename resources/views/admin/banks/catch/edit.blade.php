@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.create_catch_receipt'))
+@section('title',trans('admin.edit_catch_receipt'))
 @section('content')
 @push('js')
     <script>
@@ -139,7 +139,6 @@
                     table.rows[i].onclick = function () {
                         tableText(this);
                         this.innerHTML = '';
-                        // this.parentNode.removeChild(this);
                     };
                 }
             }
@@ -428,6 +427,22 @@
                     });
                 }
             });
+
+            //حذف سطر من السند
+            $('#delete_button').click(function(e){
+                e.preventDefault();
+                var Tr_No = $('#Tr_No').val();
+                var Ln_No = $('#Ln_No').val();
+                $.ajax({
+                    url: "{{route('deleteTrns')}}",
+                    type: 'post',
+                    data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#Tr_DtAr').val(data);
+                    }
+                });
+            });
   
         });
     </script>
@@ -438,6 +453,7 @@
     {{ method_field('PUT') }}
 
     <div class="col-md-12">
+        <button type="submit" class="btn btn-danger" id="delete_button" style="float:left;"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
         <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
     </div>
     <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">

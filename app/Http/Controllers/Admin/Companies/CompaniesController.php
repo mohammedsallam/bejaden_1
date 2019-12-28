@@ -22,7 +22,7 @@ class CompaniesController extends Controller
         $id = MainCompany::where('Cmp_NmAr','=',null)->orWhere('Cmp_NmAr','=','')->pluck('ID_No');
         DB::table('maincompany')->where('Cmp_NmEn',null)->where('Cmp_NmAr',null)->orWhere('Cmp_NmAr','=','')->delete();
 
-        return $company->render('admin.companies.index',['title'=>trans('admin.companies')]);
+        return $company->render('admin.companies.index',['title'=>trans('admin.company')]);
     }
 
     /**

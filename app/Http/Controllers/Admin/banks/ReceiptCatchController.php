@@ -28,17 +28,22 @@ class ReceiptCatchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(catchDataTable $catch)
     {
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
         }
-        return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
+    }
+
+    public function getRecieptByCmp(Request $request){
+        session(['recpt_cmp_no' => $request->Cmp_No]);
     }
 
     /**
@@ -98,8 +103,8 @@ class ReceiptCatchController extends Controller
                 'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
                 'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
-                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
-                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
+                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
+                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
                 'Chq_no' => $catch_data[$last_index]->Chq_no,
                 'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
@@ -139,8 +144,8 @@ class ReceiptCatchController extends Controller
                         'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                         'Tr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
-                        'Tr_Ds' => $data->Tr_Ds,
-                        'Tr_Ds1' => $data->Tr_Ds1,
+                        'Tr_Ds' => $data->Tr_Ds_Db,
+                        'Tr_Ds1' => $data->Tr_Ds_Db,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
@@ -244,7 +249,57 @@ class ReceiptCatchController extends Controller
     }
 
     public function updateTrns(Request $request){
-        dd('update');
+        
+        $updated_data = json_decode($request->catch_data);
+        
+        if(count($updated_data) > 0){
+            foreach($updated_data as $data){
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                                ->where('Ln_No', $data->Ln_No)->first();
+                //Update transaction credit
+                $trns->update([
+                    'Cmp_No' => $data->Cmp_No,
+                    'Brn_No' => $data->Brn_No,
+                    'Jr_Ty' => 2,
+                    'Ac_Ty' => $data->Ac_Ty,
+                    'Sysub_Account' => $data->Sysub_Account,
+                    'Acc_No' => $data->Acc_No,
+                    'Tr_Db' => 0.00,
+                    'Tr_Cr' => $data->Tr_Cr,
+                    'Dc_No' => $data->Dc_No,
+                    'Tr_Ds' => $data->Tr_Ds,
+                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Doc_Type' => $data->Doc_Type,
+                    'User_ID' => auth::user()->id,
+                    'Rcpt_Value' => $data->Tot_Amunt,
+                    'Salman_No' => $data->Salman_No,
+                    'updated_at' => carbon::now(),
+                ]);
+            }
+
+            //update debt Tot_Amunt
+            //1- get all credit lines - sum credit money
+            $trnses = GLjrnTrs::where('Tr_No', $updated_data[0]->Tr_No)
+                                ->where('Ln_No' , '>', 1)->get();
+            if($trnses){
+                $total = 0;
+                foreach($trnses as $trns){
+                    $total += $trns->Tr_Cr;
+                }
+
+                //2- get debt line - update money with new total
+                $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                $debt->update(['Tr_Db' => $total]);
+                
+
+                $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
+                $gl_debt->update([
+                    'Tr_Db' => $total,
+                    'Tr_Cr' => $total,
+                ]);
+            }
+        }
     }
 
     /**
@@ -256,6 +311,26 @@ class ReceiptCatchController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    //Delete trans line from GLjrnTrs
+    public function deleteTrns(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)->get();
+            //حذف السطر المطلوب فقط اذا كان عدد سطور السند اكبر من سطرين
+            if($trns && count($trns) > 2){
+                if($request->Ln_No != -1){
+                    GLjrnTrs::where('Tr_No', $request->Tr_No)
+                            ->where('Ln_No', $request->Ln_No)->first()->delete();
+                }
+            }
+            //حذف كل تفاصيل السند اذا كان عدد السطور  سطرين فاقل
+            else if($trns && count($trns) <= 2){
+                foreach($trns as $trn){
+                    $trn->delete();
+                }
+            }
+        }
     }
 
     public function convertToDateToHijri(Request $request){

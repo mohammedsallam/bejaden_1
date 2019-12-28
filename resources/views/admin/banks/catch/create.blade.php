@@ -120,7 +120,6 @@
 
             function addRowHandlers() {
                 var table = document.getElementById('table');
-                console.log(table);
                 var rows = table.getElementsByTagName('tr');
                 for (i = 0; i < rows.length; i++) {
                     var currentRow = table.rows[i];
@@ -129,7 +128,6 @@
                     return function() {
                             var cell = row.getElementsByTagName("td")[0];
                             var id = cell[j].innerHTML;
-                            alert("id:" + id);
                             currentRow.remove();
                         };
                     };
@@ -229,7 +227,7 @@
                         var response = JSON.parse(data);
                         if(response.success == true){
                             $('#table').append(`
-                                <tr>
+                                <tr class='tr'>
                                     <td>`+$('#Ln_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
@@ -281,6 +279,19 @@
                                 Tr_Ds_Db: $('#Tr_Ds_Db').val(),
                             };
 
+                            // handle click table rows click
+                            var table = document.getElementById("table");
+                            if (table != null) {
+                                for (var i = 0; i < table.rows.length; i++) {
+                                    for (var j = 0; j < table.rows[i].cells.length; j++)
+                                    table.rows[i].onclick = function () {
+                                        tableText(this, item);
+                                        this.innerHTML = '';
+                                    };
+                                }
+                            }
+
+                            catch_data.pop();
                             catch_data.push(item);
                             $('#Ln_No').val(-1);
 
@@ -392,6 +403,36 @@
                     });
                 }
             });
+
+            function tableText(tableCell, data) {
+                alert(data.Tr_Ds);
+                $('#Cmp_No').val(data.Cmp_No);
+                $('#Brn_No').val(data.Brn_No);
+                $('#Tr_No').val(data.Tr_No);
+                $('#Tr_Dt').val(data.Tr_Dt);
+                $('#Tr_DtAr').val(data.Tr_DtAr);
+                $('#Doc_Type').val(data.Doc_Type);
+                $('#Tr_Crncy').val(data.Tr_Crncy);
+                $('#Tr_ExchRat').val(data.Tr_ExchRat);
+                $('#Tot_Amunt').val(data.Tot_Amunt);
+                $('#Tr_TaxVal').val(data.Tr_TaxVal);
+                $('#Rcpt_By').val(data.Rcpt_By);
+                $('#Salman_No').val(data.Salman_No);
+                $('#Ac_Ty').val(data.Ac_Ty);
+                $('#Sysub_Account').val(data.Sysub_Account);
+                $('#Tr_Cr').val(data.Tr_Cr);
+                $('#Dc_No').val(data.Dc_No);
+                $('#Tr_Ds').val(data.Tr_Ds);
+                $('#Tr_Ds1').val(data.Tr_Ds1);
+                $('#Acc_No').val(data.Acc_No);
+                $('#Chq_no').val(data.Chq_no);
+                $('#Bnk_Nm').val(data.Bnk_Nm);
+                $('#Tr_Db_Acc_No').val(data.Tr_Db_Acc_No);
+                $('#Tr_Db_Db').val(data.Tr_Db_Db);
+                $('#Tr_Cr_Db').val(data.Tr_Cr_Db);
+                $('#Ln_No').val(data.Ln_No);
+                $('#Tr_Ds_Db').val(data.Tr_Ds_Db);
+            }
             
         });
     </script>

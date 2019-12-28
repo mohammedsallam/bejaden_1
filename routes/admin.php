@@ -235,6 +235,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('branchForEdit','Admin\banks\ReceiptCatchController@branchForEdit')->name('branchForEdit');
         Route::post('getRcptDetails','Admin\banks\ReceiptCatchController@getRcptDetails')->name('getRcptDetails');
         Route::post('updateTrns','Admin\banks\ReceiptCatchController@updateTrns')->name('updateTrns');
+        Route::post('deleteTrns','Admin\banks\ReceiptCatchController@deleteTrns')->name('deleteTrns');
+        Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmp');
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
