@@ -252,16 +252,16 @@ Route::group(['prefix'=>'admin'],function (){
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
         Route::get('hijriNoti', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijriNoti');
-//        Route::post('getSalesMan', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesMan');
-//        Route::post('createTrNo', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNo');
-//        Route::post('getSubAcc', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAcc');
-//        Route::post('getMainAccNo', 'Admin\Notice\NoticeController@getMainAccNo')->name('getMainAccNo');
-//        Route::post('getTaxValue', 'Admin\Notice\NoticeController@getTaxValue')->name('getTaxValue');
-//        Route::post('validateCache', 'Admin\Notice\NoticeController@validateCache')->name('validateCache');
-//        Route::post('getCatchRecpt', 'Admin\Notice\NoticeController@getCatchRecpt')->name('getCatchRecpt');
-//        Route::get('printCatchRecpt/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecpt');
-//        Route::post('branchForEdit','Admin\Notice\NoticeController@branchForEdit')->name('branchForEdit');
-//        Route::post('getRcptDetails','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetails');
+        Route::post('getSalesManN', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesManN');
+        Route::post('createTrNoN', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNoN');
+        Route::post('getSubAccN', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAccN');
+        Route::post('getMainAccNoN', 'Admin\Notice\NoticeController@getMainAccNo')->name('getMainAccNoN');
+        Route::post('getTaxValueN', 'Admin\Notice\NoticeController@getTaxValue')->name('getTaxValueN');
+        Route::post('validateCacheN', 'Admin\Notice\NoticeController@validateCache')->name('validateCacheN');
+        Route::post('getCatchRecptN', 'Admin\Notice\NoticeController@getCatchRecpt')->name('getCatchRecptN');
+        Route::get('printCatchRecptN/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecptN');
+        Route::post('branchForEditN','Admin\Notice\NoticeController@branchForEdit')->name('branchForEditN');
+        Route::post('getRcptDetailsN','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetailsN');
 
 
 
