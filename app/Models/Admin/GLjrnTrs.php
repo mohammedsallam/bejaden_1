@@ -38,5 +38,6 @@ class GLjrnTrs extends Model
         'Acc_Type',
         'Rcpt_Value',
         'RetPur_Sal',
+        'Salman_No',
     ];
 }

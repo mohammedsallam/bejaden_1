@@ -28,17 +28,22 @@ class ReceiptCatchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(catchDataTable $catch)
     {
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
         }
-        return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
+    }
+
+    public function getRecieptByCmp(Request $request){
+        session(['recpt_cmp_no' => $request->Cmp_No]);
     }
 
     /**
@@ -97,10 +102,9 @@ class ReceiptCatchController extends Controller
                 'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
                 'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
                 'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
-                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
-                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
+                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
+                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
                 'Chq_no' => $catch_data[$last_index]->Chq_no,
                 'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
@@ -119,9 +123,8 @@ class ReceiptCatchController extends Controller
             if($catch_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $catch_data[$last_index]->Sysub_Account;}
             $header->save();
 
-        }
 
-        if($request->catch_data){
+
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -142,8 +145,8 @@ class ReceiptCatchController extends Controller
                         'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                         'Tr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
-                        'Tr_Ds' => $data->Tr_Ds,
-                        'Tr_Ds1' => $data->Tr_Ds1,
+                        'Tr_Ds' => $data->Tr_Ds_Db,
+                        'Tr_Ds1' => $data->Tr_Ds_Db,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
@@ -176,14 +179,17 @@ class ReceiptCatchController extends Controller
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
+                    'Salman_No' => $data->Salman_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
+
+}
             }
         }
 
-    }
+
 
     /**
      * Display the specified resource.
@@ -220,6 +226,7 @@ class ReceiptCatchController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
+        // $salesman = AstSalesman::where('Slm_No', $gl->Salman_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -241,7 +248,60 @@ class ReceiptCatchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+    }
+
+    public function updateTrns(Request $request){
+
+        $updated_data = json_decode($request->catch_data);
+
+        if(count($updated_data) > 0){
+            foreach($updated_data as $data){
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                                ->where('Ln_No', $data->Ln_No)->first();
+                //Update transaction credit
+                $trns->update([
+                    'Cmp_No' => $data->Cmp_No,
+                    'Brn_No' => $data->Brn_No,
+                    'Jr_Ty' => 2,
+                    'Ac_Ty' => $data->Ac_Ty,
+                    'Sysub_Account' => $data->Sysub_Account,
+                    'Acc_No' => $data->Acc_No,
+                    'Tr_Db' => 0.00,
+                    'Tr_Cr' => $data->Tr_Cr,
+                    'Dc_No' => $data->Dc_No,
+                    'Tr_Ds' => $data->Tr_Ds,
+                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Doc_Type' => $data->Doc_Type,
+                    'User_ID' => auth::user()->id,
+                    'Rcpt_Value' => $data->Tot_Amunt,
+                    'Salman_No' => $data->Salman_No,
+                    'updated_at' => carbon::now(),
+                ]);
+            }
+
+            //update debt Tot_Amunt
+            //1- get all credit lines - sum credit money
+            $trnses = GLjrnTrs::where('Tr_No', $updated_data[0]->Tr_No)
+                                ->where('Ln_No' , '>', 1)->get();
+            if($trnses){
+                $total = 0;
+                foreach($trnses as $trns){
+                    $total += $trns->Tr_Cr;
+                }
+
+                //2- get debt line - update money with new total
+                $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                $debt->update(['Tr_Db' => $total]);
+
+
+                $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
+                $gl_debt->update([
+                    'Tr_Db' => $total,
+                    'Tr_Cr' => $total,
+                ]);
+            }
+        }
     }
 
     /**
@@ -253,6 +313,26 @@ class ReceiptCatchController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    //Delete trans line from GLjrnTrs
+    public function deleteTrns(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)->get();
+            //حذف السطر المطلوب فقط اذا كان عدد سطور السند اكبر من سطرين
+            if($trns && count($trns) > 2){
+                if($request->Ln_No != -1){
+                    GLjrnTrs::where('Tr_No', $request->Tr_No)
+                            ->where('Ln_No', $request->Ln_No)->first()->delete();
+                }
+            }
+            //حذف كل تفاصيل السند اذا كان عدد السطور  سطرين فاقل
+            else if($trns && count($trns) <= 2){
+                foreach($trns as $trn){
+                    $trn->delete();
+                }
+            }
+        }
     }
 
     public function convertToDateToHijri(Request $request){
@@ -504,12 +584,15 @@ class ReceiptCatchController extends Controller
             $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
                             ->where('Tr_No', $request->Tr_No)
                             ->first();
-            $request = new Request;
-            $request->Acc_Ty = $trns->Ac_Ty;
-            $request->Cmp_No = $trns->Cmp_No;
-            $request->Brn_No = $trns->Brn_No;
-            $subAccs = $this->getSubAcc($request);
+
+            $new_request = new Request;
+            $new_request->Acc_Ty = $trns->Ac_Ty;
+            $new_request->Cmp_No = $trns->Cmp_No;
+            $new_request->Brn_No = $trns->Brn_No;
+            $subAccs = $this->getSubAcc($new_request);
+
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+
             return view('admin.banks.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
     }

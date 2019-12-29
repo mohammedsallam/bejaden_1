@@ -807,6 +807,7 @@ return [
     'code'=>'الكود المحاسبي',
     'fund_and_banks'=>'الصندوق والبنوك',
     'create_catch_receipt'=>'اضافة سند قبض',
+    'edit_catch_receipt'=>'تعديل سند قبض',
     'catch_receipt' => 'بيانات سندات قبض',
     'Rcpt_Flg' => 'سند قبض',
     'RcpCsh_Voucher' => 'سند قبض نقدى',

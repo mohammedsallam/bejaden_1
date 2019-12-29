@@ -62,7 +62,7 @@ class MainBranch extends Model
     ];
 
     public function admin(){
-        return $this->belongsTo(Admin::class, 'id', 'ID_No');
+        return $this->hasMany(Admin::class, 'id', 'ID_No');
     }
 
     public function company(){

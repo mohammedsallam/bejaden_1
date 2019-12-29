@@ -9,7 +9,8 @@ use App\Models\Admin\AstNutrbusn;
 use App\Models\Admin\activitytypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use DB;
+
+use Illuminate\Support\Facades\DB;
 
 class ActivitiesController extends Controller
 {
