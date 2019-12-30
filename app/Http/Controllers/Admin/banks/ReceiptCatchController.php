@@ -53,7 +53,7 @@ class ReceiptCatchController extends Controller
      */
     public function create()
     {
-        $last_record = GLJrnal::latest()->get(['Tr_No'])->first(); 
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
@@ -80,9 +80,9 @@ class ReceiptCatchController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $catch_data = json_decode($request->catch_data);
-       
+
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -114,7 +114,7 @@ class ReceiptCatchController extends Controller
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
-    
+
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
@@ -122,6 +122,7 @@ class ReceiptCatchController extends Controller
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $catch_data[$last_index]->Sysub_Account;}
             $header->save();
+
 
 
             foreach($catch_data as $data){
@@ -156,7 +157,7 @@ class ReceiptCatchController extends Controller
                     $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
                     $trans_db->save();
                 }
-                
+
                 //Create transaction credit
                 $trans_cr = GLjrnTrs::create([
                     'Cmp_No' => $data->Cmp_No,
@@ -183,11 +184,12 @@ class ReceiptCatchController extends Controller
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
+
+}
             }
-    
         }
 
-    }
+
 
     /**
      * Display the specified resource.
@@ -249,9 +251,9 @@ class ReceiptCatchController extends Controller
     }
 
     public function updateTrns(Request $request){
-        
+
         $updated_data = json_decode($request->catch_data);
-        
+
         if(count($updated_data) > 0){
             foreach($updated_data as $data){
                 $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -291,7 +293,7 @@ class ReceiptCatchController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
                                 ->where('Ln_No', 1)->first();
                 $debt->update(['Tr_Db' => $total]);
-                
+
 
                 $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
                 $gl_debt->update([
@@ -539,7 +541,7 @@ class ReceiptCatchController extends Controller
             ]);
 
             // dd($validator->messages());
-                
+
             if ($validator->fails()) {
                 return response([
                     'success' => false,
@@ -551,7 +553,7 @@ class ReceiptCatchController extends Controller
                     'success' => true,
                     'data' => $validator->messages(),
                 ]);
-            } 
+            }
         }
     }
 
@@ -610,7 +612,7 @@ class ReceiptCatchController extends Controller
         // $data = $receipts->receipts_type;
         // if (count($data) > 1){
         //     if ($receipts->limitationReceipts['limitationReceiptsId'] == 0 || $receipts->limitationReceipts['limitationReceiptsId'] == 1){
-                
+
         //         $pdf = PDF::loadView('admin.banks.invoice.pdf.multi_report', compact('receiptsData','data','receipts'),[],['format' => 'A4'], $config);
         //         return $pdf->stream();
         //     }else{

@@ -27,7 +27,7 @@
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){
                     $.ajax({
-                        url: "{{route('branchForEdit')}}",
+                        url: "{{route('branchForEditN')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -37,7 +37,7 @@
                     });
 
                     $.ajax({
-                        url: "{{route('getTaxValue')}}",
+                        url: "{{route('getTaxValueN')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -51,7 +51,7 @@
                 $(document).on('change', '#Dlv_Stor', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
-                        url: "{{route('createTrNo')}}",
+                        url: "{{route('createTrNoN')}}",
                         type: "POST",
                         dataType: 'json',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val(), Cmp_No: Cmp_No },
@@ -73,24 +73,24 @@
                     }
                 });
 
-                $(document).on('change', '#Ac_Ty', function(){
+                $(document).on('change', '.Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $(this).val();
 
                     //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
                     $.ajax({
-                        url: "{{route('getSubAcc')}}",
+                        url: "{{route('getSubAccN')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty},
                         success: function(data){
-                            $('#Acc_No_Select').html(data);
+                            $('.Acc_No_Select').html(data);
                         }
                     });
                 });
 
-                $(document).on('change', '#Acc_No_Select', function(){
+                $(document).on('change', '.Acc_No_Select', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
@@ -98,14 +98,20 @@
 
                     //get parent account number on account select
                     $.ajax({
-                        url: "{{route('getMainAccNo')}}",
+                        url: "{{route('getMainAccNoN')}}",
                         type: "POST",
                         dataType: 'json',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty, Acc_No: Acc_No },
                         success: function(data){
-                            $('#Sysub_Account').val($('#Acc_No_Select').val());
-                            $('#Acc_No').val(data.mainAccNo.acc_no);
-                            $('#main_acc').val(data.mainAccNm.acc_name);
+                            $('.Sysub_Account').each(function () {
+                                $(this).val($('.Acc_No_Select').val())
+                            });
+                            $('.Acc_No').each(function () {
+                                $(this).val(data.mainAccNo.acc_no);
+                            });
+                            $('.main_acc').each(function () {
+                                $(this).val(data.mainAccNm.acc_name);
+                            });
 
                             if(data.AccNm && data.AccNm.cc_flag && data.AccNm.cc_no){
                                 $('#Costcntr_No_content').removeClass('hidden');
@@ -120,7 +126,7 @@
                     //get salesman in case Acc_Ty == 2 (customers)
                     if(Acc_Ty == 2){
                         $.ajax({
-                            url: "{{route('getSalesMan')}}",
+                            url: "{{route('getSalesManN')}}",
                             type: "POST",
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
@@ -159,40 +165,81 @@
                     }
                     else{
                         $('#Tr_TaxVal').attr('disabled','disabled');
-                        $('#Tr_Cr').val($('#Tot_Amunt').val());
+                        $('.Tr_Cr').val($('#Tot_Amunt').val());
+                        $('.Tr_Db').val($('#Tot_Amunt').val());
+
                     }
 
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                    $('.Tr_Db_Db').val(parseFloat(old) + parseFloat($('.Tr_Cr').val()) + parseFloat($('.Tr_Db').val()));
+                    $('.Tr_Cr_Db').val(parseFloat(old) + parseFloat($('.Tr_Cr').val()) + parseFloat($('.Tr_Db').val()));
+                    $('.Tr_Dif').val( $('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val() );
                 });
 
                 $('#Tot_Amunt').change(function(){
                     calcTax();
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                    $('.Tr_Db_Db').each(function () {
+                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()));
+                    });
+                    $('.Tr_Cr_Db').each(function () {
+                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
+                    });
+                    $('.Tr_Dif').each(function () {
+                        $(this).val( $('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val() );
+                    });
                 });
 
                 $('#Tr_TaxVal').change(function(){
                     calcTax();
 
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                    $('.Tr_Db_Db').each(function () {
+                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
+                    });
+                    $('.Tr_Cr_Db').each(function () {
+                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
+                    });
+                    $('.Tr_Dif').val( $('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val() );
+                });
+                //دائن
+                $(document).on('change', '.Dc_No', function () {
+                    $('.Dc_No_Db').each(function () {
+                        $(this).val($('.Dc_No').each(function () {
+                            $(this).val();
+                        }));
+                    });
+                });
+                //مدين
+                $(document).on('change', '.Dc_No_Db', function () {
+                    $('.Dc_No').each(function () {
+                        $(this).val($('.Dc_No_Db').each(function () {
+                            $(this).val();
+                        }));
+                    });
                 });
 
-                $('#Dc_No').change(function(){
-                    $('#Dc_No_Db').val($('#Dc_No').val());
+                //دائن
+                $('.Tr_Ds').change(function(){
+                    $('.Tr_Ds_Db').each(function () {
+                        $(this).val($('.Tr_Ds').each(function () {
+                            $(this).val();
+                        }));
+                    });
                 });
-                $('#Tr_Ds').change(function(){
-                    $('#Tr_Ds_Db').val($('#Tr_Ds').val());
+
+                //مدين
+                $('.Tr_Ds_Db').change(function(){
+                    $('.Tr_Ds').each(function () {
+                        $(this).val($('.Tr_Ds_Db').each(function () {
+                            $(this).val();
+                        }));
+                    });
                 });
 
                 //رقم حساب الصندوق الرئيسى
-                $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
-                $('#Tr_Db_Select').change(function(){
-                    $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
+                $('.Tr_Db_Acc_No').each(function () {
+                    $(this).val($('.Tr_Db_Select').children('option:selected').val())
+                });
+                $('.Tr_Db_Select').change(function(){
+                    $('.Tr_Db_Acc_No').val($('.Tr_Db_Select').val());
                 });
 
                 //اضافة سطر فى الجدول
@@ -200,22 +247,22 @@
                     e.preventDefault();
 
                     Ln_No = Ln_No + 1;
-
                     $.ajax({
-                        url: "{{route('validateCache')}}",
+                        url: "{{route('validateCacheN')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                             Cmp_No: $('#Cmp_No').children('option:selected').val(),
                             Tr_No: $('#Tr_No').val(),
                             Tr_Dt: $('#Tr_Dt').val(),
+                            Jr_Ty: $('#Jr_Ty').val(),
                             Tr_DtAr: $('#Tr_DtAr').val(),
                             Doc_Type: $('#Doc_Type').children('option:selected').val(),
                             Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
                             Tr_ExchRat: $('#Tr_ExchRat').val(),
                             Tot_Amunt: $('#Tot_Amunt').val(),
                             Tr_TaxVal: $('#Tr_TaxVal').val(),
-                            Rcpt_By: $('#Rcpt_By').val(),
+                            //Rcpt_By: $('#Rcpt_By').val(),
                             Salman_No: $('#Salman_No').val(),
                             Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                             Sysub_Account: $('#Sysub_Account').val(),
@@ -225,11 +272,11 @@
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
-                            Chq_no: $('#Chq_no').val(),
+                            //Chq_no: $('#Chq_no').val(),
                             Bnk_Nm: $('#Bnk_Nm').val(),
                             Issue_Dt: $('#Issue_Dt').val(),
                             Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                            Rcpt_By: $('#Rcpt_By').val(),
+                            //Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
@@ -254,27 +301,29 @@
                                     Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                     Tr_No: $('#Tr_No').val(),
                                     Tr_Dt: $('#Tr_Dt').val(),
+                                    Jr_Ty: $('#Jr_Ty').children('option:selected').val(),
                                     Tr_DtAr: $('#Tr_DtAr').val(),
                                     Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                     Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
                                     Tr_ExchRat: $('#Tr_ExchRat').val(),
                                     Tot_Amunt: $('#Tot_Amunt').val(),
                                     Tr_TaxVal: $('#Tr_TaxVal').val(),
-                                    Rcpt_By: $('#Rcpt_By').val(),
+                                    //Rcpt_By: $('#Rcpt_By').val(),
                                     Salman_No: $('#Salman_No').val(),
                                     Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                     Sysub_Account: $('#Sysub_Account').val(),
                                     Tr_Cr: $('#Tr_Cr').val(),
+                                    Tr_Db: $('#Tr_Db').val(),
                                     Dc_No: $('#Dc_No').val(),
                                     Tr_Ds: $('#Tr_Ds').val(),
                                     Tr_Ds1: $('#Tr_Ds1').val(),
                                     Acc_No: $('#Acc_No').val(),
                                     last_record : $('#last_record').val(),
-                                    Chq_no: $('#Chq_no').val(),
+                                    //Chq_no: $('#Chq_no').val(),
                                     Bnk_Nm: $('#Bnk_Nm').val(),
                                     Issue_Dt: $('#Issue_Dt').val(),
                                     Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                                    Rcpt_By: $('#Rcpt_By').val(),
+                                    //Rcpt_By: $('#Rcpt_By').val(),
                                     Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                     Tr_Db_Db: $('#Tr_Db_Db').val(),
                                     Tr_Cr_Db: $('#Tr_Cr_Db').val(),
@@ -296,21 +345,39 @@
 
                     old = $('#Tr_Db_Db').val();
                 });
+                //
+                // //handle Tr_Ty = 2 سند قبض شيك
+                // $('#Doc_Type').change(function(){
+                //     if($(this).val() == 2){
+                //         $('#cheq_data').removeClass('hidden');
+                //     }
+                //     else{
+                //         $('#cheq_data').addClass('hidden');
+                //         $('#Chq_no').val(null);
+                //         $('#Bnk_Nm').val(null);
+                //         $('#Issue_Dt').val(null);
+                //         $('#Due_Issue_Dt').val(null);
+                //         $('#Rcpt_By').val(null);
+                //     }
+                // });
 
-                //handle Tr_Ty = 2 سند قبض شيك
-                $('#Doc_Type').change(function(){
-                    if($(this).val() == 2){
-                        $('#cheq_data').removeClass('hidden');
-                    }
-                    else{
-                        $('#cheq_data').addClass('hidden');
-                        $('#Chq_no').val(null);
-                        $('#Bnk_Nm').val(null);
-                        $('#Issue_Dt').val(null);
-                        $('#Due_Issue_Dt').val(null);
-                        $('#Rcpt_By').val(null);
-                    }
+
+                //handle Jr_Ty = 18  عند اختيار مدين
+                $(document).on('change', '#Jr_Ty', function () {
+
+                        if($(this).val() == 18){
+                            $('.Debit').removeClass('hidden');
+                            $('#Creditor').addClass('hidden');
+                            //$('#Creditor').attr('id','new');
+
+                        }
+                        else{
+                            // $('#Creditor').attr('id','Creditor');
+                            $('#Debit').addClass('hidden');
+                            $('#Creditor').removeClass('hidden');
+                        }
                 });
+
 
                 var calcTax = function(){
                     var amount = $('#Tot_Amunt').val();
@@ -322,10 +389,14 @@
                         else{
                             var total_amount = amount;
                         }
-                        $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
+                        $('.Tr_Cr').each(function () {
+                            $(this).val(parseFloat(amount) + parseFloat(total_amount))
+                        });
                     }
                     else{
-                        $('#Tr_Cr').val(parseFloat(amount));
+                        $('.Tr_Cr').each(function () {
+                            $(this).val(parseFloat(amount))
+                        });
                     }
 
                     // var cr = $('#Tr_Cr').val();
@@ -335,7 +406,7 @@
                     // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Cr').val()));
                 }
 
-                //حفظ السند فى قاعدة البيانات
+                //حفظ الاشعار فى قاعدة البيانات
                 $('#save').click(function(e){
                     e.preventDefault();
                     if($('#Tr_Dif').val() != 0){
@@ -344,7 +415,7 @@
                     else{
                         catch_data = JSON.stringify(catch_data);
                         $.ajax({
-                            url: "{{route('rcatchs.store')}}",
+                            url: "{{route('notice.store')}}",
                             type: "post",
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", catch_data},
@@ -353,16 +424,18 @@
                                 // $('#Cmp_No').val(null);
                                 // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
+                                $('#Jr_Ty').val(null);
                                 // $('#Doc_Type').val(1);
                                 $('#Tr_Crncy').val(0);
                                 $('#Tr_ExchRat').val(null);
                                 $('#Tot_Amunt').val(null);
                                 $('#Tr_TaxVal').val(null);
-                                $('#Rcpt_By').val(null);
+                                //$('#Rcpt_By').val(null);
                                 $('#Salman_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
                                 $('#Tr_Cr').val(null);
+                                $('#Tr_Db').val(null);
                                 $('#Dc_No').val(null);
                                 $('#Tr_Ds').val(null);
                                 $('#Tr_Ds1').val(null);
@@ -372,11 +445,11 @@
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Salman_No_Name').val(null);
                                 $('#Salman_No').val(null);
-                                $('#Chq_no').val(null);
+                                //$('#Chq_no').val(null);
                                 $('#Bnk_Nm').val(null);
                                 $('#Issue_Dt').val(null);
                                 $('#Due_Issue_Dt').val(null);
-                                $('#Rcpt_By').val(null);
+                                //$('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#table_view').html(`<table class="table" id="table">
@@ -400,7 +473,7 @@
         </script>
     @endpush
     <div class="hidden" id="alert"></div>
-    <form action="{{route('rcatchs.store')}}" method="POST" id="create_cache">
+    <form action="{{route('notice.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         <div class="col-md-12">
             <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
@@ -469,16 +542,16 @@
                 </div>
 
                 <div class="row">
-                    {{-- نوع السند نقدى \ شيك --}}
-                    <div class="col-md-1">
-                        <label for="noti_Ty">{{trans('admin.noti_type')}}</label>
-                        <select name="noti_Ty" id="noti_Ty" class="form-control">
-                            @foreach(App\Enums\NotiType::toSelectArray() as $key => $value)
-                                <option value="{{$key}}">{{$value}}</option>
-                            @endforeach
+                    {{-- نوع الاشعار دائـن / مديـن --}}
+                    <div class="col-md-2">
+                        <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
+                        <select name="Jr_Ty" id="Jr_Ty" class="form-control">
+                            <option value="19">{{trans('admin.Fbal_CR_')}}</option>
+                            <option value="18">{{trans('admin.Fbal_Db_')}}</option>
                         </select>
                     </div>
-                    {{-- نهاية نوع السند نقدى \ شيك --}}
+                    {{-- نهاية نوع الاشعار دائـن / مديـن --}}
+
                     {{-- العمله --}}
                     <div class="col-md-2">
                         <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
@@ -555,9 +628,9 @@
         </div>
         {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
 
-        <div class="row">
+        <div class="row"  id="Creditor">
             <br>
-            {{-- بيانات الحساب الدائن --}}
+{{--             بيانات الحساب الدائن--}}
             <div class="col-md-6">
                 <div class="panel panel-primary panel-H">
                     <div class="panel-heading panel-A panel-A">
@@ -566,15 +639,206 @@
                         </div>
                     </div>
                     <div class="panel-body">
+{{--                         الحساب الرئيسى--}}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
+                                <input type="text" name="main_acc" id="main_acc" class="form-control main_acc" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Acc_No"></label>
+                                <input type="text" name="Acc_No" id="Acc_No" class="form-control Acc_No" disabled>
+                            </div>
+                        </div>
+{{--                         نهاية الحساب الرئيسى--}}
+{{--                         نوع الحساب--}}
+                        <div class="row">
+{{--                             نوع الحساب عملاء - موردين - موظفين - ....--}}
+                            <div class="col-md-2">
+                                <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
+                                <select name="Ac_Ty" id="Ac_Ty" class="form-control Ac_Ty">
+                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                    @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
+                                        <option value="{{$key}}">{{$value}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+{{--                             رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - ....--}}
+                            <div class="col-md-7">
+                                <label for="Acc_No_Select"></label>
+                                <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2 Acc_No_Select">
+                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                </select>
+                            </div>
+{{--                             رقم العميل - رقم المورد - رقم الموظف--}}
+                            <div class="col-md-3">
+                                <label for="Sysub_Account"></label>
+                                <input type="text" name="Sysub_Account" id="Sysub_Account" class="form-control Sysub_Account">
+                            </div>
+                        </div>
+{{--                         نهاية نوع الحساب--}}
+
+                        <div class="row">
+{{--                             المبلغ دائن--}}
+                            <div class="col-md-4">
+                                <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
+                                <input type="text" disabled name="Tr_Cr" id="Tr_Cr" class="form-control Tr_Cr">
+                            </div>
+{{--                             نهاية المبلغ دائن--}}
+{{--                             رقم المستند--}}
+                            <div class="col-md-4">
+                                <label for="Dc_No">{{trans('admin.receipt_number')}}</label>
+                                <input type="text" name="Dc_No" id="Dc_No" class="form-control Dc_No">
+                            </div>
+{{--                             نهاية رقم المستند--}}
+{{--                             مركز التكلفه--}}
+                            <div class="col-md-4 hidden" id="Costcntr_No_content">
+                                <label for="Costcntr_No">{{trans('admin.with_cc')}}</label>
+                                <select name="Costcntr_No" id="Costcntr_No" class="form-control select2">
+                                    <option value="{{null}}">{{trans('admin.select')}}</option>
+                                    @if(count($cost_center) > 0)
+                                        @foreach($cost_center as $cc)
+                                            <option value="{{$cc->Costcntr_No}}">{{ $cc->{'Costcntr_Nm'.session('lang')} }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+{{--                             نهاية مركز التكلفه--}}
+                        </div>
+                        <div class="row">
+{{--                             البيان عربى--}}
+                            <div class="col-md-12">
+                                <br>
+                                <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
+                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-6 Tr_Ds">
+                            </div>
+                        </div>
+
+{{--                         نهاية البيان عربى--}}
+                        <div class="row">
+{{--                             البيان انجليزى--}}
+                            <div class="col-md-12">
+                                <br>
+                                <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
+                                <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6">
+                                <button style="margin-right: 10px" class="btn btn-primary panel-A col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
+                            </div>
+{{--                             نهاية البيان انجليزى--}}
+{{--                             اضافة سطر--}}
+
+{{--                             نهاية اضافة سطر--}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+{{--             نهاية بيانات الحساب الدائن--}}
+{{--             بيانات الحساب المدين--}}
+            <div class="col-md-6">
+                <div class="panel panel-primary panel-H">
+                    <div class="panel-heading panel-A">
+                        <div class="panel-title">
+                            {{trans('admin.dept_account')}}
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+{{--                             الصندوق الرئيسى--}}
+                            <div class="col-md-6">
+                                <label for="Tr_Db_Select">{{trans('admin.allowed')}}</label>
+                                <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control Tr_Db_Select">
+                                    @if(count($banks) > 0)
+                                        @foreach($banks as $bnk)
+                                            <option value="{{$bnk->Acc_No}}">{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Tr_Db_Acc_No"></label>
+                                <input type="text" name="Tr_Db_Acc_No" id="Tr_Db_Acc_No" class="form-control Tr_Db_Acc_No">
+                            </div>
+{{--                             بيانات الصندوق الرئيسى--}}
+{{--                             رقم المستند--}}
+                            <div class="col-md-3">
+                                <label for="">{{trans('admin.receipt_number')}}</label>
+                                <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control Dc_No_Db">
+                            </div>
+{{--                             نهاية رقم المستند--}}
+                        </div>
+{{--                         البيان--}}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <br>
+                                <label for="Tr_Ds" class="col-md-2">{{trans('admin.note_ar')}}</label>
+                                <input type="text" name="Tr_Ds_Db" id="Tr_Ds_Db" class="form-control col-md-10 Tr_Ds_Db">
+                            </div>
+                        </div>
+{{--                         البيان--}}
+                    </div>
+{{--                     اجمالى السند--}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        {{trans('admin.receipt_total')}}
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+{{--                                     مدين--}}
+                                    <div class="col-md-3">
+                                        <label for="Tr_Db_Db">{{trans('admin.Fbal_Db_')}}</label>
+                                        <input type="text" name="Tr_Db_Db" id="Tr_Db_Db" class="form-control Tr_Db_Db" value='0.00'>
+                                    </div>
+{{--                                     نهاية مدين--}}
+{{--                                     دائن--}}
+                                    <div class="col-md-3">
+                                        <label for="Tr_Cr_Db">{{trans('admin.Fbal_CR_')}}</label>
+                                        <input type="text" name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control Tr_Cr_Db" value='0.00'>
+                                    </div>
+{{--                                     نهاية دائن--}}
+{{--                                     الفرق--}}
+                                    <div class="col-md-3">
+                                        <label for="Tr_Dif">{{trans('admin.subtract')}}</label>
+                                        <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control Tr_Dif" disabled>
+                                    </div>
+{{--                                     نهاية الفرق--}}
+{{--                                     الرصيد الحالى--}}
+                                     <div class="col-md-3">
+                                        <label for="Crnt_Blnc">{{trans('admin.current_balance')}}</label>
+                                        <input type="text" name="Crnt_Blnc" id="Crnt_Blnc" class="form-control">
+                                    </div>
+{{--                                     نهاية الرصيد الحالى--}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+{{--                     نهاية اجمالى السند--}}
+                </div>
+            </div>
+{{--             نهاية بيانات الحساب المدين--}}
+        </div>
+
+        <div class="row hidden Debit" id="Debit">
+            <br>
+            {{-- بيانات الحساب المدين --}}
+            <div class="col-md-6">
+                <div class="panel panel-primary panel-H">
+                    <div class="panel-heading panel-A panel-A">
+                        <div class="panel-title">
+                            {{trans('admin.dept_account')}}
+                        </div>
+                    </div>
+                    <div class="panel-body">
                         {{-- الحساب الرئيسى --}}
                         <div class="row">
                             <div class="col-md-8">
                                 <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
-                                <input type="text" name="main_acc" id="main_acc" class="form-control" disabled>
+                                <input type="text" name="main_acc" id="main_acc" class="form-control main_acc" disabled>
                             </div>
                             <div class="col-md-4">
                                 <label for="Acc_No"></label>
-                                <input type="text" name="Acc_No" id="Acc_No" class="form-control" disabled>
+                                <input type="text" name="Acc_No" id="Acc_No" class="form-control Acc_No" disabled>
                             </div>
                         </div>
                         {{-- نهاية الحساب الرئيسى --}}
@@ -583,7 +847,7 @@
                             {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
                             <div class="col-md-2">
                                 <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
-                                <select name="Ac_Ty" id="Ac_Ty" class="form-control">
+                                <select name="Ac_Ty" id="Ac_Ty" class="form-control Ac_Ty">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
                                     @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
                                         <option value="{{$key}}">{{$value}}</option>
@@ -593,29 +857,29 @@
                             {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
                             <div class="col-md-7">
                                 <label for="Acc_No_Select"></label>
-                                <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
+                                <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2 Acc_No_Select">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
                                 </select>
                             </div>
                             {{-- رقم العميل - رقم المورد - رقم الموظف --}}
                             <div class="col-md-3">
                                 <label for="Sysub_Account"></label>
-                                <input type="text" name="Sysub_Account" id="Sysub_Account" class="form-control">
+                                <input type="text" name="Sysub_Account" id="Sysub_Account" class="form-control Sysub_Account">
                             </div>
                         </div>
                         {{-- نهاية نوع الحساب --}}
 
                         <div class="row">
-                            {{-- المبلغ دائن --}}
+                            {{-- المبلغ مدين --}}
                             <div class="col-md-4">
-                                <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                                <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
+                                <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
+                                <input type="text" disabled name="Tr_Db" id="Tr_Db" class="form-control Tr_Db">
                             </div>
                             {{-- نهاية المبلغ دائن --}}
                             {{-- رقم المستند --}}
                             <div class="col-md-4">
-                                <label for="Dc_No">{{trans('admin.receipt_number')}}</label>
-                                <input type="text" name="Dc_No" id="Dc_No" class="form-control">
+                                <label for="Dc_No_Db">{{trans('admin.receipt_number')}}</label>
+                                <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control Dc_No_Db">
                             </div>
                             {{-- نهاية رقم المستند --}}
                             {{-- مركز التكلفه --}}
@@ -636,8 +900,8 @@
                             {{-- البيان عربى --}}
                             <div class="col-md-12">
                                 <br>
-                                <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
-                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-6">
+                                <label for="Tr_Ds_Db" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
+                                <input type="text" name="Tr_Ds_Db" id="Tr_Ds_Db" class="form-control col-md-6 Tr_Ds_Db">
                             </div>
                         </div>
 
@@ -658,13 +922,13 @@
                     </div>
                 </div>
             </div>
-            {{-- نهاية بيانات الحساب الدائن --}}
-            {{-- بيانات الحساب المدين --}}
+            {{-- نهاية بيانات الحساب المدين --}}
+            {{-- بيانات الحساب الدائن --}}
             <div class="col-md-6">
                 <div class="panel panel-primary panel-H">
                     <div class="panel-heading panel-A">
                         <div class="panel-title">
-                            {{trans('admin.dept_account')}}
+                            {{trans('admin.information_account')}}
                         </div>
                     </div>
                     <div class="panel-body">
@@ -672,7 +936,7 @@
                             {{-- الصندوق الرئيسى --}}
                             <div class="col-md-6">
                                 <label for="Tr_Db_Select">{{trans('admin.allowed')}}</label>
-                                <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control">
+                                <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control Tr_Db_Select">
                                     @if(count($banks) > 0)
                                         @foreach($banks as $bnk)
                                             <option value="{{$bnk->Acc_No}}">{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
@@ -682,13 +946,13 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="Tr_Db_Acc_No"></label>
-                                <input type="text" name="Tr_Db_Acc_No" id="Tr_Db_Acc_No" class="form-control">
+                                <input type="text" name="Tr_Db_Acc_No" id="Tr_Db_Acc_No" class="form-control Tr_Db_Acc_No">
                             </div>
                             {{-- بيانات الصندوق الرئيسى --}}
                             {{-- رقم المستند --}}
                             <div class="col-md-3">
                                 <label for="">{{trans('admin.receipt_number')}}</label>
-                                <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control">
+                                <input type="text" name="Dc_No" id="Dc_No" class="form-control Dc_No">
                             </div>
                             {{-- نهاية رقم المستند --}}
                         </div>
@@ -697,7 +961,7 @@
                             <div class="col-md-12">
                                 <br>
                                 <label for="Tr_Ds" class="col-md-2">{{trans('admin.note_ar')}}</label>
-                                <input type="text" name="Tr_Ds_Db" id="Tr_Ds_Db" class="form-control col-md-10">
+                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10 Tr_Ds">
                             </div>
                         </div>
                         {{-- البيان --}}
@@ -715,26 +979,26 @@
                                     {{-- مدين --}}
                                     <div class="col-md-3">
                                         <label for="Tr_Db_Db">{{trans('admin.Fbal_Db_')}}</label>
-                                        <input type="text" name="Tr_Db_Db" id="Tr_Db_Db" class="form-control" value='0.00'>
+                                        <input type="text" name="Tr_Db_Db" id="Tr_Db_Db" class="form-control Tr_Db_Db" value='0.00'>
                                     </div>
                                     {{-- نهاية مدين --}}
                                     {{-- دائن --}}
                                     <div class="col-md-3">
                                         <label for="Tr_Cr_Db">{{trans('admin.Fbal_CR_')}}</label>
-                                        <input type="text" name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control" value='0.00'>
+                                        <input type="text" disabled name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control Tr_Cr_Db" value='0.00'>
                                     </div>
                                     {{-- نهاية دائن --}}
                                     {{-- الفرق --}}
                                     <div class="col-md-3">
                                         <label for="Tr_Dif">{{trans('admin.subtract')}}</label>
-                                        <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control" disabled>
+                                        <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control Tr_Dif" disabled>
                                     </div>
                                     {{-- نهاية الفرق --}}
                                     {{-- الرصيد الحالى --}}
-                                    {{-- <div class="col-md-3">
+                                    <div class="col-md-3">
                                         <label for="Crnt_Blnc">{{trans('admin.current_balance')}}</label>
                                         <input type="text" name="Crnt_Blnc" id="Crnt_Blnc" class="form-control">
-                                    </div> --}}
+                                    </div>
                                     {{-- نهاية الرصيد الحالى --}}
                                 </div>
                             </div>

@@ -14,6 +14,7 @@ use App\Models\Admin\MainBranch;
 use App\Enums\TypeType;
 use App\glcc;
 use App\Http\Controllers\Controller;
+use App\Models\Admin\MainCompany;
 use App\parents;
 use App\state;
 use App\subscription;
@@ -84,6 +85,7 @@ class SupervisorsController extends Controller
     public function show($ID_No)
     {
         $supervisor= AstMarket::findOrFail($ID_No);
+//        $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
         return view('admin.supervisors.show',compact('supervisor'));
     }
 

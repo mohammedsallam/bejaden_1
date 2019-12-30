@@ -75,18 +75,19 @@ class NoticeController extends Controller
     public function store(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
-
+//        dd($catch_data);
         //Create header
         if (count($catch_data) > 0) {
             $last_index = count($catch_data) - 1;
+//            if($catch_data[$last_index]->Jr_Ty==19){}
             $header = GLJrnal::create([
                 'Cmp_No' => $catch_data[$last_index]->Cmp_No,
                 'Brn_No' => $catch_data[$last_index]->Brn_No,
-                'Jr_Ty' => 2,
+
+                'Jr_Ty' => $catch_data[$last_index]->Jr_Ty,
                 'Tr_No' => $catch_data[$last_index]->Tr_No,
                 'Month_No' => Carbon::now()->month,
                 'Month_Jvno' => $catch_data[$last_index]->Tr_No,
-                'Doc_Type' => $catch_data[$last_index]->Doc_Type,
                 'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
                 'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
@@ -100,11 +101,8 @@ class NoticeController extends Controller
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
-                'Chq_no' => $catch_data[$last_index]->Chq_no,
-                'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
                 'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
                 'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
-                'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
@@ -137,7 +135,7 @@ class NoticeController extends Controller
                     $trans_db = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
-                        'Jr_Ty' => 2,
+                        'Jr_Ty' => $data->Jr_Ty,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
@@ -150,7 +148,8 @@ class NoticeController extends Controller
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
-                        'Doc_Type' => $data->Doc_Type,
+                        //'Doc_Type' => $data->Doc_Type,
+                        //'noti_Ty' => $data->noti_Ty,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
                         'Ln_No' => 1,
@@ -165,7 +164,7 @@ class NoticeController extends Controller
                 $trans_cr = GLjrnTrs::create([
                     'Cmp_No' => $data->Cmp_No,
                     'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => 2,
+                    'Jr_Ty' => $data->Jr_Ty,
                     'Tr_No' => $data->Tr_No,
                     'Month_No' => Carbon::now()->month,
                     'Tr_Dt' => $data->Tr_Dt,
@@ -178,7 +177,6 @@ class NoticeController extends Controller
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
-                    'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
@@ -476,7 +474,7 @@ class NoticeController extends Controller
     public function getCatchRecpt(Request $request)
     {
         if ($request->ajax()) {
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', $request->Cmp_No)->paginate(6);
+            $gls = GLJrnal::where('Jr_Ty',$request->Jr_Ty)->where('Cmp_No', $request->Cmp_No)->paginate(6);
             return view('admin.notice.rcpts', ['gls' => $gls]);
         }
     }
