@@ -32,11 +32,11 @@ class receiptCashController extends Controller
     {
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+            $gls = GLJrnal::where('Jr_Ty', 4)->paginate(6);
         }
         else{
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            $gls = GLJrnal::where('Jr_Ty', 4)->where('Cmp_No', session('Cmp_No'))->paginate(6);
         }
         return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
     }
@@ -77,6 +77,7 @@ class receiptCashController extends Controller
     public function store(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
+//        dd(is_array($catch_data));
 
         //Create header
         if(count($catch_data) > 0){
@@ -84,7 +85,7 @@ class receiptCashController extends Controller
             $header = GLJrnal::create([
                 'Cmp_No' => $catch_data[$last_index]->Cmp_No,
                 'Brn_No' => $catch_data[$last_index]->Brn_No,
-                'Jr_Ty' => 2,
+                'Jr_Ty' => 4,
                 'Tr_No' => $catch_data[$last_index]->Tr_No,
                 'Month_No' => Carbon::now()->month,
                 'Month_Jvno' => $catch_data[$last_index]->Tr_No,
@@ -121,6 +122,7 @@ class receiptCashController extends Controller
 
         }
 
+
         if($request->catch_data){
             foreach($catch_data as $data){
 
@@ -131,7 +133,7 @@ class receiptCashController extends Controller
                     $trans_db = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
-                        'Jr_Ty' => 2,
+                        'Jr_Ty' => 4,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
@@ -139,8 +141,8 @@ class receiptCashController extends Controller
                         'Ac_Ty' => 1,
                         'Sysub_Account' => 0,
                         'Acc_No' => $data->Tr_Db_Acc_No,
-                        'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                        'Tr_Cr' => 0.00,
+                        'Tr_Cr' => $catch_data[$last_index]->Tr_Db_Db,
+                        'Tr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
@@ -159,7 +161,7 @@ class receiptCashController extends Controller
                 $trans_cr = GLjrnTrs::create([
                     'Cmp_No' => $data->Cmp_No,
                     'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => 2,
+                    'Jr_Ty' => 4,
                     'Tr_No' => $data->Tr_No,
                     'Month_No' => Carbon::now()->month,
                     'Tr_Dt' => $data->Tr_Dt,
@@ -167,8 +169,8 @@ class receiptCashController extends Controller
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
-                    'Tr_Db' => 0.00,
-                    'Tr_Cr' => $data->Tr_Cr,
+                    'Tr_Db' => $data->Tr_Db,
+                    'Tr_Cr' => 0.00,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
@@ -200,7 +202,7 @@ class receiptCashController extends Controller
                                 ->where('Ln_No', 1)
                                 ->pluck('Acc_No')->first();
         $debt = MtsChartAc::where('Acc_No', $debt_acc_no)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
-        $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['License_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
+        $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
         $brn = MainBranch::where('Cmp_No', $gl->Cmp_No)->get(['Brn_Nm'.ucfirst(session('lang'))])->first();
         return view('admin.cash.catch.show', ['gl' => $gl, 'gltrns' => $gltrns, 'cmp' => $cmp, 'brn' => $brn, 'debt' => $debt]);
     }
@@ -433,7 +435,7 @@ class receiptCashController extends Controller
                 'Salman_No' => 'sometimes',
                 'Ac_Ty' => 'required',
                 'Sysub_Account' => 'required',
-                'Tr_Cr' => 'required',
+                'Tr_Db' => 'sometimes',
                 'Dc_No' => 'sometimes',
                 'Tr_Ds' => 'required',
                 'Tr_Ds1' => 'sometimes',
@@ -453,7 +455,7 @@ class receiptCashController extends Controller
                 'Salman_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
                 // 'Sysub_Account' => trans('admin.'),
-                'Tr_Cr' => trans('admin.amount_cr'),
+                'Tr_Db' => trans('admin.amount_Db'),
                 'Dc_No' => trans('admin.receipt_number'),
                 'Tr_Ds' => trans('admin.note_ar'),
                 'Tr_Ds1' => trans('admin.note_en'),

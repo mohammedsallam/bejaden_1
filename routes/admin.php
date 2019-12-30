@@ -235,6 +235,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('branchForEdit','Admin\banks\ReceiptCatchController@branchForEdit')->name('branchForEdit');
         Route::post('getRcptDetails','Admin\banks\ReceiptCatchController@getRcptDetails')->name('getRcptDetails');
 
+
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
         Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
         Route::post('getSalesManC', 'Admin\Cash\receiptCashController@getSalesMan')->name('getSalesManC');
@@ -247,6 +248,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
         Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');
+
 
 
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
@@ -264,17 +266,17 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
-        Route::get('hijriNoti', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijriNoti');
-//        Route::post('getSalesMan', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesMan');
-//        Route::post('createTrNo', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNo');
-//        Route::post('getSubAcc', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAcc');
-//        Route::post('getMainAccNo', 'Admin\Notice\NoticeController@getMainAccNo')->name('getMainAccNo');
-//        Route::post('getTaxValue', 'Admin\Notice\NoticeController@getTaxValue')->name('getTaxValue');
-//        Route::post('validateCache', 'Admin\Notice\NoticeController@validateCache')->name('validateCache');
-//        Route::post('getCatchRecpt', 'Admin\Notice\NoticeController@getCatchRecpt')->name('getCatchRecpt');
-//        Route::get('printCatchRecpt/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecpt');
-//        Route::post('branchForEdit','Admin\Notice\NoticeController@branchForEdit')->name('branchForEdit');
-//        Route::post('getRcptDetails','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetails');
+        // Route::get('hijri', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijri');
+        // Route::post('getSalesMan', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesMan');
+        // Route::post('createTrNo', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNo');
+        // Route::post('getSubAcc', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAcc');
+        // Route::post('getMainAccNo', 'Admin\Notice\NoticeController@getMainAccNo')->name('getMainAccNo');
+        // Route::post('getTaxValue', 'Admin\Notice\NoticeController@getTaxValue')->name('getTaxValue');
+        // Route::post('validateCache', 'Admin\Notice\NoticeController@validateCache')->name('validateCache');
+        // Route::post('getCatchRecpt', 'Admin\Notice\NoticeController@getCatchRecpt')->name('getCatchRecpt');
+        // Route::get('printCatchRecpt/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecpt');
+        // Route::post('branchForEdit','Admin\Notice\NoticeController@branchForEdit')->name('branchForEdit');
+        // Route::post('getRcptDetails','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetails');
 
 
 

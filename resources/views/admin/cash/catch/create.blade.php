@@ -27,7 +27,7 @@
             //get branches of specific company selection
             $(document).on('change', '#Cmp_No', function(){
                 $.ajax({
-                    url: "{{route('branchForEdit')}}",
+                    url: "{{route('branchForEditC')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -37,7 +37,7 @@
                 });
 
                 $.ajax({
-                    url: "{{route('getTaxValue')}}",
+                    url: "{{route('getTaxValueC')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -51,7 +51,7 @@
             $(document).on('change', '#Dlv_Stor', function(){
                 var Cmp_No = $('#Cmp_No').children('option:selected').val();
                 $.ajax({
-                    url: "{{route('createTrNo')}}",
+                    url: "{{route('createTrNoC')}}",
                     type: "POST",
                     dataType: 'json',
                     data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val(), Cmp_No: Cmp_No },
@@ -80,7 +80,7 @@
 
                 //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
                 $.ajax({
-                    url: "{{route('getSubAcc')}}",
+                    url: "{{route('getSubAccC')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty},
@@ -98,7 +98,7 @@
 
                 //get parent account number on account select
                 $.ajax({
-                    url: "{{route('getMainAccNo')}}",
+                    url: "{{route('getMainAccNoC')}}",
                     type: "POST",
                     dataType: 'json',
                     data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty, Acc_No: Acc_No },
@@ -120,7 +120,7 @@
                 //get salesman in case Acc_Ty == 2 (customers)
                 if(Acc_Ty == 2){
                         $.ajax({
-                            url: "{{route('getSalesMan')}}",
+                            url: "{{route('getSalesManC')}}",
                             type: "POST",
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
@@ -159,26 +159,26 @@
                 }
                 else{
                     $('#Tr_TaxVal').attr('disabled','disabled');
-                    $('#Tr_Cr').val($('#Tot_Amunt').val());
+                    $('#Tr_Db').val($('#Tot_Amunt').val());
                 }
 
-                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
+                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
 
             $('#Tot_Amunt').change(function(){
                 calcTax();
-                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
+                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
 
             $('#Tr_TaxVal').change(function(){
                 calcTax();
 
-                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
+                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Db').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
 
@@ -202,7 +202,7 @@
                 Ln_No = Ln_No + 1;
 
                 $.ajax({
-                    url: "{{route('validateCache')}}",
+                    url: "{{route('validateCacheC')}}",
                     type: "post",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
@@ -219,7 +219,7 @@
                             Salman_No: $('#Salman_No').val(),
                             Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                             Sysub_Account: $('#Sysub_Account').val(),
-                            Tr_Cr: $('#Tr_Cr').val(),
+                            Tr_Db: $('#Tr_Db').val(),
                             Dc_No: $('#Dc_No').val(),
                             Tr_Ds: $('#Tr_Ds').val(),
                             Tr_Ds1: $('#Tr_Ds1').val(),
@@ -242,8 +242,8 @@
                                     <td>`+$('#Tr_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                                    <td>`+$('#Tr_Db').val()+`</td>
                                     <td>0.00</td>
-                                    <td>`+$('#Tr_Cr').val()+`</td>
                                     <td>`+$('#Tr_Ds').val()+`</td>
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
@@ -264,7 +264,7 @@
                                 Salman_No: $('#Salman_No').val(),
                                 Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                 Sysub_Account: $('#Sysub_Account').val(),
-                                Tr_Cr: $('#Tr_Cr').val(),
+                                Tr_Db: $('#Tr_Db').val(),
                                 Dc_No: $('#Dc_No').val(),
                                 Tr_Ds: $('#Tr_Ds').val(),
                                 Tr_Ds1: $('#Tr_Ds1').val(),
@@ -322,17 +322,17 @@
                     else{
                         var total_amount = amount;
                     }
-                    $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
+                    $('#Tr_Db').val(parseFloat(amount) + parseFloat(total_amount));
                 }
                 else{
-                    $('#Tr_Cr').val(parseFloat(amount));
+                    $('#Tr_Db').val(parseFloat(amount));
                 }
 
-                // var cr = $('#Tr_Cr').val();
+                // var cr = $('#Tr_Db').val();
                 // var old_db = $('#Tr_Db_Db').val();
                 // var old_cr = $('#Tr_Cr_Db').val();
-                // $('#Tr_Db_Db').val(parseFloat(old_db) + parseFloat($('#Tr_Cr').val()));
-                // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Cr').val()));
+                // $('#Tr_Db_Db').val(parseFloat(old_db) + parseFloat($('#Tr_Db').val()));
+                // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Db').val()));
             }
 
             //حفظ السند فى قاعدة البيانات
@@ -344,7 +344,7 @@
                 else{
                     catch_data = JSON.stringify(catch_data);
                     $.ajax({
-                        url: "{{route('rcatchs.store')}}",
+                        url: "{{route('receiptCash.store')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", catch_data},
@@ -362,7 +362,7 @@
                             $('#Salman_No').val(null);
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
-                            $('#Tr_Cr').val(null);
+                            $('#Tr_Db').val(null);
                             $('#Dc_No').val(null);
                             $('#Tr_Ds').val(null);
                             $('#Tr_Ds1').val(null);
@@ -400,7 +400,7 @@
     </script>
 @endpush
 <div class="hidden" id="alert"></div>
-<form action="{{route('rcatchs.store')}}" method="POST" id="create_cache">
+<form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
     {{ csrf_field() }}
     <div class="col-md-12">
         <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
@@ -568,7 +568,7 @@
             <div class="panel panel-primary panel-H">
                 <div class="panel-heading panel-A panel-A">
                     <div class="panel-title">
-                        {{trans('admin.information_account')}}
+                        {{trans('admin.dept_account')}}
                     </div>
                 </div>
                 <div class="panel-body">
@@ -614,8 +614,8 @@
                     <div class="row">
                         {{-- المبلغ دائن --}}
                         <div class="col-md-4">
-                            <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control">
+                            <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
+                            <input type="text" name="Tr_Db" id="Tr_Db" class="form-control">
                         </div>
                         {{-- نهاية المبلغ دائن --}}
                         {{-- رقم المستند --}}
@@ -670,7 +670,8 @@
             <div class="panel panel-primary panel-H">
                 <div class="panel-heading panel-A">
                     <div class="panel-title">
-                        {{trans('admin.dept_account')}}
+                        {{trans('admin.information_account')}}
+
                     </div>
                 </div>
                 <div class="panel-body">

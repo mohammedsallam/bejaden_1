@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
-                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled 
+                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled
                     value="{{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}">
                 </div>
                 <div class="col-md-4">
@@ -54,7 +54,7 @@
             <div class="row">
                 {{-- المبلغ دائن --}}
                 <div class="col-md-4">
-                    <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
+{{--                    <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>--}}
                     <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}">
                 </div>
                 {{-- نهاية المبلغ دائن --}}

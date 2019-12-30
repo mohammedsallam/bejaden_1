@@ -1,8 +1,14 @@
 @extends('admin.index')
-@section('title',trans('admin.catch_receipt'))
+@section('title',trans('admin.caching_receipt'))
 @section('content')
 @push('js')
 <script>
+
+    $(document).ready(function() {
+        $('#example').DataTable();
+    } );
+
+
     $(document).ready(function(){
         //get branches of specific company selection
         $(document).on('change', '#Cmp_No', function(){
@@ -144,7 +150,7 @@
 {{-- header end --}}
 <div class="row">
     <div class="col-md-12" id="rcpt_content">
-        <table class="table table-striped" style=" display: block;  overflow-x: auto; white-space: nowrap;">
+        <table id="example" class="table table-striped display" style=" display: block;  overflow-x: auto; white-space: nowrap;">
             <thead>
                 <tr>
                     <th>{{trans('admin.id')}}</th>
@@ -216,7 +222,7 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <a href="{{route('rcatchs.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                                <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                             </td>
                             <td>
                                 <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
