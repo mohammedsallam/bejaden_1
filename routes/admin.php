@@ -239,6 +239,23 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmp');
 
 
+        Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
+        Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
+        Route::post('getSalesManC', 'Admin\Cash\receiptCashController@getSalesMan')->name('getSalesManC');
+        Route::post('createTrNoC', 'Admin\Cash\receiptCashController@createTrNo')->name('createTrNoC');
+        Route::post('getSubAccC', 'Admin\Cash\receiptCashController@getSubAcc')->name('getSubAccC');
+        Route::post('getMainAccNoC', 'Admin\Cash\receiptCashController@getMainAccNo')->name('getMainAccNoC');
+        Route::post('getTaxValueC', 'Admin\Cash\receiptCashController@getTaxValue')->name('getTaxValueC');
+        Route::post('validateCacheC', 'Admin\Cash\receiptCashController@validateCache')->name('validateCacheC');
+        Route::post('getCatchRecptC', 'Admin\Cash\receiptCashController@getCatchRecpt')->name('getCatchRecptC');
+        Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
+        Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
+        Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');
+       // Route::post('getBranchesFilter', 'Admin\Cash\receiptCashController@getBranchesFilter')->name('getBranchesFilter');
+
+
+
+
         Route::get('banks/Receipt/receipts/catch/catch','Admin\banks\ReceiptController@catchindex')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
         Route::get('banks/Receipt/receipts/catch/all','Admin\banks\ReceiptController@catch')->name('receipts.catch');
@@ -254,6 +271,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
+
         //Route::post('notice/debit', 'Admin\Notice\NoticeController@getDebitPage')->name('getDebit');
         Route::get('getcr', 'Admin\Notice\NoticeController@getSelect')->name('getSelect');
         Route::get('getdb', 'Admin\Notice\NoticeController@getDbSelect')->name('getDbSelect');
@@ -269,7 +287,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptN/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecptN');
         Route::post('branchForEditN','Admin\Notice\NoticeController@branchForEdit')->name('branchForEditN');
         Route::post('getRcptDetailsN','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetailsN');
-
 
 
 
