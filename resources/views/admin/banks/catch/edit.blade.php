@@ -437,9 +437,11 @@
                     url: "{{route('deleteTrns')}}",
                     type: 'post',
                     data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
-                    dataType: 'json',
+                    dataType: 'html',
                     success: function (data) {
-                        $('#Tr_DtAr').val(data);
+                        $('#alert').removeClass('hidden');
+                        $('#alert').html(`<div class='alert alert-info'>تم الحذف بنجاح</div>`);
+                        alert('done');
                     }
                 });
             });
@@ -738,7 +740,7 @@
                         {{-- رقم المستند --}}
                         <div class="col-md-3">
                             <label for="">{{trans('admin.receipt_number')}}</label>
-                            <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control" value="{{$gltrns[0]->Dc_No}}">
+                            <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control" value="{{$gltrns? $gltrns[0]->Dc_No : null}}">
                         </div>
                         {{-- نهاية رقم المستند --}}
                     </div>

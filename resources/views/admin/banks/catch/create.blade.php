@@ -118,24 +118,6 @@
                 }
             });
 
-            function addRowHandlers() {
-                var table = document.getElementById('table');
-                var rows = table.getElementsByTagName('tr');
-                for (i = 0; i < rows.length; i++) {
-                    var currentRow = table.rows[i];
-                    currentRow.id=i;
-                    var createClickHandler = function(row) {
-                    return function() {
-                            var cell = row.getElementsByTagName("td")[0];
-                            var id = cell[j].innerHTML;
-                            currentRow.remove();
-                        };
-                    };
-                    currentRow.onclick = createClickHandler(currentRow);
-                }
-            }
-            window.onload = addRowHandlers(); 
-
             //add tax
             $('#create_cache :checkbox[id=Tr_TaxVal_check]').change(function(){
                 if($(this).is(':checked')){
@@ -170,6 +152,7 @@
             $('#Dc_No').change(function(){
                 $('#Dc_No_Db').val($('#Dc_No').val());
             });
+
             $('#Tr_Ds').change(function(){
                 $('#Tr_Ds_Db').val($('#Tr_Ds').val());
             });
@@ -241,7 +224,10 @@
                             var rows = document.getElementById('table').rows;
                             var sum = 0.0;
                             for (var i=1; i<rows.length; i++){
-                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                                if(rows[i].cells.length > 0){
+                                    sum += parseFloat(rows[i].cells[4].innerHTML);
+                                    console.log(sum);
+                                }
                             }
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
@@ -277,7 +263,43 @@
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
                                 Ln_No: $('#Ln_No').val(),
                                 Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                                main_acc: $('#main_acc').val(),
                             };
+                            
+                            catch_data.push(item);
+
+                            // $('#Cmp_No').val(null);
+                            // $('#Dlv_Stor').val(null);
+                            // $('#Tr_No').val(null);
+                            // $('#Doc_Type').val(1);
+                            $('#Tr_Crncy').val(0);
+                            $('#Tr_ExchRat').val(null);
+                            $('#Tot_Amunt').val(null);
+                            // $('#Tr_TaxVal').val(null);
+                            $('#main_acc').val(null);
+                            $('#Rcpt_By').val(null);
+                            $('#Salman_No').val(null);
+                            $('#Ac_Ty').val(null);
+                            $('#Sysub_Account').val(null);
+                            $('#Tr_Cr').val(null);
+                            $('#Dc_No').val(null);
+                            $('#Tr_Ds').val(null);
+                            $('#Tr_Ds1').val(null);
+                            $('#Acc_No').val(null);
+                            $('#Acc_No_Select').val(null);
+                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
+                            $('#Dc_No_Db').val(null);
+                            $('#Tr_Ds_Db').val(null);
+                            $('#Salman_No_Name').val(null);
+                            $('#Salman_No').val(null);
+                            $('#Chq_no').val(null);
+                            $('#Bnk_Nm').val(null);
+                            $('#Issue_Dt').val(null);
+                            $('#Due_Issue_Dt').val(null);
+                            $('#Rcpt_By').val(null);
+                            // $('#Tr_Db_Db').val(null);
+                            // $('#Tr_Cr_Db').val(null);
+                            $('#Ln_No').val(-1);
 
                             // handle click table rows click
                             var table = document.getElementById("table");
@@ -285,15 +307,11 @@
                                 for (var i = 0; i < table.rows.length; i++) {
                                     for (var j = 0; j < table.rows[i].cells.length; j++)
                                     table.rows[i].onclick = function () {
-                                        tableText(this, item);
+                                        tableText(this, catch_data);
                                         this.innerHTML = '';
                                     };
                                 }
                             }
-
-                            catch_data.pop();
-                            catch_data.push(item);
-                            $('#Ln_No').val(-1);
 
                         }
                         else{
@@ -325,6 +343,7 @@
                 }
             });
 
+            //حساب نسبة الفائده
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
                 if($('#create_cache :checkbox[id=Tr_TaxVal_check]').is(':checked')){
@@ -357,6 +376,7 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
+                            $('#alert').removeClass('hidden');
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
                             // $('#Cmp_No').val(null);
                             // $('#Dlv_Stor').val(null);
@@ -405,33 +425,43 @@
             });
 
             function tableText(tableCell, data) {
-                alert(data.Tr_Ds);
-                $('#Cmp_No').val(data.Cmp_No);
-                $('#Brn_No').val(data.Brn_No);
-                $('#Tr_No').val(data.Tr_No);
-                $('#Tr_Dt').val(data.Tr_Dt);
-                $('#Tr_DtAr').val(data.Tr_DtAr);
-                $('#Doc_Type').val(data.Doc_Type);
-                $('#Tr_Crncy').val(data.Tr_Crncy);
-                $('#Tr_ExchRat').val(data.Tr_ExchRat);
-                $('#Tot_Amunt').val(data.Tot_Amunt);
-                $('#Tr_TaxVal').val(data.Tr_TaxVal);
-                $('#Rcpt_By').val(data.Rcpt_By);
-                $('#Salman_No').val(data.Salman_No);
-                $('#Ac_Ty').val(data.Ac_Ty);
-                $('#Sysub_Account').val(data.Sysub_Account);
-                $('#Tr_Cr').val(data.Tr_Cr);
-                $('#Dc_No').val(data.Dc_No);
-                $('#Tr_Ds').val(data.Tr_Ds);
-                $('#Tr_Ds1').val(data.Tr_Ds1);
-                $('#Acc_No').val(data.Acc_No);
-                $('#Chq_no').val(data.Chq_no);
-                $('#Bnk_Nm').val(data.Bnk_Nm);
-                $('#Tr_Db_Acc_No').val(data.Tr_Db_Acc_No);
-                $('#Tr_Db_Db').val(data.Tr_Db_Db);
-                $('#Tr_Cr_Db').val(data.Tr_Cr_Db);
-                $('#Ln_No').val(data.Ln_No);
-                $('#Tr_Ds_Db').val(data.Tr_Ds_Db);
+                var Ln_No = tableCell.cells[0].innerHTML;
+                var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                old = updated_sum;
+                $('#Tr_Db_Db').val(updated_sum);
+                $('#Tr_Cr_Db').val(updated_sum);
+
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].Ln_No == Ln_No){
+                        $('#Ln_No').val(data[i].Ln_No);
+                        $('#Tr_No').val(data[i].Tr_No);
+                        $('#Tr_Dt').val(data[i].Tr_Dt);
+                        $('#Tr_DtAr').val(data[i].Tr_DtAr);
+                        $('#Doc_Type').val(data[i].Doc_Type);
+                        $('#Tr_Crncy').val(data[i].Tr_Crncy);
+                        $('#Tr_ExchRat').val(data[i].Tr_ExchRat);
+                        $('#Tot_Amunt').val(data[i].Tot_Amunt);
+                        $('#Tr_TaxVal').val(data[i].Tr_TaxVal);
+                        $('#Rcpt_By').val(data[i].Rcpt_By);
+                        $('#Salman_No').val(data[i].Salman_No);
+                        $('#Ac_Ty').val(data[i].Ac_Ty);
+                        $('#Sysub_Account').val(data[i].Sysub_Account);
+                        $('#Tr_Cr').val(data[i].Tr_Cr);
+                        $('#Dc_No').val(data[i].Dc_No);
+                        $('#Tr_Ds').val(data[i].Tr_Ds);
+                        $('#Tr_Ds1').val(data[i].Tr_Ds1);
+                        $('#Acc_No').val(data[i].Acc_No);
+                        $('#Chq_no').val(data[i].Chq_no);
+                        $('#Bnk_Nm').val(data[i].Bnk_Nm);
+                        $('#Tr_Db_Acc_No').val(data[i].Tr_Db_Acc_No);
+                        $('#Ln_No').val(data[i].Ln_No);
+                        $('#Tr_Ds_Db').val(data[i].Tr_Ds_Db);
+                        $('#main_acc').val(data[i].main_acc);
+                        $('#Acc_No_Select').val(data[i].Acc_No_Select);
+                        catch_data.splice(i, 1);
+                        break;
+                    }
+                }
             }
             
         });
@@ -623,6 +653,7 @@
                             </select>
                         </div>
                         {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
+                        {{-- <input type="text" id="Acc_No_Name" hidden> --}}
                         <div class="col-md-7">
                             <label for="Acc_No_Select"></label>
                             <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">

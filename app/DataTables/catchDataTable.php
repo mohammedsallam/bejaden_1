@@ -35,8 +35,15 @@ class catchDataTable extends DataTable
                                     ->get(['Tr_Ds'])->first();
                 return $trans->Tr_Ds;
             })
+            ->addColumn('status', function ($query) {
+                if($query->status == 1){
+                    return trans('admin.rcpt_deleted');
+                }
+            })
             ->addColumn('edit', function ($query) {
-                return '<a href="'.route('rcatchs.edit', $query->Tr_No).'" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
+                if($query->status != 1){
+                    return '<a href="'.route('rcatchs.edit', $query->Tr_No).'" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
+                }
             })
             ->editColumn('Entr_Dt', function ($query){
                 return GLJrnal::where('Tr_No', $query->Tr_No)
@@ -167,6 +174,7 @@ class catchDataTable extends DataTable
             ['name'=>'Doc_Type','data'=>'Doc_Type','title'=>trans('admin.receipts_type')],
             ['name'=>'Entr_Dt','data'=>'Entr_Dt','title'=>trans('admin.receipt_date')],
             ['name'=>'Acc_Nm'.ucfirst(session('lang')),'data'=>'Sysub_Account','title'=>trans('admin.note_for')],
+            ['name'=>'status', 'data'=>'status', 'title'=>trans('admin.rcpt_status')],
             ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'print','data'=>'print','title'=>trans('admin.print'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
