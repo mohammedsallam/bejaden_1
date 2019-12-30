@@ -474,147 +474,157 @@
         <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
     </div>
     <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
-    <div class="row">
-        {{-- الشركه --}}
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Cmp_No">{{trans('admin.company')}}</label>
-                <select name="Cmp_No" id="Cmp_No" class="form-control">
-                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                    @if(count($companies) > 0)
-                            @foreach($companies as $cmp)
-                                <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                            @endforeach
-                    @endif
-                </select>
-            </div>
+    <br>
+    <br>
+    <br>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">{{trans('admin.data_Catch')}}</div>
         </div>
-        {{-- نهاية الشركه --}}
-        {{-- الفرع --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Dlv_Stor">{{trans('admin.section')}}</label>
-                <div id="Brn_No_content">
-                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                        <option value="{{null}}">{{trans('admin.select')}}</option>
+        <div class="panel-body">
+            <div class="row">
+                {{-- الشركه --}}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Cmp_No">{{trans('admin.company')}}</label>
+                        <select name="Cmp_No" id="Cmp_No" class="form-control">
+                            <option value="{{null}}">{{trans('admin.select')}}</option>
+                            @if(count($companies) > 0)
+                                    @foreach($companies as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                {{-- نهاية الشركه --}}
+                {{-- الفرع --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Dlv_Stor">{{trans('admin.section')}}</label>
+                        <div id="Brn_No_content">
+                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
+                                <option value="{{null}}">{{trans('admin.select')}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {{-- نهاية الفرع --}}
+                {{-- رقم القيد --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
+                        <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
+                    </div>
+                </div>
+                {{-- نهاية رقم القيد --}}
+                {{-- تاريخ القيد --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
+                        <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
+                        <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
+                    </div>
+                </div>
+                {{-- نهاية تاريخ القيد --}}
+            </div>
+        
+            <div class="row">
+                {{-- نوع السند نقدى \ شيك --}}
+                <div class="col-md-1">
+                    <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
+                    <select name="Doc_Type" id="Doc_Type" class="form-control">
+                        @foreach(App\Enums\PayType::toSelectArray() as $key => $value)
+                            <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
                     </select>
                 </div>
+                {{-- نهاية نوع السند نقدى \ شيك --}}
+                {{-- العمله --}}
+                <div class="col-md-2">
+                    <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
+                    <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
+                        @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
+                            <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- نهاية العمله --}}
+                {{-- سعر الصرف --}}
+                <div class="col-md-1">
+                    <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
+                    <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control">
+                </div>
+                {{-- نهاية سعر الصرف --}}
+                {{-- المبلغ المطلوب --}}
+                <div class="col-md-2">
+                    <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
+                    <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
+                </div>
+                {{-- نهاية المبلغ المطلوب --}}
+                {{-- الضريبه --}}
+                <div class="col-md-1">
+                    <input type="checkbox" id="Tr_TaxVal_check">
+                    <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
+                    <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" disabled>
+                </div>
+                {{-- نهاية الضريبه --}}
+                {{-- مقبوض بواسطة --}}
+                <div class="col-md-2">
+                    <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
+                    <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
+                </div>
+                {{-- نهاية مقبوض بواسطة --}}
+                {{-- مندوب المبيعات --}}
+                <div id="sales_man_content">
+                    <div class="col-md-2">
+                        <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
+                        <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
+                    </div>
+                    <div class="col-md-1">
+                        <label for=""></label>
+                        <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
+                        <br>
+                    </div>
+                </div>
+                {{-- نهاية مندوب المبيعات --}}
             </div>
-        </div>
-        {{-- نهاية الفرع --}}
-        {{-- رقم القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
-                <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
+        
+            {{-- بيانات الشيك فى سند قبض شيك --}}
+            <div class="row hidden" id="cheq_data">
+                {{-- رقم الشيك --}}
+                <div class="col-md-2">
+                    <label for="Chq_no">{{trans('admin.check_number')}}</label>
+                    <input type="text" name="Chq_no" id="Chq_no" class="form-control">
+                </div>
+                {{-- نهاية رقم الشيك --}}
+                {{-- اسم البنك --}}
+                <div class="col-md-2">
+                    <label for="Bnk_Nm">{{trans('admin.Bnk_Nm')}}</label>
+                    <input type="text" id="Bnk_Nm" name="Bnk_Nm" class="form-control">
+                </div>
+                {{-- نهاية اسم البنك --}}
+                {{-- تاريخ استحقاق الشيك --}}
+                <div class="col-md-2">
+                    <label for="Issue_Dt">{{trans('admin.Issue_Dt')}}</label>
+                    <input type="text" name="Issue_Dt" id="Issue_Dt" class="form-control datepicker">
+                </div>
+                {{-- نهاية تاريخ استحقاق الشيك --}}
+                {{-- تاريخ استلام الشيك --}}
+                <div class="col-md-2">
+                    <label for="Due_Issue_Dt">{{trans('admin.Due_Issue_Dt')}}</label>
+                    <input type="text" name="Due_Issue_Dt" id="Due_Issue_Dt" class="form-control datepicker">
+                </div>
+                {{-- نهاية تاريخ استلام الشيك --}}
             </div>
+            {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
         </div>
-        {{-- نهاية رقم القيد --}}
-        {{-- تاريخ القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
-                <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
-                <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
-            </div>
-        </div>
-        {{-- نهاية تاريخ القيد --}}
     </div>
-
-    <div class="row">
-        {{-- نوع السند نقدى \ شيك --}}
-        <div class="col-md-1">
-            <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
-            <select name="Doc_Type" id="Doc_Type" class="form-control">
-                @foreach(App\Enums\PayType::toSelectArray() as $key => $value)
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية نوع السند نقدى \ شيك --}}
-        {{-- العمله --}}
-        <div class="col-md-2">
-            <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
-            <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
-                @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية العمله --}}
-        {{-- سعر الصرف --}}
-        <div class="col-md-1">
-            <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
-            <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control">
-        </div>
-        {{-- نهاية سعر الصرف --}}
-        {{-- المبلغ المطلوب --}}
-        <div class="col-md-2">
-            <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
-            <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
-        </div>
-        {{-- نهاية المبلغ المطلوب --}}
-        {{-- الضريبه --}}
-        <div class="col-md-1">
-            <input type="checkbox" id="Tr_TaxVal_check">
-            <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
-            <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" disabled>
-        </div>
-        {{-- نهاية الضريبه --}}
-        {{-- مقبوض بواسطة --}}
-        <div class="col-md-2">
-            <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
-            <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
-        </div>
-        {{-- نهاية مقبوض بواسطة --}}
-        {{-- مندوب المبيعات --}}
-        <div id="sales_man_content">
-            <div class="col-md-2">
-                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
-            </div>
-            <div class="col-md-1">
-                <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
-                <br>
-            </div>
-        </div>
-        {{-- نهاية مندوب المبيعات --}}
-    </div>
-
-    {{-- بيانات الشيك فى سند قبض شيك --}}
-    <div class="row hidden" id="cheq_data">
-        {{-- رقم الشيك --}}
-        <div class="col-md-2">
-            <label for="Chq_no">{{trans('admin.check_number')}}</label>
-            <input type="text" name="Chq_no" id="Chq_no" class="form-control">
-        </div>
-        {{-- نهاية رقم الشيك --}}
-        {{-- اسم البنك --}}
-        <div class="col-md-2">
-            <label for="Bnk_Nm">{{trans('admin.Bnk_Nm')}}</label>
-            <input type="text" id="Bnk_Nm" name="Bnk_Nm" class="form-control">
-        </div>
-        {{-- نهاية اسم البنك --}}
-        {{-- تاريخ استحقاق الشيك --}}
-        <div class="col-md-2">
-            <label for="Issue_Dt">{{trans('admin.Issue_Dt')}}</label>
-            <input type="text" name="Issue_Dt" id="Issue_Dt" class="form-control datepicker">
-        </div>
-        {{-- نهاية تاريخ استحقاق الشيك --}}
-        {{-- تاريخ استلام الشيك --}}
-        <div class="col-md-2">
-            <label for="Due_Issue_Dt">{{trans('admin.Due_Issue_Dt')}}</label>
-            <input type="text" name="Due_Issue_Dt" id="Due_Issue_Dt" class="form-control datepicker">
-        </div>
-        {{-- نهاية تاريخ استلام الشيك --}}
-    </div>
-    {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
 
     <div class="row">
         <br>
