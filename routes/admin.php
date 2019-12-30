@@ -254,7 +254,9 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
-
+        //Route::post('notice/debit', 'Admin\Notice\NoticeController@getDebitPage')->name('getDebit');
+        Route::get('getcr', 'Admin\Notice\NoticeController@getSelect')->name('getSelect');
+        Route::get('getdb', 'Admin\Notice\NoticeController@getDbSelect')->name('getDbSelect');
         Route::get('hijriNoti', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijriNoti');
 
         Route::post('getSalesManN', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesManN');
