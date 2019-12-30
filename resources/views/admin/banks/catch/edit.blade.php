@@ -437,9 +437,11 @@
                     url: "{{route('deleteTrns')}}",
                     type: 'post',
                     data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
-                    dataType: 'json',
+                    dataType: 'html',
                     success: function (data) {
-                        $('#Tr_DtAr').val(data);
+                        $('#alert').removeClass('hidden');
+                        $('#alert').html(`<div class='alert alert-info'>تم الحذف بنجاح</div>`);
+                        alert('done');
                     }
                 });
             });
@@ -684,24 +686,20 @@
                         </div>
                         <div class="row">
                             {{-- البيان عربى --}}
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <br>
                                 <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
-                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10">
+                                <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-6">
                             </div>
                             {{-- نهاية البيان عربى --}}
                             {{-- البيان انجليزى --}}
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <br>
                                 <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
-                                <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-10">
+                                <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6">
+                                <button style="margin-right: 10px" class="btn btn-primary col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
                             </div>
-                            {{-- نهاية البيان انجليزى --}}
-                            {{-- اضافة سطر --}}
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" id="add_line">{{trans('admin.add_line')}}</button>
-                            </div>
-                            {{-- نهاية اضافة سطر --}}
+                            {{-- نهاية البيان انجليزى --}}   
                         </div>
                     </div>
                 </div>
@@ -738,7 +736,7 @@
                         {{-- رقم المستند --}}
                         <div class="col-md-3">
                             <label for="">{{trans('admin.receipt_number')}}</label>
-                            <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control" value="{{$gltrns[0]->Dc_No}}">
+                            <input type="text" name="Dc_No_Db" id="Dc_No_Db" class="form-control" value="{{$gltrns? $gltrns[0]->Dc_No : null}}">
                         </div>
                         {{-- نهاية رقم المستند --}}
                     </div>

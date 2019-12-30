@@ -28,18 +28,45 @@ class ReceiptCatchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(catchDataTable $catch)
+    public function index(Request $request)
     {
-        if(session('Cmp_No') == -1){
-            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+
+
+        if ($request->Cmp_No == null && $request->pranch == null){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty',2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            }
+            return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
+        }elseif ($request->ajax()) {
+            if ($request->Cmp_No > 0 && $request->pranch == null) {
+
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->paginate(6);
+                return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+
+            } elseif ($request->pranch > 0) {
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->where('Brn_No', $request->pranch)->paginate(6);
+                return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+            }
         }
-        else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
-        }
-        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
-        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
+
+//        if(session('Cmp_No') == -1){
+//            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+//            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+//        }
+//        else{
+//            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+//            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+//        }
+//        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+//        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
     }
 
     public function getRecieptByCmp(Request $request){
@@ -185,9 +212,9 @@ class ReceiptCatchController extends Controller
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
 
-}
             }
         }
+    }
 
 
 
@@ -236,6 +263,7 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
+
         return view('admin.banks.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
     }
 
@@ -312,7 +340,16 @@ class ReceiptCatchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //حذف كل سطور السند
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
+        $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
+        if($trns && count($trns) > 0){
+            foreach($trn as $trn){
+                $trn->delete();
+            }
+        }
+        $gl->status = 1;
+        $gl->save();
     }
 
     //Delete trans line from GLjrnTrs
@@ -332,6 +369,10 @@ class ReceiptCatchController extends Controller
                     $trn->delete();
                 }
             }
+
+            $gl = GLJrnal::where('Tr_No', $request->Tr_No)->first();
+            $gl->status = 1;
+            $gl->save();
         }
     }
 
@@ -404,7 +445,6 @@ class ReceiptCatchController extends Controller
         }
         else{
             if($request->Acc_Ty == 1){
-                return 1;
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
                                     ->where('Level_Status', 1)
                                     ->where('Acc_Typ', 1)
@@ -421,7 +461,6 @@ class ReceiptCatchController extends Controller
             }
             // موردين
             else if($request->Acc_Ty == 3){
-                return 3;
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
                                         ->where('Brn_No', $request->Brn_No)
                                         ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
@@ -429,7 +468,6 @@ class ReceiptCatchController extends Controller
             }
             // موظفين
             else if($request->Acc_Ty == 4){
-                return 4;
             }
         }
     }

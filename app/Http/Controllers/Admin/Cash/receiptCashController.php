@@ -43,14 +43,14 @@ class receiptCashController extends Controller
 
         }elseif ($request->ajax())
         {
-           if ($request->Cmp_No == !null) {
-               $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+            if ($request->Cmp_No > 0 && $request->pranch == null) {
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->paginate(6);
                return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
 
-           }elseif ($request->pranch  == !null){
-                dd($request->all());
-               $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+
+           }elseif ($request->pranch > 0){
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->where('Brn_No', $request->pranch )->paginate(6);
                return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
            }
