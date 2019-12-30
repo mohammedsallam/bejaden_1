@@ -313,7 +313,16 @@ class ReceiptCatchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //حذف كل سطور السند
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
+        $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
+        if($trns && count($trns) > 0){
+            foreach($trn as $trn){
+                $trn->delete();
+            }
+        }
+        $gl->status = 1;
+        $gl->save();
     }
 
     //Delete trans line from GLjrnTrs
