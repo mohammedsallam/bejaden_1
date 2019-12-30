@@ -319,12 +319,21 @@
                 <ul class="treeview-menu" style=" {{ active_menu('banks')[1]  }}">
                     {{-- <li><a href="{{url('/admin/limitations/cred/create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.create_cred_limitations')}} </a></li> --}}
                     <li><a href="{{route('rcatchs.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.catch_receipt')}} </a></li>
+{{--<<<<<<< HEAD--}}
                     <li><a href="{{route('receiptCash.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.caching_receipt')}} </a></li>
                     <li><a href="{{route('notice.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.debt_limitations')}}</a></li>
-                    {{-- <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li> --}}
+                     <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li>
                     <li><a href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a></li>
                     <li><a href="{{route('receiptCash.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>
                     <li><a href="{{url('/admin/limitations/dept/create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_debt_limitations')}} </a></li>
+{{--=======--}}
+{{--                    <li><a href="{{url('/admin/banks/Receipt/receipts/caching/caching')}}"><i class="fa fa-circle-o"></i>{{trans('admin.caching_receipt')}} </a></li>--}}
+{{--                    --}}{{-- <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li> --}}
+{{--                    <li><a href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a></li>--}}
+{{--                    <li><a href="{{url('/admin/banks/Receipt/receipts/caching/all')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>--}}
+{{--                    <li><a href="{{route('notice.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_debt_limitations')}} </a></li>--}}
+{{--                    <li><a href="{{route('notice.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.debt_limitations')}}</a></li>--}}
+{{-->>>>>>> 730bc9ae84f319229da482c1c2f6e419079865d5--}}
                 </ul>
             </li>
             @endhasanyrole

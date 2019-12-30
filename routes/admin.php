@@ -234,6 +234,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecpt/{id}','Admin\banks\ReceiptCatchController@print')->name('printCatchRecpt');
         Route::post('branchForEdit','Admin\banks\ReceiptCatchController@branchForEdit')->name('branchForEdit');
         Route::post('getRcptDetails','Admin\banks\ReceiptCatchController@getRcptDetails')->name('getRcptDetails');
+        Route::post('updateTrns','Admin\banks\ReceiptCatchController@updateTrns')->name('updateTrns');
+        Route::post('deleteTrns','Admin\banks\ReceiptCatchController@deleteTrns')->name('deleteTrns');
+        Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmp');
 
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
@@ -248,6 +251,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
         Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');
+       // Route::post('getBranchesFilter', 'Admin\Cash\receiptCashController@getBranchesFilter')->name('getBranchesFilter');
+
 
 
 

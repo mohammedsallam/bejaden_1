@@ -31,7 +31,7 @@
                         <div class="form-group row col-md-12">
                             <div class="col-md-9">
                                 <div class="col-md-4">{!!Form::label('Mrkt_No', trans('admin.Mrkt_No'))!!}</div>
-                                <div class="col-md-8">{!!Form::text('Mrkt_No', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
+                                <div class="col-md-8">{!!Form::text('Mrkt_No', old('Mrkt_No'), ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
 
                             </div>
                             <div class="col-md-3">
@@ -62,21 +62,13 @@
 
                         <div class="form-group row col-md-12">
                             <div class="col-md-3">{!!Form::label('Mrkt_NmAr', trans('admin.subscriber_name_ar'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Mrkt_NmAr', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
+                            <div class="col-md-9">{!!Form::text('Mrkt_NmAr', old('Mrkt_NmAr'), ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
                         </div>
                         <div class="form-group row col-md-12">
                             <div class="col-md-3">{!!Form::label('Mrkt_NmEn', trans('admin.subscriber_name_en'))!!}</div>
-                            <div class="col-md-9">{!!Form::text('Mrkt_NmEn', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
+                            <div class="col-md-9">{!!Form::text('Mrkt_NmEn', old('Mrkt_NmEn'), ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
                         </div>
 
-                        <div class="form-group row col-md-12">
-                            <div class="col-md-3">{!!Form::label('Mark_No', trans('admin.Mark_No'))!!}</div>
-                            <div class="col-md-9">
-                                {!!Form::select('Mark_No' ,$supervisors->pluck('Mrkt_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                    'class'=>'form-control','placeholder'=>trans('admin.select')
-                                ])!!}
-                            </div>
-                        </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">{{trans('admin.add')}}</button>
                         </div>

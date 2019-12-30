@@ -38,7 +38,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','image','branch_id', 'company_id'
+        'name', 'email', 'password','image','branches_id', 'company_id'
     ];
 
     /**
@@ -56,7 +56,7 @@ class Admin extends Authenticatable
     }
 
     public function branches(){
-        return $this->hasOne(MainBranch::class, 'ID_No', 'id');
+        return $this->belongsTo(MainBranch::class, 'id', 'ID_No');
     }
 
 }

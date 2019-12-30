@@ -211,10 +211,22 @@ return [
 
 //    data links
     ReceiptType::class => [
-        ReceiptType::catchReceipt => 'Catch Receipt',
-        ReceiptType::catchReceiptCheck => 'Catch Receipt by Check',
-        ReceiptType::receipt => 'Receipt',
-        ReceiptType::ReceiptCheck => 'Receipt by Check',
+        ReceiptType::open => 'Open Reciept',
+        ReceiptType::cache_in => 'Cash receipt voucher',
+        ReceiptType::cheq_in => 'Check receipt voucher',
+        ReceiptType::cache_out => 'Cash exchange voucher',
+        ReceiptType::cheq_out => 'Check voucher',
+        ReceiptType::daily => 'Daily voucher',
+        ReceiptType::future_sale => 'Term sales',
+        ReceiptType::cache_sale => 'Cache sales',
+        ReceiptType::future_purchase => 'Term purchase',
+        ReceiptType::cache_purchase => 'Cache purchase',
+        ReceiptType::trnsform_in => 'Enter delivery',
+        ReceiptType::transform_out => 'Give up delivery',
+        ReceiptType::add_equation => 'Settlement by addition',
+        ReceiptType::sub_equation => 'Discount settlement',
+        ReceiptType::debt_notify => 'Debit notify',
+        ReceiptType::credit_notify => 'Credit notify',
     ],
     OperationType::class => [
         OperationType::suppliers => 'Suppliers',

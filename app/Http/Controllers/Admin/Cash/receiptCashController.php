@@ -28,17 +28,37 @@ class receiptCashController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if(session('Cmp_No') == -1){
-            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 4)->paginate(6);
+        if ($request->Cmp_No == null && $request->pranch == null){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 4)->paginate(6);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 4)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            }
+            return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
+        }elseif ($request->ajax())
+        {
+           if ($request->Cmp_No == !null) {
+               $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+               $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->paginate(6);
+               return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+
+           }elseif ($request->pranch  == !null){
+dd($request->all());
+               $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+               $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->where('Brn_No', $request->pranch )->paginate(6);
+               return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+           }
+
         }
-        else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 4)->where('Cmp_No', session('Cmp_No'))->paginate(6);
-        }
-        return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
+
+        //return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
     }
 
     /**
@@ -500,6 +520,16 @@ class receiptCashController extends Controller
             }
         }
     }
+
+//    public function getBranchesFilter(Request $request){
+//        if (!empty($request)){
+//
+//        }elseif ($request->ajax())
+//        {
+//            $gl = GLJrnal::where('Cmp_No', $request->Cmp_No)->get();
+//
+//        }
+//    }
 
     public function getRcptDetails(Request $request){
         if($request->ajax()){

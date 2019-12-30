@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.create_catch_receipt'))
+@section('title',trans('admin.edit_catch_receipt'))
 @section('content')
 @push('js')
     <script>
@@ -138,7 +138,7 @@
                     for (var j = 0; j < table.rows[i].cells.length; j++)
                     table.rows[i].onclick = function () {
                         tableText(this);
-                        this.parentNode.removeChild(this);
+                        this.innerHTML = '';
                     };
                 }
             }
@@ -156,6 +156,9 @@
                         data: {"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
                         success: function(data){
                             $('#credit_data').html(data);
+                            $('#Tot_Amunt').val($('#Tr_Cr').val());
+                            $('#Salman_No').val($('#getSalNo').val());
+                            $('#Salman_No_Name').val($('#getSalName').val());
                         }
                     });
                 }
@@ -207,10 +210,13 @@
             });
 
             //اضافة سطر فى الجدول
-            $('#add_line').click(function(e){
+            $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
 
-                Ln_No = Ln_No + 1;
+                if($('#Ln_No').val() == -1){
+                    Ln_No = Ln_No + 1;
+                    $('#Ln_No').val(Ln_No);
+                }
 
                 $.ajax({
                     url: "{{route('validateCache')}}",
@@ -248,18 +254,32 @@
                     success: function(data){
                         var response = JSON.parse(data);
                         if(response.success == true){
-                            $('#table').append(`
-                                <tr>
-                                    <td>`+Ln_No+`</td>
-                                    <td>`+$('#Sysub_Account').val()+`</td>
-                                    <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td>0.00</td>
-                                    <td>`+$('#Tr_Cr').val()+`</td>
-                                    <td>`+$('#Tr_Ds').val()+`</td>
-                                    <td>`+$('#Dc_No').val()+`</td>
-                                    <td>`+$('#Tr_Ds1').val()+`</td>
-                                </tr>`);
-                        
+                            var rows = document.getElementById('table').rows;
+                            var sum = 0.0;
+                            for (var i=0; i<rows.length; i++) {
+                                var txt = rows[i].textContent || rows[i].innerText;
+                                if (txt.trim()===""){
+                                    rows[i].innerHTML=`
+                                        <td>`+$('#Ln_No').val()+`</td>
+                                        <td>`+$('#Sysub_Account').val()+`</td>
+                                        <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                                        <td>0.00</td>
+                                        <td>`+$('#Tr_Cr').val()+`</td>
+                                        <td>`+$('#Tr_Ds').val()+`</td>
+                                        <td>`+$('#Dc_No').val()+`</td>
+                                        <td>`+$('#Tr_Ds1').val()+`</td>
+                                    `;
+                                }
+                            }
+
+                            var sum = 0.0;
+                            for (var i=1; i<rows.length; i++){
+                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                            }
+                            rows[1].cells[3].innerHTML = sum;
+                            $('#Tr_Db_Db').val(sum);
+                            $('#Tr_Cr_Db').val(sum);
+
                             var item = {
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
@@ -289,7 +309,7 @@
                                 Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                                Ln_No: Ln_No,
+                                Ln_No: $('#Ln_No').val(),
                             };
 
                             catch_data.push(item);
@@ -302,6 +322,7 @@
                                 $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
                             }
                         }
+
                     } 
                 });
 
@@ -355,7 +376,7 @@
                 else{
                     catch_data = JSON.stringify(catch_data);
                     $.ajax({
-                        url: "{{route('rcatchs.store')}}",
+                        url: "{{route('updateTrns')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", catch_data},
@@ -406,6 +427,22 @@
                     });
                 }
             });
+
+            //حذف سطر من السند
+            $('#delete_button').click(function(e){
+                e.preventDefault();
+                var Tr_No = $('#Tr_No').val();
+                var Ln_No = $('#Ln_No').val();
+                $.ajax({
+                    url: "{{route('deleteTrns')}}",
+                    type: 'post',
+                    data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#Tr_DtAr').val(data);
+                    }
+                });
+            });
   
         });
     </script>
@@ -414,7 +451,9 @@
 <form action="{{route('rcatchs.update', $gl->Tr_No)}}" method="POST" id="create_cache">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
+
     <div class="col-md-12">
+        <button type="submit" class="btn btn-danger" id="delete_button" style="float:left;"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
         <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
     </div>
     <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
@@ -526,12 +565,11 @@
             <div class="col-md-2">
                 <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
                 <input type="text" name="Salman_No_Name" id="Salman_No_Name" 
-                class="form-control" disabled
-                value="{{\App\Models\Admin\MtsSuplir::where('Sup_No', $gl->Salman_No)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}">
+                class="form-control" disabled value="">
             </div>
             <div class="col-md-1">
                 <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled value="{{$gl->Salman_No}}">
+                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
                 <br>
             </div>
         </div>
@@ -582,6 +620,7 @@
                         </div>
                     </div>
                     <div class="panel-body">
+                        <input type="text" name="Ln_No" id="Ln_No" value="{{-1}}" hidden>
                         {{-- الحساب الرئيسى --}}
                         <div class="row">
                             <div class="col-md-8">
@@ -761,7 +800,7 @@
     {{-- عرض السطور --}}
     <div class="row">
         <div class="col-md-12" id="table_view">
-            <table class="table" id="table"> 
+            <table class="table" id="table" style="cursor: pointer;"> 
                 <thead>
                     <th>{{trans('admin.Ln_No')}}</th>
                     <th>{{trans('admin.account_number')}}</th>
