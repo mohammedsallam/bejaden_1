@@ -37,13 +37,12 @@
                 });
 
                 $(document).on('change', '#Dlv_Stor', function(){
-                    var Cmp_No = document.getElementById('#Cmp_No');
-                    alert(Cmp_No);
+                    var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
                         url: "{{route('receiptCash.index')}}",
                         type: "get",
                         dataType: 'html',
-                        data: { pranch: $(this).val() },
+                        data: { pranch: $(this).val() , Cmp_No: Cmp_No },
                         success: function(data){
                             $('#tableFilter').html(data);
                         }
@@ -54,6 +53,7 @@
     @endpush
     {{-- header start --}}
     <div class="row">
+
         {{-- الشركه --}}
         <div class="col-md-4">
             <div class="form-group">
@@ -92,6 +92,8 @@
 
                     {{-- header end --}}
                     <div class="row">
+                        <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_catch_receipt')}}</a>
+
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
@@ -102,6 +104,7 @@
                                         <th>{{trans('admin.receipts_type')}}</th>
                                         <th>{{trans('admin.receipt_date')}}</th>
                                         <th>{{trans('admin.note_for')}}</th>
+                                        <th>حالة السند</th>
 
                                         <th>{{trans('admin.View')}}</th>
                                         <th>{{trans('admin.print')}}</th>
@@ -126,6 +129,14 @@
 
                                                 <td>
                                                     <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                                                </td>
+
+                                                <td>
+                                                    @if($gl->status == 1)
+                                                        تم الحذف
+                                                    @else
+                                                        فعال
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
