@@ -54,17 +54,32 @@ class NoticeController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+        // مسموح بظهور البنوك و الصنودق فى الاشعارات المدين والدائن
         $banks = [];
         $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm' . session('lang')]);
         foreach ($flags as $flag) {
-            if ($flag->RcpCsh_Voucher == 1) {
+            if ($flag->CR_Note == 1 || $flag->DB_Note == 1) {
                 array_push($banks, $flag);
             }
         }
         return view('admin.notice.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
             'cost_center' => $cost_center]);
     }
+
+    public  function  getSelect(Request $request)
+    {
+        dd($request->Jr_Ty);
+        if($request->ajax()){
+            if($request->Jr_Ty == 19){ /////خصم مسموح به
+                $credits = GLaccBnk::where('CR_Note', 1)->get(['Acc_No', 'Acc_Nm' . ucfirst(session('lang'))])->first();
+            }
+            else if($request->Jr_Ty == 18){ ///// خصم مكتسب
+                $credits = GLaccBnk::where('DB_Note', 1)->get(['Acc_No', 'Acc_Nm' . ucfirst(session('lang'))])->first();
+            }
+        return view('admin.notice.cr', compact('credits'));
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -77,62 +92,91 @@ class NoticeController extends Controller
         $catch_data = json_decode($request->catch_data);
 //        dd($catch_data);
         //Create header
-        if (count($catch_data) > 0) {
-            $last_index = count($catch_data) - 1;
-//            if($catch_data[$last_index]->Jr_Ty==19){}
-            $header = GLJrnal::create([
-                'Cmp_No' => $catch_data[$last_index]->Cmp_No,
-                'Brn_No' => $catch_data[$last_index]->Brn_No,
+//            dd($request->Jr_Ty);
+        if($request->Jr_Ty == 18){
+            if (count($catch_data) > 0) {
 
-                'Jr_Ty' => $catch_data[$last_index]->Jr_Ty,
-                'Tr_No' => $catch_data[$last_index]->Tr_No,
-                'Month_No' => Carbon::now()->month,
-                'Month_Jvno' => $catch_data[$last_index]->Tr_No,
-                'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
-                'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
-                'Acc_No' => $catch_data[$last_index]->Acc_No,
-                'User_ID' => auth::user()->id,
-                'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
-                'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
-                'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
-                'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
-                'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
-                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
-                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
-                'Dc_No' => $catch_data[$last_index]->Dc_No,
-                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
-                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
-                'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
-            ]);
+                $last_index = count($catch_data) - 1;
 
-            $header->Entr_Dt = $header->created_at->format('Y-m-d');
-            $header->Entr_Time = $header->created_at->format('H:i:s');
-            if ($catch_data[$last_index]->Ac_Ty == 1) {
-                $header->Chrt_No = $catch_data[$last_index]->Sysub_Account;
+                $header = GLJrnal::create([
+                    'Cmp_No' => $catch_data[$last_index]->Cmp_No,
+                    'Brn_No' => $catch_data[$last_index]->Brn_No,
+
+                    'Jr_Ty' => $catch_data[$last_index]->Jr_Ty,
+                    'Tr_No' => $catch_data[$last_index]->Tr_No,
+                    'Month_No' => Carbon::now()->month,
+                    'Month_Jvno' => $catch_data[$last_index]->Tr_No,
+                    'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
+                    'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
+                    'Acc_No' => $catch_data[$last_index]->Acc_No,
+                    'User_ID' => auth::user()->id,
+                    'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
+                    'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
+                    'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
+                    'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
+                    'Salman_No' => $catch_data[$last_index]->Salman_No,
+                    'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
+                    'Tr_Ds_Db' => $catch_data[$last_index]->Tr_Ds_Db,
+                    //'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
+                    'Dc_No_Db' => $catch_data[$last_index]->Dc_No_Db,
+                    'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
+                    'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
+                    'Tr_Db_Db' => $catch_data[$last_index]->Tr_Db,
+                    'Tr_Cr_Db' => $catch_data[$last_index]->Tr_Cr,
+                ]);
+
+                $header->Entr_Dt = $header->created_at->format('Y-m-d');
+                $header->Entr_Time = $header->created_at->format('H:i:s');
+                if ($catch_data[$last_index]->Ac_Ty == 1) {
+                    $header->Chrt_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 2) {
+                    $header->Cstm_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 3) {
+                    $header->Sup_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 4) {
+                    $header->Emp_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                $header->save();
+
             }
-            if ($catch_data[$last_index]->Ac_Ty == 2) {
-                $header->Cstm_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            if ($catch_data[$last_index]->Ac_Ty == 3) {
-                $header->Sup_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            if ($catch_data[$last_index]->Ac_Ty == 4) {
-                $header->Emp_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            $header->save();
+            if ($request->catch_data) {
+                foreach ($catch_data as $data) {
 
-        }
+                    $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No', 1)->first();
+                    if (!$debt) {
+                        // Create transaction debt
+                        $trans_db = GLjrnTrs::create([
+                            'Cmp_No' => $data->Cmp_No,
+                            'Brn_No' => $data->Brn_No,
+                            'Jr_Ty' => $data->Jr_Ty,
+                            'Tr_No' => $data->Tr_No,
+                            'Month_No' => Carbon::now()->month,
+                            'Tr_Dt' => $data->Tr_Dt,
+                            'Tr_DtAr' => $data->Tr_DtAr,
+                            'Ac_Ty' => 1,
+                            'Sysub_Account' => 0,
+                            'Acc_No' => $data->Tr_Db_Acc_No,
+                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                            'Tr_Cr' => 0.00,
+                            'Dc_No' => $data->Dc_No,
+                            'Tr_Ds' => $data->Tr_Ds,
+                            //'Tr_Ds1' => $data->Tr_Ds1,
+                            'User_ID' => auth::user()->id,
+                            'Rcpt_Value' => $data->Tot_Amunt,
+                            'Ln_No' => 1,
+                        ]);
 
-        if ($request->catch_data) {
-            foreach ($catch_data as $data) {
+                        $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+                        $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+                        $trans_db->save();
+                    }
 
-                $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                    ->where('Ln_No', 1)->first();
-                if (!$debt) {
-                    // Create transaction debt
-                    $trans_db = GLjrnTrs::create([
+                    //Create transaction credit
+                    $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
                         'Jr_Ty' => $data->Jr_Ty,
@@ -140,52 +184,136 @@ class NoticeController extends Controller
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
-                        'Ac_Ty' => 1,
-                        'Sysub_Account' => 0,
-                        'Acc_No' => $data->Tr_Db_Acc_No,
-                        'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                        'Tr_Cr' => 0.00,
+                        'Ac_Ty' => $data->Ac_Ty,
+                        'Sysub_Account' => $data->Sysub_Account,
+                        'Acc_No' => $data->Acc_No,
+                        'Tr_Db' => 0.00,
+                        'Tr_Cr' => $data->Tr_Cr,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
-                        'Tr_Ds1' => $data->Tr_Ds1,
-                        //'Doc_Type' => $data->Doc_Type,
-                        //'noti_Ty' => $data->noti_Ty,
+                        //'Tr_Ds1' => $data->Tr_Ds1,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
-                        'Ln_No' => 1,
+                        'Ln_No' => $data->Ln_No,
                     ]);
-
-                    $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
-                    $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
-                    $trans_db->save();
+                    $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                    $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+                    $trans_cr->save();
                 }
+            }
 
-                //Create transaction credit
-                $trans_cr = GLjrnTrs::create([
-                    'Cmp_No' => $data->Cmp_No,
-                    'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => $data->Jr_Ty,
-                    'Tr_No' => $data->Tr_No,
+        }else {
+            if (count($catch_data) > 0) {
+
+                $last_index = count($catch_data) - 1;
+
+                $header = GLJrnal::create([
+                    'Cmp_No' => $catch_data[$last_index]->Cmp_No,
+                    'Brn_No' => $catch_data[$last_index]->Brn_No,
+
+                    'Jr_Ty' => $catch_data[$last_index]->Jr_Ty,
+                    'Tr_No' => $catch_data[$last_index]->Tr_No,
                     'Month_No' => Carbon::now()->month,
-                    'Tr_Dt' => $data->Tr_Dt,
-                    'Tr_DtAr' => $data->Tr_DtAr,
-                    'Ac_Ty' => $data->Ac_Ty,
-                    'Sysub_Account' => $data->Sysub_Account,
-                    'Acc_No' => $data->Acc_No,
-                    'Tr_Db' => 0.00,
-                    'Tr_Cr' => $data->Tr_Cr,
-                    'Dc_No' => $data->Dc_No,
-                    'Tr_Ds' => $data->Tr_Ds,
-                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Month_Jvno' => $catch_data[$last_index]->Tr_No,
+                    'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
+                    'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
+                    'Acc_No' => $catch_data[$last_index]->Acc_No,
                     'User_ID' => auth::user()->id,
-                    'Rcpt_Value' => $data->Tot_Amunt,
-                    'Ln_No' => $data->Ln_No,
+                    'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
+                    'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
+                    'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
+                    'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
+                    'Salman_No' => $catch_data[$last_index]->Salman_No,
+                    'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
+                    'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
+                    //'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
+                    'Dc_No' => $catch_data[$last_index]->Dc_No,
+                    'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
+                    'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
+                    'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                    'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
                 ]);
-                $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
-                $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
-                $trans_cr->save();
+
+                $header->Entr_Dt = $header->created_at->format('Y-m-d');
+                $header->Entr_Time = $header->created_at->format('H:i:s');
+                if ($catch_data[$last_index]->Ac_Ty == 1) {
+                    $header->Chrt_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 2) {
+                    $header->Cstm_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 3) {
+                    $header->Sup_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                if ($catch_data[$last_index]->Ac_Ty == 4) {
+                    $header->Emp_No = $catch_data[$last_index]->Sysub_Account;
+                }
+                $header->save();
+
+            }
+            if ($request->catch_data) {
+                foreach ($catch_data as $data) {
+
+                    $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No', 1)->first();
+                    if (!$debt) {
+                        // Create transaction debt
+                        $trans_db = GLjrnTrs::create([
+                            'Cmp_No' => $data->Cmp_No,
+                            'Brn_No' => $data->Brn_No,
+                            'Jr_Ty' => $data->Jr_Ty,
+                            'Tr_No' => $data->Tr_No,
+                            'Month_No' => Carbon::now()->month,
+                            'Tr_Dt' => $data->Tr_Dt,
+                            'Tr_DtAr' => $data->Tr_DtAr,
+                            'Ac_Ty' => 1,
+                            'Sysub_Account' => 0,
+                            'Acc_No' => $data->Tr_Db_Acc_No,
+                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                            'Tr_Cr' => 0.00,
+                            'Dc_No' => $data->Dc_No,
+                            'Tr_Ds' => $data->Tr_Ds,
+                            //'Tr_Ds1' => $data->Tr_Ds1,
+                            //'Doc_Type' => $data->Doc_Type,
+                            //'noti_Ty' => $data->noti_Ty,
+                            'User_ID' => auth::user()->id,
+                            'Rcpt_Value' => $data->Tot_Amunt,
+                            'Ln_No' => 1,
+                        ]);
+
+                        $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+                        $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+                        $trans_db->save();
+                    }
+
+                    //Create transaction credit
+                    $trans_cr = GLjrnTrs::create([
+                        'Cmp_No' => $data->Cmp_No,
+                        'Brn_No' => $data->Brn_No,
+                        'Jr_Ty' => $data->Jr_Ty,
+                        'Tr_No' => $data->Tr_No,
+                        'Month_No' => Carbon::now()->month,
+                        'Tr_Dt' => $data->Tr_Dt,
+                        'Tr_DtAr' => $data->Tr_DtAr,
+                        'Ac_Ty' => $data->Ac_Ty,
+                        'Sysub_Account' => $data->Sysub_Account,
+                        'Acc_No' => $data->Acc_No,
+                        'Tr_Db' => 0.00,
+                        'Tr_Cr' => $data->Tr_Cr,
+                        'Dc_No' => $data->Dc_No,
+                        'Tr_Ds' => $data->Tr_Ds,
+                        //'Tr_Ds1' => $data->Tr_Ds1,
+                        'User_ID' => auth::user()->id,
+                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Ln_No' => $data->Ln_No,
+                    ]);
+                    $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                    $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+                    $trans_cr->save();
+                }
             }
         }
+
 
     }
 
@@ -426,11 +554,11 @@ class NoticeController extends Controller
                 'Tr_TaxVal' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
                 'Salman_No' => 'sometimes',
-                'Ac_Ty' => 'required',
-                'Sysub_Account' => 'required',
-                'Tr_Cr' => 'required',
+                'Ac_Ty' => 'sometimes',
+                'Sysub_Account' => 'sometimes',
+                'Tr_Cr' => 'sometimes',
                 'Dc_No' => 'sometimes',
-                'Tr_Ds' => 'required',
+                'Tr_Ds' => 'sometimes',
                 'Tr_Ds1' => 'sometimes',
                 'Tr_Db_Acc_No' => 'sometimes',
             ], [], [
@@ -561,6 +689,11 @@ class NoticeController extends Controller
         //     }
         // }
 
+
+    }
+    public  function getDebitPage()
+    {
+        return view('admin.notice.debit');
     }
 }
 
