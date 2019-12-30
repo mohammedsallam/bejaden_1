@@ -28,18 +28,45 @@ class ReceiptCatchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(catchDataTable $catch)
+    public function index(Request $request)
     {
-        if(session('Cmp_No') == -1){
-            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+
+
+        if ($request->Cmp_No == null && $request->pranch == null){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty',2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            }
+            return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
+        }elseif ($request->ajax()) {
+            if ($request->Cmp_No > 0 && $request->pranch == null) {
+
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->paginate(6);
+                return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+
+            } elseif ($request->pranch > 0) {
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->where('Brn_No', $request->pranch)->paginate(6);
+                return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+            }
         }
-        else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
-        }
-        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
-        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
+
+//        if(session('Cmp_No') == -1){
+//            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+//            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+//        }
+//        else{
+//            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+//            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+//        }
+//        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+//        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
     }
 
     public function getRecieptByCmp(Request $request){
