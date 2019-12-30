@@ -118,24 +118,6 @@
                 }
             });
 
-            function addRowHandlers() {
-                var table = document.getElementById('table');
-                var rows = table.getElementsByTagName('tr');
-                for (i = 0; i < rows.length; i++) {
-                    var currentRow = table.rows[i];
-                    currentRow.id=i;
-                    var createClickHandler = function(row) {
-                    return function() {
-                            var cell = row.getElementsByTagName("td")[0];
-                            var id = cell[j].innerHTML;
-                            currentRow.remove();
-                        };
-                    };
-                    currentRow.onclick = createClickHandler(currentRow);
-                }
-            }
-            window.onload = addRowHandlers(); 
-
             //add tax
             $('#create_cache :checkbox[id=Tr_TaxVal_check]').change(function(){
                 if($(this).is(':checked')){
@@ -170,6 +152,7 @@
             $('#Dc_No').change(function(){
                 $('#Dc_No_Db').val($('#Dc_No').val());
             });
+
             $('#Tr_Ds').change(function(){
                 $('#Tr_Ds_Db').val($('#Tr_Ds').val());
             });
@@ -241,7 +224,10 @@
                             var rows = document.getElementById('table').rows;
                             var sum = 0.0;
                             for (var i=1; i<rows.length; i++){
-                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                                if(rows[i].cells.length > 0){
+                                    sum += parseFloat(rows[i].cells[4].innerHTML);
+                                    console.log(sum);
+                                }
                             }
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
@@ -277,7 +263,43 @@
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
                                 Ln_No: $('#Ln_No').val(),
                                 Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                                main_acc: $('#main_acc').val(),
                             };
+                            
+                            catch_data.push(item);
+
+                            // $('#Cmp_No').val(null);
+                            // $('#Dlv_Stor').val(null);
+                            // $('#Tr_No').val(null);
+                            // $('#Doc_Type').val(1);
+                            $('#Tr_Crncy').val(0);
+                            $('#Tr_ExchRat').val(null);
+                            $('#Tot_Amunt').val(null);
+                            // $('#Tr_TaxVal').val(null);
+                            $('#main_acc').val(null);
+                            $('#Rcpt_By').val(null);
+                            $('#Salman_No').val(null);
+                            $('#Ac_Ty').val(null);
+                            $('#Sysub_Account').val(null);
+                            $('#Tr_Cr').val(null);
+                            $('#Dc_No').val(null);
+                            $('#Tr_Ds').val(null);
+                            $('#Tr_Ds1').val(null);
+                            $('#Acc_No').val(null);
+                            $('#Acc_No_Select').val(null);
+                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
+                            $('#Dc_No_Db').val(null);
+                            $('#Tr_Ds_Db').val(null);
+                            $('#Salman_No_Name').val(null);
+                            $('#Salman_No').val(null);
+                            $('#Chq_no').val(null);
+                            $('#Bnk_Nm').val(null);
+                            $('#Issue_Dt').val(null);
+                            $('#Due_Issue_Dt').val(null);
+                            $('#Rcpt_By').val(null);
+                            // $('#Tr_Db_Db').val(null);
+                            // $('#Tr_Cr_Db').val(null);
+                            $('#Ln_No').val(-1);
 
                             // handle click table rows click
                             var table = document.getElementById("table");
@@ -285,15 +307,11 @@
                                 for (var i = 0; i < table.rows.length; i++) {
                                     for (var j = 0; j < table.rows[i].cells.length; j++)
                                     table.rows[i].onclick = function () {
-                                        tableText(this, item);
+                                        tableText(this, catch_data);
                                         this.innerHTML = '';
                                     };
                                 }
                             }
-
-                            catch_data.pop();
-                            catch_data.push(item);
-                            $('#Ln_No').val(-1);
 
                         }
                         else{
@@ -325,6 +343,7 @@
                 }
             });
 
+            //حساب نسبة الفائده
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
                 if($('#create_cache :checkbox[id=Tr_TaxVal_check]').is(':checked')){
@@ -357,6 +376,7 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
+                            $('#alert').removeClass('hidden');
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
                             // $('#Cmp_No').val(null);
                             // $('#Dlv_Stor').val(null);
@@ -405,33 +425,43 @@
             });
 
             function tableText(tableCell, data) {
-                alert(data.Tr_Ds);
-                $('#Cmp_No').val(data.Cmp_No);
-                $('#Brn_No').val(data.Brn_No);
-                $('#Tr_No').val(data.Tr_No);
-                $('#Tr_Dt').val(data.Tr_Dt);
-                $('#Tr_DtAr').val(data.Tr_DtAr);
-                $('#Doc_Type').val(data.Doc_Type);
-                $('#Tr_Crncy').val(data.Tr_Crncy);
-                $('#Tr_ExchRat').val(data.Tr_ExchRat);
-                $('#Tot_Amunt').val(data.Tot_Amunt);
-                $('#Tr_TaxVal').val(data.Tr_TaxVal);
-                $('#Rcpt_By').val(data.Rcpt_By);
-                $('#Salman_No').val(data.Salman_No);
-                $('#Ac_Ty').val(data.Ac_Ty);
-                $('#Sysub_Account').val(data.Sysub_Account);
-                $('#Tr_Cr').val(data.Tr_Cr);
-                $('#Dc_No').val(data.Dc_No);
-                $('#Tr_Ds').val(data.Tr_Ds);
-                $('#Tr_Ds1').val(data.Tr_Ds1);
-                $('#Acc_No').val(data.Acc_No);
-                $('#Chq_no').val(data.Chq_no);
-                $('#Bnk_Nm').val(data.Bnk_Nm);
-                $('#Tr_Db_Acc_No').val(data.Tr_Db_Acc_No);
-                $('#Tr_Db_Db').val(data.Tr_Db_Db);
-                $('#Tr_Cr_Db').val(data.Tr_Cr_Db);
-                $('#Ln_No').val(data.Ln_No);
-                $('#Tr_Ds_Db').val(data.Tr_Ds_Db);
+                var Ln_No = tableCell.cells[0].innerHTML;
+                var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                old = updated_sum;
+                $('#Tr_Db_Db').val(updated_sum);
+                $('#Tr_Cr_Db').val(updated_sum);
+
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].Ln_No == Ln_No){
+                        $('#Ln_No').val(data[i].Ln_No);
+                        $('#Tr_No').val(data[i].Tr_No);
+                        $('#Tr_Dt').val(data[i].Tr_Dt);
+                        $('#Tr_DtAr').val(data[i].Tr_DtAr);
+                        $('#Doc_Type').val(data[i].Doc_Type);
+                        $('#Tr_Crncy').val(data[i].Tr_Crncy);
+                        $('#Tr_ExchRat').val(data[i].Tr_ExchRat);
+                        $('#Tot_Amunt').val(data[i].Tot_Amunt);
+                        $('#Tr_TaxVal').val(data[i].Tr_TaxVal);
+                        $('#Rcpt_By').val(data[i].Rcpt_By);
+                        $('#Salman_No').val(data[i].Salman_No);
+                        $('#Ac_Ty').val(data[i].Ac_Ty);
+                        $('#Sysub_Account').val(data[i].Sysub_Account);
+                        $('#Tr_Cr').val(data[i].Tr_Cr);
+                        $('#Dc_No').val(data[i].Dc_No);
+                        $('#Tr_Ds').val(data[i].Tr_Ds);
+                        $('#Tr_Ds1').val(data[i].Tr_Ds1);
+                        $('#Acc_No').val(data[i].Acc_No);
+                        $('#Chq_no').val(data[i].Chq_no);
+                        $('#Bnk_Nm').val(data[i].Bnk_Nm);
+                        $('#Tr_Db_Acc_No').val(data[i].Tr_Db_Acc_No);
+                        $('#Ln_No').val(data[i].Ln_No);
+                        $('#Tr_Ds_Db').val(data[i].Tr_Ds_Db);
+                        $('#main_acc').val(data[i].main_acc);
+                        $('#Acc_No_Select').val(data[i].Acc_No_Select);
+                        catch_data.splice(i, 1);
+                        break;
+                    }
+                }
             }
             
         });
@@ -444,147 +474,157 @@
         <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
     </div>
     <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
-    <div class="row">
-        {{-- الشركه --}}
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Cmp_No">{{trans('admin.company')}}</label>
-                <select name="Cmp_No" id="Cmp_No" class="form-control">
-                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                    @if(count($companies) > 0)
-                            @foreach($companies as $cmp)
-                                <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                            @endforeach
-                    @endif
-                </select>
-            </div>
+    <br>
+    <br>
+    <br>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">{{trans('admin.data_Catch')}}</div>
         </div>
-        {{-- نهاية الشركه --}}
-        {{-- الفرع --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Dlv_Stor">{{trans('admin.section')}}</label>
-                <div id="Brn_No_content">
-                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                        <option value="{{null}}">{{trans('admin.select')}}</option>
+        <div class="panel-body">
+            <div class="row">
+                {{-- الشركه --}}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Cmp_No">{{trans('admin.company')}}</label>
+                        <select name="Cmp_No" id="Cmp_No" class="form-control">
+                            <option value="{{null}}">{{trans('admin.select')}}</option>
+                            @if(count($companies) > 0)
+                                    @foreach($companies as $cmp)
+                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                {{-- نهاية الشركه --}}
+                {{-- الفرع --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Dlv_Stor">{{trans('admin.section')}}</label>
+                        <div id="Brn_No_content">
+                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
+                                <option value="{{null}}">{{trans('admin.select')}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {{-- نهاية الفرع --}}
+                {{-- رقم القيد --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
+                        <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
+                    </div>
+                </div>
+                {{-- نهاية رقم القيد --}}
+                {{-- تاريخ القيد --}}
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
+                        <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
+                        <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
+                    </div>
+                </div>
+                {{-- نهاية تاريخ القيد --}}
+            </div>
+        
+            <div class="row">
+                {{-- نوع السند نقدى \ شيك --}}
+                <div class="col-md-1">
+                    <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
+                    <select name="Doc_Type" id="Doc_Type" class="form-control">
+                        @foreach(App\Enums\PayType::toSelectArray() as $key => $value)
+                            <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
                     </select>
                 </div>
+                {{-- نهاية نوع السند نقدى \ شيك --}}
+                {{-- العمله --}}
+                <div class="col-md-2">
+                    <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
+                    <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
+                        @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
+                            <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- نهاية العمله --}}
+                {{-- سعر الصرف --}}
+                <div class="col-md-1">
+                    <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
+                    <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control">
+                </div>
+                {{-- نهاية سعر الصرف --}}
+                {{-- المبلغ المطلوب --}}
+                <div class="col-md-2">
+                    <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
+                    <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
+                </div>
+                {{-- نهاية المبلغ المطلوب --}}
+                {{-- الضريبه --}}
+                <div class="col-md-1">
+                    <input type="checkbox" id="Tr_TaxVal_check">
+                    <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
+                    <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" disabled>
+                </div>
+                {{-- نهاية الضريبه --}}
+                {{-- مقبوض بواسطة --}}
+                <div class="col-md-2">
+                    <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
+                    <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
+                </div>
+                {{-- نهاية مقبوض بواسطة --}}
+                {{-- مندوب المبيعات --}}
+                <div id="sales_man_content">
+                    <div class="col-md-2">
+                        <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
+                        <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
+                    </div>
+                    <div class="col-md-1">
+                        <label for=""></label>
+                        <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
+                        <br>
+                    </div>
+                </div>
+                {{-- نهاية مندوب المبيعات --}}
             </div>
-        </div>
-        {{-- نهاية الفرع --}}
-        {{-- رقم القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
-                <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
+        
+            {{-- بيانات الشيك فى سند قبض شيك --}}
+            <div class="row hidden" id="cheq_data">
+                {{-- رقم الشيك --}}
+                <div class="col-md-2">
+                    <label for="Chq_no">{{trans('admin.check_number')}}</label>
+                    <input type="text" name="Chq_no" id="Chq_no" class="form-control">
+                </div>
+                {{-- نهاية رقم الشيك --}}
+                {{-- اسم البنك --}}
+                <div class="col-md-2">
+                    <label for="Bnk_Nm">{{trans('admin.Bnk_Nm')}}</label>
+                    <input type="text" id="Bnk_Nm" name="Bnk_Nm" class="form-control">
+                </div>
+                {{-- نهاية اسم البنك --}}
+                {{-- تاريخ استحقاق الشيك --}}
+                <div class="col-md-2">
+                    <label for="Issue_Dt">{{trans('admin.Issue_Dt')}}</label>
+                    <input type="text" name="Issue_Dt" id="Issue_Dt" class="form-control datepicker">
+                </div>
+                {{-- نهاية تاريخ استحقاق الشيك --}}
+                {{-- تاريخ استلام الشيك --}}
+                <div class="col-md-2">
+                    <label for="Due_Issue_Dt">{{trans('admin.Due_Issue_Dt')}}</label>
+                    <input type="text" name="Due_Issue_Dt" id="Due_Issue_Dt" class="form-control datepicker">
+                </div>
+                {{-- نهاية تاريخ استلام الشيك --}}
             </div>
+            {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
         </div>
-        {{-- نهاية رقم القيد --}}
-        {{-- تاريخ القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
-                <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
-                <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
-            </div>
-        </div>
-        {{-- نهاية تاريخ القيد --}}
     </div>
-
-    <div class="row">
-        {{-- نوع السند نقدى \ شيك --}}
-        <div class="col-md-1">
-            <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
-            <select name="Doc_Type" id="Doc_Type" class="form-control">
-                @foreach(App\Enums\PayType::toSelectArray() as $key => $value)
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية نوع السند نقدى \ شيك --}}
-        {{-- العمله --}}
-        <div class="col-md-2">
-            <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
-            <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
-                @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية العمله --}}
-        {{-- سعر الصرف --}}
-        <div class="col-md-1">
-            <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
-            <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control">
-        </div>
-        {{-- نهاية سعر الصرف --}}
-        {{-- المبلغ المطلوب --}}
-        <div class="col-md-2">
-            <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
-            <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
-        </div>
-        {{-- نهاية المبلغ المطلوب --}}
-        {{-- الضريبه --}}
-        <div class="col-md-1">
-            <input type="checkbox" id="Tr_TaxVal_check">
-            <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
-            <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" disabled>
-        </div>
-        {{-- نهاية الضريبه --}}
-        {{-- مقبوض بواسطة --}}
-        <div class="col-md-2">
-            <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
-            <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
-        </div>
-        {{-- نهاية مقبوض بواسطة --}}
-        {{-- مندوب المبيعات --}}
-        <div id="sales_man_content">
-            <div class="col-md-2">
-                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
-            </div>
-            <div class="col-md-1">
-                <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
-                <br>
-            </div>
-        </div>
-        {{-- نهاية مندوب المبيعات --}}
-    </div>
-
-    {{-- بيانات الشيك فى سند قبض شيك --}}
-    <div class="row hidden" id="cheq_data">
-        {{-- رقم الشيك --}}
-        <div class="col-md-2">
-            <label for="Chq_no">{{trans('admin.check_number')}}</label>
-            <input type="text" name="Chq_no" id="Chq_no" class="form-control">
-        </div>
-        {{-- نهاية رقم الشيك --}}
-        {{-- اسم البنك --}}
-        <div class="col-md-2">
-            <label for="Bnk_Nm">{{trans('admin.Bnk_Nm')}}</label>
-            <input type="text" id="Bnk_Nm" name="Bnk_Nm" class="form-control">
-        </div>
-        {{-- نهاية اسم البنك --}}
-        {{-- تاريخ استحقاق الشيك --}}
-        <div class="col-md-2">
-            <label for="Issue_Dt">{{trans('admin.Issue_Dt')}}</label>
-            <input type="text" name="Issue_Dt" id="Issue_Dt" class="form-control datepicker">
-        </div>
-        {{-- نهاية تاريخ استحقاق الشيك --}}
-        {{-- تاريخ استلام الشيك --}}
-        <div class="col-md-2">
-            <label for="Due_Issue_Dt">{{trans('admin.Due_Issue_Dt')}}</label>
-            <input type="text" name="Due_Issue_Dt" id="Due_Issue_Dt" class="form-control datepicker">
-        </div>
-        {{-- نهاية تاريخ استلام الشيك --}}
-    </div>
-    {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
 
     <div class="row">
         <br>
@@ -623,6 +663,7 @@
                             </select>
                         </div>
                         {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
+                        {{-- <input type="text" id="Acc_No_Name" hidden> --}}
                         <div class="col-md-7">
                             <label for="Acc_No_Select"></label>
                             <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">

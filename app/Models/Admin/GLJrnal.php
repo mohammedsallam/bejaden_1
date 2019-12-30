@@ -46,5 +46,6 @@ class GLJrnal extends Model
         'Tr_Ds',
         'Tr_Ds1',
         'Dc_No',
+        'status',
     ];
 }

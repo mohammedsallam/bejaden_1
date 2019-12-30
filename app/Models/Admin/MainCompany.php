@@ -18,6 +18,8 @@ class MainCompany extends Model
         'Cmp_Adrs',
         'Cmp_Tel',
         'Picture',
+        'Accredit_expens',
+        'Foreign_Curncy',
     ];
 
     public function admin(){

@@ -52,6 +52,7 @@ class CreateGLJrnalsTable extends Migration
             $table->string('Tr_Ds', 200)->nullable();//البيان Ar
             $table->string('Tr_Ds1', 200)->nullable();//البيان EN
             $table->integer('Dc_No')->nullable();//رقم المستند
+            $table->boolean('status')->default(0);//حالة السند -  1 محذوف -  0 غير محذوف
             $table->timestamps();
         });
     }

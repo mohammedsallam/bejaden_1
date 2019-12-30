@@ -114,6 +114,8 @@ class CreateMainCompaniesTable extends Migration
             $table->boolean('ActvTrnf_No')->nullable()->default(0);//تفعيل سندات تحويل بضاعه
             $table->boolean('TabOrder_Pur')->nullable()->default(0);//ترتيب خاص لشاشة المشتريات
             $table->boolean('TabOrder_SaL')->nullable()->default(0);//ترتيب خاص لشاشة المبيعات
+            $table->boolean('Accredit_expens')->nullable()->default(0);//مصاريف الاعتماد   
+            $table->boolean('Foreign_Curncy')->nullable()->default(0);//يعتمد على العمله الاجنبيه
 
             //اقفال الحركه الشهريه - شاشه منفصله
             $table->boolean('Month_Post1')->nullable()->default(0);//اقفال حركة شهر 1
