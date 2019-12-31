@@ -15,6 +15,7 @@ class CreateGLaccBnksTable extends Migration
     {
         Schema::create('GLaccBnk', function (Blueprint $table) {
             $table->increments('ID_No');
+            $table->integer('Cmp_No')->nullable();//رقم الشركه
             $table->integer('Ln_No')->nullable();//رقم السطر
             $table->bigInteger('Acc_No')->nullable();//رقم الحساب
             $table->string('Acc_NmAr', 50)->nullable();//اسم الحساب عربى

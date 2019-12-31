@@ -46,7 +46,10 @@ class CreateGLjrnTrsTable extends Migration
             $table->integer('Acc_Type')->nullable();//
             $table->float('Rcpt_Value')->nullable();//
             $table->float('RetPur_Sal')->nullable();//
-            $table->integer('Salman_No')->nullable();//مندوب المبيعات
+            $table->integer('Slm_No')->nullable();//مندوب المبيعات
+            $table->float('FTot_Amunt', 50, 10)->nullable(); //المبلغ المطلوب بالعمله الاجنبيه
+            $table->float('FTr_Db', 50, 10)->nullable();//الحركه مدين بالعمله الاجنبيه
+            $table->float('FTr_Cr', 50, 10)->nullable();//الحركه دائن بالعمله الاجنبيه
             $table->timestamps();
         });
     }

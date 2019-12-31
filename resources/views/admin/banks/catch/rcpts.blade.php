@@ -61,8 +61,8 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{$gl->Tr_ExchRat}}</td>
-                    <td>{{$gl->Tr_Crncy}}</td>
+                    <td>{{$gl->Curncy_Rate}}</td>
+                    <td>{{$gl->Curncy_No}}</td>
                     <td></td>
                     <td>{{$gl->Chq_no}}</td>
                     <td>{{$gl->Issue_Dt}}</td>

@@ -9,6 +9,7 @@ class GLaccBnk extends Model
     protected $table = 'GLaccBnk';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
+        'Cmp_No',
         'Ln_No',
         'Acc_No',
         'Acc_NmAr',
