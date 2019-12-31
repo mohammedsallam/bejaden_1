@@ -36,11 +36,6 @@
                     <td>{{$gl->Entr_Dt}}</td>
                     <td>{{$gl->Acc_Nm}}</td>
 
-
-                    <td>
-                        <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
-                    </td>
-
                     <td>
                         @if($gl->status == 1)
                             تم الحذف
@@ -48,6 +43,11 @@
                             فعال
                         @endif
                     </td>
+                    <td>
+                        <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                    </td>
+
+
 
                     <td>
                         <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>

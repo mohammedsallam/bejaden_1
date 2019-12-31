@@ -30,6 +30,7 @@ class receiptCashController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
