@@ -173,6 +173,7 @@
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
+                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
 
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
@@ -250,7 +251,10 @@
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            Ln_No: Ln_No },
+                            Ln_No: Ln_No,
+                            FTot_Amunt: $('#FTot_Amunt').val(),
+                            Taxv_Extra: $('#Taxv_Extra').val(), },
+
                     success: function(data){
                         var response = JSON.parse(data);
                         if(response.success == true){
@@ -310,6 +314,8 @@
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
                                 Ln_No: $('#Ln_No').val(),
+                                FTot_Amunt: $('#FTot_Amunt').val(),
+                                Taxv_Extra: $('#Taxv_Extra').val(),
                             };
 
                             catch_data.push(item);
@@ -358,13 +364,8 @@
                 }
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
+                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
-
-                // var cr = $('#Tr_Cr').val();
-                // var old_db = $('#Tr_Db_Db').val();
-                // var old_cr = $('#Tr_Cr_Db').val();
-                // $('#Tr_Db_Db').val(parseFloat(old_db) + parseFloat($('#Tr_Cr').val()));
-                // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Cr').val()));
             }
 
             //حفظ السند فى قاعدة البيانات
@@ -410,6 +411,8 @@
                             $('#Rcpt_By').val(null);
                             $('#Tr_Db_Db').val(null);
                             $('#Tr_Cr_Db').val(null);
+                            $('#FTot_Amunt').val(null);
+                            $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table"> 
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
@@ -440,9 +443,18 @@
                     success: function (data) {
                         $('#alert').removeClass('hidden');
                         $('#alert').html(`<div class='alert alert-info'>تم الحذف بنجاح</div>`);
-                        alert('done');
                     }
                 });
+            });
+
+            $('#Curncy_Rate').change(function(){
+                if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                    $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                    calcTax();
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                }
             });
   
         });
@@ -536,6 +548,12 @@
             </select>
         </div>
         {{-- نهاية العمله --}}
+        {{-- المبلغ بالعمله الاجنبيه --}}
+        <div class="col-md-2">
+            <label for="FTot_Amunt">{{trans('admin.Linv_Net')}}</label>
+            <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control" value="{{$gl->FTot_Amunt}}">
+        </div>
+        {{-- نهاية المبلغ بالعمله الاجنبيه --}}
         {{-- سعر الصرف --}}
         <div class="col-md-1">
             <label for="Curncy_Rate">{{trans('admin.exchange_rate')}}</label>
@@ -555,12 +573,21 @@
             <input type="text" name="Taxp_Extra" id="Taxp_Extra" class="form-control" value="{{$gl->Taxp_Extra}}" disabled>
         </div>
         {{-- نهاية الضريبه --}}
+        {{-- قيمة الضريبه --}}
+        <div class="col-md-1">
+            <label for="Taxv_Extra">{{trans('admin.Taxv_Extra')}}</label>
+            <input type="text" name="Taxv_Extra" id="Taxv_Extra" class="form-control" value="{{$gl->Taxv_Extra}}">
+        </div>
+        {{-- نهاية قيمة الضريبه --}}
         {{-- مقبوض بواسطة --}}
         <div class="col-md-2">
             <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
             <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control" value="{{$gl->Rcpt_By}}">
         </div>
         {{-- نهاية مقبوض بواسطة --}}
+    </div>
+
+    <div class="row">
         {{-- مندوب المبيعات --}}
         <div id="sales_man_content">
             <div class="col-md-2">

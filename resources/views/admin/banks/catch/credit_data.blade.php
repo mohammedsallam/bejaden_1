@@ -9,7 +9,7 @@
         <input type="text" name="getSalName" id="getSalName" 
             value="{{\App\Models\Admin\AstSalesman::where('Slm_No', $trns->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first()}}" hidden>
         <div class="panel-body">
-            <input type="text" name="Ln_No" id="Ln_No" value="{{$trns->Ln_No}}" >
+            <input type="text" name="Ln_No" id="Ln_No" value="{{$trns->Ln_No}}" hidden>
             {{-- الحساب الرئيسى --}}
             <div class="row">
                 <div class="col-md-8">
