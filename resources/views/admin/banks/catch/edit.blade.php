@@ -41,7 +41,7 @@
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
                     success: function(data){
-                        $('#Tr_TaxVal').val(data);
+                        $('#Taxp_Extra').val(data);
                     }
                 });
             });
@@ -157,21 +157,21 @@
                         success: function(data){
                             $('#credit_data').html(data);
                             $('#Tot_Amunt').val($('#Tr_Cr').val());
-                            $('#Salman_No').val($('#getSalNo').val());
-                            $('#Salman_No_Name').val($('#getSalName').val());
+                            $('#Slm_No').val($('#getSalNo').val());
+                            $('#Slm_No_Name').val($('#getSalName').val());
                         }
                     });
                 }
             }
 
             //add tax
-            $('#create_cache :checkbox[id=Tr_TaxVal_check]').change(function(){
+            $('#create_cache :checkbox[id=Taxp_Extra_check]').change(function(){
                 if($(this).is(':checked')){
-                    $('#Tr_TaxVal').removeAttr('disabled');
+                    $('#Taxp_Extra').removeAttr('disabled');
                     calcTax();
                 }
                 else{
-                    $('#Tr_TaxVal').attr('disabled','disabled');
+                    $('#Taxp_Extra').attr('disabled','disabled');
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                 }
 
@@ -187,7 +187,7 @@
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
 
-            $('#Tr_TaxVal').change(function(){
+            $('#Taxp_Extra').change(function(){
                 calcTax();
                 
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
@@ -228,12 +228,12 @@
                             Tr_Dt: $('#Tr_Dt').val(), 
                             Tr_DtAr: $('#Tr_DtAr').val(),
                             Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                            Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
-                            Tr_ExchRat: $('#Tr_ExchRat').val(), 
+                            Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                            Curncy_Rate: $('#Curncy_Rate').val(), 
                             Tot_Amunt: $('#Tot_Amunt').val(),
-                            Tr_TaxVal: $('#Tr_TaxVal').val(),
+                            Taxp_Extra: $('#Taxp_Extra').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
-                            Salman_No: $('#Salman_No').val(), 
+                            Slm_No: $('#Slm_No').val(), 
                             Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
                             Sysub_Account: $('#Sysub_Account').val(),
                             Tr_Cr: $('#Tr_Cr').val(),
@@ -287,12 +287,12 @@
                                 Tr_Dt: $('#Tr_Dt').val(), 
                                 Tr_DtAr: $('#Tr_DtAr').val(),
                                 Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                                Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
-                                Tr_ExchRat: $('#Tr_ExchRat').val(), 
+                                Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                                Curncy_Rate: $('#Curncy_Rate').val(), 
                                 Tot_Amunt: $('#Tot_Amunt').val(),
-                                Tr_TaxVal: $('#Tr_TaxVal').val(),
+                                Taxp_Extra: $('#Taxp_Extra').val(),
                                 Rcpt_By: $('#Rcpt_By').val(),
-                                Salman_No: $('#Salman_No').val(), 
+                                Slm_No: $('#Slm_No').val(), 
                                 Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
                                 Sysub_Account: $('#Sysub_Account').val(),
                                 Tr_Cr: $('#Tr_Cr').val(),
@@ -346,8 +346,8 @@
 
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
-                if($('#create_cache :checkbox[id=Tr_TaxVal_check]').is(':checked')){
-                    var tax = $('#Tr_TaxVal').val();
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                    var tax = $('#Taxp_Extra').val();
                     if(tax !== null){
                         var total_amount = ((tax * amount) / 100);
                     }
@@ -386,12 +386,12 @@
                             // $('#Dlv_Stor').val(null);
                             $('#Tr_No').val(null);
                             // $('#Doc_Type').val(1);
-                            $('#Tr_Crncy').val(0);
-                            $('#Tr_ExchRat').val(null);
+                            $('#Curncy_No').val(0);
+                            $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
-                            $('#Tr_TaxVal').val(null);
+                            $('#Taxp_Extra').val(null);
                             $('#Rcpt_By').val(null);
-                            $('#Salman_No').val(null);
+                            $('#Slm_No').val(null);
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
                             $('#Tr_Cr').val(null);
@@ -402,8 +402,7 @@
                             $('#Acc_No_Select').val(null);
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
-                            $('#Salman_No_Name').val(null);
-                            $('#Salman_No').val(null);
+                            $('#Slm_No_Name').val(null);
                             $('#Chq_no').val(null);
                             $('#Bnk_Nm').val(null);
                             $('#Issue_Dt').val(null);
@@ -529,18 +528,18 @@
         {{-- نهاية نوع السند نقدى \ شيك --}}
         {{-- العمله --}}
         <div class="col-md-2">
-            <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
-            <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
+            <label for="Curncy_No">{{trans('admin.currency')}}</label>
+            <select name="Curncy_No" id="Curncy_No" class="form-control">
                 @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
-                    <option value="{{$key}}" @if($gl->Tr_Crncy == $key) selected @endif>{{$value}}</option>
+                    <option value="{{$key}}" @if($gl->Curncy_No == $key) selected @endif>{{$value}}</option>
                 @endforeach
             </select>
         </div>
         {{-- نهاية العمله --}}
         {{-- سعر الصرف --}}
         <div class="col-md-1">
-            <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
-            <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control" value="{{$gl->Tr_ExchRat}}">
+            <label for="Curncy_Rate">{{trans('admin.exchange_rate')}}</label>
+            <input type="text" name="Curncy_Rate" id="Curncy_Rate" class="form-control" value="{{$gl->Curncy_Rate}}">
         </div>
         {{-- نهاية سعر الصرف --}}
         {{-- المبلغ المطلوب --}}
@@ -551,9 +550,9 @@
         {{-- نهاية المبلغ المطلوب --}}
         {{-- الضريبه --}}
         <div class="col-md-1">
-            <input type="checkbox" id="Tr_TaxVal_check">
-            <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
-            <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" value="{{$gl->Tr_TaxVal}}" disabled>
+            <input type="checkbox" id="Taxp_Extra_check">
+            <label for="Taxp_Extra">{{trans('admin.tax')}} %</label>
+            <input type="text" name="Taxp_Extra" id="Taxp_Extra" class="form-control" value="{{$gl->Taxp_Extra}}" disabled>
         </div>
         {{-- نهاية الضريبه --}}
         {{-- مقبوض بواسطة --}}
@@ -565,13 +564,13 @@
         {{-- مندوب المبيعات --}}
         <div id="sales_man_content">
             <div class="col-md-2">
-                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Salman_No_Name" id="Salman_No_Name" 
+                <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                <input type="text" name="Slm_No_Name" id="Slm_No_Name" 
                 class="form-control" disabled value="">
             </div>
             <div class="col-md-1">
                 <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
+                <input type="text" name="Slm_No" id="Slm_No" class="form-control" disabled>
                 <br>
             </div>
         </div>

@@ -403,6 +403,22 @@
                     @endhasanyrole
                     {{-- نهاية اعدادات الحسابات --}}
 
+                    {{-- اعدادات الصندوق و البنوك --}}
+                    @hasanyrole('writer|admin')
+                    <li class="treeview {{ active_menu('accbanks_setting')[0]  }}">
+                        <a href="#">
+                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accbanks_setting')}}</span>
+                            <span class="pull-right-container"></span>
+                        </a>
+                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
+                            @hasanyrole('writer|admin')
+                            <li><a href="{{route('accbanks.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
+                            @endhasanyrole
+                        </ul>
+                    </li>
+                    @endhasanyrole
+                    {{-- نهاية اعدادت الصندوق و البنوك --}}
+
                     {{-- اعدادات الموظفين --}}
                     @hasanyrole('writer|admin')
                     <li class="treeview {{ active_menu('employee_setting')[0]  }}">
