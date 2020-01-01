@@ -147,10 +147,14 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-2">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
+
                         <div class="col-md-10">
-                            <select class="form-control" name="Brn_No" id="branches" value="{{$branches}}">
-                               <option>{{trans('admin.select')}}</option>
-                           </select>
+                            {!!Form::select('Brn_No',$branches,Null, [
+                                'class'=>'form-control','id'=>'Brn_No', 'placeholder'=>trans('admin.select')
+                        ])!!}
+{{--                            <select class="form-control" name="Brn_No" id="branches" value="{{$branches}}">--}}
+{{--                               <option>{{trans('admin.select')}}</option>--}}
+{{--                           </select>--}}
                         </div>
 
                     </div>
