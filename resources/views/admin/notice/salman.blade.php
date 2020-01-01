@@ -5,6 +5,6 @@
 </div>
 <div class="col-md-1">
     <label for=""></label>
-    <input type="text" name="Salman_No" id="Salman_No" class="form-control" value='{{$salesman->Slm_No}}'>
+    <input type="text" name="Slm_No" id="Slm_No" class="form-control" value='{{$salesman->Slm_No}}'>
     <br>
 </div>

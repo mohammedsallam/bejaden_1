@@ -119,17 +119,30 @@
                     });
                 });
 
+                //add tax
+                $('#create_cache :checkbox[id=Taxp_Extra_check]').change(function(){
+                    if($(this).is(':checked')){
+                        $('#Taxp_Extra').removeAttr('disabled');
+                        calcTax();
+                    }
+                    else{
+                        $('#Taxp_Extra').attr('disabled','disabled');
+                        $('#Tr_Cr').val($('#Tot_Amunt').val());
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+                    }
+
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                });
+
                 // on change tax
-                $('#Tr_TaxVal').change(function(){
+                $('#Taxp_Extra').change(function(){
                     calcTax();
 
-                    $('.Tr_Db_Db').each(function () {
-                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
-                    });
-                    $('.Tr_Cr_Db').each(function () {
-                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
-                    });
-                    $('.Tr_Dif').val( $('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val() );
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                 });
 
                 //دائن
@@ -141,6 +154,28 @@
                 $('.Dc_No').change(function () {
                     $('.Dc_No_Db').val($(this).val());
                 });
+
+                //حساب نسبة الفائده
+                var calcTax = function(){
+                    var amount = $('#Tot_Amunt').val();
+                    if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                        var tax = $('#Taxp_Extra').val();
+                        if(tax !== null){
+                            var total_amount = ((tax * amount) / 100);
+                        }
+                        else{
+                            var total_amount = amount;
+                        }
+                        $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
+                    }
+                    else{
+                        $('#Tr_Cr').val(parseFloat(amount));
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+                    }
+
+                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+
+                }
 
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
@@ -155,15 +190,14 @@
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                 Tr_No: $('#Tr_No').val(),
                                 Tr_Dt: $('#Tr_Dt').val(),
-                                Jr_Ty: $('#Jr_Ty').val(),
                                 Tr_DtAr: $('#Tr_DtAr').val(),
                                 Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                 Curncy_No: $('#Curncy_No').children('option:selected').val(),
                                 Curncy_Rate: $('#Curncy_Rate').val(),
-                                Tr_ExchRat: $('#Tr_ExchRat').val(),
                                 Tot_Amunt: $('#Tot_Amunt').val(),
-                                Tr_TaxVal: $('#Tr_TaxVal').val(),
-                                Salman_No: $('#Salman_No').val(),
+                                Taxp_Extra: $('#Taxp_Extra').val(),
+                                Rcpt_By: $('#Rcpt_By').val(),
+                                Slm_No: $('#Slm_No').val(),
                                 Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                 Sysub_Account: $('#Sysub_Account').val(),
                                 Tr_Cr: $('#Tr_Cr').val(),
@@ -171,21 +205,27 @@
                                 Tr_Ds: $('#Tr_Ds').val(),
                                 Tr_Ds1: $('#Tr_Ds1').val(),
                                 Acc_No: $('#Acc_No').val(),
-                                FTot_Amunt: $('#FTot_Amunt').val(),
                                 last_record : $('#last_record').val(),
+                                Chq_no: $('#Chq_no').val(),
+                                Bnk_Nm: $('#Bnk_Nm').val(),
+                                Issue_Dt: $('#Issue_Dt').val(),
+                                Due_Issue_Dt: $('#Due_Issue_Dt').val(),
+                                Rcpt_By: $('#Rcpt_By').val(),
                                 Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                                Ln_No: Ln_No },
+                                Ln_No: $('#Ln_No').val(),
+                                Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                                FTot_Amunt: $('#FTot_Amunt').val(),
+                                Taxv_Extra: $('#Taxv_Extra').val(), },
                             success: function(data){
                                 var response = JSON.parse(data);
                                 if(response.success == true){
                                     $('#table').append(`
                                     <tr>
-                                        <td>` + $('#Tr_No').val() + `</td>
+                                        <td>` + $('#Ln_No').val() + `</td>
                                         <td>` + $('#Sysub_Account').val() + `</td>
                                         <td>` + $('#Acc_No_Select option:selected').html() + `</td>
-
                                         <td>0.00</td>
                                         <td>` + $('#Tr_Cr').val() + `</td>
                                         <td>` + $('#Tr_Ds').val() + `</td>
@@ -202,10 +242,10 @@
                                         Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                         Curncy_No: $('#Curncy_No').children('option:selected').val(),
                                         Curncy_Rate: $('#Curncy_Rate').val(),
-                                        Tr_ExchRat: $('#Tr_ExchRat').val(),
+                                        Taxp_Extra: $('#Taxp_Extra').val(),
                                         Tot_Amunt: $('#Tot_Amunt').val(),
                                         Tr_TaxVal: $('#Tr_TaxVal').val(),
-                                        Salman_No: $('#Salman_No').val(),
+                                        Slm_No: $('#Slm_No').val(),
                                         Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                         Sysub_Account: $('#Sysub_Account').val(),
                                         Tr_Cr: $('#Tr_Cr').val(),
@@ -219,11 +259,48 @@
                                         Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                         Tr_Db_Db: $('#Tr_Db_Db').val(),
                                         Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                        Taxv_Extra: $('#Taxv_Extra').val(),
                                         Ln_No: Ln_No,
                                     };
 
                                     catch_data.push(item);
 
+                                    $('#Curncy_No').val(0);
+                                    $('#Curncy_Rate').val(null);
+                                    $('#Tot_Amunt').val(null);
+                                    $('#Taxp_Extra').val(null);
+                                    $('#main_acc').val(null);
+                                    $('#Slm_No').val(null);
+                                    $('#Ac_Ty').val(null);
+                                    $('#Sysub_Account').val(null);
+                                    $('#Tr_Cr').val(null);
+                                    $('#Dc_No').val(null);
+                                    $('#Tr_Ds').val(null);
+                                    $('#Tr_Ds1').val(null);
+                                    $('#Acc_No').val(null);
+                                    $('#Acc_No_Select').val(null);
+                                    $('#Dc_No_Db').val(null);
+                                    $('#Tr_Ds_Db').val(null);
+                                    $('#Slm_No_Name').val(null);
+                                    $('#Chq_no').val(null);
+                                    $('#Bnk_Nm').val(null);
+                                    $('#Issue_Dt').val(null);
+                                    $('#Due_Issue_Dt').val(null);
+                                    $('#Rcpt_By').val(null);
+                                    $('#Ln_No').val(-1);
+                                    $('#FTot_Amunt').val(null)
+                                    $('#Taxv_Extra').val(null)
+                                    // handle click table rows click
+                                    var table = document.getElementById("table");
+                                    if (table != null) {
+                                        for (var i = 0; i < table.rows.length; i++) {
+                                            for (var j = 0; j < table.rows[i].cells.length; j++)
+                                                table.rows[i].onclick = function () {
+                                                    tableText(this, catch_data);
+                                                    this.innerHTML = '';
+                                                };
+                                        }
+                                    }
                                 }
                                 else{
                                     $('#alert').removeClass('hidden');
@@ -256,7 +333,7 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
                         success: function(data){
-                            $('#Tr_TaxVal').val(data);
+                            $('#Taxp_Extra').val(data);
                         }
                     });
                 });
@@ -355,6 +432,7 @@
                     }
                 });
 
+
                 function addRowHandlers() {
                     var table = document.getElementById('table');
                     console.log(table);
@@ -401,21 +479,17 @@
                             data: {"_token": "{{ csrf_token() }}", catch_data, count_catch_data:count_catch_data},
                             success: function(data){
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                                // $('#Cmp_No').val(null);
-                                // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
                                 $('#Jr_Ty').val(null);
                                 $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
-                                $('#Tr_ExchRat').val(null);
                                 $('#Tot_Amunt').val(null);
-                                $('#Tr_TaxVal').val(null);
-                                //$('#Rcpt_By').val(null);
-                                $('#Salman_No').val(null);
+                                $('#Taxp_Extra').val(null);
+                                $('#Rcpt_By').val(null);
+                                $('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
                                 $('#Tr_Cr').val(null);
-                                $('#Tr_Db').val(null);
                                 $('#Dc_No').val(null);
                                 $('#Tr_Ds').val(null);
                                 $('#Tr_Ds1').val(null);
@@ -423,13 +497,7 @@
                                 $('#Acc_No_Select').val(null);
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
-                                $('#Salman_No_Name').val(null);
-                                $('#Salman_No').val(null);
-                                //$('#Chq_no').val(null);
-                                $('#Bnk_Nm').val(null);
-                                $('#Issue_Dt').val(null);
-                                $('#Due_Issue_Dt').val(null);
-                                //$('#Rcpt_By').val(null);
+                                $('#Slm_No_Name').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#table_view').html(`<table class="table" id="table">
@@ -655,6 +723,7 @@
                         </div>
                     </div>
                     <div class="panel-body">
+                        <input type="text" name="Ln_No" id="Ln_No" value="{{-1}}" hidden>
                         {{--                         الحساب الرئيسى--}}
                         <div class="row">
                             <div class="col-md-8">
@@ -819,12 +888,7 @@
                                         <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control Tr_Dif" disabled>
                                     </div>
                                     {{--                                     نهاية الفرق--}}
-                                    {{--                                     الرصيد الحالى--}}
-                                    <div class="col-md-3">
-                                        <label for="Crnt_Blnc">{{trans('admin.current_balance')}}</label>
-                                        <input type="text" name="Crnt_Blnc" id="Crnt_Blnc" class="form-control">
-                                    </div>
-                                    {{--                                     نهاية الرصيد الحالى--}}
+                                      
                                 </div>
                             </div>
                         </div>

@@ -54,17 +54,6 @@ class ReceiptCatchController extends Controller
                 return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
             }
         }
-
-//        if(session('Cmp_No') == -1){
-//            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-//            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
-//        }
-//        else{
-//            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-//            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
-//        }
-//        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
-//        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
     }
 
     public function getRecieptByCmp(Request $request){

@@ -126,33 +126,32 @@ class NoticeController extends Controller
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
                 'User_ID' => auth::user()->id,
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
-                'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
-                'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
-                'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
+                'Curncy_No' => $catch_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
-                //'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
 
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
-            if ($catch_data[$last_index]->Ac_Ty == 1) {
-                $header->Chrt_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            if ($catch_data[$last_index]->Ac_Ty == 2) {
-                $header->Cstm_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            if ($catch_data[$last_index]->Ac_Ty == 3) {
-                $header->Sup_No = $catch_data[$last_index]->Sysub_Account;
-            }
-            if ($catch_data[$last_index]->Ac_Ty == 4) {
-                $header->Emp_No = $catch_data[$last_index]->Sysub_Account;
-            }
+            if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $catch_data[$last_index]->Sysub_Account;}
             $header->save();
+
+            $tot_rcpt_val = 0;
+            foreach($catch_data as $data){
+                $tot_rcpt_val += $data->Tot_Amunt;
+            }
 
         }
 
@@ -178,12 +177,17 @@ class NoticeController extends Controller
                                 'Acc_No' => $data->Tr_Db_Acc_No,
                                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                                 'Tr_Cr' => 0.00,
+                                'FTr_Db' => $header->FTot_Amunt,
+                                'FTr_Cr' => 0.00,
                                 'Dc_No' => $data->Dc_No,
-                                'Tr_Ds' => $data->Tr_Ds,
-                                //'Tr_Ds1' => $data->Tr_Ds1,
+                                'Tr_Ds' => $data->Tr_Ds_Db,
+                                'Tr_Ds1' => $data->Tr_Ds_Db,
                                 'User_ID' => auth::user()->id,
-                                'Rcpt_Value' => $data->Tot_Amunt,
+                                'Rcpt_Value' => $tot_rcpt_val,
+                                'FTot_Amunt' => $header->FTot_Amunt,
                                 'Ln_No' => 1,
+                                'Curncy_No' => $data->Curncy_No,
+
                             ]);
 
                             $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -204,12 +208,17 @@ class NoticeController extends Controller
                             'Acc_No' => $data->Acc_No,
                             'Tr_Db' => 0.00,
                             'Tr_Cr' => $data->Tr_Cr,
+                            'FTr_Db' => 0.00,
+                            'FTr_Cr' => $data->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
                             'Tr_Ds' => $data->Tr_Ds,
                             //'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
                             'Rcpt_Value' => $data->Tot_Amunt,
                             'Ln_No' => $data->Ln_No,
+                            'Slm_No' => $data->Slm_No,
+                            'FTot_Amunt' => $data->FTot_Amunt,
+                            'Curncy_No' => $data->Curncy_No,
                         ]);
                         $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                         $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
@@ -232,8 +241,10 @@ class NoticeController extends Controller
                                 'Ac_Ty' => 1,
                                 'Sysub_Account' => 0,
                                 'Acc_No' => $data->Tr_Db_Acc_No,
-                                'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
-                                'Tr_Db' => 0.00,
+                                'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                                'Tr_Cr' => 0.00,
+                                'FTr_Db' => $header->FTot_Amunt,
+                                'FTr_Cr' => 0.00,
                                 'Dc_No' => $data->Dc_No,
                                 'Tr_Ds' => $data->Tr_Ds,
                                 //'Tr_Ds1' => $data->Tr_Ds1,
@@ -260,14 +271,18 @@ class NoticeController extends Controller
                             'Acc_No' => $data->Acc_No,
                             'Tr_Db' => $data->Tr_Db_Db,
                             'Tr_Cr' => 0.00,
+                            'FTr_Db' => 0.00,
+                            'FTr_Cr' => $data->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
                             'Tr_Ds' => $data->Tr_Ds,
-                            //'Tr_Ds1' => $data->Tr_Ds1,
+                            'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
                             'Rcpt_Value' => $data->Tot_Amunt,
                             'Ln_No' => $data->Ln_No,
+                            'Slm_No' => $data->Slm_No,
+                            'FTot_Amunt' => $data->FTot_Amunt,
                         ]);
-                        $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                        $trans_cr->Entr_Dt   = $trans_cr->created_at->format('Y-m-d');
                         $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                         $trans_cr->save();
                     }
@@ -368,6 +383,8 @@ class NoticeController extends Controller
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Slm_No' => $data->Slm_No,
@@ -389,6 +406,8 @@ class NoticeController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
                     ->where('Ln_No', 1)->first();
                 $debt->update(['Tr_Db' => $total]);
+                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
+                $debt->save();
 
 
                 $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
@@ -409,15 +428,18 @@ class NoticeController extends Controller
     public function destroy($id)
     {
         //حذف كل سطور السند
-        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
         $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
         if($trns && count($trns) > 0){
             foreach($trns as $trn){
                 $trn->delete();
             }
         }
-        $gl->status = 1;
-        $gl->save();
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        // $gl->update(['status' => 1]);
+        // $gl->status = 1;
+        // $gl->save();
+        return redirect(aurl('notice'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
     //Delete trans line from GLjrnTrs
@@ -606,13 +628,12 @@ class NoticeController extends Controller
                 'Tr_Dt' => 'sometimes',
                 'Tr_DtAr' => 'sometimes',
                 'Jr_Ty' => 'sometimes',
-                'Tr_Crncy' => 'sometimes',
-                'Tr_ExchRat' => 'sometimes',
+                'Curncy_No' => 'sometimes',
+                'Curncy_Rate' => 'sometimes',
                 'Tot_Amunt' => 'required',
-                'Tr_TaxVal' => 'sometimes',
-                'Rcpt_By' => 'sometimes',
-                'Salman_No' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
                 'Ac_Ty' => 'sometimes',
+                'Slm_No' => 'sometimes',
                 'Sysub_Account' => 'sometimes',
                 'Tr_Cr' => 'sometimes',
                 'Dc_No' => 'sometimes',
@@ -626,14 +647,12 @@ class NoticeController extends Controller
                 'Tr_Dt' => trans('admin.receipt_date'),
                 'Tr_DtAr' => trans('admin.higri_date'),
                 'Jr_Ty' => trans('admin.receipts_type'),
-                'Tr_Crncy' => trans('admin.currency'),
-                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Curncy_No' => trans('admin.currency'),
+                'Curncy_Rate' => trans('admin.exchange_rate'),
                 'Tot_Amunt' => trans('admin.amount'),
-                'Tr_TaxVal' => trans('admin.tax'),
-                'Rcpt_By' => trans('admin.Rcpt_By'),
-                'Salman_No' => trans('admin.sales_officer2'),
+                'Taxp_Extra' => trans('admin.tax'),
                 'Ac_Ty' => trans('admin.Level_Status'),
-                // 'Sysub_Account' => trans('admin.'),
+                'Slm_No' => trans('admin.sales_officer2'),
                 'Tr_Cr' => trans('admin.amount_cr'),
                 'Dc_No' => trans('admin.receipt_number'),
                 'Tr_Ds' => trans('admin.note_ar'),
@@ -678,6 +697,10 @@ class NoticeController extends Controller
                 return view('admin.notice.branch', compact('branches', 'gl'));
             }
         }
+    }
+
+    public function getRecieptByCmp(Request $request){
+        session(['recpt_cmp_no' => $request->Cmp_No]);
     }
 
     public function getRcptDetails(Request $request)

@@ -143,7 +143,7 @@
                                                     <a href="{{route('notice.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('notice.destroy', $gl->Tr_No)}}" method="POST">
+                                                    <form action="{{route('notice.destroy', $gl->ID_No)}}" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>

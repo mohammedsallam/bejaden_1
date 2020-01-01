@@ -208,11 +208,11 @@
                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                 });
 
-                $('#Dc_No').change(function(){
+                $(document).on('change','#Dc_No',function(){
                     $('#Dc_No_Db').val($('#Dc_No').val());
                 });
 
-                $('#Tr_Ds').change(function(){
+                $(document).on('change','#Tr_Ds',function(){
                     $('#Tr_Ds_Db').val($('#Tr_Ds').val());
                 });
 
@@ -442,7 +442,7 @@
                     var Tr_No = $('#Tr_No').val();
                     var Ln_No = $('#Ln_No').val();
                     $.ajax({
-                        url: "{{route('deleteTrnsN')}}",
+                        url: "{{route('deleteTrns')}}",
                         type: 'post',
                         data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
                         dataType: 'html',

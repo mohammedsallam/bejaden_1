@@ -286,6 +286,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptN/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecptN');
         Route::post('branchForEditN','Admin\Notice\NoticeController@branchForEdit')->name('branchForEditN');
         Route::post('getRcptDetailsN','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetailsN');
+        Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmpN');
+
 
 
 
