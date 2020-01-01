@@ -6,6 +6,8 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
+    'financial_reports' => 'التقارير المحاسبية',
+    'general_accounts' => 'التقارير الحسابات العامة',
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',

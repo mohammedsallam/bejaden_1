@@ -177,7 +177,12 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
-
+        Route::get('financial_reports', function () {
+            return view('admin.financial_reports.financial_reports');
+        });
+        Route::get('general_accounts', function () {
+            return view('admin.financial_reports.general_accounts');
+        });
 
 //        report
         Route::resource('reports','Admin\report\ReportController');

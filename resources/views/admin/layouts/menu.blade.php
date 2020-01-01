@@ -307,6 +307,16 @@
                 </ul>
             </li>
             @endhasanyrole
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/financial_reports')}}">
+                    <i class="fa fa-credit-card"></i> <span>التقارير الماليه</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
             {{-- نهاية التقارير المحاسبيه --}}
 
             {{-- الصندوق و البنوك --}}
