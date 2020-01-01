@@ -42,5 +42,6 @@ class GLjrnTrs extends Model
         'FTot_Amunt',
         'FTr_Db',
         'FTr_Cr',
+        'Curncy_No',
     ];
 }
