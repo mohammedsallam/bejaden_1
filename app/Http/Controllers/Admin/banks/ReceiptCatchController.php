@@ -30,8 +30,6 @@ class ReceiptCatchController extends Controller
      */
     public function index(Request $request)
     {
-
-
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -156,7 +154,10 @@ class ReceiptCatchController extends Controller
             $header->save();
 
 
-
+            $tot_rcpt_val = 0;
+            foreach($catch_data as $data){
+                $tot_rcpt_val += $data->Tot_Amunt;
+            }
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -183,9 +184,10 @@ class ReceiptCatchController extends Controller
                         'Tr_Ds1' => $data->Tr_Ds_Db,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
-                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Rcpt_Value' => $tot_rcpt_val,
                         'FTot_Amunt' => $header->FTot_Amunt,
                         'Ln_No' => 1,
+                        'Curncy_No' => $data->Curncy_No,
                     ]);
 
                     $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -217,6 +219,8 @@ class ReceiptCatchController extends Controller
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
                     'Slm_No' => $data->Slm_No,
+                    'FTot_Amunt' => $data->FTot_Amunt,
+                    'Curncy_No' => $data->Curncy_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
@@ -354,15 +358,18 @@ class ReceiptCatchController extends Controller
     public function destroy($id)
     {
         //حذف كل سطور السند
-        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
         $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
         if($trns && count($trns) > 0){
             foreach($trns as $trn){
                 $trn->delete();
             }
         }
-        $gl->status = 1;
-        $gl->save();
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        // $gl->update(['status' => 1]);
+        // $gl->status = 1;
+        // $gl->save();
+        return redirect(aurl('rcatchs'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
     //Delete trans line from GLjrnTrs

@@ -8,10 +8,7 @@
                 $('#example').DataTable();
             } );
 
-
             $(document).ready(function(){
-
-
 
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){
@@ -25,6 +22,7 @@
                         }
                     });
 
+                    //get rcpts of selected company
                     $.ajax({
                         url: "{{route('rcatchs.index')}}",
                         type: "get",
@@ -36,6 +34,7 @@
                     });
                 });
 
+                //get rcpts of selected branch
                 $(document).on('change', '#Dlv_Stor', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
@@ -87,11 +86,8 @@
         <div class="content">
             <div class="box">
                 <div class="box-header">
-
-
-                    {{-- header end --}}
                     <div class="row">
-                            <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('rcatchs.create')}}">{{trans('admin.create_catch_receipt')}}</a>
+                            <a class="btn btn-primary pull-left" href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a>
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
@@ -143,7 +139,7 @@
                                                     <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('rcatchs.destroy', $gl->Tr_No)}}" method="POST">
+                                                    <form action="{{route('rcatchs.destroy', $gl->ID_No)}}" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
