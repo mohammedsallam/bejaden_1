@@ -247,7 +247,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('getMainAccNoC', 'Admin\Cash\receiptCashController@getMainAccNo')->name('getMainAccNoC');
         Route::post('getTaxValueC', 'Admin\Cash\receiptCashController@getTaxValue')->name('getTaxValueC');
         Route::post('validateCacheC', 'Admin\Cash\receiptCashController@validateCache')->name('validateCacheC');
+        Route::post('updateTrnsC', 'Admin\Cash\receiptCashController@updateTrnsC')->name('updateTrnsC');
         Route::post('getCatchRecptC', 'Admin\Cash\receiptCashController@getCatchRecpt')->name('getCatchRecptC');
+        Route::post('getCashptDetails','Admin\Cash\receiptCashController@getCashptDetails')->name('getCashptDetails');
+
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
         Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');

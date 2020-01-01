@@ -28,16 +28,38 @@ class NoticeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (session('Cmp_No') == -1) {
-            $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
-        } else {
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+        if ($request->Cmp_No == null && $request->pranch == null){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->paginate(6);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            }
+            return view('admin.notice.index', ['companies' => $cmps, 'gls' => $gls]);
+
+        }elseif ($request->ajax())
+        {
+            if ($request->Cmp_No == !null) {
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->paginate(6);
+                return view('admin.notice.table', ['companies' => $cmps, 'gls' => $gls]);
+
+            }elseif ($request->pranch  == !null){
+                //dd($request->all());
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->where('Brn_No', $request->pranch )->paginate(6);
+                return view('admin.notice.table', ['companies' => $cmps, 'gls' => $gls]);
+            }
+
         }
-        return view('admin.notice.index', ['companies' => $cmps, 'gls' => $gls]);
+
+
+        //return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
     }
 
     /**
@@ -93,7 +115,7 @@ class NoticeController extends Controller
 //        dd($catch_data);
         //Create header
 //            dd($request->Jr_Ty);
-        if($request->Jr_Ty == 18){
+        if($request->Jr_Ty == 18){ //مدين
             if (count($catch_data) > 0) {
 
                 $last_index = count($catch_data) - 1;
@@ -116,7 +138,7 @@ class NoticeController extends Controller
                     'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
                     'Salman_No' => $catch_data[$last_index]->Salman_No,
                     'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
-                    'Tr_Ds_Db' => $catch_data[$last_index]->Tr_Ds_Db,
+                    'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                     //'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                     'Dc_No_Db' => $catch_data[$last_index]->Dc_No_Db,
                     'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
@@ -202,7 +224,8 @@ class NoticeController extends Controller
                 }
             }
 
-        }else {
+        }
+        else {
             if (count($catch_data) > 0) {
 
                 $last_index = count($catch_data) - 1;

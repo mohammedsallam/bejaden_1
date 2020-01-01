@@ -822,6 +822,7 @@ return [
     'Pymt_Flg' => 'سند صرف',
     'debt_limitations' => 'بيانات سندات الاشعارات ',
     'create_caching_receipt'=>'اضافة سند صرف',
+    'edit_caching_receipt'=>'تعديل سند صرف',
     'data_Cach'=>'بيانات اساسية سند صرف',
     'data_Catch'=>'بيانات اساسية سند قبض',
     'create_debt_limitations' => 'اضافة سندات الاشعارات',
@@ -1432,6 +1433,10 @@ return [
     'gain'               =>'خصـم مكتسب',
     'create_Notice_creditor' =>'اشعارات بالخصم / اضافـه ',
     'data_notice'        =>'البيانات الاساسيه لاشعارات الخصم/الاضافه',
+    'Tr_No'              =>'رقم القيد',
+    'noti_date'          =>'تاريخ الاشعار',
+    'notics'             =>'الاشعارات',
+    'data_notics'        =>'بيانات الاشعارات',
 
 
 

@@ -1,245 +1,233 @@
 @extends('admin.index')
-@section('title',trans('admin.catch_receipt'))
+@section('title',trans('admin.notics'))
 @section('content')
     @push('js')
-        <script>
-            $(document).ready(function(){
-                //get branches of specific company selection
-                $(document).on('change', '#Cmp_No', function(){
-                    $.ajax({
-                        url: "{{route('getBranchesAndStores')}}",
-                        type: "POST",
-                        dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
-                        success: function(data){
-                            $('#Brn_No_content').html(data);
-                        }
-                    });
-
-                    $.ajax({
-                        url: "{{route('getCatchRecpt')}}",
-                        type: "POST",
-                        dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
-                        success: function(data){
-                            $('#rcpt_content').html(data);
-                        }
-                    });
-                });
-            });
-        </script>
     @endpush
-    {{-- header start --}}
-    <div class="row">
-        {{-- الشركه --}}
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Cmp_No">{{trans('admin.company')}}</label>
-                <select name="Cmp_No" id="Cmp_No" class="form-control">
-                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                    @if(count($companies) > 0)
-                        @foreach($companies as $cmp)
-                            <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-        </div>
-        {{-- نهاية الشركه --}}
-        {{-- الفرع --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Dlv_Stor">{{trans('admin.section')}}</label>
-                <div id="Brn_No_content">
-                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                        <option value="{{null}}">{{trans('admin.select')}}</option>
-                    </select>
+    <h5>
+        <i class="fa fa-globe"></i>
+        {{trans('admin.Inc')}} {{ $cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}
+        {{trans('admin.No_of_license')}} {{$cmp->License_No}} {{ $brn->{'Brn_Nm'.ucfirst(session('lang'))} }}
+    </h5>
+    {{--<div class="row" style="text-align:center">--}}
+    {{--    <h2>{{trans('admin.Pymt_Flg')}}</h2>--}}
+    {{--</div>--}}
+    @push('css')
+        <style>
+            .panel-H{
+                border-color: #26333a !important;
+            }
+            .panel-A {
+                background-color: #26333a !important;
+                border-color: #26333a !important;
+            }
+
+            fieldset.scheduler-border {
+                border: 1px groove #ddd !important;
+                padding: 0 1.4em 1.4em 1.4em !important;
+                margin: 0 0 1.5em 0 !important;
+                -webkit-box-shadow:  0px 0px 0px 0px #000;
+                box-shadow:  0px 0px 0px 0px #000;
+            }
+
+            legend.scheduler-border {
+                font-size: 1.2em !important;
+                font-weight: bold !important;
+                text-align: left !important;
+            }
+        </style>
+
+    @endpush
+
+    <div class="content-header">
+        <div class="box">
+            <div class="content">
+                <div class="box-body table-responsive">
+
+
+
+
+
+
+                    <form action="" method="POST" id="create_cache">
+
+                        <div class="panel panel-primary panel-H">
+                            <div class="panel-heading panel-A">
+                                <div class="panel-title">
+                                    {{trans('admin.data_notics')}}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    {{-- الشركه --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="Cmp_No">{{trans('admin.company')}}</label>
+                                            <input class="form-control" type="text" value="{{$cmp->Cmp_NmAr}}">
+                                        </div>
+                                    </div>
+                                    {{-- نهاية الشركه --}}
+                                    {{-- الفرع --}}
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="Dlv_Stor">{{trans('admin.section')}}</label>
+                                            <input class="form-control" type="text" value="{{$brn->Brn_NmAr}}">
+                                        </div>
+                                    </div>
+                                    {{-- نهاية الفرع --}}
+
+                                    {{-- تاريخ القيد --}}
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="Tr_Dt">{{trans('admin.noti_date')}}</label>
+                                            <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{$gl->Tr_Dt}}">
+                                        </div>
+                                    </div>
+                                    {{-- نهاية تاريخ القيد --}}
+
+                                    {{-- مندوب المبيعات --}}
+                                    <div id="sales_man_content">
+                                        <div class="col-md-2">
+                                            <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
+                                            <input type="text" name="Salman_No_Name" id="Salman_No_Name"  value="{{$gl->Pymt_To}}" class="form-control" disabled>
+                                        </div>
+                                    </div>
+                                    {{-- نهاية مندوب المبيعات --}}
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-12" id="table_view">
+                                <table class="table" id="table">
+                                    <thead>
+                                    <th>{{trans('admin.Ln_No')}}</th>
+                                    <th>{{trans('admin.account_number')}}</th>
+                                    <th>{{trans('admin.account_name')}}</th>
+                                    <th>{{trans('admin.motion_debtor')}}</th>
+                                    <th>{{trans('admin.motion_creditor')}}</th>
+                                    <th>{{trans('admin.note_ar')}}</th>
+                                    <th>{{trans('admin.receipt_number')}}</th>
+                                    <th>{{trans('admin.with_cc')}}</th>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                    @if(count($gltrns) > 0)
+                                        @foreach($gltrns as $trns)
+                                            <tr>
+                                                @if($trns->Sysub_Account != 0)
+                                                    <td>{{$loop->index	}}</td>
+                                                    <td>{{$gl->Acc_No}}</td>
+                                                    <td>
+                                                        @if($gl->Cstm_No)
+                                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                                        @endif
+                                                        @if($gl->Sup_No)
+                                                            {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                                        @endif
+                                                        @if($gl->Emp_No)
+                                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                                        @endif
+                                                        @if($gl->Chrt_No)
+                                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        {{$trns->Tr_Db}}
+                                                    </td>
+
+                                                    <td>
+                                                        {{$trns->Tr_Cr}}
+                                                    </td>
+
+                                                    <td>
+                                                        @if($gl->Jr_Ty == 19)
+                                                            {{$trns->Tr_Ds}}
+                                                        @elseif($gl->Jr_Ty == 18)
+                                                            {{$trns->Tr_Ds_Db}}
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        {{$trns->Dc_No}}
+                                                    </td>
+                                                    <td>
+                                                        {{$trns->Costcntr_No}}
+                                                    </td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            {{$gl->Tot_Amunt}}
+                                        </td>
+                                        <td>
+                                            {{$gl->Tr_Db}}
+                                        </td>
+                                        <td></td>
+
+                                        @endif
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+
+                                <div style="float:left;" class="col-md-3">
+                                    <fieldset class="scheduler-border">
+                                        <legend  class="w-auto">إجمالى سند الصرف</legend>
+                                        <div class="control-group">
+                                            <div class="controls bootstrap-timepicker">
+                                                <label class="control-label input-label" for="">مدين :</label>
+                                                {{$gl->Tr_Db}}
+                                            </div>
+
+                                            <div class="controls bootstrap-timepicker">
+                                                <label class="control-label input-label" for="">دائن :</label>
+                                                {{$gl->Tr_Cr}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="row" style="text-align:center;">
+                        <a href="{{route('printCatchRecpt',$gl->Tr_No)}}" class="btn btn-primary" style="width:90px; height:60px;">
+                            <i class="fa fa-print" style="font-size:40px;"></i>
+                        </a>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
-        {{-- نهاية الفرع --}}
-        {{-- رقم القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
-                <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
-            </div>
-        </div>
-        {{-- نهاية رقم القيد --}}
-        {{-- تاريخ القيد --}}
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
-                <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" disabled>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
-                <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control" disabled>
-            </div>
-        </div>
-        {{-- نهاية تاريخ القيد --}}
-    </div>
-    <div class="row">
-        {{-- نوع السند نقدى \ شيك --}}
-        <div class="col-md-1">
-            <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
-            <select name="Doc_Type" id="Doc_Type" class="form-control" disabled>
-                @foreach(App\Enums\PayType::toSelectArray() as $key => $value)
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية نوع السند نقدى \ شيك --}}
-        {{-- العمله --}}
-        <div class="col-md-2">
-            <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
-            <select name="Tr_Crncy" id="Tr_Crncy" class="form-control" disabled>
-                @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value)
-                    <option value="{{$key}}">{{$value}}</option>
-                @endforeach
-            </select>
-        </div>
-        {{-- نهاية العمله --}}
-        {{-- سعر الصرف --}}
-        <div class="col-md-1">
-            <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
-            <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control" disabled>
-        </div>
-        {{-- نهاية سعر الصرف --}}
-        {{-- المبلغ المطلوب --}}
-        <div class="col-md-2">
-            <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
-            <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control" disabled>
-        </div>
-        {{-- نهاية المبلغ المطلوب --}}
-        {{-- الضريبه --}}
-        <div class="col-md-1">
-            <input type="checkbox" id="Tr_TaxVal_check">
-            <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
-            <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" class="form-control" disabled>
-        </div>
-        {{-- نهاية الضريبه --}}
-        {{-- مقبوض بواسطة --}}
-        <div class="col-md-2">
-            <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
-            <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control" disabled>
-        </div>
-        {{-- نهاية مقبوض بواسطة --}}
-        {{-- مندوب المبيعات --}}
-        <div id="sales_man_content">
-            <div class="col-md-2">
-                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
-            </div>
-            <div class="col-md-1">
-                <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
-                <br>
-            </div>
-        </div>
-        {{-- نهاية مندوب المبيعات --}}
-    </div>
-    {{-- header end --}}
-    <div class="row">
-        <div class="col-md-12" id="rcpt_content">
-            <table class="table table-striped" style=" display: block;  overflow-x: auto; white-space: nowrap;">
-                <thead>
-                <tr>
-                    <th>{{trans('admin.id')}}</th>
-                    <th>{{trans('admin.account_number')}}</th>
-                    <th>{{trans('admin.account_name')}}</th>
-                    <th>{{trans('admin.amount_debtor')}}</th>
-                    <th>{{trans('admin.amount_creditor')}}</th>
-                    <th>{{trans('admin.note_ar')}}</th>
-                    <th>{{trans('admin.single_cc')}}</th>
-                    <th>{{trans('admin.Tr_Ds1')}}</th>
-                    <th>{{trans('admin.amount_paied_from_start')}}</th>
-                    <th>{{trans('admin.revision_cost')}}</th>
-                    <th>{{trans('admin.currency_debt')}}</th>
-                    <th>{{trans('admin.currency_credit')}}</th>
-                    <th>{{trans('admin.currency_cost')}}</th>
-                    <th>{{trans('admin.currency')}}</th>
-                    <th>{{trans('admin.cheq_status')}}</th>
-                    <th>{{trans('admin.check_number')}}</th>
-                    <th>{{trans('admin.Payment_date')}}</th>
-                    <th>{{trans('admin.Bnk_Nm')}}</th>
-                    <th>{{trans('admin.first_analysis')}}</th>
-                    <th>{{trans('admin.second_analysis')}}</th>
-                    <th>{{trans('admin.View')}}</th>
-                    <th>{{trans('admin.print')}}</th>
-                    <th>{{trans('admin.edit')}}</th>
-                    {{-- <th>{{trans('admin.delete')}}</th> --}}
-                </tr>
-                </thead>
-                <tbody>
-                @if(count($gls) > 0)
-                    @foreach($gls as $gl)
-                        <tr>
-                            <td>{{$gl->Tr_No}}</td>
-                            <td>
-                                @if($gl->Cstm_No) {{$gl->Cstm_No}} @endif
-                                @if($gl->Sup_No) {{$gl->Sup_No}} @endif
-                                @if($gl->Emp_No) {{$gl->Emp_No}} @endif
-                                @if($gl->Chrt_No) {{$gl->Chrt_No}} @endif
-                            </td>
-                            <td>
-                                @if($gl->Cstm_No)
-                                    {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $gl->Cstm_No)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                @endif
-                                @if($gl->Sup_No)
-                                    {{\App\Models\Admin\MtsSuplir::where('Sup_No', $gl->Sup_No)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                @endif
-                                @if($gl->Emp_No)
-                                    {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $gl->Cstm_No)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                @endif
-                                @if($gl->Chrt_No)
-                                    {{\App\Models\Admin\MtsChartAc::where('Acc_No', $gl->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                @endif
-                            </td>
-                            <td>{{$gl->Tr_Db}}</td>
-                            <td>{{$gl->Tr_Cr}}</td>
-                            <td>{{$gl->Tr_Ds}}</td>
-                            <td>{{\App\Models\Admin\GLjrnTrs::where('Tr_No', $gl->Tr_No)->pluck('Costcntr_No')->first()}}</td>
-                            <td>{{$gl->Tr_Ds1}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{$gl->Tr_ExchRat}}</td>
-                            <td>{{$gl->Tr_Crncy}}</td>
-                            <td></td>
-                            <td>{{$gl->Chq_no}}</td>
-                            <td>{{$gl->Issue_Dt}}</td>
-                            <td>{{$gl->Bnk_Nm}}</td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <a href="{{route('rcatchs.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
-                            </td>
-                            <td>
-                                <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
-                            </td>
-                            <td>
-                                <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                            </td>
-                            {{-- <td>
-                                <form action="{{route('rcatchs.destroy', $gl->Tr_No)}}" method="POST">
-                                    {{csrf_field()}}
-                                    {{method_field('DELETE')}}
-                                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                                </form>
-                            </td> --}}
-                        </tr>
-                    @endforeach
-                @endif
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    <div>
-        {{$gls->links()}}
-    </div>
+
+
 @endsection

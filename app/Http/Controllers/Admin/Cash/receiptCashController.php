@@ -49,6 +49,7 @@ class receiptCashController extends Controller
                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->paginate(6);
                return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
 
+
            }elseif ($request->pranch > 0){
                 $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 4)->where('Brn_No', $request->pranch )->paginate(6);
@@ -96,6 +97,7 @@ class receiptCashController extends Controller
      */
     public function store(Request $request)
     {
+
         $catch_data = json_decode($request->catch_data);
 //        dd(is_array($catch_data));
 
@@ -115,9 +117,9 @@ class receiptCashController extends Controller
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
                 'User_ID' => auth::user()->id,
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
-                'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
-                'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
-                'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
+                'Curncy_No' => $catch_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Salman_No' => $catch_data[$last_index]->Salman_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
@@ -242,18 +244,19 @@ class receiptCashController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
+        // $salesman = AstSalesman::where('Slm_No', $gl->Salman_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
-        $cash = [];
+        $banks = [];
         foreach($flags as $flag){
             if($flag->RcpCsh_Voucher == 1){
-                array_push($cash, $flag);
+                array_push($banks, $flag);
             }
         }
-        return view('admin.cash.catch.edit', compact('gl', 'gltrns', 'cmps', 'cash'));
-    }
 
+        return view('admin.cash.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -263,8 +266,64 @@ class receiptCashController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
+
+    public function updateTrnsC(Request $request){
+
+        $updated_data = json_decode($request->catch_data);
+
+        if(count($updated_data) > 0){
+            foreach($updated_data as $data){
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                    ->where('Ln_No', $data->Ln_No)->first();
+                //Update transaction credit
+
+                $trns->update([
+                    'Cmp_No' => $data->Cmp_No,
+                    'Brn_No' => $data->Brn_No,
+                    'Jr_Ty' => 2,
+                    'Ac_Ty' => $data->Ac_Ty,
+                    'Sysub_Account' => $data->Sysub_Account,
+                    'Acc_No' => $data->Acc_No,
+                    'Tr_Cr' => 0.00,
+                    'Tr_Db' => $data->Tr_Db,
+                    'Dc_No' => $data->Dc_No,
+                    'Tr_Ds' => $data->Tr_Ds,
+                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Doc_Type' => $data->Doc_Type,
+                    'User_ID' => auth::user()->id,
+                    'Rcpt_Value' => $data->Tot_Amunt,
+                    'Salman_No' => $data->Salman_No,
+                    'updated_at' => carbon::now(),
+                ]);
+            }
+
+            //update debt Tot_Amunt
+            //1- get all credit lines - sum credit money
+            $trnses = GLjrnTrs::where('Tr_No', $updated_data[0]->Tr_No)
+                ->where('Ln_No' , '>', 1)->get();
+            if($trnses){
+                $total = 0;
+                foreach($trnses as $trns){
+                    $total += $trns->Tr_Db;
+                }
+
+                //2- get debt line - update money with new total
+                $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
+                    ->where('Ln_No', 1)->first();
+                $debt->update(['Tr_Db' => $total]);
+
+
+                $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
+                $gl_debt->update([
+                    'Tr_Db' => $total,
+                    'Tr_Cr' => $total,
+                ]);
+            }
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -274,7 +333,48 @@ class receiptCashController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $gl = GLJrnal::where('Tr_No', $id)->get(['Tr_No', 'status'])->first();
+        $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
+        if($trns && count($trns) > 0){
+            foreach($trns as $trn){
+                $trn->delete();
+            }
+        }
+        $gl->status = 1;
+        $gl->save();
+
+//      $glj =  GLjrnTrs::where('Tr_No',$id)->get();
+//      $glj->delete();
+//      dd('d');
+      return redirect()->back();
+    }
+
+
+
+
+    //Delete trans line from GLjrnTrs
+    public function deleteTrns(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)->get();
+            //حذف السطر المطلوب فقط اذا كان عدد سطور السند اكبر من سطرين
+            if($trns && count($trns) > 2){
+                if($request->Ln_No != -1){
+                    GLjrnTrs::where('Tr_No', $request->Tr_No)
+                        ->where('Ln_No', $request->Ln_No)->first()->delete();
+                }
+            }
+            //حذف كل تفاصيل السند اذا كان عدد السطور  سطرين فاقل
+            else if($trns && count($trns) <= 2){
+                foreach($trns as $trn){
+                    $trn->delete();
+                }
+            }
+
+            $gl = GLJrnal::where('Tr_No', $request->Tr_No)->first();
+            $gl->status = 1;
+            $gl->save();
+        }
     }
 
     public function convertToDateToHijri(Request $request){
@@ -447,10 +547,10 @@ class receiptCashController extends Controller
                 'Tr_Dt' => 'sometimes',
                 'Tr_DtAr' => 'sometimes',
                 'Jr_Ty' => 'sometimes',
-                'Tr_Crncy' => 'sometimes',
-                'Tr_ExchRat' => 'sometimes',
+                'Curncy_No' => 'sometimes',
+                'Curncy_Rate' => 'sometimes',
                 'Tot_Amunt' => 'required',
-                'Tr_TaxVal' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
                 'Salman_No' => 'sometimes',
                 'Ac_Ty' => 'required',
@@ -467,10 +567,10 @@ class receiptCashController extends Controller
                 'Tr_Dt' => trans('admin.receipt_date'),
                 'Tr_DtAr' => trans('admin.higri_date'),
                 'Jr_Ty' => trans('admin.receipts_type'),
-                'Tr_Crncy' => trans('admin.currency'),
-                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Curncy_No' => trans('admin.currency'),
+                'Curncy_Rate' => trans('admin.exchange_rate'),
                 'Tot_Amunt' => trans('admin.amount'),
-                'Tr_TaxVal' => trans('admin.tax'),
+                'Taxp_Extra' => trans('admin.tax'),
                 'Rcpt_By' => trans('admin.Rcpt_By'),
                 'Salman_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
@@ -531,7 +631,7 @@ class receiptCashController extends Controller
 //        }
 //    }
 
-    public function getRcptDetails(Request $request){
+    public function getCashptDetails(Request $request){
         if($request->ajax()){
             $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
                             ->where('Tr_No', $request->Tr_No)

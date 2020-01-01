@@ -441,7 +441,7 @@
                                         Tr_TaxVal: $('#Tr_TaxVal').val(),
                                         Salman_No: $('#Salman_No').val(),
                                         Ac_Ty: $('.Ac_Ty').children('option:selected').val(),
-                                        Sysub_Account: $('#Sysub_Account').val(),
+                                        Sysub_Account: $('.Sysub_Account').val(),
                                         Tr_Cr: $('.Tr_Cr').val(),
                                         Tr_Db: $('.Tr_Db').val(),
                                         Dc_No: $('.Dc_No').val(),
@@ -512,8 +512,8 @@
                                 Tr_Cr: $('.Tr_Db').val(),
                                 Dc_No: $('.Dc_Nob').val(),
                                 Dc_No_Db: $('.Dc_No_Dbb').val(),
-                                Tr_Ds: $('.Tr_Dsb').val(),
-                                Tr_Ds_Db: $('.Tr_Ds_Dbb').val(),
+                                Tr_Ds: $('.Tr_Ds_Dbb').val(),
+                                //Tr_Ds_Db: $('.Tr_Ds_Dbb').val(),
                                 Tr_Ds1: $('#Tr_Ds1').val(),
                                 Acc_No: $('.Acc_No1').val(),
                                 last_record: $('#last_record').val(),
@@ -554,7 +554,7 @@
                                         Tr_TaxVal: $('#Tr_TaxVal').val(),
                                         Salman_No: $('#Salman_No').val(),
                                         Ac_Ty: $('.Ac_Ty1').children('option:selected').val(),
-                                        Sysub_Account: $('#Sysub_Account').val(),
+                                        Sysub_Account: $('.Sysub_Account1').val(),
                                         Tr_Cr: $('.Tr_Cr').val(),
                                         Tr_Db: $('.Tr_Db').val(),
                                         Dc_No: $('.Dc_Nob').val(),
@@ -868,7 +868,7 @@
                     {{-- تاريخ القيد --}}
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
+                            <label for="Tr_Dt">{{trans('admin.noti_date')}}</label>
                             <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
                         </div>
                     </div>
