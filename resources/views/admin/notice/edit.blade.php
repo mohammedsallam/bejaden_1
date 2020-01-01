@@ -185,6 +185,7 @@
                     else{
                         $('#Taxp_Extra').attr('disabled','disabled');
                         $('#Tr_Cr').val($('#Tot_Amunt').val());
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                     }
 
                     $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
@@ -425,6 +426,16 @@
                     }
                 });
 
+                $('#Curncy_Rate').change(function(){
+                    if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                        $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                        calcTax();
+                        $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                        $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                        $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                    }
+                });
+
                 //حذف سطر من السند
                 $('#delete_button').click(function(e){
                     e.preventDefault();
@@ -522,32 +533,34 @@
                     <div class="col-md-2">
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
                         <input type="text" name="Jr_Ty" class="form-control" disabled value="
-                            @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_')}}
-                            @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_')}}
+                            @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
+                            @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
                             @endif
                         ">
-{{--                        <select name="Jr_Ty" id="Jr_Ty" class="form-control">--}}
-{{--                            <option value="19">{{trans('admin.Fbal_CR_')}}</option>--}}
-{{--                            <option value="18">{{trans('admin.Fbal_Db_')}}</option>--}}
-{{--                        </select>--}}
 
                     </div>
                     {{-- نهاية نوع الاشعار دائـن / مديـن --}}
 
                     {{-- العمله --}}
                     <div class="col-md-2">
-                        <label for="Tr_Crncy">{{trans('admin.currency')}}</label>
-                        <select name="Tr_Crncy" id="Tr_Crncy" class="form-control">
+                        <label for="Curncy_No">{{trans('admin.currency')}}</label>
+                        <select name="Curncy_No" id="Curncy_No" class="form-control">
                             @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value)
-                                <option value="{{$key}}">{{$value}}</option>
+                                <option value="{{$key}}" @if($gl->Curncy_No == $key) selected @endif>{{$value}}</option>
                             @endforeach
                         </select>
                     </div>
                     {{-- نهاية العمله --}}
+                    {{-- المبلغ بالعمله الاجنبيه --}}
+                    <div class="col-md-2">
+                        <label for="FTot_Amunt">{{trans('admin.Linv_Net')}}</label>
+                        <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control" value="{{$gl->FTot_Amunt}}">
+                    </div>
+                    {{-- نهاية المبلغ بالعمله الاجنبيه --}}
                     {{-- سعر الصرف --}}
                     <div class="col-md-1">
-                        <label for="Tr_ExchRat">{{trans('admin.exchange_rate')}}</label>
-                        <input type="text" name="Tr_ExchRat" id="Tr_ExchRat" class="form-control">
+                        <label for="Curncy_Rate">{{trans('admin.exchange_rate')}}</label>
+                        <input type="text" name="Curncy_Rate" id="Curncy_Rate" class="form-control" value="{{$gl->Curncy_Rate}}">
                     </div>
                     {{-- نهاية سعر الصرف --}}
                     {{-- المبلغ المطلوب --}}
@@ -558,18 +571,27 @@
                     {{-- نهاية المبلغ المطلوب --}}
                     {{-- الضريبه --}}
                     <div class="col-md-1">
-                        <input type="checkbox" id="Tr_TaxVal_check">
-                        <label for="Tr_TaxVal">{{trans('admin.tax')}} %</label>
-                        <input type="text" name="Tr_TaxVal" id="Tr_TaxVal" value="{{$gl->Tr_TaxVal}}" class="form-control" disabled>
+                        <input type="checkbox" id="Taxp_Extra_check">
+                        <label for="Taxp_Extra">{{trans('admin.tax')}} %</label>
+                        <input type="text" name="Taxp_Extra" id="Taxp_Extra" class="form-control" value="{{$gl->Taxp_Extra}}" disabled>
                     </div>
                     {{-- نهاية الضريبه --}}
+
+                    {{-- قيمة الضريبه --}}
+                    <div class="col-md-1">
+                        <label for="Taxv_Extra">{{trans('admin.Taxv_Extra')}}</label>
+                        <input type="text" name="Taxv_Extra" id="Taxv_Extra" class="form-control" value="{{$gl->Taxv_Extra}}">
+                    </div>
+                    {{-- نهاية قيمة الضريبه --}}
+
                     {{-- مندوب المبيعات --}}
-                    <div id="sales_man_content">
-                        <div class="col-md-2">
-                            <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                            <input type="text" name="Salman_No_Name" id="Salman_No_Name" class="form-control" disabled>
+                    <div class="row col-md-6" id="sales_man_content">
+                        <div class="col-md-4">
+                            <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                            <input type="text" name="Slm_No_Name" id="Slm_No_Name"
+                                   class="form-control" disabled value="">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label for=""></label>
                             <input type="text" name="Slm_No" id="Slm_No" class="form-control" disabled>
                             <br>
