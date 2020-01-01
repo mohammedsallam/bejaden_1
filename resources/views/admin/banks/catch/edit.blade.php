@@ -23,7 +23,7 @@
                 }
             });
 
-            $(document).on('change', '#Cmp_No', function(){  
+            $(document).on('change', '#Cmp_No', function(){
                 //get branches of specific company selection
                 $.ajax({
                     url: "{{route('branchForEdit')}}",
@@ -58,7 +58,7 @@
                         $('#Tr_No').val(data);
                     }
                 });
-            }) 
+            })
 
             // convert Tr_Dt ro hijry
             let Hijri = $('input#Tr_Dt').val();
@@ -189,7 +189,7 @@
 
             $('#Taxp_Extra').change(function(){
                 calcTax();
-                
+
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
@@ -225,20 +225,20 @@
                     data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                             Cmp_No: $('#Cmp_No').children('option:selected').val(),
                             Tr_No: $('#Tr_No').val(),
-                            Tr_Dt: $('#Tr_Dt').val(), 
+                            Tr_Dt: $('#Tr_Dt').val(),
                             Tr_DtAr: $('#Tr_DtAr').val(),
                             Doc_Type: $('#Doc_Type').children('option:selected').val(),
                             Curncy_No: $('#Curncy_No').children('option:selected').val(),
-                            Curncy_Rate: $('#Curncy_Rate').val(), 
+                            Curncy_Rate: $('#Curncy_Rate').val(),
                             Tot_Amunt: $('#Tot_Amunt').val(),
                             Taxp_Extra: $('#Taxp_Extra').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
-                            Slm_No: $('#Slm_No').val(), 
-                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
+                            Slm_No: $('#Slm_No').val(),
+                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                             Sysub_Account: $('#Sysub_Account').val(),
                             Tr_Cr: $('#Tr_Cr').val(),
                             Dc_No: $('#Dc_No').val(),
-                            Tr_Ds: $('#Tr_Ds').val(), 
+                            Tr_Ds: $('#Tr_Ds').val(),
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
@@ -284,20 +284,20 @@
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                 Tr_No: $('#Tr_No').val(),
-                                Tr_Dt: $('#Tr_Dt').val(), 
+                                Tr_Dt: $('#Tr_Dt').val(),
                                 Tr_DtAr: $('#Tr_DtAr').val(),
                                 Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                 Curncy_No: $('#Curncy_No').children('option:selected').val(),
-                                Curncy_Rate: $('#Curncy_Rate').val(), 
+                                Curncy_Rate: $('#Curncy_Rate').val(),
                                 Tot_Amunt: $('#Tot_Amunt').val(),
                                 Taxp_Extra: $('#Taxp_Extra').val(),
                                 Rcpt_By: $('#Rcpt_By').val(),
-                                Slm_No: $('#Slm_No').val(), 
-                                Ac_Ty: $('#Ac_Ty').children('option:selected').val(), 
+                                Slm_No: $('#Slm_No').val(),
+                                Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                 Sysub_Account: $('#Sysub_Account').val(),
                                 Tr_Cr: $('#Tr_Cr').val(),
                                 Dc_No: $('#Dc_No').val(),
-                                Tr_Ds: $('#Tr_Ds').val(), 
+                                Tr_Ds: $('#Tr_Ds').val(),
                                 Tr_Ds1: $('#Tr_Ds1').val(),
                                 Acc_No: $('#Acc_No').val(),
                                 last_record : $('#last_record').val(),
@@ -323,7 +323,7 @@
                             }
                         }
 
-                    } 
+                    }
                 });
 
                 old = $('#Tr_Db_Db').val();
@@ -410,7 +410,7 @@
                             $('#Rcpt_By').val(null);
                             $('#Tr_Db_Db').val(null);
                             $('#Tr_Cr_Db').val(null);
-                            $('#table_view').html(`<table class="table" id="table"> 
+                            $('#table_view').html(`<table class="table" id="table">
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
                                                         <th>{{trans('admin.account_number')}}</th>
@@ -444,7 +444,7 @@
                     }
                 });
             });
-  
+
         });
     </script>
 @endpush
@@ -530,7 +530,7 @@
         <div class="col-md-2">
             <label for="Curncy_No">{{trans('admin.currency')}}</label>
             <select name="Curncy_No" id="Curncy_No" class="form-control">
-                @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
+                @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value)
                     <option value="{{$key}}" @if($gl->Curncy_No == $key) selected @endif>{{$value}}</option>
                 @endforeach
             </select>
@@ -565,7 +565,7 @@
         <div id="sales_man_content">
             <div class="col-md-2">
                 <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Slm_No_Name" id="Slm_No_Name" 
+                <input type="text" name="Slm_No_Name" id="Slm_No_Name"
                 class="form-control" disabled value="">
             </div>
             <div class="col-md-1">
@@ -660,7 +660,7 @@
                             </div>
                         </div>
                         {{-- نهاية نوع الحساب --}}
-    
+
                         <div class="row">
                             {{-- المبلغ دائن --}}
                             <div class="col-md-4">
@@ -698,7 +698,7 @@
                                 <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6">
                                 <button style="margin-right: 10px" class="btn btn-primary col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
                             </div>
-                            {{-- نهاية البيان انجليزى --}}   
+                            {{-- نهاية البيان انجليزى --}}
                         </div>
                     </div>
                 </div>
@@ -797,7 +797,7 @@
     {{-- عرض السطور --}}
     <div class="row">
         <div class="col-md-12" id="table_view">
-            <table class="table" id="table" style="cursor: pointer;"> 
+            <table class="table" id="table" style="cursor: pointer;">
                 <thead>
                     <th>{{trans('admin.Ln_No')}}</th>
                     <th>{{trans('admin.account_number')}}</th>

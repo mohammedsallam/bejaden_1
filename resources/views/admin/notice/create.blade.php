@@ -144,106 +144,94 @@
 
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
+                    var Jr_Ty = $(this).val();
                     e.preventDefault();
-
                     Ln_No = Ln_No + 1;
-                    $.ajax({
-                        url: "{{route('validateCacheN')}}",
-                        type: "post",
-                        dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                            Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                            Tr_No: $('#Tr_No').val(),
-                            Tr_Dt: $('#Tr_Dt').val(),
-                            Jr_Ty: $('#Jr_Ty').val(),
-                            Tr_DtAr: $('#Tr_DtAr').val(),
-                            Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                            Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
-                            Tr_ExchRat: $('#Tr_ExchRat').val(),
-                            Tot_Amunt: $('#Tot_Amunt').val(),
-                            Tr_TaxVal: $('#Tr_TaxVal').val(),
-                            //Rcpt_By: $('#Rcpt_By').val(),
-                            Salman_No: $('#Salman_No').val(),
-                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
-                            Sysub_Account: $('#Sysub_Account').val(),
-                            Tr_Cr: $('#Tr_Cr').val(),
-                            Dc_No: $('#Dc_No').val(),
-                            Tr_Ds: $('#Tr_Ds').val(),
-                            Tr_Ds1: $('#Tr_Ds1').val(),
-                            Acc_No: $('#Acc_No').val(),
-                            last_record : $('#last_record').val(),
-                            //Chq_no: $('#Chq_no').val(),
-                            Bnk_Nm: $('#Bnk_Nm').val(),
-                            Issue_Dt: $('#Issue_Dt').val(),
-                            Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                            //Rcpt_By: $('#Rcpt_By').val(),
-                            Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
-                            Tr_Db_Db: $('#Tr_Db_Db').val(),
-                            Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            Ln_No: Ln_No },
-                        success: function(data){
-                            var response = JSON.parse(data);
-                            if(response.success == true){
-                                $('#table').append(`
-                                <tr>
-                                    <td>`+$('#Tr_No').val()+`</td>
-                                    <td>`+$('#Sysub_Account').val()+`</td>
-                                    <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td>0.00</td>
-                                    <td>`+$('#Tr_Cr').val()+`</td>
-                                    <td>`+$('#Tr_Ds').val()+`</td>
-                                    <td>`+$('#Dc_No').val()+`</td>
-                                    <td>`+$('#Tr_Ds1').val()+`</td>
-                                </tr>`);
+                        $.ajax({
+                            url: "{{route('validateCacheN')}}",
+                            type: "post",
+                            dataType: 'html',
+                            data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                                Tr_No: $('#Tr_No').val(),
+                                Tr_Dt: $('#Tr_Dt').val(),
+                                Jr_Ty: $('#Jr_Ty').val(),
+                                Tr_DtAr: $('#Tr_DtAr').val(),
+                                Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                                Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
+                                Tr_ExchRat: $('#Tr_ExchRat').val(),
+                                Tot_Amunt: $('#Tot_Amunt').val(),
+                                Tr_TaxVal: $('#Tr_TaxVal').val(),
+                                Salman_No: $('#Salman_No').val(),
+                                Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                                Sysub_Account: $('#Sysub_Account').val(),
+                                Tr_Cr: $('#Tr_Cr').val(),
+                                Dc_No: $('#Dc_No').val(),
+                                Tr_Ds: $('#Tr_Ds').val(),
+                                Tr_Ds1: $('#Tr_Ds1').val(),
+                                Acc_No: $('#Acc_No').val(),
+                                last_record : $('#last_record').val(),
+                                Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                                Tr_Db_Db: $('#Tr_Db_Db').val(),
+                                Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                Ln_No: Ln_No },
+                            success: function(data){
+                                var response = JSON.parse(data);
+                                if(response.success == true){
+                                    $('#table').append(`
+                                    <tr>
+                                        <td>` + $('#Tr_No').val() + `</td>
+                                        <td>` + $('#Sysub_Account').val() + `</td>
+                                        <td>` + $('#Acc_No_Select option:selected').html() + `</td>
 
-                                var item = {
-                                    Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                                    Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                                    Tr_No: $('#Tr_No').val(),
-                                    Tr_Dt: $('#Tr_Dt').val(),
-                                    Jr_Ty: $('#Jr_Ty').children('option:selected').val(),
-                                    Tr_DtAr: $('#Tr_DtAr').val(),
-                                    Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                                    Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
-                                    Tr_ExchRat: $('#Tr_ExchRat').val(),
-                                    Tot_Amunt: $('#Tot_Amunt').val(),
-                                    Tr_TaxVal: $('#Tr_TaxVal').val(),
-                                    //Rcpt_By: $('#Rcpt_By').val(),
-                                    Salman_No: $('#Salman_No').val(),
-                                    Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
-                                    Sysub_Account: $('#Sysub_Account').val(),
-                                    Tr_Cr: $('#Tr_Cr').val(),
-                                    Tr_Db: $('#Tr_Db').val(),
-                                    Dc_No: $('#Dc_No').val(),
-                                    Tr_Ds: $('#Tr_Ds').val(),
-                                    Tr_Ds1: $('#Tr_Ds1').val(),
-                                    Acc_No: $('#Acc_No').val(),
-                                    last_record : $('#last_record').val(),
-                                    //Chq_no: $('#Chq_no').val(),
-                                    Bnk_Nm: $('#Bnk_Nm').val(),
-                                    Issue_Dt: $('#Issue_Dt').val(),
-                                    Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                                    //Rcpt_By: $('#Rcpt_By').val(),
-                                    Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
-                                    Tr_Db_Db: $('#Tr_Db_Db').val(),
-                                    Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                                    Ln_No: Ln_No,
-                                };
+                                        <td>0.00</td>
+                                        <td>` + $('#Tr_Cr').val() + `</td>
+                                        <td>` + $('#Tr_Ds').val() + `</td>
+                                        <td>` + $('#Dc_No').val() + `</td>
+                                        <td>` + $('#Tr_Ds1').val() + `</td>
+                                    </tr>`);
+                                    var item = {
+                                        Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                        Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                                        Tr_No: $('#Tr_No').val(),
+                                        Tr_Dt: $('#Tr_Dt').val(),
+                                        Jr_Ty: $('#Jr_Ty').children('option:selected').val(),
+                                        Tr_DtAr: $('#Tr_DtAr').val(),
+                                        Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                                        Tr_Crncy: $('#Tr_Crncy').children('option:selected').val(),
+                                        Tr_ExchRat: $('#Tr_ExchRat').val(),
+                                        Tot_Amunt: $('#Tot_Amunt').val(),
+                                        Tr_TaxVal: $('#Tr_TaxVal').val(),
+                                        Salman_No: $('#Salman_No').val(),
+                                        Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                                        Sysub_Account: $('#Sysub_Account').val(),
+                                        Tr_Cr: $('#Tr_Cr').val(),
+                                        Tr_Db: $('#Tr_Db').val(),
+                                        Dc_No: $('#Dc_No').val(),
+                                        Tr_Ds: $('#Tr_Ds').val(),
+                                        Tr_Ds1: $('#Tr_Ds1').val(),
+                                        Acc_No: $('#Acc_No').val(),
+                                        last_record: $('#last_record').val(),
+                                        Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                                        Tr_Db_Db: $('#Tr_Db_Db').val(),
+                                        Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                        Ln_No: Ln_No,
+                                    };
 
-                                catch_data.push(item);
-                            }
-                            else{
-                                $('#alert').removeClass('hidden');
-                                $('#alert').html(``);
-                                var errors = Object.values(response.data);
-                                for(var i = 0; i < errors.length; i++){
-                                    $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
+                                    catch_data.push(item);
+
+                                }
+                                else{
+                                    $('#alert').removeClass('hidden');
+                                    $('#alert').html(``);
+                                    var errors = Object.values(response.data);
+                                    for(var i = 0; i < errors.length; i++){
+                                        $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
+                                    }
                                 }
                             }
-                        }
-                    });
-
-                    old = $('#Tr_Db_Db').val();
+                        });
+                        old = $('#Tr_Db_Db').val();
                 });
 
                 //get branches of specific company selection
