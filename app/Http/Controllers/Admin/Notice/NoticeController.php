@@ -28,16 +28,38 @@ class NoticeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (session('Cmp_No') == -1) {
-            $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
-        } else {
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+        if ($request->Cmp_No == null && $request->pranch == null){
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->paginate(6);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+            }
+            return view('admin.notice.index', ['companies' => $cmps, 'gls' => $gls]);
+
+        }elseif ($request->ajax())
+        {
+            if ($request->Cmp_No > 0 && $request->pranch == null) {
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->paginate(6);
+                return view('admin.cash.catch.table', ['companies' => $cmps, 'gls' => $gls]);
+
+
+            }elseif ($request->pranch > 0){
+                $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 18)->orWhere('Jr_Ty', 19)->where('Brn_No', $request->pranch )->paginate(6);
+                return view('admin.notice.table', ['companies' => $cmps, 'gls' => $gls]);
+            }
+
         }
-        return view('admin.notice.index', ['companies' => $cmps, 'gls' => $gls]);
+
+
+        //return view('admin.cash.catch.index', ['companies' => $cmps, 'gls' => $gls]);
+
     }
 
     /**
@@ -54,17 +76,32 @@ class NoticeController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+        // مسموح بظهور البنوك و الصنودق فى الاشعارات المدين والدائن
         $banks = [];
         $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm' . session('lang')]);
         foreach ($flags as $flag) {
-            if ($flag->RcpCsh_Voucher == 1) {
+            if ($flag->CR_Note == 1 || $flag->DB_Note == 1) {
                 array_push($banks, $flag);
             }
         }
         return view('admin.notice.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
             'cost_center' => $cost_center]);
     }
+
+    public  function  getSelect(Request $request)
+    {
+
+        if($request->ajax()){
+            if($request->Jr_Ty == 19){ /////خصم مسموح به
+                $credits = GLaccBnk::where('CR_Note', 1)->get(['Acc_No', 'Acc_Nm' . ucfirst(session('lang'))]);
+            }
+            else if($request->Jr_Ty == 18){ ///// خصم مكتسب
+                $credits = GLaccBnk::where('DB_Note', 1)->get(['Acc_No', 'Acc_Nm' . ucfirst(session('lang'))]);
+            }
+        return view('admin.notice.cr', compact('credits'));
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -76,17 +113,19 @@ class NoticeController extends Controller
     {
         $catch_data = json_decode($request->catch_data);
 
-        //Create header
-        if (count($catch_data) > 0) {
-            $last_index = count($catch_data) - 1;
+
+        if ($request->count_catch_data > 0) {
+
+            $last_index = $request->count_catch_data - 1;
+
             $header = GLJrnal::create([
                 'Cmp_No' => $catch_data[$last_index]->Cmp_No,
                 'Brn_No' => $catch_data[$last_index]->Brn_No,
-                'Jr_Ty' => 2,
+
+                'Jr_Ty' => $catch_data[$last_index]->Jr_Ty,
                 'Tr_No' => $catch_data[$last_index]->Tr_No,
                 'Month_No' => Carbon::now()->month,
                 'Month_Jvno' => $catch_data[$last_index]->Tr_No,
-                'Doc_Type' => $catch_data[$last_index]->Doc_Type,
                 'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
                 'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
@@ -98,13 +137,10 @@ class NoticeController extends Controller
                 'Salman_No' => $catch_data[$last_index]->Salman_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
-                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
+                //'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
-                'Chq_no' => $catch_data[$last_index]->Chq_no,
-                'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
-                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
-                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
-                'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
+//                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
+//                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
@@ -128,66 +164,70 @@ class NoticeController extends Controller
         }
 
         if ($request->catch_data) {
-            foreach ($catch_data as $data) {
 
-                $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                    ->where('Ln_No', 1)->first();
-                if (!$debt) {
-                    // Create transaction debt
-                    $trans_db = GLjrnTrs::create([
+                foreach ($catch_data as $data) {
+
+                    $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No', 1)->first();
+
+                    if (!$debt) {
+                        // Create transaction debt
+                        $trans_db = GLjrnTrs::create([
+                            'Cmp_No' => $data->Cmp_No,
+                            'Brn_No' => $data->Brn_No,
+                            'Jr_Ty' => $data->Jr_Ty,
+                            'Tr_No' => $data->Tr_No,
+                            'Month_No' => Carbon::now()->month,
+                            'Tr_Dt' => $data->Tr_Dt,
+                            'Tr_DtAr' => $data->Tr_DtAr,
+                            'Ac_Ty' => 1,
+                            'Sysub_Account' => 0,
+                            'Acc_No' => $data->Tr_Db_Acc_No,
+                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                            'Tr_Cr' => 0.00,
+                            'Dc_No' => $data->Dc_No,
+                            'Tr_Ds' => $data->Tr_Ds,
+                            //'Tr_Ds1' => $data->Tr_Ds1,
+                            //'Doc_Type' => $data->Doc_Type,
+                            //'noti_Ty' => $data->noti_Ty,
+                            'User_ID' => auth::user()->id,
+                            'Rcpt_Value' => $data->Tot_Amunt,
+                            'Ln_No' => 1,
+                        ]);
+
+                        $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+                        $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+                        $trans_db->save();
+                    }
+                    //Create transaction credit
+                    $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
-                        'Jr_Ty' => 2,
+                        'Jr_Ty' => $data->Jr_Ty,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
-                        'Ac_Ty' => 1,
-                        'Sysub_Account' => 0,
-                        'Acc_No' => $data->Tr_Db_Acc_No,
-                        'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                        'Tr_Cr' => 0.00,
+                        'Ac_Ty' => $data->Ac_Ty,
+                        'Sysub_Account' => $data->Sysub_Account,
+                        'Acc_No' => $data->Acc_No,
+                        'Tr_Db' => 0.00,
+                        'Tr_Cr' => $data->Tr_Cr,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
-                        'Tr_Ds1' => $data->Tr_Ds1,
-                        'Doc_Type' => $data->Doc_Type,
+                        //'Tr_Ds1' => $data->Tr_Ds1,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
-                        'Ln_No' => 1,
+                        'Ln_No' => $data->Ln_No,
                     ]);
+                    $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                    $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+                    $trans_cr->save();
 
-                    $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
-                    $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
-                    $trans_db->save();
+
                 }
-
-                //Create transaction credit
-                $trans_cr = GLjrnTrs::create([
-                    'Cmp_No' => $data->Cmp_No,
-                    'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => 2,
-                    'Tr_No' => $data->Tr_No,
-                    'Month_No' => Carbon::now()->month,
-                    'Tr_Dt' => $data->Tr_Dt,
-                    'Tr_DtAr' => $data->Tr_DtAr,
-                    'Ac_Ty' => $data->Ac_Ty,
-                    'Sysub_Account' => $data->Sysub_Account,
-                    'Acc_No' => $data->Acc_No,
-                    'Tr_Db' => 0.00,
-                    'Tr_Cr' => $data->Tr_Cr,
-                    'Dc_No' => $data->Dc_No,
-                    'Tr_Ds' => $data->Tr_Ds,
-                    'Tr_Ds1' => $data->Tr_Ds1,
-                    'Doc_Type' => $data->Doc_Type,
-                    'User_ID' => auth::user()->id,
-                    'Rcpt_Value' => $data->Tot_Amunt,
-                    'Ln_No' => $data->Ln_No,
-                ]);
-                $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
-                $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
-                $trans_cr->save();
             }
-        }
+
 
     }
 
@@ -197,7 +237,8 @@ class NoticeController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+   public function show($id)
+
     {
         $gl = GLJrnal::where('Tr_No', $id)->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
@@ -209,7 +250,7 @@ class NoticeController extends Controller
         $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['License_No', 'Cmp_Nm' . ucfirst(session('lang'))])->first();
         $brn = MainBranch::where('Cmp_No', $gl->Cmp_No)->get(['Brn_Nm' . ucfirst(session('lang'))])->first();
         return view('admin.notice.show', ['gl' => $gl, 'gltrns' => $gltrns, 'cmp' => $cmp, 'brn' => $brn, 'debt' => $debt]);
-    }
+ }
 
     /**
      * Show the form for editing the specified resource.
@@ -428,11 +469,11 @@ class NoticeController extends Controller
                 'Tr_TaxVal' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
                 'Salman_No' => 'sometimes',
-                'Ac_Ty' => 'required',
-                'Sysub_Account' => 'required',
-                'Tr_Cr' => 'required',
+                'Ac_Ty' => 'sometimes',
+                'Sysub_Account' => 'sometimes',
+                'Tr_Cr' => 'sometimes',
                 'Dc_No' => 'sometimes',
-                'Tr_Ds' => 'required',
+                'Tr_Ds' => 'sometimes',
                 'Tr_Ds1' => 'sometimes',
                 'Tr_Db_Acc_No' => 'sometimes',
             ], [], [
@@ -476,7 +517,7 @@ class NoticeController extends Controller
     public function getCatchRecpt(Request $request)
     {
         if ($request->ajax()) {
-            $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', $request->Cmp_No)->paginate(6);
+            $gls = GLJrnal::where('Jr_Ty',$request->Jr_Ty)->where('Cmp_No', $request->Cmp_No)->paginate(6);
             return view('admin.notice.rcpts', ['gls' => $gls]);
         }
     }
@@ -563,6 +604,31 @@ class NoticeController extends Controller
         //     }
         // }
 
+
     }
+    public  function getPages(Request $request)
+    {
+        $banks = [];
+        $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm' . session('lang')]);
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        if (session('Cmp_No') == -1) {
+            $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
+        } else {
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No'])->first();
+        }
+        if($request->ajax()){
+            if($request->Jr_Ty == 18){
+                return view('admin.notice.debit', ['companies' => $cmps,'cost_center'=>$cost_center, 'banks'=>$banks, 'last_record'=>$last_record]);
+            }else if($request->Jr_Ty == 19){
+                return view('admin.notice.credit', ['companies' => $cmps,'cost_center'=>$cost_center, 'banks'=>$banks, 'last_record'=>$last_record]);
+
+            }
+
+        }
+
+
+    }
+
+
 }
 

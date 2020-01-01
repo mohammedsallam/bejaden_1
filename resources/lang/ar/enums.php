@@ -207,10 +207,22 @@ return [
 //    data links
 
     ReceiptType::class => [
-        ReceiptType::catchReceipt => 'سند قبض نقدي',
-        ReceiptType::catchReceiptCheck => 'سند قبض شيك',
-        ReceiptType::receipt => 'سند صرف نقدي',
-        ReceiptType::ReceiptCheck => 'سند صرف شيك',
+        ReceiptType::open => 'قيد افتتاحى',
+        ReceiptType::cache_in => 'سند قبض نقدى',
+        ReceiptType::cheq_in => 'سند قبض شيك',
+        ReceiptType::cache_out => 'سند صرف نقدى',
+        ReceiptType::cheq_out => 'سند صرف شيك',
+        ReceiptType::daily => 'قيد يوميه',
+        ReceiptType::future_sale => 'مبيعات اجله',
+        ReceiptType::cache_sale => 'مبيعات نقديه',
+        ReceiptType::future_purchase => 'مشتريات اجله',
+        ReceiptType::cache_purchase => 'مشتريات نقديه',
+        ReceiptType::trnsform_in => 'وارد تحويل',
+        ReceiptType::transform_out => 'منصرف تحويل',
+        ReceiptType::add_equation => 'تسويه بالاضافه',
+        ReceiptType::sub_equation => 'تسويه بالخصم',
+        ReceiptType::debt_notify => 'اشعار مدين',
+        ReceiptType::credit_notify => 'اشعار دائن',
     ],
     LevelType::class => [
         LevelType::accounts => 'حسابات',

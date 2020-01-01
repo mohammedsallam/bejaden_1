@@ -12,7 +12,7 @@
         {!! Form::open(['method'=>'POST','route' => 'admins.store','files'=>true]) !!}
         <div class="form-group">
             {{ Form::label('admin.Branches', trans('admin.Branches') , ['class' => 'control-label']) }}
-            {{ Form::select('branches_id', $branch,null, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+            {{ Form::select('branches_id', $branches,null, array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
         </div>
         <div class="form-group">
             {{ Form::label(trans('admin.name'), null, ['class' => 'control-label']) }}

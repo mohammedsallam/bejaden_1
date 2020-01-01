@@ -1,150 +1,204 @@
 @extends('admin.index')
-@section('title',trans('admin.invoices'))
+@section('title',trans('admin.Pymt_Flg'))
 @section('content')
 @push('js')
 @endpush
-<div class="row" style="text-align:center">
-    <h2>{{trans('admin.RcpCsh_Voucher')}}</h2>
-</div>
-<div class="row">
-    <div class="col-md-8 col-md-offset-1">
-        <h3>
-            <i class="fa fa-globe"></i>
-            {{trans('admin.Inc')}} {{ $cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }} 
-            {{trans('admin.No_of_license')}} {{$cmp->License_No}} {{ $brn->{'Brn_Nm'.ucfirst(session('lang'))} }}
-        </h3>
-    </div>
-    <div class="col-md-3 pull-left">
-        <small>{{trans('admin.date')}}: {{$gl->Entr_Dt}}</small>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-9">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{trans('admin.From')}}</th>
-                            <th>{{trans('admin.To')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                @if($gl->Cstm_No)
-                                    <strong>
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $gl->Cstm_No)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                    </strong>
-                                @endif
-                                @if($gl->Sup_No)
-                                    <strong>
-                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $gl->Sup_No)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                    </strong>
-                                @endif
-                                @if($gl->Emp_No)
-                                    <strong>
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $gl->Cstm_No)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                    </strong>
-                                @endif
-                                @if($gl->Chrt_No)
-                                    <strong>
-                                        {{\App\Models\Admin\MtsChartAc::where('Acc_No', $gl->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                    </strong>
-                                @endif
-                            </td>
-                            <td><strong>{{$debt}}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+<h5>
+    <i class="fa fa-globe"></i>
+    {{trans('admin.Inc')}} {{ $cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}
+    {{trans('admin.No_of_license')}} {{$cmp->License_No}} {{ $brn->{'Brn_Nm'.ucfirst(session('lang'))} }}
+</h5>
+@push('css')
+    <style>
+        .panel-H{
+            border-color: #0cc399 !important;
+        }
+        .panel-A {
+            background-color: #0cc399 !important;
+            border-color: #0cc399 !important;
+        }
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{trans('admin.account_name')}}</th>
-                            <th>{{trans('admin.motion_debtor')}}</th>
-                            <th>{{trans('admin.motion_creditor')}}</th>
-                            <th>{{trans('admin.note_for')}}</th>
-                            <th>{{trans('admin.amount')}}</th>
-                            {{-- <th>{{trans('admin.Add_or_subtract')}}</th> --}}
-                            <th>{{trans('admin.receipt_total')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            @if(count($gltrns) > 0)
-                                @foreach($gltrns as $trns)
-                                    <tr>
-                                        @if($trns->Sysub_Account != 0)
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 1.4em 1.4em 1.4em !important;
+            margin: 0 0 1.5em 0 !important;
+            -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+        }
+
+        legend.scheduler-border {
+            font-size: 1.2em !important;
+            font-weight: bold !important;
+            text-align: left !important;
+        }
+    </style>
+
+@endpush
+
+        <div class="content-header">
+            <div class="box">
+                <div class="content">
+                    <div class="box-body table-responsive">
+                        <form action="" method="POST" id="create_cache">
+
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        {{trans('admin.data_Catch')}}
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        {{-- الشركه --}}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="Cmp_No">{{trans('admin.company')}}</label>
+                                                 <input class="form-control" type="text" value="{{$cmp->Cmp_NmAr}}">
+                                            </div>
+                                        </div>
+                                        {{-- نهاية الشركه --}}
+                                        {{-- الفرع --}}
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="Dlv_Stor">{{trans('admin.section')}}</label>
+                                                <input class="form-control" type="text" value="{{$brn->Brn_NmAr}}">
+                                            </div>
+                                        </div>
+                                        {{-- نهاية الفرع --}}
+
+                                        {{-- تاريخ القيد --}}
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
+                                                <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{$gl->Tr_Dt}}">
+                                            </div>
+                                        </div>
+                                        {{-- نهاية تاريخ القيد --}}
+
+                                        {{-- مقبوض بواسطة --}}
+                                        <div class="col-md-2">
+                                            <label for="Rcpt_By">{{trans('admin.Rcpt_By')}}</label>
+                                            <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control" value="{{$gl->Rcpt_By}}">
+                                        </div>
+                                        {{-- نهاية مقبوض بواسطة --}}
+                                        {{-- مندوب المبيعات --}}
+                                        <div id="sales_man_content">
+                                            <div class="col-md-2">
+                                                <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                                                <input type="text" name="Slm_No_Name" id="Slm_No_Name"  value="" class="form-control" disabled>
+                                            </div>
+                                        </div>
+                                        {{-- نهاية مندوب المبيعات --}}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-md-12" id="table_view">
+                                    <table class="table" id="table">
+                                        <thead>
+                                        <th>{{trans('admin.Ln_No')}}</th>
+                                        <th>{{trans('admin.account_number')}}</th>
+                                        <th>{{trans('admin.account_name')}}</th>
+                                        <th>{{trans('admin.motion_debtor')}}</th>
+                                        <th>{{trans('admin.motion_creditor')}}</th>
+                                        <th>{{trans('admin.note_ar')}}</th>
+                                        <th>{{trans('admin.receipt_number')}}</th>
+                                        <th>{{trans('admin.with_cc')}}</th>
+                                        </thead>
+
+                                        <tbody>
+                                        <tr>
+                                        @if(count($gltrns) > 0)
+                                            @foreach($gltrns as $trns)
+                                                <tr>
+                                                    @if($trns->Sysub_Account == 0)
+                                                        <td>{{$trns->Ln_No}}</td>
+                                                        <td>{{$trns->Acc_No}}</td>
+                                                        <td>
+                                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                                        </td>
+                                                        <td>{{$trns->Tr_Db}}</td>
+                                                        <td>{{$trns->Tr_Cr}}</td>
+                                                        <td>{{$trns->Tr_Ds}}</td>
+                                                        <td>{{$trns->Dc_No}}</td>
+                                                        <td>
+                                                            {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
+                                                        </td>
+                                                    @else
+                                                        <td>{{$trns->Ln_No}}</td>
+                                                        <td>{{$trns->Sysub_Account}}</td>
+                                                        <td>
+                                                            @if($trns->Ac_Ty == 1)
+                                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                                            @endif
+                                                            @if($trns->Ac_Ty == 2)
+                                                                {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                                            @endif
+                                                            @if($trns->Ac_Ty == 3)
+                                                                {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}   
+                                                            @endif
+                                                            @if($trns->Ac_Ty == 4)
+                                                               Employees
+                                                            @endif
+                                                        </td>
+                                                        <td>{{$trns->Tr_Db}}</td>
+                                                        <td>{{$trns->Tr_Cr}}</td>
+                                                        <td>{{$trns->Tr_Ds}}</td>
+                                                        <td>{{$trns->Dc_No}}</td>
+                                                        <td>
+                                                            {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
+                                                        </td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td>
-                                                @if($gl->Cstm_No)
-                                                    {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                                @endif
-                                                @if($gl->Sup_No)
-                                                    {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                                @endif
-                                                @if($gl->Emp_No)
-                                                    {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                                @endif
-                                                @if($gl->Chrt_No)
-                                                    {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                                @endif
+                                                {{$gl->Tot_Amunt}}
                                             </td>
                                             <td>
-                                                {{$trns->Tr_Db}}
+                                                {{$gl->Tr_Db}}
                                             </td>
-                                            <td>
-                                                {{$trns->Tr_Cr}}
-                                            </td>
-                                            <td>
-                                                {{$trns->Tr_Ds}}
-                                            </td>
-                                        @endif
-                                    </tr>
-                                @endforeach
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    {{$gl->Tot_Amunt}}
-                                </td>
-                                <td>
-                                    {{$gl->Tr_Db}}
-                                </td>
-                            @endif
-                        </tr>
-                    </tbody>
-                </table>
+                                            <td></td>
+
+                                            @endif
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                    <div style="float:left;" class="col-md-3">
+                                        <fieldset class="scheduler-border">
+                                            <legend  class="w-auto">إجمالى سند الصرف</legend>
+                                            <div class="control-group">
+                                                <div class="controls bootstrap-timepicker">
+                                                    <label class="control-label input-label" for="">مدين :</label>
+                                                    {{$gl->Tr_Db}}
+                                                </div>
+
+                                                <div class="controls bootstrap-timepicker">
+                                                    <label class="control-label input-label" for="">دائن :</label>
+                                                    {{$gl->Tr_Cr}}
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row" style="text-align:center;">
+                            <a href="{{route('printCatchRecpt',$gl->Tr_No)}}" class="btn btn-primary" style="width:90px; height:60px;">
+                                <i class="fa fa-print" style="font-size:40px;"></i>
+                            </a>
+                        </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <strong>{{trans('admin.number')}}{{$gl->Tr_No}}</strong> <br><br>
-                <strong>{{trans('admin.Payment_date')}}: </strong>{{$gl->Issue_Dt == '0000-00-00 00:00:00' ? $gl->Entr_Dt : $gl->Issue_Dt}} <br><br>
-                <strong>{{trans('admin.assigned_by')}}: </strong> {{\Auth::user()->name }} 
-                <br><br><br><br><br>
-                <div class="col-md-6">
-                    <strong>{{trans('admin.Total')}}:</strong><br><br>
-                    <strong>{{trans('admin.payments')}}:</strong><br><br>
-                    <strong>{{trans('admin.subtract')}}:</strong><br><br>
-                </div>
-                <div class="col-md-6">
-                    <div>{{$gl->Tr_Db}}</div><br>
-                    <div>{{trans('admin.payments')}}</div><br>
-                    <div>{{$gl->Tr_Db - $gl->Tr_Cr}}</div><br>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row" style="text-align:center;">
-    <a href="{{route('printCatchRecpt',$gl->Tr_No)}}" class="btn btn-primary" style="width:90px; height:60px;">
-        <i class="fa fa-print" style="font-size:40px;"></i>
-    </a>
-</div>
+
+
 @endsection

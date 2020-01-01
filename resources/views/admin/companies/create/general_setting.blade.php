@@ -207,6 +207,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label for="L_Curncy_No" class="col-md-">{{trans('admin.L_Curncy_No')}}</label>
+                                    <select name="L_Curncy_No" id="L_Curncy_No" class="form-control col-md-">
+                                        <option value="{{null}}">{{trans('admin.select')}}</option>
+                                        @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
+                                            <option value="{{$key}}">{{$value}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="row">
@@ -236,6 +249,29 @@
                                     type="checkbox" name='ActvTrnf_No' id='ActvTrnf_No' 
                                     value="{{21}}" @if ( $cmp->{\App\Enums\AllowedType::getKey(21)} ) checked @endif>
                                     <label for="">{{trans('admin.'.\App\Enums\AllowedType::getKey(21))}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="checkbox-inline" style="margin-left:30px; width: 15px; height: 15px" 
+                                    type="checkbox" name='Accredit_expens' id='Accredit_expens' 
+                                    value="" @if ( $cmp->Accredit_expens == 1 ) checked @endif>
+                                    <label for="">{{trans('admin.Accredit_expens')}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="checkbox-inline" style="margin-left:30px; width: 15px; height: 15px" 
+                                    type="checkbox" name='Foreign_Curncy' id='Foreign_Curncy' 
+                                    value="" @if ( $cmp->Foreign_Curncy == 1 ) checked @endif>
+                                    <label for="">{{trans('admin.Foreign_Curncy')}}</label>
                                 </div>
                             </div>
                         </div>

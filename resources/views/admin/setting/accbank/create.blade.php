@@ -29,7 +29,7 @@
                     url: "{{route('getCharts')}}",
                     type: "POST",
                     dataType: 'html',
-                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val(), bank_Acc: null },
                     success: function(data){
                         $('#Acc_No_Select').html(data);
                     }

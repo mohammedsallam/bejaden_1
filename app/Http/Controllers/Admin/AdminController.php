@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\Admin\MainBranch;
 use Up;
 
 class AdminController extends Controller
@@ -29,10 +30,10 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Role $roles,Permission $permissions,Branches $branche)
+    public function create(Role $roles,Permission $permissions)
     {
 
-        $branches = $branche->pluck('name_'.session('lang'),'id');
+        $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
         return view('admin.admins.create',['title'=>trans('admin.create_admin'),'roles' => $roles, 'permissions' => $permissions,'branches'=>$branches]);
     }
 

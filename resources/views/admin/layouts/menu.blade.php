@@ -319,12 +319,14 @@
                 <ul class="treeview-menu" style=" {{ active_menu('banks')[1]  }}">
                     {{-- <li><a href="{{url('/admin/limitations/cred/create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.create_cred_limitations')}} </a></li> --}}
                     <li><a href="{{route('rcatchs.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.catch_receipt')}} </a></li>
-                    <li><a href="{{url('/admin/banks/Receipt/receipts/caching/caching')}}"><i class="fa fa-circle-o"></i>{{trans('admin.caching_receipt')}} </a></li>
-                    <li><a href="{{route('notice.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.debt_limitations')}}</a></li>
-                    {{-- <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li> --}}
+
+                    <li><a href="{{route('receiptCash.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.caching_receipt')}} </a></li>
+                    <li><a href="{{route('notice.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.debt_limitations')}}</a></li>
+                     <li><a href="{{url('admin/limitations/notice/noticecred')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cred_limitations')}}</a></li>
                     <li><a href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a></li>
-                    <li><a href="{{url('/admin/banks/Receipt/receipts/caching/all')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>
-                    <li><a href="{{url('/admin/limitations/dept/create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_debt_limitations')}} </a></li>
+                    <li><a href="{{route('receiptCash.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_caching_receipt')}}</a></li>
+                    <li><a href="{{route('notice.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_debt_limitations')}} </a></li>
+
                 </ul>
             </li>
             @endhasanyrole
@@ -393,6 +395,22 @@
                     </li>
                     @endhasanyrole
                     {{-- نهاية اعدادات الحسابات --}}
+
+                    {{-- اعدادات الصندوق و البنوك --}}
+                    @hasanyrole('writer|admin')
+                    <li class="treeview {{ active_menu('accbanks_setting')[0]  }}">
+                        <a href="#">
+                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accbanks_setting')}}</span>
+                            <span class="pull-right-container"></span>
+                        </a>
+                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
+                            @hasanyrole('writer|admin')
+                            <li><a href="{{route('accbanks.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
+                            @endhasanyrole
+                        </ul>
+                    </li>
+                    @endhasanyrole
+                    {{-- نهاية اعدادت الصندوق و البنوك --}}
 
                     {{-- اعدادات الموظفين --}}
                     @hasanyrole('writer|admin')

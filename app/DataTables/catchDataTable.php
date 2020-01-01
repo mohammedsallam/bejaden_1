@@ -27,16 +27,23 @@ class catchDataTable extends DataTable
                 return '<a href="../../receipts/print/'.$query->Tr_No.'" class="btn btn-info" target="_blanck">' .'<i class="fa fa-print"></i>'  . '</a>';
             })
             ->addColumn('Doc_Type', function ($query) {
-                return \App\Enums\PayType::getDescription(GLJrnal::where('Tr_No', $query->Tr_No)
-                                                            ->pluck('Doc_Type')->first());
+                return \App\Enums\dataLinks\ReceiptType::getDescription(GLJrnal::where('Tr_No', $query->Tr_No)
+                                                            ->pluck('Jr_Ty')->first());
             })
             ->addColumn('Sysub_Account', function ($query) {
                 $trans = GLJrnal::where('Tr_No', $query->Tr_No)
-                                    ->get(['Acc_No'])->first();
-                return MtsChartAc::where('Acc_No', $trans->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
+                                    ->get(['Tr_Ds'])->first();
+                return $trans->Tr_Ds;
+            })
+            ->addColumn('status', function ($query) {
+                if($query->status == 1){
+                    return trans('admin.rcpt_deleted');
+                }
             })
             ->addColumn('edit', function ($query) {
-                return '<a href="'.route('rcatchs.edit', $query->Tr_No).'" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
+                if($query->status != 1){
+                    return '<a href="'.route('rcatchs.edit', $query->Tr_No).'" class="btn btn-success edit">' .'<i class="fa fa-edit"></i> ' .'</a>';
+                }
             })
             ->editColumn('Entr_Dt', function ($query){
                 return GLJrnal::where('Tr_No', $query->Tr_No)
@@ -60,10 +67,14 @@ class catchDataTable extends DataTable
      * @param \App\User $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query()
-    {
-//        return receipts::query()->orderByDesc('created_at')->where('status',1)->whereIn('receiptsType_id',[1,2]);
-        return GLJrnal::query()->orderBy('Tr_No','Desc')->where('Jr_Ty', 2);
+    public function query(){
+        if(session()->has('recpt_cmp_no')){
+            return GLJrnal::query()->orderBy('Tr_No','Desc')->where('Jr_Ty', 2)
+                                                            ->where('Cmp_No', session('recpt_cmp_no'));   
+        }
+        else{
+            return GLJrnal::query()->orderBy('Tr_No','Desc')->where('Jr_Ty', 2);
+        }
     }
     public static function lang(){
         $langJson = [
@@ -96,9 +107,14 @@ class catchDataTable extends DataTable
      */
     public function html()
     {
+        // $url = 'getRecieptByCmp';
+        // if ($this->request()->has("Cmp_No")) {
+        //     $url = 'getRecieptByCmp';
+        // }
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
+            // ->minifiedAjax($url)
             ->parameters([
                 'dom' => 'Blfrtip',
                 'lengthMenu' => [
@@ -133,6 +149,18 @@ class catchDataTable extends DataTable
             ]);
     }
 
+    // public function minifiedAjax(){
+    //     return $this->datatables
+    //         ->eloquent($this->query())
+    //         ->addColumn('Tr_No', 'restaurant.datatables_actions')
+    //         ->filter(function ($query) {           
+    //             if ($this->request()->has("Cmp_No")) {
+    //                 $query->where("Cmp_No", $this->request()->get("Cmp_No"));
+    //             }
+    //         })
+    //         ->make(true);
+    // }
+
     /**
      * Get columns.
      *
@@ -143,15 +171,14 @@ class catchDataTable extends DataTable
         return [
 
             ['name'=>'Tr_No','data'=>'Tr_No','title'=>trans('admin.number_of_receipt')],
-//            ['name'=>'invoice_id','data'=>'invoice_id','title'=>trans('admin.invoice')],
-            ['name'=>'Doc_Type','data'=>'Doc_Type','title'=>trans('admin.receipt_type')],
-            ['name'=>'Entr_Dt','data'=>'Entr_Dt','title'=>trans('admin.receipt_created_at')],
-            ['name'=>'Acc_Nm'.ucfirst(session('lang')),'data'=>'Sysub_Account','title'=>trans('admin.department_name')],
-
+            ['name'=>'Doc_Type','data'=>'Doc_Type','title'=>trans('admin.receipts_type')],
+            ['name'=>'Entr_Dt','data'=>'Entr_Dt','title'=>trans('admin.receipt_date')],
+            ['name'=>'Acc_Nm'.ucfirst(session('lang')),'data'=>'Sysub_Account','title'=>trans('admin.note_for')],
+            ['name'=>'status', 'data'=>'status', 'title'=>trans('admin.rcpt_status')],
             ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'print','data'=>'print','title'=>trans('admin.print'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
-            ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+            // ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
 
         ];
     }

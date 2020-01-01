@@ -38,5 +38,9 @@ class GLjrnTrs extends Model
         'Acc_Type',
         'Rcpt_Value',
         'RetPur_Sal',
+        'Slm_No',
+        'FTot_Amunt',
+        'FTr_Db',
+        'FTr_Cr',
     ];
 }

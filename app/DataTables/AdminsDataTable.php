@@ -21,7 +21,7 @@ class AdminsDataTable extends DataTable
             ->addColumn('edit', function ($query) {
                 return '<a href="admins/'.$query->id.'/edit" class="btn btn-success"><i class="fa fa-edit"></i> ' .trans('admin.edit') .'</a>';
             })
-            ->addColumn('branches', function ($query) {
+            ->addColumn('Brn_Nm'.ucfirst(session('lang')), function ($query) {
                 return $query->branches->{'Brn_Nm'.ucfirst(session('lang'))};
             })
             ->addColumn('delete', 'admin.admins.btn.delete')
@@ -41,7 +41,7 @@ class AdminsDataTable extends DataTable
      */
     public function query()
     {
-        return Admin::query()->orderByDesc('id')->with('branches');
+        return Admin::with('branches')->orderByDesc('admins.id');
     }
     public static function lang(){
         $langJson = [
@@ -132,7 +132,7 @@ class AdminsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            ['name'=>'branches','data'=>'branches','title'=>trans('admin.Branches')],
+            ['name'=>'branches.Brn_Nm'.ucfirst(session('lang')),'data'=>'Brn_Nm'.ucfirst(session('lang')),'title'=>trans('admin.Branches')],
             ['name'=>'name','data'=>'name','title'=>trans('admin.name')],
             ['name'=>'email','data'=>'email','title'=>trans('admin.email')],
             ['name'=>'created_at','data'=>'created_at','title'=>trans('admin.created_at')],

@@ -44,15 +44,18 @@ class CreateGLJrnalsTable extends Migration
             $table->bigInteger('Chrt_No')->nullable();//رقم الحساب فى حالة كان نوع الحساب حسابات
             $table->float('Tr_Db', 50, 10)->nullable();//الحركه مدين
             $table->float('Tr_Cr', 50, 10)->nullable();//الحركه دائن
-            $table->integer('Tr_Crncy')->nullable();//العمله
-            $table->integer('Tr_ExchRat')->nullable();//سعر الصرف
-            $table->float('Tr_TaxVal', 50, 10)->nullable();//الضريبه
-            $table->integer('Salman_No')->nullable();//مندوب المبيعات
+            $table->integer('Curncy_No')->nullable();//العمله
+            $table->integer('Slm_No')->nullable();//مندوب المبيعات
+            $table->float('Curncy_Rate', 50, 10)->nullable();//سعر الصرف
+            $table->float('Taxp_Extra', 50, 10)->nullable();//الضريبه
+            $table->float('Taxv_Extra', 50, 10)->nullable();//قيمة الضريبه
             $table->float('Tot_Amunt', 50, 10)->nullable();//المبلغ المطلوب
             // $table->float('Crnt_Blnc', 50, 10)->nullable();//الرصيد الحالى
             $table->string('Tr_Ds', 200)->nullable();//البيان Ar
             $table->string('Tr_Ds1', 200)->nullable();//البيان EN
             $table->integer('Dc_No')->nullable();//رقم المستند
+            $table->boolean('status')->default(0);//حالة السند -  1 محذوف -  0 غير محذوف
+            $table->float('FTot_Amunt', 50, 10)->nullable(); //المبلغ المطلوب بالعمله الاجنبيه
             $table->timestamps();
         });
     }

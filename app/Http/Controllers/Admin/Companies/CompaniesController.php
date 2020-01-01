@@ -22,7 +22,7 @@ class CompaniesController extends Controller
         $id = MainCompany::where('Cmp_NmAr','=',null)->orWhere('Cmp_NmAr','=','')->pluck('ID_No');
         DB::table('maincompany')->where('Cmp_NmEn',null)->where('Cmp_NmAr',null)->orWhere('Cmp_NmAr','=','')->delete();
 
-        return $company->render('admin.companies.index',['title'=>trans('admin.companies')]);
+        return $company->render('admin.companies.index',['title'=>trans('admin.company')]);
     }
 
     /**
@@ -235,6 +235,8 @@ class CompaniesController extends Controller
         if($request->ActvTrnf_No){$cmp->ActvTrnf_No = 1;}else{$cmp->ActvTrnf_No = 0;}
         if($request->TabOrder_Pur){$cmp->TabOrder_Pur = 1;}else{$cmp->TabOrder_Pur = 0;}
         if($request->TabOrder_SaL){$cmp->TabOrder_SaL = 1;}else{$cmp->TabOrder_SaL = 0;}
+        if($request->Foreign_Curncy){$cmp->Foreign_Curncy = 1;}else{$cmp->Foreign_Curncy = 0;}
+        $cmp->L_Curncy_No = $request->L_Curncy_No;
         $cmp->save();
 
         return redirect(aurl('companies'))->with(session()->flash('message',trans('admin.success_update')));
