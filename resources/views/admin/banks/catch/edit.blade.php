@@ -196,11 +196,11 @@
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
 
-            $('#Dc_No').change(function(){
+            $(document).on('change', '#Dc_No', function(){
                 $('#Dc_No_Db').val($('#Dc_No').val());
             });
 
-            $('#Tr_Ds').change(function(){
+            $(document).on('change', '#Tr_Ds', function(){
                 $('#Tr_Ds_Db').val($('#Tr_Ds').val());
             });
 
@@ -350,6 +350,7 @@
                 }
             });
 
+            //حساب الضريبه
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
                 if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
@@ -411,9 +412,12 @@
                             $('#Rcpt_By').val(null);
                             $('#Tr_Db_Db').val(null);
                             $('#Tr_Cr_Db').val(null);
+
                             $('#FTot_Amunt').val(null);
                             $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table">
+
+
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
                                                         <th>{{trans('admin.account_number')}}</th>
@@ -447,15 +451,6 @@
                 });
             });
 
-            $('#Curncy_Rate').change(function(){
-                if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
-                    $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
-                    calcTax();
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
-                }
-            });
 
             $('#Curncy_Rate').change(function(){
                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
@@ -467,6 +462,19 @@
                 }
             });
 
+// <<<<<<< HEAD
+//             $('#Curncy_Rate').change(function(){
+//                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+//                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+//                     calcTax();
+//                     $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+//                     $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+//                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+//                 }
+//             });
+
+// =======
+// >>>>>>> da2cc4fcbc7bae71f2354dfd3e7c70449431ee44
         });
     </script>
 @endpush

@@ -1,7 +1,17 @@
+<style>
+    .panel-H{
+        border-color: #26333a !important;
+    }
+    .panel-A {
+        background-color: #26333a !important;
+        border-color: #26333a !important;
+    }
+</style>
+
 <div class="col-md-6">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="panel-title">
+    <div class="panel panel-primary panel-H">
+        <div class="panel-heading panel-A panel-A">
+            <div class="panel-title panel_2">
                 {{trans('admin.information_account')}}
             </div>
         </div>
@@ -10,7 +20,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
-                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled 
+                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled
                     value="{{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}">
                 </div>
                 <div class="col-md-4">
@@ -98,7 +108,7 @@
                 {{-- نهاية البيان انجليزى --}}
                 {{-- اضافة سطر --}}
                 <div class="col-md-2">
-                    <button class="btn btn-primary" id="add_line">{{trans('admin.add_line')}}</button>
+                    <button class="btn btn-primary panel-A" id="add_line">{{trans('admin.add_line')}}</button>
                 </div>
                 {{-- نهاية اضافة سطر --}}
             </div>

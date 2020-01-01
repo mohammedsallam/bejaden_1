@@ -274,12 +274,11 @@ Route::group(['prefix'=>'admin'],function (){
 
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
-
+        Route::post('updateTrnsN','Admin\Notice\NoticeController@updateTrns')->name('updateTrnsN');
+        Route::post('deleteTrnsN','Admin\Notice\NoticeController@deleteTrns')->name('deleteTrnsN');
         Route::get('include', 'Admin\Notice\NoticeController@getPages')->name('getPages');
         Route::get('getcr', 'Admin\Notice\NoticeController@getSelect')->name('getSelect');
-        //Route::get('getdb', 'Admin\Notice\NoticeController@getDbSelect')->name('getDbSelect');
         Route::get('hijriNoti', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijriNoti');
-
         Route::post('getSalesManN', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesManN');
         Route::post('createTrNoN', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNoN');
         Route::post('getSubAccN', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAccN');
@@ -290,6 +289,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptN/{id}','Admin\Notice\NoticeController@print')->name('printCatchRecptN');
         Route::post('branchForEditN','Admin\Notice\NoticeController@branchForEdit')->name('branchForEditN');
         Route::post('getRcptDetailsN','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetailsN');
+        Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmpN');
+
 
 
 
