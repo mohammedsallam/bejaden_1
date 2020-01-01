@@ -8,10 +8,7 @@
                 $('#example').DataTable();
             } );
 
-
             $(document).ready(function(){
-
-
 
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){
@@ -25,6 +22,7 @@
                         }
                     });
 
+                    //get rcpts of selected company
                     $.ajax({
                         url: "{{route('rcatchs.index')}}",
                         type: "get",
@@ -36,6 +34,7 @@
                     });
                 });
 
+                //get rcpts of selected branch
                 $(document).on('change', '#Dlv_Stor', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
@@ -87,11 +86,8 @@
         <div class="content">
             <div class="box">
                 <div class="box-header">
-
-
-                    {{-- header end --}}
                     <div class="row">
-                            <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('rcatchs.create')}}">{{trans('admin.create_catch_receipt')}}</a>
+                            <a class="btn btn-primary pull-left" href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a>
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
@@ -143,7 +139,7 @@
                                                     <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('rcatchs.destroy', $gl->Tr_No)}}" method="POST">
+                                                    <form action="{{route('rcatchs.destroy', $gl->ID_No)}}" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
@@ -196,97 +192,3 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{{--@extends('admin.index')--}}
-{{--@section('title',trans('admin.companies'))--}}
-{{--@section('content')--}}
-{{--@push('js')--}}
-{{--    @hasrole('reader')--}}
-{{--    <script src="{{url('/')}}/js/dataTables.buttons.min.js"></script>--}}
-{{--    @endhasrole--}}
-{{--    <script>--}}
-{{--        $(document).ready(function(){--}}
-{{--            $('#Cmp_No').change(function(){--}}
-{{--                $.ajax({--}}
-{{--                    url: "{{route('branchForEdit')}}",--}}
-{{--                    type: "POST",--}}
-{{--                    dataType: 'html',--}}
-{{--                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },--}}
-{{--                    success: function(data){--}}
-{{--                        $('#Brn_No').html(data);--}}
-{{--                    }--}}
-{{--                });--}}
-
-{{--                $.ajax({--}}
-{{--                    url: "{{route('getRecieptByCmp')}}",--}}
-{{--                    type: "GET",--}}
-{{--                    dataType: 'html',--}}
-{{--                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },--}}
-{{--                    success: function(data){--}}
-
-{{--                    }--}}
-{{--                });--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
-{{--@endpush--}}
-{{--    <div class="box">--}}
-{{--        <div class="box-header">--}}
-{{--            <h3 class="box-title">{{trans('admin.catch_receipt')}}</h3>--}}
-{{--        </div>--}}
-{{--    @include('admin.layouts.message')--}}
-{{--    <!-- /.box-header -->--}}
-{{--        <div class="box-body table-responsive">--}}
-{{--            <div class="row">--}}
-{{--                <div class="col-md-3">--}}
-{{--                    <label for="Cmp_No">{{trans('admin.cmp_no')}}</label>--}}
-{{--                    <select name="Cmp_No" id="Cmp_No" class="form-control">--}}
-{{--                        <option value="{{null}}">{{trans('admin.select')}}</option>--}}
-{{--                        @if(count($companies) > 0)--}}
-{{--                            @foreach($companies as $cmp)--}}
-{{--                                <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-md-3">--}}
-{{--                    <label for="Brn_No">{{trans('admin.Brn_No')}}</label>--}}
-{{--                    <select name="Brn_No" id="Brn_No" class="form-control">--}}
-{{--                        <option value="{{null}}">{{trans('admin.select')}}</option>--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            {!! $dataTable->table([--}}
-{{--             'class' => 'table table-bordered table-striped table-hover'--}}
-{{--             ],true) !!}--}}
-{{--        </div>--}}
-{{--        <!-- /.box-body -->--}}
-{{--    </div>--}}
-
-
-
-
-
-
-
-
-{{--    @push('js')--}}
-{{--        {!! $dataTable->scripts() !!}--}}
-{{--    @endpush--}}
-{{--@endsection--}}

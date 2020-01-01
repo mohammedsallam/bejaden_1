@@ -171,8 +171,8 @@
                         success: function(data){
                             $('#credit_data').html(data);
                             $('#Tot_Amunt').val($('#Tr_Db').val());
-                            $('#Salman_No').val($('#getSalNo').val());
-                            $('#Salman_No_Name').val($('#getSalName').val());
+                            $('#Slm_No').val($('#getSalNo').val());
+                            $('#Slm_No_Name').val($('#getSalName').val());
                         }
                     });
                 }
@@ -247,7 +247,7 @@
                             Tot_Amunt: $('#Tot_Amunt').val(),
                             Taxp_Extra: $('#Taxp_Extra').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
-                            Salman_No: $('#Salman_No').val(),
+                            Slm_No: $('#Slm_No').val(),
                             Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                             Sysub_Account: $('#Sysub_Account').val(),
                             Tr_Db: $('#Tr_Db').val(),
@@ -306,7 +306,7 @@
                                 Tot_Amunt: $('#Tot_Amunt').val(),
                                 Taxp_Extra: $('#Taxp_Extra').val(),
                                 Rcpt_By: $('#Rcpt_By').val(),
-                                Salman_No: $('#Salman_No').val(),
+                                Slm_No: $('#Slm_No').val(),
                                 Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                 Sysub_Account: $('#Sysub_Account').val(),
                                 Tr_Db: $('#Tr_Db').val(),
@@ -405,7 +405,7 @@
                             $('#Tot_Amunt').val(null);
                             $('#Taxp_Extra').val(null);
                             $('#Rcpt_By').val(null);
-                            $('#Salman_No').val(null);
+                            $('#Slm_No').val(null);
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
                             $('#Tr_Db').val(null);
@@ -416,8 +416,8 @@
                             $('#Acc_No_Select').val(null);
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
-                            $('#Salman_No_Name').val(null);
-                            $('#Salman_No').val(null);
+                            $('#Slm_No_Name').val(null);
+                            $('#Slm_No').val(null);
                             $('#Chq_no').val(null);
                             $('#Bnk_Nm').val(null);
                             $('#Issue_Dt').val(null);
@@ -562,6 +562,14 @@
             </select>
         </div>
         {{-- نهاية العمله --}}
+
+                {{-- المبلغ بالعمله الاجنبيه --}}
+                <div class="col-md-2">
+                    <label for="FTot_Amunt">{{trans('admin.Linv_Net')}}</label>
+                    <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control" value="{{$gl->FTot_Amunt}}">
+                </div>
+                {{-- نهاية المبلغ بالعمله الاجنبيه --}}
+
         {{-- سعر الصرف --}}
         <div class="col-md-1">
             <label for="Curncy_Rate">{{trans('admin.exchange_rate')}}</label>
@@ -590,13 +598,13 @@
         {{-- مندوب المبيعات --}}
         <div id="sales_man_content">
             <div class="col-md-2">
-                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                <input type="text" name="Salman_No_Name" id="Salman_No_Name"
+                <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                <input type="text" name="Slm_No_Name" id="Slm_No_Name"
                 class="form-control" disabled value="">
             </div>
             <div class="col-md-1">
                 <label for=""></label>
-                <input type="text" name="Salman_No" id="Salman_No" class="form-control" disabled>
+                <input type="text" name="Slm_No" id="Slm_No" class="form-control" disabled>
                 <br>
             </div>
         </div>

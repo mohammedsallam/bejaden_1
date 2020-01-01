@@ -84,8 +84,8 @@
                                         {{-- مندوب المبيعات --}}
                                         <div id="sales_man_content">
                                             <div class="col-md-2">
-                                                <label for="Salman_No_Name">{{trans('admin.sales_officer2')}}</label>
-                                                <input type="text" name="Salman_No_Name" id="Salman_No_Name"  value="" class="form-control" disabled>
+                                                <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                                                <input type="text" name="Slm_No_Name" id="Slm_No_Name"  value="" class="form-control" disabled>
                                             </div>
                                         </div>
                                         {{-- نهاية مندوب المبيعات --}}

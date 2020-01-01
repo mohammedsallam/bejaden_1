@@ -30,8 +30,6 @@ class ReceiptCatchController extends Controller
      */
     public function index(Request $request)
     {
-
-
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -113,6 +111,7 @@ class ReceiptCatchController extends Controller
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
+            // dd($catch_data[$last_index]);
             $header = GLJrnal::create([
                 'Cmp_No' => $catch_data[$last_index]->Cmp_No,
                 'Brn_No' => $catch_data[$last_index]->Brn_No,
@@ -126,9 +125,10 @@ class ReceiptCatchController extends Controller
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
                 'User_ID' => auth::user()->id,
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
-                'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
-                'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
-                'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
+                'Curncy_No' => $catch_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
@@ -142,6 +142,9 @@ class ReceiptCatchController extends Controller
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
 
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
@@ -151,7 +154,10 @@ class ReceiptCatchController extends Controller
             $header->save();
 
 
-
+            $tot_rcpt_val = 0;
+            foreach($catch_data as $data){
+                $tot_rcpt_val += $data->Tot_Amunt;
+            }
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -171,13 +177,17 @@ class ReceiptCatchController extends Controller
                         'Acc_No' => $data->Tr_Db_Acc_No,
                         'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                         'Tr_Cr' => 0.00,
+                        'FTr_Db' => $header->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds_Db,
                         'Tr_Ds1' => $data->Tr_Ds_Db,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
-                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Rcpt_Value' => $tot_rcpt_val,
+                        'FTot_Amunt' => $header->FTot_Amunt,
                         'Ln_No' => 1,
+                        'Curncy_No' => $data->Curncy_No,
                     ]);
 
                     $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -199,6 +209,8 @@ class ReceiptCatchController extends Controller
                     'Acc_No' => $data->Acc_No,
                     'Tr_Db' => 0.00,
                     'Tr_Cr' => $data->Tr_Cr,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
@@ -206,7 +218,6 @@ class ReceiptCatchController extends Controller
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
-                    'Salman_No' => $data->Salman_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
@@ -253,7 +264,6 @@ class ReceiptCatchController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
-        // $salesman = AstSalesman::where('Slm_No', $gl->Salman_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -296,13 +306,15 @@ class ReceiptCatchController extends Controller
                     'Acc_No' => $data->Acc_No,
                     'Tr_Db' => 0.00,
                     'Tr_Cr' => $data->Tr_Cr,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
-                    'Salman_No' => $data->Salman_No,
+                    'Slm_No' => $data->Slm_No,
                     'updated_at' => carbon::now(),
                 ]);
             }
@@ -321,6 +333,8 @@ class ReceiptCatchController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
                                 ->where('Ln_No', 1)->first();
                 $debt->update(['Tr_Db' => $total]);
+                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
+                $debt->save();
 
 
                 $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
@@ -341,15 +355,18 @@ class ReceiptCatchController extends Controller
     public function destroy($id)
     {
         //حذف كل سطور السند
-        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
         $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
         if($trns && count($trns) > 0){
-            foreach($trn as $trn){
+            foreach($trns as $trn){
                 $trn->delete();
             }
         }
-        $gl->status = 1;
-        $gl->save();
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        // $gl->update(['status' => 1]);
+        // $gl->status = 1;
+        // $gl->save();
+        return redirect(aurl('rcatchs'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
     //Delete trans line from GLjrnTrs
@@ -543,12 +560,12 @@ class ReceiptCatchController extends Controller
                 'Tr_Dt' => 'sometimes',
                 'Tr_DtAr' => 'sometimes',
                 'Jr_Ty' => 'sometimes',
-                'Tr_Crncy' => 'sometimes',
-                'Tr_ExchRat' => 'sometimes',
+                'Curncy_No' => 'sometimes',
+                'Curncy_Rate' => 'sometimes',
                 'Tot_Amunt' => 'required',
-                'Tr_TaxVal' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
-                'Salman_No' => 'sometimes',
+                'Slm_No' => 'sometimes',
                 'Ac_Ty' => 'required',
                 'Sysub_Account' => 'required',
                 'Tr_Cr' => 'required',
@@ -563,12 +580,12 @@ class ReceiptCatchController extends Controller
                 'Tr_Dt' => trans('admin.receipt_date'),
                 'Tr_DtAr' => trans('admin.higri_date'),
                 'Jr_Ty' => trans('admin.receipts_type'),
-                'Tr_Crncy' => trans('admin.currency'),
-                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Curncy_No' => trans('admin.currency'),
+                'Curncy_Rate' => trans('admin.exchange_rate'),
                 'Tot_Amunt' => trans('admin.amount'),
-                'Tr_TaxVal' => trans('admin.tax'),
+                'Taxp_Extra' => trans('admin.tax'),
                 'Rcpt_By' => trans('admin.Rcpt_By'),
-                'Salman_No' => trans('admin.sales_officer2'),
+                'Slm_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
                 // 'Sysub_Account' => trans('admin.'),
                 'Tr_Cr' => trans('admin.amount_cr'),

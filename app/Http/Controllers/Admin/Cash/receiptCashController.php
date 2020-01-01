@@ -99,8 +99,6 @@ class receiptCashController extends Controller
     {
 
         $catch_data = json_decode($request->catch_data);
-//        dd(is_array($catch_data));
-
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -120,7 +118,8 @@ class receiptCashController extends Controller
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
                 'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
@@ -134,6 +133,9 @@ class receiptCashController extends Controller
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
 
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
@@ -162,16 +164,21 @@ class receiptCashController extends Controller
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => 1,
                         'Sysub_Account' => 0,
+                        'FTr_Db' => $header->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Acc_No' => $data->Tr_Db_Acc_No,
                         'Tr_Cr' => $catch_data[$last_index]->Tr_Db_Db,
                         'Tr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
+                        'Slm_No' => $data->Slm_No,
                         'Tr_Ds1' => $data->Tr_Ds1,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
+                        'FTot_Amunt' => $header->FTot_Amunt,
                         'Ln_No' => 1,
+                        'Curncy_No' => $data->Curncy_No,
                     ]);
 
                     $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -191,14 +198,18 @@ class receiptCashController extends Controller
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
+                    'Slm_No' => $data->Slm_No,
                     'Tr_Db' => $data->Tr_Db,
                     'Tr_Cr' => 0.00,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'Ln_No' => $data->Ln_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
@@ -244,7 +255,7 @@ class receiptCashController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
-        // $salesman = AstSalesman::where('Slm_No', $gl->Salman_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
+        // $salesman = AstSalesman::where('Slm_No', $gl->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -294,7 +305,7 @@ class receiptCashController extends Controller
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
-                    'Salman_No' => $data->Salman_No,
+                    'Slm_No' => $data->Slm_No,
                     'updated_at' => carbon::now(),
                 ]);
             }
@@ -333,25 +344,20 @@ class receiptCashController extends Controller
      */
     public function destroy($id)
     {
-
-        $gl = GLJrnal::where('Tr_No', $id)->get(['Tr_No', 'status'])->first();
+        //حذف كل سطور السند
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
         $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
         if($trns && count($trns) > 0){
             foreach($trns as $trn){
                 $trn->delete();
             }
         }
-        $gl->status = 1;
-        $gl->save();
-
-//      $glj =  GLjrnTrs::where('Tr_No',$id)->get();
-//      $glj->delete();
-//      dd('d');
-      return redirect()->back();
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        // $gl->update(['status' => 1]);
+        // $gl->status = 1;
+        // $gl->save();
+        return redirect(aurl('receiptCash'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
-
-
-
 
     //Delete trans line from GLjrnTrs
     public function deleteTrns(Request $request){
@@ -376,6 +382,7 @@ class receiptCashController extends Controller
             $gl->save();
         }
     }
+
 
     public function convertToDateToHijri(Request $request){
         $hijri = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Hijri)));
@@ -552,7 +559,7 @@ class receiptCashController extends Controller
                 'Tot_Amunt' => 'required',
                 'Taxp_Extra' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
-                'Salman_No' => 'sometimes',
+                'Slm_No' => 'sometimes',
                 'Ac_Ty' => 'required',
                 'Sysub_Account' => 'required',
                 'Tr_Db' => 'sometimes',
@@ -572,7 +579,7 @@ class receiptCashController extends Controller
                 'Tot_Amunt' => trans('admin.amount'),
                 'Taxp_Extra' => trans('admin.tax'),
                 'Rcpt_By' => trans('admin.Rcpt_By'),
-                'Salman_No' => trans('admin.sales_officer2'),
+                'Slm_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
                 // 'Sysub_Account' => trans('admin.'),
                 'Tr_Db' => trans('admin.amount_Db'),

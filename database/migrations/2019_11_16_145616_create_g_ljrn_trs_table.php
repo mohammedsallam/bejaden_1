@@ -37,7 +37,7 @@ class CreateGLjrnTrsTable extends Migration
             $table->bigInteger('Clsacc_no2')->nullable();//بند قائمة الدخل
             $table->bigInteger('Costcntr_No')->nullable();//رقم مركز التكلفه
             $table->enum('Doc_Type', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])->nullable();//نوع المستند
-            $table->enum('Crncy_Ty', [0,1,2])->nullable()->default(0);//currency_type number (CurrencyType enum)
+            $table->enum('Curncy_No', [0,1,2])->nullable()->default(0);//currency_type number (CurrencyType enum)
             $table->boolean('GL_Post')->nullable();//
             $table->boolean('JV_Post')->nullable();//
             $table->string('User_ID')->nullable();//
@@ -46,7 +46,10 @@ class CreateGLjrnTrsTable extends Migration
             $table->integer('Acc_Type')->nullable();//
             $table->float('Rcpt_Value')->nullable();//
             $table->float('RetPur_Sal')->nullable();//
-            $table->integer('Salman_No')->nullable();//مندوب المبيعات
+            $table->integer('Slm_No')->nullable();//مندوب المبيعات
+            $table->float('FTot_Amunt', 50, 10)->nullable(); //المبلغ المطلوب بالعمله الاجنبيه
+            $table->float('FTr_Db', 50, 10)->nullable();//الحركه مدين بالعمله الاجنبيه
+            $table->float('FTr_Cr', 50, 10)->nullable();//الحركه دائن بالعمله الاجنبيه
             $table->timestamps();
         });
     }
