@@ -42,6 +42,7 @@ class GLJrnal extends Model
         'Taxp_Extra',   
         'Taxv_Extra',
         'Tot_Amunt',
+        'FTot_Amunt',
         // 'Tr_Dif',
         // 'Crnt_Blnc',
         'Tr_Ds',

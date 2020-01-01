@@ -128,8 +128,9 @@ class ReceiptCatchController extends Controller
                 'User_ID' => auth::user()->id,
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
-                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
@@ -143,6 +144,9 @@ class ReceiptCatchController extends Controller
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
 
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
@@ -172,12 +176,15 @@ class ReceiptCatchController extends Controller
                         'Acc_No' => $data->Tr_Db_Acc_No,
                         'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                         'Tr_Cr' => 0.00,
+                        'FTr_Db' => $header->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds_Db,
                         'Tr_Ds1' => $data->Tr_Ds_Db,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
+                        'FTot_Amunt' => $header->FTot_Amunt,
                         'Ln_No' => 1,
                     ]);
 
@@ -200,6 +207,8 @@ class ReceiptCatchController extends Controller
                     'Acc_No' => $data->Acc_No,
                     'Tr_Db' => 0.00,
                     'Tr_Cr' => $data->Tr_Cr,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
@@ -296,6 +305,8 @@ class ReceiptCatchController extends Controller
                     'Acc_No' => $data->Acc_No,
                     'Tr_Db' => 0.00,
                     'Tr_Cr' => $data->Tr_Cr,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
@@ -321,6 +332,8 @@ class ReceiptCatchController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
                                 ->where('Ln_No', 1)->first();
                 $debt->update(['Tr_Db' => $total]);
+                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
+                $debt->save();
 
 
                 $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
@@ -344,7 +357,7 @@ class ReceiptCatchController extends Controller
         $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No', 'status'])->first();
         $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
         if($trns && count($trns) > 0){
-            foreach($trn as $trn){
+            foreach($trns as $trn){
                 $trn->delete();
             }
         }
