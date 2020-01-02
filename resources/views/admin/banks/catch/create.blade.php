@@ -11,7 +11,26 @@
             var old = 0;
             var Ln_No = 1;
 
-            //get branches of specific company selection
+            //get branches and salesmen of specific company selection
+            $.ajax({
+                url: "{{route('branchForEdit')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Brn_No_content').html(data);
+                }
+            });
+            $.ajax({
+                url: "{{route('getCmpSalesMen')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Slm_No_Name').html(data);
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
             $(document).on('change', '#Cmp_No', function(){  
                 $.ajax({
                     url: "{{route('branchForEdit')}}",
@@ -20,6 +39,17 @@
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
                     success: function(data){
                         $('#Brn_No_content').html(data);
+                        $.ajax({
+                            url: "{{route('createTrNo')}}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {"_token": "{{ csrf_token() }}", 
+                                    Brn_No: $('#Dlv_Stor').children('option:selected').val(), 
+                                    Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                            success: function(data){
+                                $('#Tr_No').val(data);
+                            }
+                        });
                     }
                 });
 
@@ -32,9 +62,31 @@
                         $('#Taxp_Extra').val(data);
                     }
                 });
+
+                $.ajax({
+                    url: "{{route('getCmpSalesMen')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Slm_No_Name').html(data);
+                        $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                    }
+                });
             });
 
-            //get salesmen of specific branch selection
+            //انشاء رقم الحركه حسب اختيار الفرع
+            $.ajax({
+                url: "{{route('createTrNo')}}",
+                type: "POST",
+                dataType: 'json',
+                data: {"_token": "{{ csrf_token() }}", 
+                        Brn_No: $('#Dlv_Stor').children('option:selected').val(), 
+                        Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Tr_No').val(data);
+                }
+            });
             $(document).on('change', '#Dlv_Stor', function(){
                 var Cmp_No = $('#Cmp_No').children('option:selected').val();
                 $.ajax({
@@ -46,7 +98,7 @@
                         $('#Tr_No').val(data);
                     }
                 });
-            }) 
+            });
 
             // convert Tr_Dt ro hijry
             let Hijri = $('input#Tr_Dt').val();
@@ -277,7 +329,7 @@
                             // $('#Dlv_Stor').val(null);
                             // $('#Tr_No').val(null);
                             // $('#Doc_Type').val(1);
-                            $('#Curncy_No').val(0);
+                            $('#Curncy_No').val(1);
                             $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
                             // $('#Taxp_Extra').val(null);
@@ -349,7 +401,7 @@
                 }
             });
 
-            //حساب نسبة الفائده
+            //حساب الضريبه
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
                 if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
@@ -391,7 +443,7 @@
                             // $('#Dlv_Stor').val(null);
                             $('#Tr_No').val(null);
                             // $('#Doc_Type').val(1);
-                            $('#Curncy_No').val(0);
+                            $('#Curncy_No').val(1);
                             $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
                             $('#Taxp_Extra').val(null);
@@ -474,7 +526,36 @@
                 }
             }
 
-            $('#Curncy_Rate').change(function(){
+            //سعر الصرف حسب اختيار العمله
+            $.ajax({
+                url: "{{route('getCurencyRate')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Curncy_No: $('#Curncy_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Curncy_Rate').val(data);
+                }
+            });
+            $(document).on('change', '#Curncy_No', function(){
+                $.ajax({
+                    url: "{{route('getCurencyRate')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Curncy_No: $(this).val() },
+                    success: function(data){
+                        $('#Curncy_Rate').val(data);
+                        if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                            $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                            calcTax();
+                            $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                        }
+                    }
+                });
+            });
+
+            $('#FTot_Amunt').change(function(){
                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
                     calcTax();
@@ -497,6 +578,7 @@
     <br>
     <br>
     <br>
+    {{-- بيانات اساسيه سند قبض --}}
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title">{{trans('admin.data_Catch')}}</div>
@@ -508,7 +590,6 @@
                     <div class="form-group">
                         <label for="Cmp_No">{{trans('admin.company')}}</label>
                         <select name="Cmp_No" id="Cmp_No" class="form-control">
-                            <option value="{{null}}">{{trans('admin.select')}}</option>
                             @if(count($companies) > 0)
                                     @foreach($companies as $cmp)
                                         <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
@@ -530,14 +611,14 @@
                     </div>
                 </div>
                 {{-- نهاية الفرع --}}
-                {{-- رقم القيد --}}
-                <div class="col-md-2">
+                {{-- رقم السند --}}
+                <div class="col-md-1">
                     <div class="form-group">
-                        <label for="Tr_No">{{trans('admin.number_of_limitation')}}</label>
+                        <label for="Tr_No">{{trans('admin.number_of_receipt')}}</label>
                         <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
                     </div>
                 </div>
-                {{-- نهاية رقم القيد --}}
+                {{-- نهاية رقم السند --}}
                 {{-- تاريخ القيد --}}
                 <div class="col-md-2">
                     <div class="form-group">
@@ -552,9 +633,6 @@
                     </div>
                 </div>
                 {{-- نهاية تاريخ القيد --}}
-            </div>
-        
-            <div class="row">
                 {{-- نوع السند نقدى \ شيك --}}
                 <div class="col-md-1">
                     <label for="Doc_Type">{{trans('admin.receipts_type')}}</label>
@@ -565,18 +643,21 @@
                     </select>
                 </div>
                 {{-- نهاية نوع السند نقدى \ شيك --}}
+            </div>
+        
+            <div class="row">
                 {{-- العمله --}}
                 <div class="col-md-2">
                     <label for="Curncy_No">{{trans('admin.currency')}}</label>
                     <select name="Curncy_No" id="Curncy_No" class="form-control">
-                        @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
-                            <option value="{{$key}}">{{$value}}</option>
+                        @foreach($crncy as $crn) 
+                            <option value="{{$crn->Curncy_No}}">{{$crn->{'Curncy_Nm'.ucfirst(session('lang'))} }}</option>
                         @endforeach
                     </select>
                 </div>
                 {{-- نهاية العمله --}}
                 {{-- المبلغ بالعمله الاجنبيه --}}
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <label for="FTot_Amunt">{{trans('admin.Linv_Net')}}</label>
                     <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control">
                 </div>
@@ -588,7 +669,7 @@
                 </div>
                 {{-- نهاية سعر الصرف --}}
                 {{-- المبلغ المطلوب --}}
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
                     <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control">
                 </div>
@@ -612,13 +693,14 @@
                     <input type="text" name="Rcpt_By" id="Rcpt_By" class="form-control">
                 </div>
                 {{-- نهاية مقبوض بواسطة --}}
-            </div>
-            <div class="row">
                 {{-- مندوب المبيعات --}}
                 <div id="sales_man_content">
                     <div class="col-md-2">
                         <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
-                        <input type="text" name="Slm_No_Name" id="Slm_No_Name" class="form-control" disabled>
+                        <select name="Slm_No_Name" id="Slm_No_Name" class="form-control">    
+                        </select>
+                        {{-- <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                        <input type="text" name="Slm_No_Name" id="Slm_No_Name" class="form-control" disabled> --}}
                     </div>
                     <div class="col-md-1">
                         <label for=""></label>
@@ -658,7 +740,7 @@
             {{-- نهاية بيانات الشيك فى سند قبض شيك --}}
         </div>
     </div>
-
+    {{-- نهاية بيانات اساسيه سند قبض --}}
     <div class="row">
         <br>
         {{-- بيانات الحساب الدائن --}}
