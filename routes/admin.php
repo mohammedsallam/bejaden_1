@@ -237,6 +237,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('updateTrns','Admin\banks\ReceiptCatchController@updateTrns')->name('updateTrns');
         Route::post('deleteTrns','Admin\banks\ReceiptCatchController@deleteTrns')->name('deleteTrns');
         Route::get('getRecieptByCmp','Admin\banks\ReceiptCatchController@getRecieptByCmp')->name('getRecieptByCmp');
+        Route::post('getCurencyRate','Admin\banks\ReceiptCatchController@getCurencyRate')->name('getCurencyRate');
+        Route::post('getCmpSalesMen','Admin\banks\ReceiptCatchController@getCmpSalesMen')->name('getCmpSalesMen');
 
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف

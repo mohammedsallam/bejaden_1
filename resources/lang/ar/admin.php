@@ -838,7 +838,7 @@ return [
     'final_counting_classfication' => 'التصنيف/حسابات ختاميه',
     'dept_account'=>'بيانات الحساب المدين',
     'credit_account'=>'الحساب الدائن',
-    'amount'=>'المبلغ المطلوب',
+    'amount'=>'المطلوب',
     'tax'=>'الضريبه',
     'EGP'=>'ريال سعودي',
     'SAR'=>'ريال سعودي',
