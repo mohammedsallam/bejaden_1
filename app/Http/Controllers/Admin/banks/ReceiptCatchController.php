@@ -17,6 +17,7 @@ use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsSuplir;
 use App\Models\Admin\GLaccBnk;
 use App\Models\Admin\MtsCostcntr;
+use App\Models\Admin\AstCurncy;
 use Carbon\Carbon;
 use Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
@@ -54,17 +55,6 @@ class ReceiptCatchController extends Controller
                 return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
             }
         }
-
-//        if(session('Cmp_No') == -1){
-//            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-//            // $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
-//        }
-//        else{
-//            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-//            // $gls = GLJrnal::where('Jr_Ty', 2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
-//        }
-//        // return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
-//        return $catch->render('admin.banks.catch.index',['title'=>trans('admin.catch_receipt'), 'companies' => $cmps]);
     }
 
     public function getRecieptByCmp(Request $request){
@@ -94,8 +84,9 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
         return view('admin.banks.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
-                                                'cost_center' => $cost_center]);
+                                                'cost_center' => $cost_center, 'crncy' => $crncy]);
     }
 
     /**
@@ -140,6 +131,7 @@ class ReceiptCatchController extends Controller
                 'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
             ]);
 
             foreach($catch_data as $data){
@@ -260,24 +252,49 @@ class ReceiptCatchController extends Controller
      */
     public function edit($id)
     {
-        if(session('Cmp_No') == -1){
-            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        $gl = GLJrnal::where('Tr_No', $id)->first();
+        if($gl->status == 1){
+            //اضافة السطور المحذوفه للسند
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+            $flags = GLaccBnk::all();
+            // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+            $banks = [];
+            foreach($flags as $flag){
+                if($flag->RcpCsh_Voucher == 1){
+                    array_push($banks, $flag);
+                }
+            }
+            $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.add_lines', compact('gl', 'gltrns', 'cmps', 'banks', 'crncy', 'salesman'));
         }
         else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-        }
-        $gl = GLJrnal::where('Tr_No', $id)->first();
-        $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
-        $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
-        $banks = [];
-        foreach($flags as $flag){
-            if($flag->RcpCsh_Voucher == 1){
-                array_push($banks, $flag);
+            // تعديل سطور السند
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+            $flags = GLaccBnk::all();
+            // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+            $banks = [];
+            foreach($flags as $flag){
+                if($flag->RcpCsh_Voucher == 1){
+                    array_push($banks, $flag);
+                }
+            }
+            $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks', 'crncy', 'salesman'));
         }
-
-        return view('admin.banks.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
     }
 
     /**
@@ -366,9 +383,6 @@ class ReceiptCatchController extends Controller
             }
         }
         GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
-        // $gl->update(['status' => 1]);
-        // $gl->status = 1;
-        // $gl->save();
         return redirect(aurl('rcatchs'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
@@ -404,9 +418,8 @@ class ReceiptCatchController extends Controller
     public function getSalesMan(Request $request){
         if($request->ajax()){
             $customer = MTsCustomer::where('Cstm_No', $request->Acc_No)->get(['Slm_No'])->first();
-            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))])->first();
-            // return $salesman->{'Slm_Nm'.ucfirst(session('lang'))};
-            return view('admin.banks.catch.salman', ['salesman' => $salesman]);
+            $salesman = AstSalesman::get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.salman', ['salesman' => $salesman, 'customer' => $customer]);
         }
     }
 
@@ -705,5 +718,18 @@ class ReceiptCatchController extends Controller
         //     }
         // }
 
+    }
+
+    public function getCurencyRate(Request $request){
+        if($request->ajax()){
+            return AstCurncy::where('Curncy_No', $request->Curncy_No)->pluck('Curncy_Rate')->first();
+        }
+    }
+
+    public function getCmpSalesMen(Request $request){
+        if($request->ajax()){
+            $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.salesman', compact('salesman'));
+        }
     }
 }
