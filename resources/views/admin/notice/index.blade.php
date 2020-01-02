@@ -102,6 +102,7 @@
                                         <th>{{trans('admin.noti_type')}}</th>
                                         <th>{{trans('admin.noti_date')}}</th>
                                         <th>{{trans('admin.note_for')}}</th>
+                                        <th>حالة الاشعار</th>
 
                                         <th>{{trans('admin.View')}}</th>
                                         <th>{{trans('admin.print')}}</th>
@@ -118,10 +119,18 @@
 
                                                 <td>{{$gl->Tr_No}}</td>
                                                 <td>
-                                                    {{$gl->Jr_Ty}}
+                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty)}}
                                                 </td>
                                                 <td>{{$gl->Entr_Dt}}</td>
-                                                <td>{{$gl->Acc_Nm}}</td>
+                                                <td>{{$gl->Tr_Ds}}</td>
+                                                <td>
+                                                    @if($gl->status == 1)
+                                                        تم الحذف
+                                                    @else
+                                                        فعال
+                                                    @endif
+                                                </td>
+
 
 
                                                 <td>
@@ -134,7 +143,7 @@
                                                     <a href="{{route('notice.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('notice.destroy', $gl->Tr_No)}}" method="POST">
+                                                    <form action="{{route('notice.destroy', $gl->ID_No)}}" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>

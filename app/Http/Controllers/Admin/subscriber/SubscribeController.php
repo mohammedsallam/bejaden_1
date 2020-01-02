@@ -205,7 +205,7 @@ class SubscribeController extends Controller
         $subscriber = MTsCustomer::findOrFail($ID_No);
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
         $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
 
