@@ -50,6 +50,7 @@
             });
         </script>
     @endpush
+    @include('admin.layouts.message')
     {{-- header start --}}
     <div class="row">
         {{-- الشركه --}}

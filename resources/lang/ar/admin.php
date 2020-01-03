@@ -243,6 +243,8 @@ return [
     // bus/cartype // create
     'create_new_countrytrans' => 'انشاء مناطق جديدة',
     'made_in' => 'صنع في',
+    'yes' => 'نعم',
+    'no' => 'لا',
     // bus/cartype // index
     'car_type' => 'نوع السيارة',
     // bus/create // buscategory
@@ -805,6 +807,7 @@ return [
     'number_account'=>'الرقم المحاسبي',
     'please_modify'=>'من فضلك قم بتعديل تاريخ رحلة العميل',
     'code'=>'الكود المحاسبي',
+    'close_ask' => 'هل تريد طباعة السند؟',
     'fund_and_banks'=>'الصندوق والبنوك',
     'create_catch_receipt'=>'اضافة سند قبض',
     'edit_catch_receipt'=>'تعديل سند قبض',
