@@ -557,6 +557,7 @@
                     <div class="form-group">
                         <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
                         <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control" value="{{$gl->Tr_DtAr}}" disabled>
+
                     </div>
                 </div>
                 {{-- نهاية تاريخ القيد --}}
