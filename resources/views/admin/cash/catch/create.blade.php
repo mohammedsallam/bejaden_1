@@ -437,6 +437,7 @@
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
                             $('#Tr_Db').val(null);
+                            $('#Tr_Cr').val(null);
                             $('#Dc_No').val(null);
                             $('#Tr_Ds').val(null);
                             $('#Tr_Ds1').val(null);
@@ -495,6 +496,7 @@
                         $('#Ac_Ty').val(data[i].Ac_Ty);
                         $('#Sysub_Account').val(data[i].Sysub_Account);
                         $('#Tr_Db').val(data[i].Tr_Db);
+                        $('#Tr_Cr').val(data[i].Tr_Cr);
                         $('#Dc_No').val(data[i].Dc_No);
                         $('#Tr_Ds').val(data[i].Tr_Ds);
                         $('#Tr_Ds1').val(data[i].Tr_Ds1);

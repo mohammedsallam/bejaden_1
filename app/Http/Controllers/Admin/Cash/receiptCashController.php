@@ -167,7 +167,7 @@ class receiptCashController extends Controller
                         'FTr_Db' => $header->FTot_Amunt,
                         'FTr_Cr' => 0.00,
                         'Acc_No' => $data->Tr_Db_Acc_No,
-                        'Tr_Cr' => $catch_data[$last_index]->Tr_Db_Db,
+                        'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
                         'Tr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
@@ -284,21 +284,27 @@ class receiptCashController extends Controller
 
         $updated_data = json_decode($request->catch_data);
 
+
         if(count($updated_data) > 0){
             foreach($updated_data as $data){
-                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                    ->where('Ln_No', $data->Ln_No)->first();
+//                dd($data);
+
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)->first();
+
+//                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+//                    ->where('Ln_No', $data->Ln_No)->first();
                 //Update transaction credit
 
                 $trns->update([
                     'Cmp_No' => $data->Cmp_No,
                     'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' => 2,
+                    'Jr_Ty' => 4,
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
                     'Tr_Cr' => 0.00,
-                    'Tr_Db' => $data->Tr_Db,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
@@ -324,7 +330,8 @@ class receiptCashController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
                     ->where('Ln_No', 1)->first();
                 $debt->update(['Tr_Db' => $total]);
-
+                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
+                $debt->save();
 
                 $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
                 $gl_debt->update([
