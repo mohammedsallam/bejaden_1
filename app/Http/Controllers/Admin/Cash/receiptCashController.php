@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Cash;
 
+use App\Models\Admin\AstCurncy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -85,7 +86,10 @@ class receiptCashController extends Controller
                 array_push($banks, $flag);
             }
         }
-        return view('admin.cash.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
+
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+
+        return view('admin.cash.catch.create', ['companies' => $cmps, 'crncy' => $crncy, 'banks' => $banks, 'last_record' => $last_record,
                                                 'cost_center' => $cost_center]);
     }
 
@@ -117,7 +121,6 @@ class receiptCashController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
@@ -138,6 +141,7 @@ class receiptCashController extends Controller
             }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
+            if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
@@ -160,6 +164,7 @@ class receiptCashController extends Controller
                         'Jr_Ty' => 4,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
+                        'Month_Jvno' => $data->Tr_No,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => 1,
@@ -195,6 +200,7 @@ class receiptCashController extends Controller
                     'Month_No' => Carbon::now()->month,
                     'Tr_Dt' => $data->Tr_Dt,
                     'Tr_DtAr' => $data->Tr_DtAr,
+                    'Month_Jvno' => $data->Tr_No,
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
@@ -215,7 +221,35 @@ class receiptCashController extends Controller
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
+
+
+                //update debt Tot_Amunt
+                //1- get all credit lines - sum credit money
+                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                    ->where('Ln_No' , '>', 1)->get();
+                if($trnses && count($trnses)){
+                    $total = 0;
+                    $ftotal = 0;
+                    foreach($trnses as $trns){
+                        $total += $trns->Tr_Db;
+                    }
+                    foreach($trnses as $trns){
+                        $ftotal += $trns->FTr_Cr;
+                    }
+
+                    //2- get debt line - update money with new total
+                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No', 1)->first();
+                    $debt->update([
+                        'Tr_Cr' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                    $header->update(['FTot_Amunt' => $ftotal]);
             }
+        }
+
         }
 
     }
@@ -257,6 +291,9 @@ class receiptCashController extends Controller
         $gl = GLJrnal::where('Tr_No', $id)->first();
         // $salesman = AstSalesman::where('Slm_No', $gl->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+        $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
         $banks = [];
@@ -266,7 +303,7 @@ class receiptCashController extends Controller
             }
         }
 
-        return view('admin.cash.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
+        return view('admin.cash.catch.edit', compact('gl', 'gltrns','crncy', 'cmps', 'banks', 'salesman'));
     }
     /**
      * Update the specified resource in storage.
@@ -656,6 +693,24 @@ class receiptCashController extends Controller
             $request->Brn_No = $trns->Brn_No;
             $subAccs = $this->getSubAcc($request);
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+            return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
+        }
+    }
+
+    public function getRcptDetails(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
+                ->where('Tr_No', $request->Tr_No)
+                ->first();
+
+            $new_request = new Request;
+            $new_request->Acc_Ty = $trns->Ac_Ty;
+            $new_request->Cmp_No = $trns->Cmp_No;
+            $new_request->Brn_No = $trns->Brn_No;
+            $subAccs = $this->getSubAcc($new_request);
+
+            $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+
             return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
     }
