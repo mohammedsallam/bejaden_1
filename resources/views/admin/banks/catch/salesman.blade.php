@@ -1,6 +1,6 @@
 @if(count($salesman) > 0)
     @foreach($salesman as $man)
-        <option value="{{$man->Slm_No}}" @if($man->Slm_No == $customer->Slm_No) selected @endif>
+        <option value="{{$man->Slm_No}}">
             {{$man->{'Slm_Nm'.ucfirst(session('lang'))} }}
         </option>
     @endforeach

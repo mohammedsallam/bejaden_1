@@ -9,6 +9,7 @@ use Up;
 use App\DataTables\CompanyDataTable;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\ActivityTypes;
+use App\Models\Admin\AstCurncy;
 
 class CompaniesController extends Controller
 {
@@ -93,8 +94,9 @@ class CompaniesController extends Controller
         $id = ActivityTypes::where('Name_Ar','=',null)->orWhere('Name_Ar','=','')->pluck('ID_No');
         DB::table('activitytypes')->where('Name_En',null)->where('Name_En',null)->orWhere('Name_Ar','=','')->delete();
         $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
 
-        return view('admin.companies.create',['title'=> trans('admin.company_fixed_data'), 'cmp' => $cmp, 'acts' => $acts]);
+        return view('admin.companies.create',['title'=> trans('admin.company_fixed_data'), 'cmp' => $cmp, 'acts' => $acts, 'crncy' => $crncy]);
     }
 
     /**

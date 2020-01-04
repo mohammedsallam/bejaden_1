@@ -36,11 +36,6 @@
                     <td>{{$gl->Entr_Dt}}</td>
                     <td>{{$gl->Acc_Nm}}</td>
 
-
-                    <td>
-                        <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
-                    </td>
-
                     <td>
                         @if($gl->status == 1)
                             تم الحذف
@@ -48,15 +43,20 @@
                             فعال
                         @endif
                     </td>
+                    <td>
+                        <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                    </td>
+
+
 
                     <td>
-                        <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
+                        <a href="../../receiptCash/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
                     </td>
                     <td>
-                        <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                        <a href="{{route('receiptCash.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                     </td>
                     <td>
-                        <form action="{{route('rcatchs.destroy', $gl->Tr_No)}}" method="POST">
+                        <form action="{{route('receiptCash.destroy', $gl->Tr_No)}}" method="POST">
                             {{csrf_field()}}
                             {{method_field('DELETE')}}
                             <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>

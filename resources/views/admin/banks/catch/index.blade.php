@@ -50,6 +50,7 @@
             });
         </script>
     @endpush
+    @include('admin.layouts.message')
     {{-- header start --}}
     <div class="row">
         {{-- الشركه --}}
@@ -116,10 +117,10 @@
 
                                                 <td>{{$gl->Tr_No}}</td>
                                                 <td>
-                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Doc_Type) }}
+                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty) }}
                                                 </td>
-                                                <td>{{$gl->Entr_Dt}}</td>
-                                                <td>{{$gl->Acc_Nm}}</td>
+                                                <td>{{$gl->Tr_Dt}}</td>
+                                                <td>{{$gl->Tr_Ds}}</td>
 
                                                 <td>
                                                     @if($gl->status == 1)

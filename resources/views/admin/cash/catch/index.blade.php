@@ -88,11 +88,9 @@
         <div class="content">
             <div class="box">
                 <div class="box-header">
-
-
                     {{-- header end --}}
                     <div class="row">
-                        <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_catch_receipt')}}</a>
+                        <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_caching_receipt')}}</a>
 
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
@@ -105,7 +103,9 @@
                                         <th>{{trans('admin.receipt_date')}}</th>
                                         <th>{{trans('admin.note_for')}}</th>
                                         <th>حالة السند</th>
-
+{{--                                        <th>مصاريف الإعتماد</th>--}}
+{{--                                        <th>العملة الأجنبية مدين </th>--}}
+{{--                                        <th>العملة الأجنبيه دائن </th>--}}
                                         <th>{{trans('admin.View')}}</th>
                                         <th>{{trans('admin.print')}}</th>
                                         <th>{{trans('admin.edit')}}</th>
@@ -121,15 +121,10 @@
 
                                                 <td>{{$gl->Tr_No}}</td>
                                                 <td>
-                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Doc_Type) }}
+                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty) }}
                                                 </td>
-                                                <td>{{$gl->Entr_Dt}}</td>
-                                                <td>{{$gl->Acc_Nm}}</td>
-
-
-                                                <td>
-                                                    <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
-                                                </td>
+                                                <td>{{$gl->Tr_Dt}}</td>
+                                                <td>{{$gl->Tr_Ds}}</td>
 
                                                 <td>
                                                     @if($gl->status == 1)
@@ -138,14 +133,22 @@
                                                         فعال
                                                     @endif
                                                 </td>
+
+{{--                                                <td></td>--}}
+{{--                                                <td></td>--}}
+{{--                                                <td></td>--}}
+
                                                 <td>
-                                                    <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
+                                                    <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                                    <a href="../../receiptCash/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('rcatchs.destroy', $gl->Tr_No)}}" method="POST">
+                                                    <a href="{{route('receiptCash.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                                </td>
+                                                <td>
+                                                    <form action="{{route('receiptCash.destroy', $gl->ID_No)}}" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>

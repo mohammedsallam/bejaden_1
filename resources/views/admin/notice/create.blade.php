@@ -16,65 +16,13 @@
     @push('js')
         <script>
             $(document).ready(function(){
+                $('#Acc_No_Select').select2({});
+                $('#Costcntr_No').select2({});
 
                 var catch_data = [];
                 var old = 0;
                 var Ln_No = 1;
-
-                // calc tax function
-                function calcTax(){
-                    var amount = $('#Tot_Amunt').val();
-
-                    // if($('#create_cache :checkbox[id=Tr_TaxVal_check]').is(':checked')){
-                        var tax = $('#Tr_TaxVal').val();
-
-                        if(tax !== ''){
-                            var total_amount = ((tax * amount) / 100);
-                            $('.Tr_Cr').val(total_amount);
-                            $('.Tr_Db_Db').val(total_amount);
-                            $('.Tr_Cr_Db').val(total_amount);
-                            $('.Tr_Dif').val(total_amount);
-                        }
-
-                        $('.Tr_Cr').each(function () {
-                            $(this).val(parseFloat(amount) + parseFloat(total_amount))
-                        });
-                        $('.Tr_Db_Db').each(function () {
-                            $(this).val(parseFloat(amount) + parseFloat(total_amount))
-                        });
-                        $('.Tr_Cr_Db').each(function () {
-                            $(this).val(parseFloat(amount) + parseFloat(total_amount))
-                        });
-                        $('.Tr_Dif').each(function () {
-                            $(this).val(parseFloat($('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val()))
-                        });
-
-
-                    // }
-                    // else{
-                    //     // $('.Tr_Cr').each(function () {
-                    //     //     $(this).val(parseFloat(amount))
-                    //     // });
-                    // }
-
-                    // var cr = $('#Tr_Cr').val();
-                    // var old_db = $('#Tr_Db_Db').val();
-                    // var old_cr = $('#Tr_Cr_Db').val();
-                    // $('#Tr_Db_Db').val(parseFloat(old_db) + parseFloat($('#Tr_Cr').val()));
-                    // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Cr').val()));
-                }
-
-                // when check on checkbox
-                $('#create_cache :checkbox[id=Tr_TaxVal_check]').change(function(){
-                    if($(this).is(':checked')){
-                        $('#Tr_TaxVal').removeAttr('disabled');
-
-                        if ($('#Tr_TaxVal').val() !== ''){
-                            calcTax();
-                        }
-
-                    }
-                });
+                var tax = false;
 
                 // toggle between db and cr
                 $('#Jr_Ty').change(function () {
@@ -92,7 +40,6 @@
                     }
 
 
-
                     $.ajax({
                         type: 'get',
                         url : "{{route('getSelect')}}",
@@ -103,221 +50,59 @@
                     });
                 });
 
-                // on change on total ammount
-                $('input.Tot_Amunt').change(function(){
-
-                    calcTax();
-
-                    $('.Tr_Cr').val($(this).val());
-
-                    $('.Tr_Db_Db').each(function () {
-                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()));
-                    });
-                    $('.Tr_Cr_Db').each(function () {
-                        $(this).val(parseFloat(old) + parseFloat($('.Tr_Cr').val()))
-                    });
-                    $('.Tr_Dif').each(function () {
-                        $(this).val( $('.Tr_Db_Db').val() - $('.Tr_Cr_Db').val() );
-                    });
-                });
-
-                //add tax
-                $('#create_cache :checkbox[id=Taxp_Extra_check]').change(function(){
-                    if($(this).is(':checked')){
-                        $('#Taxp_Extra').removeAttr('disabled');
-                        calcTax();
-                    }
-                    else{
-                        $('#Taxp_Extra').attr('disabled','disabled');
-                        $('#Tr_Cr').val($('#Tot_Amunt').val());
-                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    }
-
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
-                });
-
-                // on change tax
-                $('#Taxp_Extra').change(function(){
-                    calcTax();
-
-                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
-                });
-
-                //دائن
-                $('.Tr_Ds').change(function(){
-                    $('.Tr_Ds_Db').val($(this).val())
-                });
-
-                //دائن
-                $('.Dc_No').change(function () {
-                    $('.Dc_No_Db').val($(this).val());
-                });
-
-                //حساب نسبة الفائده
-                var calcTax = function(){
-                    var amount = $('#Tot_Amunt').val();
-                    if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
-                        var tax = $('#Taxp_Extra').val();
-                        if(tax !== null){
-                            var total_amount = ((tax * amount) / 100);
+                $.ajax({
+                    url: "{{route('getCurencyRateN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Curncy_No: $('#Curncy_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Curncy_Rate').val(data);
+                        if($('#FTot_Amunt').val() && $('#Curncy_Rate').val()){
+                            $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                            calcTax();
+                            $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                         }
-                        else{
-                            var total_amount = amount;
-                        }
-                        $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
                     }
-                    else{
-                        $('#Tr_Cr').val(parseFloat(amount));
-                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    }
+                });
 
-                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-
-                }
-
-                //اضافة سطر فى الجدول
-                $('#add_line').click(function(e){
-                    var Jr_Ty = $(this).val();
-                    e.preventDefault();
-                    Ln_No = Ln_No + 1;
+                //get branches of selected company on page load
+                $.ajax({
+                    url: "{{route('branchForEditN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Dlv_Stor').html(data);
                         $.ajax({
-                            url: "{{route('validateCacheN')}}",
-                            type: "post",
-                            dataType: 'html',
-                            data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                                Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                                Tr_No: $('#Tr_No').val(),
-                                Tr_Dt: $('#Tr_Dt').val(),
-                                Tr_DtAr: $('#Tr_DtAr').val(),
-                                Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                                Curncy_No: $('#Curncy_No').children('option:selected').val(),
-                                Curncy_Rate: $('#Curncy_Rate').val(),
-                                Tot_Amunt: $('#Tot_Amunt').val(),
-                                Taxp_Extra: $('#Taxp_Extra').val(),
-                                Rcpt_By: $('#Rcpt_By').val(),
-                                Slm_No: $('#Slm_No').val(),
-                                Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
-                                Sysub_Account: $('#Sysub_Account').val(),
-                                Tr_Cr: $('#Tr_Cr').val(),
-                                Dc_No: $('#Dc_No').val(),
-                                Tr_Ds: $('#Tr_Ds').val(),
-                                Tr_Ds1: $('#Tr_Ds1').val(),
-                                Acc_No: $('#Acc_No').val(),
-                                last_record : $('#last_record').val(),
-                                Chq_no: $('#Chq_no').val(),
-                                Bnk_Nm: $('#Bnk_Nm').val(),
-                                Issue_Dt: $('#Issue_Dt').val(),
-                                Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                                Rcpt_By: $('#Rcpt_By').val(),
-                                Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
-                                Tr_Db_Db: $('#Tr_Db_Db').val(),
-                                Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                                Ln_No: $('#Ln_No').val(),
-                                Tr_Ds_Db: $('#Tr_Ds_Db').val(),
-                                FTot_Amunt: $('#FTot_Amunt').val(),
-                                Taxv_Extra: $('#Taxv_Extra').val(), },
+                            //create transaction  number according to selected branch on page load
+                            url: "{{route('createTrNoN')}}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {"_token": "{{ csrf_token() }}",
+                                Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                Cmp_No: $('#Cmp_No').children('option:selected').val() },
                             success: function(data){
-                                var response = JSON.parse(data);
-                                if(response.success == true){
-                                    $('#table').append(`
-                                    <tr>
-                                        <td>` + $('#Ln_No').val() + `</td>
-                                        <td>` + $('#Sysub_Account').val() + `</td>
-                                        <td>` + $('#Acc_No_Select option:selected').html() + `</td>
-                                        <td>0.00</td>
-                                        <td>` + $('#Tr_Cr').val() + `</td>
-                                        <td>` + $('#Tr_Ds').val() + `</td>
-                                        <td>` + $('#Dc_No').val() + `</td>
-                                        <td>` + $('#Tr_Ds1').val() + `</td>
-                                    </tr>`);
-                                    var item = {
-                                        Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                                        Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                                        Tr_No: $('#Tr_No').val(),
-                                        Tr_Dt: $('#Tr_Dt').val(),
-                                        Jr_Ty: $('#Jr_Ty').children('option:selected').val(),
-                                        Tr_DtAr: $('#Tr_DtAr').val(),
-                                        Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                                        Curncy_No: $('#Curncy_No').children('option:selected').val(),
-                                        Curncy_Rate: $('#Curncy_Rate').val(),
-                                        Taxp_Extra: $('#Taxp_Extra').val(),
-                                        Tot_Amunt: $('#Tot_Amunt').val(),
-                                        Tr_TaxVal: $('#Tr_TaxVal').val(),
-                                        Slm_No: $('#Slm_No').val(),
-                                        Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
-                                        Sysub_Account: $('#Sysub_Account').val(),
-                                        Tr_Cr: $('#Tr_Cr').val(),
-                                        Tr_Db: $('#Tr_Db').val(),
-                                        Dc_No: $('#Dc_No').val(),
-                                        Tr_Ds: $('#Tr_Ds').val(),
-                                        Tr_Ds1: $('#Tr_Ds1').val(),
-                                        Acc_No: $('#Acc_No').val(),
-                                        FTot_Amunt: $('#FTot_Amunt').val(),
-                                        last_record: $('#last_record').val(),
-                                        Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
-                                        Tr_Db_Db: $('#Tr_Db_Db').val(),
-                                        Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                                        Taxv_Extra: $('#Taxv_Extra').val(),
-                                        Ln_No: Ln_No,
-                                    };
-
-                                    catch_data.push(item);
-
-                                    $('#Curncy_No').val(0);
-                                    $('#Curncy_Rate').val(null);
-                                    $('#Tot_Amunt').val(null);
-                                    $('#Taxp_Extra').val(null);
-                                    $('#main_acc').val(null);
-                                    $('#Slm_No').val(null);
-                                    $('#Ac_Ty').val(null);
-                                    $('#Sysub_Account').val(null);
-                                    $('#Tr_Cr').val(null);
-                                    $('#Dc_No').val(null);
-                                    $('#Tr_Ds').val(null);
-                                    $('#Tr_Ds1').val(null);
-                                    $('#Acc_No').val(null);
-                                    $('#Acc_No_Select').val(null);
-                                    $('#Dc_No_Db').val(null);
-                                    $('#Tr_Ds_Db').val(null);
-                                    $('#Slm_No_Name').val(null);
-                                    $('#Chq_no').val(null);
-                                    $('#Bnk_Nm').val(null);
-                                    $('#Issue_Dt').val(null);
-                                    $('#Due_Issue_Dt').val(null);
-                                    $('#Rcpt_By').val(null);
-                                    $('#Ln_No').val(-1);
-                                    $('#FTot_Amunt').val(null)
-                                    $('#Taxv_Extra').val(null)
-                                    // handle click table rows click
-                                    var table = document.getElementById("table");
-                                    if (table != null) {
-                                        for (var i = 0; i < table.rows.length; i++) {
-                                            for (var j = 0; j < table.rows[i].cells.length; j++)
-                                                table.rows[i].onclick = function () {
-                                                    tableText(this, catch_data);
-                                                    this.innerHTML = '';
-                                                };
-                                        }
-                                    }
-                                }
-                                else{
-                                    $('#alert').removeClass('hidden');
-                                    $('#alert').html(``);
-                                    var errors = Object.values(response.data);
-                                    for(var i = 0; i < errors.length; i++){
-                                        $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
-                                    }
-                                }
+                                $('#Tr_No').val(data);
                             }
                         });
-                        old = $('#Tr_Db_Db').val();
+                    }
                 });
 
-                //get branches of specific company selection
+                //get companies on page load
+                $.ajax({
+                    url: "{{route('getCmpSalesMenN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Slm_No_Name').html(data);
+                        $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                    }
+                });
+
+                //get branches of selected company on company select
                 $(document).on('change', '#Cmp_No', function(){
                     $.ajax({
                         url: "{{route('branchForEditN')}}",
@@ -325,7 +110,19 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
                         success: function(data){
-                            $('#Brn_No_content').html(data);
+                            $('#Dlv_Stor').html(data);
+                            //create transaction number accoriding to selected branch
+                            $.ajax({
+                                url: "{{route('createTrNoN')}}",
+                                type: "POST",
+                                dataType: 'json',
+                                data: {"_token": "{{ csrf_token() }}",
+                                    Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                    Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                                success: function(data){
+                                    $('#Tr_No').val(data);
+                                }
+                            });
                         }
                     });
 
@@ -338,13 +135,20 @@
                             $('#Taxp_Extra').val(data);
                         }
                     });
+
+                    $.ajax({
+                        url: "{{route('getCmpSalesMenN')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                        success: function(data){
+                            $('#Slm_No_Name').html(data);
+                            $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                        }
+                    });
                 });
 
-
-                $('#Acc_No_Select').select2({});
-                $('#Costcntr_No').select2({});
-
-                //get salesmen of specific branch selection
+                //انشاء رقم الحركه حسب اختيار الفرع
                 $(document).on('change', '#Dlv_Stor', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
@@ -356,7 +160,7 @@
                             $('#Tr_No').val(data);
                         }
                     });
-                })
+                });
 
                 // convert Tr_Dt ro hijry
                 let Hijri = $('input#Tr_Dt').val();
@@ -370,45 +174,37 @@
                     }
                 });
 
-                $(document).on('change', '.Ac_Ty', function(){
+                //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
+                $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $(this).val();
-
-                    //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
                     $.ajax({
                         url: "{{route('getSubAccN')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty},
                         success: function(data){
-                            $('.Acc_No_Select').html(data);
+                            $('#Acc_No_Select').html(data);
                         }
                     });
                 });
 
-                $(document).on('change', '.Acc_No_Select', function(){
+                //get parent account number on account select (when selecting customer / supplier / employee ..)
+                $(document).on('change', '#Acc_No_Select', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
                     var Acc_No = $(this).val();
-
-                    //get parent account number on account select
                     $.ajax({
                         url: "{{route('getMainAccNoN')}}",
                         type: "POST",
                         dataType: 'json',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty, Acc_No: Acc_No },
                         success: function(data){
-                            $('.Sysub_Account').each(function () {
-                                $(this).val($('.Acc_No_Select').val())
-                            });
-                            $('.Acc_No').each(function () {
-                                $(this).val(data.mainAccNo.acc_no);
-                            });
-                            $('.main_acc').each(function () {
-                                $(this).val(data.mainAccNm.acc_name);
-                            });
+                            $('#Sysub_Account').val($('#Acc_No_Select').val());
+                            $('#Acc_No').val(data.mainAccNo.acc_no);
+                            $('#main_acc').val(data.mainAccNm.acc_name);
 
                             if(data.AccNm && data.AccNm.cc_flag && data.AccNm.cc_no){
                                 $('#Costcntr_No_content').removeClass('hidden');
@@ -428,66 +224,280 @@
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
-                                $('#sales_man_content').html(data);
+                                $('#Slm_No_Name').html(data);
                             }
                         });
                     }
                 });
 
-
-                function addRowHandlers() {
-                    var table = document.getElementById('table');
-                    console.log(table);
-                    var rows = table.getElementsByTagName('tr');
-                    for (i = 0; i < rows.length; i++) {
-                        var currentRow = table.rows[i];
-                        currentRow.id=i;
-                        var createClickHandler = function(row) {
-                            return function() {
-                                var cell = row.getElementsByTagName("td")[0];
-                                var id = cell[j].innerHTML;
-                                alert("id:" + id);
-                                currentRow.remove();
-                            };
-                        };
-                        currentRow.onclick = createClickHandler(currentRow);
+                //add tax
+                $('#create_cache :checkbox[id=Taxp_Extra_check]').change(function(){
+                    if($(this).is(':checked')){
+                        $('#Taxp_Extra').removeAttr('disabled');
+                        calcTax();
                     }
-                }
-                window.onload = addRowHandlers();
+                    else{
+                        $('#Taxp_Extra').attr('disabled','disabled');
+                        // $('#Taxp_Extra').val(null);
+                        $('#Tr_Cr').val($('#Tot_Amunt').val());
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+                    }
+
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                });
+
+                //حساب اجمالى المبلغ المطلوب عند ادخال مبلغ جديد
+                $('#Tot_Amunt').change(function(){
+                    calcTax();
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                });
+
+                //حساب اجمالى المبلغ المطلوب عند اختيار الضريبه
+                $('#Taxp_Extra').change(function(){
+                    calcTax();
+                    $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                    $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                });
+
+
+                $('#Dc_No').change(function(){
+                    $('#Dc_No_Db').val($('#Dc_No').val());
+                });
+
+                $('#Tr_Ds').change(function(){
+                    $('#Tr_Ds_Db').val($('#Tr_Ds').val());
+                });
 
                 //رقم حساب الصندوق الرئيسى
-                $('.Tr_Db_Acc_No').each(function () {
-                    $(this).val($('.Tr_Db_Select').children('option:selected').val())
-                });
-                $('.Tr_Db_Select').change(function(){
-                    $('.Tr_Db_Acc_No').val($('.Tr_Db_Select').val());
+                $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
+                $('#Tr_Db_Select').change(function(){
+                    $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
                 });
 
+                //اضافة سطر فى الجدول
+                $('#add_line').click(function(e){
+                    e.preventDefault();
+                    if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                        tax = true
+                    }
+                    else{
+                        tax = false;
+                    }
+                    if($('#Ln_No').val() == -1){
+                        Ln_No = Ln_No + 1;
+                        $('#Ln_No').val(Ln_No);
+                    }
 
-                //حفظ الاشعار فى قاعدة البيانات
+                    $.ajax({
+                        url: "{{route('validateCacheN')}}",
+                        type: "post",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                            Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                            Tr_No: $('#Tr_No').val(),
+                            Jr_Ty: $('#Jr_Ty').val(),
+                            Tr_Dt: $('#Tr_Dt').val(),
+                            Tr_DtAr: $('#Tr_DtAr').val(),
+                            Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                            Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                            Curncy_Rate: $('#Curncy_Rate').val(),
+                            Tot_Amunt: $('#Tot_Amunt').val(),
+                            Taxp_Extra: $('#Taxp_Extra').val(),
+                            Slm_No: $('#Slm_No').val(),
+                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                            Sysub_Account: $('#Sysub_Account').val(),
+                            Tr_Cr: $('#Tr_Cr').val(),
+                            Dc_No: $('#Dc_No').val(),
+                            Tr_Ds: $('#Tr_Ds').val(),
+                            Tr_Ds1: $('#Tr_Ds1').val(),
+                            Acc_No: $('#Acc_No').val(),
+                            last_record : $('#last_record').val(),
+                            Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                            Tr_Db_Db: $('#Tr_Db_Db').val(),
+                            Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                            Ln_No: $('#Ln_No').val(),
+                            Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                            FTot_Amunt: $('#FTot_Amunt').val(),
+                            Taxv_Extra: $('#Taxv_Extra').val(), },
+
+                        success: function(data){
+                            var response = JSON.parse(data);
+                            var Jr_Ty = $('#Jr_Ty').val();
+
+                            if(response.success == true){
+                                if(Jr_Ty == 18) {
+                                    $('#table').append(`
+                                <tr class='tr'>
+                                    <td>` + $('#Ln_No').val() + `</td>
+                                    <td>` + $('#Sysub_Account').val() + `</td>
+                                    <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                    <td>0.00</td>
+                                    <td>` + $('#Tr_Cr').val() + `</td>
+                                    <td>` + $('#Tr_Ds').val() + `</td>
+                                    <td>` + $('#Dc_No').val() + `</td>
+                                    <td>` + $('#Tr_Ds1').val() + `</td>
+                                </tr>`);
+                                }else if(Jr_Ty == 19){
+                                    $('#table').append(`
+                                    <tr class='tr'>
+                                        <td>` + $('#Ln_No').val() + `</td>
+                                        <td>` + $('#Sysub_Account').val() + `</td>
+                                        <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                        <td>` + $('#Tr_Cr').val() + `</td>
+                                        <td>0.00</td>
+                                        <td>` + $('#Tr_Ds').val() + `</td>
+                                        <td>` + $('#Dc_No').val() + `</td>
+                                        <td>` + $('#Tr_Ds1').val() + `</td>
+                                    </tr>`);
+                                }
+
+                                var rows = document.getElementById('table').rows;
+                                var sum = 0.0;
+                                for (var i=1; i<rows.length; i++){
+                                    if(rows[i].cells.length > 0){
+                                        sum += parseFloat(rows[i].cells[4].innerHTML);
+                                        console.log(sum);
+                                    }
+                                }
+                                $('#Tr_Db_Db').val(sum);
+                                $('#Tr_Cr_Db').val(sum);
+
+                                var item = {
+                                    Brn_No: $('#Dlv_Stor').children('option:selected').val(),
+                                    Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                                    Tr_No: $('#Tr_No').val(),
+                                    Jr_Ty: $('#Jr_Ty').val(),
+                                    Tr_Dt: $('#Tr_Dt').val(),
+                                    Tr_DtAr: $('#Tr_DtAr').val(),
+                                    Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                                    Curncy_Rate: $('#Curncy_Rate').val(),
+                                    Tot_Amunt: $('#Tot_Amunt').val(),
+                                    Taxp_Extra: $('#Taxp_Extra').val(),
+                                    Slm_No: $('#Slm_No').val(),
+                                    Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                                    Sysub_Account: $('#Sysub_Account').val(),
+                                    Tr_Cr: $('#Tr_Cr').val(),
+                                    Dc_No: $('#Dc_No').val(),
+                                    Tr_Ds: $('#Tr_Ds').val(),
+                                    Tr_Ds1: $('#Tr_Ds1').val(),
+                                    Acc_No: $('#Acc_No').val(),
+                                    last_record : $('#last_record').val(),
+                                    Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                                    Tr_Db_Db: $('#Tr_Db_Db').val(),
+                                    Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                    Ln_No: $('#Ln_No').val(),
+                                    Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                                    main_acc: $('#main_acc').val(),
+                                    FTot_Amunt: $('#FTot_Amunt').val(),
+                                    Taxv_Extra: $('#Taxv_Extra').val(),
+                                    tax: tax,
+                                };
+
+                                catch_data.push(item);
+
+                                $('#Curncy_No').val(1);
+                                $('#Tot_Amunt').val(null);
+                                $('#Jr_Ty').val(null);
+                                $('#main_acc').val(null);
+                                $('#Slm_No').val(null);
+                                $('#Ac_Ty').val(null);
+                                $('#Sysub_Account').val(null);
+                                $('#Tr_Cr').val(null);
+                                $('#Dc_No').val(null);
+                                $('#Tr_Ds').val(null);
+                                $('#Tr_Ds1').val(null);
+                                $('#Acc_No').val(null);
+                                $('#Acc_No_Select').val(null);
+                                // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
+                                $('#Dc_No_Db').val(null);
+                                $('#Tr_Ds_Db').val(null);
+                                $('#Slm_No_Name').val(null);
+                                // $('#Tr_Db_Db').val(null);
+                                // $('#Tr_Cr_Db').val(null);
+                                $('#Ln_No').val(-1);
+                                $('#FTot_Amunt').val(null)
+                                $('#Taxv_Extra').val(null)
+
+                                // handle click table rows click
+                                var table = document.getElementById("table");
+                                if (table != null) {
+                                    for (var i = 0; i < table.rows.length; i++) {
+                                        for (var j = 0; j < table.rows[i].cells.length; j++)
+                                            table.rows[i].onclick = function () {
+                                                tableText(this, catch_data);
+                                                this.innerHTML = '';
+                                            };
+                                    }
+                                }
+
+                            }
+                            else{
+                                $('#alert').removeClass('hidden');
+                                $('#alert').html(``);
+                                var errors = Object.values(response.data);
+                                for(var i = 0; i < errors.length; i++){
+                                    $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
+                                }
+                            }
+                        }
+                    });
+
+                    old = $('#Tr_Db_Db').val();
+                });
+
+                //حساب الضريبه
+                var calcTax = function(){
+                    var amount = $('#Tot_Amunt').val();
+                    if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                        var tax = $('#Taxp_Extra').val();
+                        if(tax !== null){
+                            var total_amount = ((tax * amount) / 100);
+                        }
+                        else{
+                            var total_amount = amount;
+                        }
+                        $('#Tr_Cr').val(parseFloat(amount) + parseFloat(total_amount));
+                    }
+                    else{
+                        $('#Tr_Cr').val(parseFloat(amount));
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+                        // $('#Taxp_Extra').val(null);
+                    }
+
+                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+
+                }
+
+                //حفظ السند فى قاعدة البيانات
                 $('#save').click(function(e){
                     e.preventDefault();
                     if($('#Tr_Dif').val() != 0){
                         alert('القيد غير متزن');
                     }
                     else{
-                        let count_catch_data = catch_data.length;
                         catch_data = JSON.stringify(catch_data);
-
                         $.ajax({
                             url: "{{route('notice.store')}}",
                             type: "post",
                             dataType: 'html',
-                            data: {"_token": "{{ csrf_token() }}", catch_data, count_catch_data:count_catch_data},
+                            data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
+                                $('#alert').removeClass('hidden');
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
+                                // $('#Cmp_No').val(null);
+                                // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
+                                // $('#Doc_Type').val(1);
+                                $('#Curncy_No').val(1);
                                 $('#Jr_Ty').val(null);
-                                $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
                                 $('#Tot_Amunt').val(null);
                                 $('#Taxp_Extra').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
@@ -502,6 +512,8 @@
                                 $('#Slm_No_Name').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
+                                $('#FTot_Amunt').val(null);
+                                $('#Taxv_Extra').val(null);
                                 $('#table_view').html(`<table class="table" id="table">
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
@@ -519,6 +531,7 @@
                     }
                 });
 
+                //handle table lines click
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
                     var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
@@ -529,6 +542,7 @@
                     for(var i = 0; i < data.length; i++){
                         if(data[i].Ln_No == Ln_No){
                             $('#Ln_No').val(data[i].Ln_No);
+                            $('#Jr_Ty').val(data[i].Jr_Ty);
                             $('#Tr_No').val(data[i].Tr_No);
                             $('#Tr_Dt').val(data[i].Tr_Dt);
                             $('#Tr_DtAr').val(data[i].Tr_DtAr);
@@ -546,10 +560,7 @@
                             $('#Tr_Ds').val(data[i].Tr_Ds);
                             $('#Tr_Ds1').val(data[i].Tr_Ds1);
                             $('#Acc_No').val(data[i].Acc_No);
-                            $('#Chq_no').val(data[i].Chq_no);
-                            $('#Bnk_Nm').val(data[i].Bnk_Nm);
                             $('#Tr_Db_Acc_No').val(data[i].Tr_Db_Acc_No);
-                            $('#Ln_No').val(data[i].Ln_No);
                             $('#Tr_Ds_Db').val(data[i].Tr_Ds_Db);
                             $('#main_acc').val(data[i].main_acc);
                             $('#Acc_No_Select').val(data[i].Acc_No_Select);
@@ -559,7 +570,37 @@
                     }
                 }
 
-                $('#Curncy_Rate').change(function(){
+                //سعر الصرف حسب اختيار العمله
+                $.ajax({
+                    url: "{{route('getCurencyRateN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Curncy_No: $('#Curncy_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Curncy_Rate').val(data);
+                    }
+                });
+                $(document).on('change', '#Curncy_No', function(){
+                    $.ajax({
+                        url: "{{route('getCurencyRateN')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Curncy_No: $(this).val() },
+                        success: function(data){
+                            $('#Curncy_Rate').val(data);
+                            if($('#FTot_Amunt').val() && $('#Curncy_Rate').val()){
+                                $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                                calcTax();
+                                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                                $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                            }
+                        }
+                    });
+                });
+
+                //حسال اجمالى المبلغ المطلوب بالعمله الاجنبيه
+                $('#FTot_Amunt').change(function(){
                     if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
                         $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
                         calcTax();
@@ -568,6 +609,16 @@
                         $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                     }
                 });
+
+                // Modal - ها تريد طباعة السند؟
+                $('#myModal').on('shown.bs.modal', function () {
+                    $('#myInput').trigger('focus')
+                });
+
+                $('#modal_no').click(function(){
+                    location.reload();
+                });
+
             });
         </script>
     @endpush
@@ -575,7 +626,7 @@
     <form action="{{route('notice.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         <div class="col-md-12">
-            <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
+            <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
         </div>
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
         <br>
@@ -594,10 +645,9 @@
                         <div class="form-group">
                             <label for="Cmp_No">{{trans('admin.company')}}</label>
                             <select name="Cmp_No" id="Cmp_No" class="form-control">
-                                <option value="{{null}}">{{trans('admin.select')}}</option>
                                 @if(count($companies) > 0)
                                     @foreach($companies as $cmp)
-                                        <option value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                        <option value="{{$cmp->Cmp_No}}" @if($last_record && $cmp->Cmp_No == $last_record->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -608,11 +658,9 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Dlv_Stor">{{trans('admin.section')}}</label>
-                            <div id="Brn_No_content">
-                                <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                </select>
-                            </div>
+                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
+                                <option value="{{null}}">{{trans('admin.select')}}</option>
+                            </select>
                         </div>
                     </div>
                     {{-- نهاية الفرع --}}
@@ -650,13 +698,12 @@
                         </select>
                     </div>
                     {{-- نهاية نوع الاشعار دائـن / مديـن --}}
-
                     {{-- العمله --}}
                     <div class="col-md-2">
                         <label for="Curncy_No">{{trans('admin.currency')}}</label>
                         <select name="Curncy_No" id="Curncy_No" class="form-control">
-                            @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value)
-                                <option value="{{$key}}">{{$value}}</option>
+                            @foreach($crncy as $crn)
+                                <option value="{{$crn->Curncy_No}}">{{$crn->{'Curncy_Nm'.ucfirst(session('lang'))} }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -696,11 +743,13 @@
                     {{-- نهاية قيمة الضريبه --}}
 
                     {{-- مندوب المبيعات --}}
-                    <div class="row col-md-6" id="sales_man_content">
-                        <div class="col-md-4">
+                    <div class="row col-md-8" id="sales_man_content">
+                        <div class="col-md-3">
                             <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
-                            <input type="text" name="Slm_No_Name" id="Slm_No_Name"
-                                   class="form-control" disabled value="">
+                            <select name="Slm_No_Name" id="Slm_No_Name" class="form-control">
+                            </select>
+                            {{-- <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
+                            <input type="text" name="Slm_No_Name" id="Slm_No_Name" class="form-control" disabled> --}}
                         </div>
                         <div class="col-md-2">
                             <label for=""></label>
@@ -901,23 +950,44 @@
             {{--             نهاية بيانات الحساب المدين--}}
         </div>
 
-
+        <div class="row">
+            <div class="col-md-12" id="table_view">
+                <table class="table" id="table">
+                    <thead>
+                    <th>{{trans('admin.Ln_No')}}</th>
+                    <th>{{trans('admin.account_number')}}</th>
+                    <th>{{trans('admin.account_name')}}</th>
+                    <th>{{trans('admin.motion_debtor')}}</th>
+                    <th>{{trans('admin.motion_creditor')}}</th>
+                    <th>{{trans('admin.note_ar')}}</th>
+                    <th>{{trans('admin.receipt_number')}}</th>
+                    <th>{{trans('admin.note_en')}}</th>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </form>
 
-    <div class="row">
-        <div class="col-md-12" id="table_view">
-            <table class="table" id="table">
-                <thead>
-                <th>{{trans('admin.Ln_No')}}</th>
-                <th>{{trans('admin.account_number')}}</th>
-                <th>{{trans('admin.account_name')}}</th>
-                <th>{{trans('admin.motion_debtor')}}</th>
-                <th>{{trans('admin.motion_creditor')}}</th>
-                <th>{{trans('admin.note_ar')}}</th>
-                <th>{{trans('admin.receipt_number')}}</th>
-                <th>{{trans('admin.note_en')}}</th>
-                </thead>
-            </table>
+
+    {{-- Modal --}}
+    <div class="modal fade" id="saveChangesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{trans('admin.close_ask')}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{trans('admin.yes')}}</button>
+                    <button type="button" class="btn btn-primary" id="modal_no">{{trans('admin.no')}}</button>
+                </div>
+            </div>
         </div>
     </div>
+    {{-- Modal end --}}
 @endsection

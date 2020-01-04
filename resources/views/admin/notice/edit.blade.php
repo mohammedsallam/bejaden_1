@@ -21,19 +21,48 @@
                 var catch_data = [];
                 var old = 0;
                 var Ln_No = 1;
+                var tax = false;
 
-                //get branches of specific company selection
                 var Cmp_No = $('#Cmp_No').children('option:selected').val();
                 var id = $('#id').val();
+                //get branches of specific company selection
                 $.ajax({
                     url: "{{route('branchForEditN')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No, id: id },
                     success: function(data){
-                        $('#Brn_No_content').html(data);
+                        $('#Dlv_Stor').html(data);
                     }
                 });
+                //get tax value of selected company
+                $.ajax({
+                    url: "{{route('getTaxValueN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No },
+                    success: function(data){
+                        $('#Taxp_Extra').val(data);
+                    }
+                });
+
+                $.ajax({
+                    url: "{{route('getCurencyRateN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Curncy_No: $('#Curncy_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Curncy_Rate').val(data);
+                        if($('#FTot_Amunt').val() && $('#Curncy_Rate').val()){
+                            $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                            calcTax();
+                            $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                            $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                        }
+                    }
+                });
+
 
                 $(document).on('change', '#Cmp_No', function(){
                     //get branches of specific company selection
@@ -43,7 +72,7 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
                         success: function(data){
-                            $('#Brn_No_content').html(data);
+                            $('#Dlv_Stor').html(data);
                         }
                     });
                     //get tax value of selected company
@@ -59,30 +88,7 @@
                 });
 
                 //get salesmen of specific branch selection
-                $(document).on('change', '#Dlv_Stor', function(){
-                    var Cmp_No = $('#Cmp_No').children('option:selected').val();
-                    $.ajax({
-                        url: "{{route('createTrNoN')}}",
-                        type: "POST",
-                        dataType: 'json',
-                        data: {"_token": "{{ csrf_token() }}", Brn_No: $(this).val(), Cmp_No: Cmp_No },
-                        success: function(data){
-                            $('#Tr_No').val(data);
-                        }
-                    });
-                })
-
-                // convert Tr_Dt ro hijry
-                let Hijri = $('input#Tr_Dt').val();
-                $.ajax({
-                    url: "{{route('hijriNoti')}}",
-                    type: 'get',
-                    data:{Hijri: Hijri},
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#Tr_DtAr').val(data);
-                    }
-                });
+                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
 
                 $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
@@ -136,7 +142,7 @@
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
-                                $('#sales_man_content').html(data);
+                                $('#Slm_No_Name').html(data);
                             }
                         });
                     }
@@ -147,14 +153,14 @@
                 var table = document.getElementById("table");
                 if (table != null) {
                     for (var i = 0; i < table.rows.length; i++) {
-                        for (var j = 0; j < table.rows[i].cells.length; j++)
-                            table.rows[i].onclick = function () {
+                        table.rows[i].onclick = function () {
+                            if(this.cells[0].innerHTML != 1){
                                 tableText(this);
                                 this.innerHTML = '';
-                            };
+                            }
+                        };
                     }
                 }
-
                 function tableText(tableCell) {
                     var row = tableCell;
                     var Ln_No = tableCell.cells[0].innerHTML;
@@ -170,7 +176,22 @@
                                 $('#credit_data').html(data);
                                 $('#Tot_Amunt').val($('#Tr_Cr').val());
                                 $('#Slm_No').val($('#getSalNo').val());
-                                $('#Slm_No_Name').val($('#getSalName').val());
+                                $('#Cmp_No').removeAttr('disabled');
+                                $('#Brn_No').removeAttr('disabled');
+                                $('#Dlv_Stor').removeAttr('disabled');
+                                $('#Tr_Dt').removeAttr('disabled');
+                                $('#Tr_DtAr').removeAttr('disabled');
+                                $('#Doc_Type').removeAttr('disabled');
+                                $('#Curncy_No').removeAttr('disabled');
+                                $('#FTot_Amunt').removeAttr('disabled');
+                                $('#Curncy_Rate').removeAttr('disabled');
+                                $('#Tot_Amunt').removeAttr('disabled');
+                                $('#Taxp_Extra_check').removeAttr('disabled');
+                                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                                    $('#Taxp_Extra').removeAttr('disabled');
+                                }
+                                $('#Rcpt_By').removeAttr('disabled');
+                                $('#Slm_No_Name').removeAttr('disabled');
                             }
                         });
                     }
@@ -184,6 +205,7 @@
                     }
                     else{
                         $('#Taxp_Extra').attr('disabled','disabled');
+                        // $('#Taxp_Extra').val(null);
                         $('#Tr_Cr').val($('#Tot_Amunt').val());
                         $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                     }
@@ -208,11 +230,11 @@
                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                 });
 
-                $(document).on('change','#Dc_No',function(){
+                $(document).on('change', '#Dc_No', function(){
                     $('#Dc_No_Db').val($('#Dc_No').val());
                 });
 
-                $(document).on('change','#Tr_Ds',function(){
+                $(document).on('change', '#Tr_Ds', function(){
                     $('#Tr_Ds_Db').val($('#Tr_Ds').val());
                 });
 
@@ -225,6 +247,13 @@
                 //اضافة سطر فى الجدول
                 $(document).on('click', '#add_line', function(e){
                     e.preventDefault();
+
+                    if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                        tax = true
+                    }
+                    else{
+                        tax = false;
+                    }
 
                     if($('#Ln_No').val() == -1){
                         Ln_No = Ln_No + 1;
@@ -240,6 +269,7 @@
                             Tr_No: $('#Tr_No').val(),
                             Tr_Dt: $('#Tr_Dt').val(),
                             Tr_DtAr: $('#Tr_DtAr').val(),
+                            Doc_Type: $('#Doc_Type').children('option:selected').val(),
                             Curncy_No: $('#Curncy_No').children('option:selected').val(),
                             Curncy_Rate: $('#Curncy_Rate').val(),
                             Tot_Amunt: $('#Tot_Amunt').val(),
@@ -254,14 +284,19 @@
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
+                            Chq_no: $('#Chq_no').val(),
+                            Bnk_Nm: $('#Bnk_Nm').val(),
+                            Issue_Dt: $('#Issue_Dt').val(),
+                            Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                            Tr_Ds_Db: $('#Tr_Ds_Db').val(),
                             Ln_No: Ln_No,
                             FTot_Amunt: $('#FTot_Amunt').val(),
-                            Taxv_Extra: $('#Taxv_Extra').val(),
-                        },
+                            Taxv_Extra: $('#Taxv_Extra').val(), },
+
                         success: function(data){
                             var response = JSON.parse(data);
                             if(response.success == true){
@@ -297,13 +332,11 @@
                                     Tr_No: $('#Tr_No').val(),
                                     Tr_Dt: $('#Tr_Dt').val(),
                                     Tr_DtAr: $('#Tr_DtAr').val(),
-                                    //Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                                    Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                     Curncy_No: $('#Curncy_No').children('option:selected').val(),
                                     Curncy_Rate: $('#Curncy_Rate').val(),
                                     Tot_Amunt: $('#Tot_Amunt').val(),
-                                    FTot_Amunt: $('#FTot_Amunt').val(),
                                     Taxp_Extra: $('#Taxp_Extra').val(),
-                                    Rcpt_By: $('#Rcpt_By').val(),
                                     Slm_No: $('#Slm_No').val(),
                                     Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                     Sysub_Account: $('#Sysub_Account').val(),
@@ -313,11 +346,14 @@
                                     Tr_Ds1: $('#Tr_Ds1').val(),
                                     Acc_No: $('#Acc_No').val(),
                                     last_record : $('#last_record').val(),
-                                    Rcpt_By: $('#Rcpt_By').val(),
                                     Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                     Tr_Db_Db: $('#Tr_Db_Db').val(),
                                     Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                                    Tr_Ds_Db: $('#Tr_Ds_Db').val(),
                                     Ln_No: $('#Ln_No').val(),
+                                    FTot_Amunt: $('#FTot_Amunt').val(),
+                                    Taxv_Extra: $('#Taxv_Extra').val(),
+                                    tax: tax,
                                 };
 
                                 catch_data.push(item);
@@ -337,7 +373,7 @@
                     old = $('#Tr_Db_Db').val();
                 });
 
-
+                //حساب الضريبه
                 var calcTax = function(){
                     var amount = $('#Tot_Amunt').val();
                     if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
@@ -352,7 +388,11 @@
                     }
                     else{
                         $('#Tr_Cr').val(parseFloat(amount));
+                        $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
+                        // $('#Taxp_Extra').val(null);
                     }
+
+                    $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
 
                 }
 
@@ -371,6 +411,7 @@
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
+                                window.location.replace('/norhan/bejaden/public/admin/rcatchs');
                                 $('#Tr_No').val(null);
                                 $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
@@ -389,11 +430,19 @@
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Slm_No_Name').val(null);
+                                $('#Chq_no').val(null);
+                                $('#Bnk_Nm').val(null);
+                                $('#Issue_Dt').val(null);
+                                $('#Due_Issue_Dt').val(null);
+                                $('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
+                                $('#Tr_Ds_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#FTot_Amunt').val(null);
                                 $('#Taxv_Extra').val(null);
                                 $('#table_view').html(`<table class="table" id="table">
+
+
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
                                                         <th>{{trans('admin.account_number')}}</th>
@@ -410,23 +459,13 @@
                     }
                 });
 
-                $('#Curncy_Rate').change(function(){
-                    if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
-                        $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
-                        calcTax();
-                        $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                        $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
-                        $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
-                    }
-                });
-
                 //حذف سطر من السند
                 $('#delete_button').click(function(e){
                     e.preventDefault();
                     var Tr_No = $('#Tr_No').val();
                     var Ln_No = $('#Ln_No').val();
                     $.ajax({
-                        url: "{{route('deleteTrns')}}",
+                        url: "{{route('deleteTrnsN')}}",
                         type: 'post',
                         data:{"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
                         dataType: 'html',
@@ -437,11 +476,50 @@
                     });
                 });
 
+                $(document).on('change', '#Curncy_No', function(){
+                    $.ajax({
+                        url: "{{route('getCurencyRateN')}}",
+                        type: "POST",
+                        dataType: 'html',
+                        data: {"_token": "{{ csrf_token() }}", Curncy_No: $(this).val() },
+                        success: function(data){
+                            $('#Curncy_Rate').val(data);
+                            if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                                $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                                calcTax();
+                                $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                                $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                                $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                            }
+                        }
+                    });
+                });
+
+                $('#FTot_Amunt').change(function(){
+                    if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                        $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+                        calcTax();
+                        $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                        $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+                        $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+                    }
+                });
+
+//              $('#Curncy_Rate').change(function(){
+//                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+//                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
+//                     calcTax();
+//                     $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+//                     $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
+//                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
+//                 }
+//             });
+
             });
         </script>
     @endpush
     <div class="hidden" id="alert"></div>
-    <form action="{{route('rcatchs.update', $gl->Tr_No)}}" method="POST" id="create_cache">
+    <form action="{{route('notice.update', $gl->Tr_No)}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         {{ method_field('PUT') }}
 
@@ -450,7 +528,6 @@
             <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
         </div>
         <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
-        {{-- <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'> --}}
 
         {{-- header start --}}
         <div class="panel panel-primary panel-H ">
@@ -465,11 +542,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="Cmp_No">{{trans('admin.company')}}</label>
-                            <select name="Cmp_No" id="Cmp_No" class="form-control">
+                            <select name="Cmp_No" id="Cmp_No" class="form-control" disabled>
                                 <option value="{{null}}">{{trans('admin.select')}}</option>
                                 @if(count($cmps) > 0)
                                     @foreach($cmps as $cmp)
-                                        <option value="{{$cmp->Cmp_No}}" @if($gl->Cmp_No == $cmp->Cmp_No) selected @endif>{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                        <option value="{{$cmp->Cmp_No}}" @if($gl->Cmp_No == $cmp->Cmp_No) selected @endif>
+                                            {{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}
+                                        </option>
                                     @endforeach
                                 @endif
                             </select>
@@ -480,11 +559,9 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Dlv_Stor">{{trans('admin.section')}}</label>
-                            <div id="Brn_No_content">
-                                <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
-                                    <option value="{{null}}">{{trans('admin.select')}}</option>
-                                </select>
-                            </div>
+                            <select name="Dlv_Stor" id="Dlv_Stor" class="form-control" disabled>
+                                <option value="{{null}}">{{trans('admin.select')}}</option>
+                            </select>
                         </div>
                     </div>
                     {{-- نهاية الفرع --}}
@@ -500,13 +577,13 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
-                            <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
+                            <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{$gl->Tr_Dt}}" disabled>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
-                            <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
+                            <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control" value="{{$gl->Tr_DtAr}}" disabled>
                         </div>
                     </div>
                     {{-- نهاية تاريخ القيد --}}
@@ -518,9 +595,9 @@
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
                         <input type="text" name="Jr_Ty" class="form-control" disabled value="
                             @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
-                            @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
-                            @endif
-                        ">
+                        @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
+                        @endif
+                            ">
 
                     </div>
                     {{-- نهاية نوع الاشعار دائـن / مديـن --}}
@@ -528,9 +605,9 @@
                     {{-- العمله --}}
                     <div class="col-md-2">
                         <label for="Curncy_No">{{trans('admin.currency')}}</label>
-                        <select name="Curncy_No" id="Curncy_No" class="form-control">
-                            @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value)
-                                <option value="{{$key}}" @if($gl->Curncy_No == $key) selected @endif>{{$value}}</option>
+                        <select name="Curncy_No" id="Curncy_No" class="form-control" disabled>
+                            @foreach($crncy as $crn)
+                                <option value="{{$crn->Curncy_No}}" @if($gl->Curncy_No == $crn->Curncy_No) selected @endif>{{$crn->{'Curncy_Nm'.ucfirst(session('lang'))} }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -538,24 +615,24 @@
                     {{-- المبلغ بالعمله الاجنبيه --}}
                     <div class="col-md-2">
                         <label for="FTot_Amunt">{{trans('admin.Linv_Net')}}</label>
-                        <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control" value="{{$gl->FTot_Amunt}}">
+                        <input type="text" name="FTot_Amunt" id="FTot_Amunt" class="form-control" value="{{$gl->FTot_Amunt}}" disabled>
                     </div>
                     {{-- نهاية المبلغ بالعمله الاجنبيه --}}
                     {{-- سعر الصرف --}}
                     <div class="col-md-1">
                         <label for="Curncy_Rate">{{trans('admin.exchange_rate')}}</label>
-                        <input type="text" name="Curncy_Rate" id="Curncy_Rate" class="form-control" value="{{$gl->Curncy_Rate}}">
+                        <input type="text" name="Curncy_Rate" id="Curncy_Rate" class="form-control" value="{{$gl->Curncy_Rate}}" disabled>
                     </div>
                     {{-- نهاية سعر الصرف --}}
                     {{-- المبلغ المطلوب --}}
                     <div class="col-md-2">
                         <label for="Tot_Amunt">{{trans('admin.amount')}}</label>
-                        <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control Tot_Amunt">
+                        <input type="text" name="Tot_Amunt" id="Tot_Amunt" class="form-control Tot_Amunt" value="{{$gl->Tot_Amunt}}" disabled>
                     </div>
                     {{-- نهاية المبلغ المطلوب --}}
                     {{-- الضريبه --}}
                     <div class="col-md-1">
-                        <input type="checkbox" id="Taxp_Extra_check">
+                        <input type="checkbox" id="Taxp_Extra_check" @if($gl->Taxp_Extra) checked @endif disabled>
                         <label for="Taxp_Extra">{{trans('admin.tax')}} %</label>
                         <input type="text" name="Taxp_Extra" id="Taxp_Extra" class="form-control" value="{{$gl->Taxp_Extra}}" disabled>
                     </div>
@@ -564,16 +641,23 @@
                     {{-- قيمة الضريبه --}}
                     <div class="col-md-1">
                         <label for="Taxv_Extra">{{trans('admin.Taxv_Extra')}}</label>
-                        <input type="text" name="Taxv_Extra" id="Taxv_Extra" class="form-control" value="{{$gl->Taxv_Extra}}">
+                        <input type="text" name="Taxv_Extra" id="Taxv_Extra" class="form-control" value="{{$gl->Taxv_Extra}}" disabled>
                     </div>
                     {{-- نهاية قيمة الضريبه --}}
 
                     {{-- مندوب المبيعات --}}
-                    <div class="row col-md-6" id="sales_man_content">
-                        <div class="col-md-4">
+                    <div class="row col-md-8" id="sales_man_content">
+                        <div class="col-md-3">
                             <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
-                            <input type="text" name="Slm_No_Name" id="Slm_No_Name"
-                                   class="form-control" disabled value="">
+                            <select name="Slm_No_Name" id="Slm_No_Name" class="form-control" disabled>
+                                @if(count($salesman) > 0)
+                                    @foreach($salesman as $man)
+                                        <option value="{{$man->Slm_No}}" @if($man->Slm_No == $gl->Slm_No) selected @endif>{{$man->{'Slm_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            {{-- <input type="text" name="Slm_No_Name" id="Slm_No_Name"
+                            class="form-control" disabled value=""> --}}
                         </div>
                         <div class="col-md-2">
                             <label for=""></label>

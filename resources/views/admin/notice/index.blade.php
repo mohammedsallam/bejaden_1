@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.create_Notice_creditor'))
+@section('title',trans('admin.catch_receipt'))
 @section('content')
     @push('js')
         <script>
@@ -8,10 +8,7 @@
                 $('#example').DataTable();
             } );
 
-
             $(document).ready(function(){
-
-
 
                 //get branches of specific company selection
                 $(document).on('change', '#Cmp_No', function(){
@@ -25,6 +22,7 @@
                         }
                     });
 
+                    //get rcpts of selected company
                     $.ajax({
                         url: "{{route('notice.index')}}",
                         type: "get",
@@ -36,14 +34,14 @@
                     });
                 });
 
+                //get rcpts of selected branch
                 $(document).on('change', '#Dlv_Stor', function(){
-                    var Cmp_No = document.getElementById('#Cmp_No');
-                    //alert(Cmp_No);
+                    var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     $.ajax({
                         url: "{{route('notice.index')}}",
                         type: "get",
                         dataType: 'html',
-                        data: { pranch: $(this).val() },
+                        data: { pranch: $(this).val() , Cmp_No: Cmp_No },
                         success: function(data){
                             $('#tableFilter').html(data);
                         }
@@ -52,6 +50,7 @@
             });
         </script>
     @endpush
+    @include('admin.layouts.message')
     {{-- header start --}}
     <div class="row">
         {{-- الشركه --}}
@@ -88,21 +87,20 @@
         <div class="content">
             <div class="box">
                 <div class="box-header">
-
-
-                    {{-- header end --}}
                     <div class="row">
+                        <a class="btn btn-primary pull-left" href="{{route('notice.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a>
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
                                     <thead>
                                     <tr>
                                         <th>{{trans('admin.id')}}</th>
-                                        <th>{{trans('admin.Tr_No')}}</th>
-                                        <th>{{trans('admin.noti_type')}}</th>
-                                        <th>{{trans('admin.noti_date')}}</th>
+                                        <th>{{trans('admin.number_of_receipt')}}</th>
+                                        <th>{{trans('admin.receipts_type')}}</th>
+                                        <th>{{trans('admin.receipt_date')}}</th>
                                         <th>{{trans('admin.note_for')}}</th>
-                                        <th>حالة الاشعار</th>
+                                        <th>حالة السند</th>
+
 
                                         <th>{{trans('admin.View')}}</th>
                                         <th>{{trans('admin.print')}}</th>
@@ -119,10 +117,11 @@
 
                                                 <td>{{$gl->Tr_No}}</td>
                                                 <td>
-                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty)}}
+                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty) }}
                                                 </td>
-                                                <td>{{$gl->Entr_Dt}}</td>
+                                                <td>{{$gl->Tr_Dt}}</td>
                                                 <td>{{$gl->Tr_Ds}}</td>
+
                                                 <td>
                                                     @if($gl->status == 1)
                                                         تم الحذف
@@ -131,13 +130,11 @@
                                                     @endif
                                                 </td>
 
-
-
                                                 <td>
                                                     <a href="{{route('notice.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                                                 </td>
                                                 <td>
-                                                    <a href="../../receipts/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
+                                                    <a href="../../notice/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
                                                 </td>
                                                 <td>
                                                     <a href="{{route('notice.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
@@ -168,3 +165,8 @@
     </div>
 
 @endsection
+
+
+
+
+
