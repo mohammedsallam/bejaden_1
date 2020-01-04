@@ -387,7 +387,7 @@
                         </a>
                         <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
                             @hasanyrole('writer|admin')
-                            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>
+                            <li class="active"><a href="{{route('limitationType.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>
                             <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>
                             <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
                             @endhasanyrole

@@ -265,6 +265,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
 
+        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsController@branchForEdit')->name('limitationBranchForEdit');
+        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
+        Route::post('limitationCreateTrNoN', 'Admin\Notice\NoticeController@createTrNo')->name('limitationCreateTrNoN');
+        Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
         Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');
         Route::post('accbanks/getCharts', 'Admin\setting\GLaccBnkCintroller@getCharts')->name('getCharts');

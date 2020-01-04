@@ -709,7 +709,7 @@ return [
     'Reference_for_contracting' => 'المرجع للتعاقد',
     'Statement_ar' => 'البيان Ar',
     'Tr_Ds1' => 'البيان En',
-    'Statement_en' => 'En',
+    'Statement_en' => 'En البيان',
     'Date_of_contract' => 'تاريخ التعاقد',
     'The_beginning_of_the_contract' => 'بداية التعاقد',
     'End_of_contract' => 'نهاية التعاقد',
@@ -838,7 +838,7 @@ return [
     'final_counting_classfication' => 'التصنيف/حسابات ختاميه',
     'dept_account'=>'بيانات الحساب المدين',
     'credit_account'=>'الحساب الدائن',
-    'amount'=>'المطلوب',
+    'amount'=>'المبلغ المطلوب',
     'tax'=>'الضريبه',
     'EGP'=>'ريال سعودي',
     'SAR'=>'ريال سعودي',
@@ -1440,6 +1440,24 @@ return [
     'noti_date'          =>'تاريخ الاشعار',
     'notics'             =>'الاشعارات',
     'data_notics'        =>'بيانات الاشعارات',
+    'Tr_No_short' => 'رقم/قيد',
+    'exchange_rate_short' => 'صرف',
+    'slm_no_short' => 'ر/م',
+    'Acc_No' => 'رقم الحساب الرئيسي',
+    'agent_exporter_emp_number' => 'رقم العميل/المورد',
+    'Jr_Ty' => 'نوع القيد',
+    'daily_limitation' => 'القيود اليومية',
+    'create_new_limitation_type' => 'إضافة نوع قيد جديد',
+    'edit_new_limitation_type' => 'تعديل نوع قيد جديد',
+    'name_ar' => 'الإسم عربي',
+    'name_en' => 'الإسم إنجليزي',
+    'Jrty_NmAr' => 'إسم نوع القيد عربي',
+    'Jrty_NmEn' => 'إسم نوع القيد إنجليزي',
+    'Jr_Ty_no' => 'رقم القيد',
+    'save_success' => 'تم الحفظ بنجاح',
+    'active_jr' => 'نوع القيد فعال',
+    'non_active_jr' => 'نوع القيد غير فعال'
+
 
 
 

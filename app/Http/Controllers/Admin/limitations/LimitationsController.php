@@ -4,13 +4,19 @@ namespace App\Http\Controllers\Admin\limitations;
 
 use App\Branches;
 use App\DataTables\limitationsDataTable;
-use App\DataTables\noticedebtDataTable; 
+use App\DataTables\noticedebtDataTable;
 use App\Department;
 use App\Http\Controllers\Controller;
 use App\limitationReceipts;
 use App\limitations;
 use App\limitationsData;
 use App\limitationsType;
+use App\Models\Admin\AstCurncy;
+use App\Models\Admin\AstSalesman;
+use App\Models\Admin\GLaccBnk;
+use App\Models\Admin\GLJrnal;
+use App\Models\Admin\MainCompany;
+use App\Models\Admin\MtsCostcntr;
 use App\operation;
 use App\pjitmmsfl;
 use Illuminate\Http\Request;
@@ -39,10 +45,45 @@ class LimitationsController extends Controller
         DB::table('limitations_type')->where('status',0)->delete();
         DB::table('limitations')->where('status',0)->delete();
         DB::table('limitations_datas')->where('limitations_id',null)->delete();
+
         $limitationReceipts = limitationReceipts::where('type',1)->pluck('name_'.session('lang'),'id');
         $title = trans('admin.create_limitations');
         $branches = Branches::pluck('name_'.session('lang'),'id');
-        return view('admin.limitations.create',compact('title','branches','limitationReceipts'));
+
+
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        if(session('Cmp_No') == -1){
+            $companies = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        }
+        else{
+            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+        }
+        $flags = GLaccBnk::all();
+        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+        $banks = [];
+        $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+        foreach($flags as $flag){
+            if($flag->RcpCsh_Voucher == 1){
+                array_push($banks, $flag);
+            }
+        }
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+//        $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+        $AllSalesman = AstSalesman::all();
+
+
+        return view('admin.limitations.create',compact([
+            'title',
+            'branches',
+            'limitationReceipts',
+            'companies',
+            'banks',
+            'last_record',
+            'cost_center',
+            'crncy',
+            'AllSalesman',
+
+        ]));
     }
 
     /**
