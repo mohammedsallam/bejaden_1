@@ -48,7 +48,6 @@ class ProjectController extends Controller
     {
 
         $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
-
         if(count($chart) > 0){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -175,8 +174,8 @@ class ProjectController extends Controller
 ///
 ///
 //              dd($request->Costcntr_No);
-            // $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first();
-            // dd($request->Costcntr_No);
+           // $Costcntr_No = MtsCostcntr::where('Parnt_Acc', $request->Costcntr_No)->orderBy('Costcntr_No', 'desc')->first();
+           // dd($request->Costcntr_No);
             $Mtscc = MtsCostcntr::create([
                 'Cmp_No'=>session('Chart_Cmp_No'),
                 'Level_Status'=> 1,
@@ -782,5 +781,4 @@ class ProjectController extends Controller
 
 
 }
-
 

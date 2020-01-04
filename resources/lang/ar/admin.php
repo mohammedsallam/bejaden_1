@@ -6,9 +6,12 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
+<<<<<<< HEAD
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
+=======
+>>>>>>> 5e7d966737b04f3c8599a2395381d18d96988e0d
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',
@@ -246,6 +249,8 @@ return [
     // bus/cartype // create
     'create_new_countrytrans' => 'انشاء مناطق جديدة',
     'made_in' => 'صنع في',
+    'yes' => 'نعم',
+    'no' => 'لا',
     // bus/cartype // index
     'car_type' => 'نوع السيارة',
     // bus/create // buscategory
@@ -808,6 +813,7 @@ return [
     'number_account'=>'الرقم المحاسبي',
     'please_modify'=>'من فضلك قم بتعديل تاريخ رحلة العميل',
     'code'=>'الكود المحاسبي',
+    'close_ask' => 'هل تريد طباعة السند؟',
     'fund_and_banks'=>'الصندوق والبنوك',
     'create_catch_receipt'=>'اضافة سند قبض',
     'edit_catch_receipt'=>'تعديل سند قبض',
@@ -827,6 +833,7 @@ return [
     'Pymt_Flg' => 'سند صرف',
     'debt_limitations' => 'بيانات سندات الاشعارات ',
     'create_caching_receipt'=>'اضافة سند صرف',
+    'edit_caching_receipt'=>'تعديل سند صرف',
     'data_Cach'=>'بيانات اساسية سند صرف',
     'data_Catch'=>'بيانات اساسية سند قبض',
     'accbanks_setting' => 'اعدادت الصندوق و البنوك',
@@ -841,7 +848,7 @@ return [
     'final_counting_classfication' => 'التصنيف/حسابات ختاميه',
     'dept_account'=>'بيانات الحساب المدين',
     'credit_account'=>'الحساب الدائن',
-    'amount'=>'المبلغ المطلوب',
+    'amount'=>'المطلوب',
     'tax'=>'الضريبه',
     'EGP'=>'ريال سعودي',
     'SAR'=>'ريال سعودي',
@@ -1443,7 +1450,6 @@ return [
     'noti_date'          =>'تاريخ الاشعار',
     'notics'             =>'الاشعارات',
     'data_notics'        =>'بيانات الاشعارات',
-    'edit_noti'          =>'تعديل الاشعارات',
 
 
 

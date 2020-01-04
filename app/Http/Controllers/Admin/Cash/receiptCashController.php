@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Cash;
 
+use App\Models\Admin\AstCurncy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -30,6 +31,7 @@ class receiptCashController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -84,7 +86,10 @@ class receiptCashController extends Controller
                 array_push($banks, $flag);
             }
         }
-        return view('admin.cash.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
+
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+
+        return view('admin.cash.catch.create', ['companies' => $cmps, 'crncy' => $crncy, 'banks' => $banks, 'last_record' => $last_record,
                                                 'cost_center' => $cost_center]);
     }
 
@@ -96,9 +101,8 @@ class receiptCashController extends Controller
      */
     public function store(Request $request)
     {
-        $catch_data = json_decode($request->catch_data);
-//        dd(is_array($catch_data));
 
+        $catch_data = json_decode($request->catch_data);
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -115,10 +119,10 @@ class receiptCashController extends Controller
                 'Acc_No' => $catch_data[$last_index]->Acc_No,
                 'User_ID' => auth::user()->id,
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
-                'Tr_Crncy' => $catch_data[$last_index]->Tr_Crncy,
-                'Tr_ExchRat' => $catch_data[$last_index]->Tr_ExchRat,
-                'Tr_TaxVal' => $catch_data[$last_index]->Tr_TaxVal,
-                'Salman_No' => $catch_data[$last_index]->Salman_No,
+                'Curncy_No' => $catch_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
@@ -132,8 +136,12 @@ class receiptCashController extends Controller
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
 
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
+            if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
@@ -156,20 +164,26 @@ class receiptCashController extends Controller
                         'Jr_Ty' => 4,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
+                        'Month_Jvno' => $data->Tr_No,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => 1,
                         'Sysub_Account' => 0,
+                        'FTr_Db' => $header->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Acc_No' => $data->Tr_Db_Acc_No,
-                        'Tr_Cr' => $catch_data[$last_index]->Tr_Db_Db,
+                        'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
                         'Tr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
+                        'Slm_No' => $data->Slm_No,
                         'Tr_Ds1' => $data->Tr_Ds1,
                         'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
+                        'FTot_Amunt' => $header->FTot_Amunt,
                         'Ln_No' => 1,
+                        'Curncy_No' => $data->Curncy_No,
                     ]);
 
                     $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -186,23 +200,56 @@ class receiptCashController extends Controller
                     'Month_No' => Carbon::now()->month,
                     'Tr_Dt' => $data->Tr_Dt,
                     'Tr_DtAr' => $data->Tr_DtAr,
+                    'Month_Jvno' => $data->Tr_No,
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
+                    'Slm_No' => $data->Slm_No,
                     'Tr_Db' => $data->Tr_Db,
                     'Tr_Cr' => 0.00,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'Ln_No' => $data->Ln_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
+
+
+                //update debt Tot_Amunt
+                //1- get all credit lines - sum credit money
+                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                    ->where('Ln_No' , '>', 1)->get();
+                if($trnses && count($trnses)){
+                    $total = 0;
+                    $ftotal = 0;
+                    foreach($trnses as $trns){
+                        $total += $trns->Tr_Db;
+                    }
+                    foreach($trnses as $trns){
+                        $ftotal += $trns->FTr_Cr;
+                    }
+
+                    //2- get debt line - update money with new total
+                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No', 1)->first();
+                    $debt->update([
+                        'Tr_Cr' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                    $header->update(['FTot_Amunt' => $ftotal]);
             }
+        }
+
         }
 
     }
@@ -242,18 +289,22 @@ class receiptCashController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $gl = GLJrnal::where('Tr_No', $id)->first();
+        // $salesman = AstSalesman::where('Slm_No', $gl->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+        $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
-        $cash = [];
+        $banks = [];
         foreach($flags as $flag){
             if($flag->RcpCsh_Voucher == 1){
-                array_push($cash, $flag);
+                array_push($banks, $flag);
             }
         }
-        return view('admin.cash.catch.edit', compact('gl', 'gltrns', 'cmps', 'cash'));
-    }
 
+        return view('admin.cash.catch.edit', compact('gl', 'gltrns','crncy', 'cmps', 'banks', 'salesman'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -263,8 +314,104 @@ class receiptCashController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
+
+    public function updateTrnsC(Request $request){
+
+        $updated_data = json_decode($request->catch_data);
+
+        if(count($updated_data) > 0){
+            $last_index = count($updated_data) - 1;
+
+            //update header
+            $header = GLJrnal::where('Tr_No', $updated_data[$last_index]->Tr_No)->first();
+                $header->update([
+                    'Cmp_No' => $updated_data[$last_index]->Cmp_No,
+                    'Brn_No' => $updated_data[$last_index]->Brn_No,
+                    'Jr_Ty' => 4,
+                    'Month_No' => Carbon::now()->month,
+                    'Month_Jvno' => $updated_data[$last_index]->Tr_No,
+                    'Doc_Type' => $updated_data[$last_index]->Doc_Type,
+                    'Tr_Dt' => $updated_data[$last_index]->Tr_Dt,
+                    'Tr_DtAr' => $updated_data[$last_index]->Tr_DtAr,
+                    'Acc_No' => $updated_data[$last_index]->Acc_No,
+                    'User_ID' => auth::user()->id,
+                    'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
+                    'Curncy_No' => $updated_data[$last_index]->Curncy_No,
+                    'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
+                    'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
+                    'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
+                    'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
+                    'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
+                    'Dc_No' => $updated_data[$last_index]->Dc_No,
+                    //'Chq_no' => $updated_data[$last_index]->Chq_no,
+                    //'Bnk_Nm' => $updated_data[$last_index]->Bnk_Nm,
+                    //'Issue_Dt' => $updated_data[$last_index]->Issue_Dt,
+                    //'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
+                    //'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
+                    'Slm_No' => $updated_data[$last_index]->Slm_No,
+                ]);
+
+               // if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
+                if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
+                $header->save();
+
+
+            foreach($updated_data as $data){
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                    ->where('Ln_No', $data->Ln_No)->first();
+                //Update transaction credit
+                $trns->update([
+                    'Cmp_No' => $data->Cmp_No,
+                    'Brn_No' => $data->Brn_No,
+                    'Jr_Ty' => 4,
+                    'Ac_Ty' => $data->Ac_Ty,
+                    'Sysub_Account' => $data->Sysub_Account,
+                    'Acc_No' => $data->Acc_No,
+                    'Tr_Db' => 0.00,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
+                    'Dc_No' => $data->Dc_No,
+                    'Tr_Ds' => $data->Tr_Ds,
+                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Doc_Type' => $data->Doc_Type,
+                    'User_ID' => auth::user()->id,
+                    'Rcpt_Value' => $data->Tot_Amunt,
+                    'Slm_No' => $data->Slm_No,
+                    'updated_at' => carbon::now(),
+                ]);
+            }
+
+            $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                ->where('Ln_No' , '>', 1)->get();
+            if($trnses && count($trnses)){
+                $total = 0;
+                $ftotal = 0;
+                foreach($trnses as $trns){
+                    $total += $trns->Tr_Db;
+                }
+                foreach($trnses as $trns){
+                    $ftotal += $trns->FTr_Cr;
+                }
+
+                //2- get debt line - update money with new total
+                $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                    ->where('Ln_No', 1)->first();
+                $debt->update([
+                    'Tr_Db' => $total,
+                    'FTr_Db' => $ftotal,
+                    'FTot_Amunt' => $ftotal,
+                    'Rcpt_Value' => $total,
+                ]);
+                $header->update(['FTot_Amunt' => $ftotal]);
+            }
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -274,8 +421,45 @@ class receiptCashController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //حذف كل سطور السند
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
+        $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
+        if($trns && count($trns) > 0){
+            foreach($trns as $trn){
+                $trn->delete();
+            }
+        }
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        // $gl->update(['status' => 1]);
+        // $gl->status = 1;
+        // $gl->save();
+        return redirect(aurl('receiptCash'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
+
+    //Delete trans line from GLjrnTrs
+    public function deleteTrns(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)->get();
+            //حذف السطر المطلوب فقط اذا كان عدد سطور السند اكبر من سطرين
+            if($trns && count($trns) > 2){
+                if($request->Ln_No != -1){
+                    GLjrnTrs::where('Tr_No', $request->Tr_No)
+                        ->where('Ln_No', $request->Ln_No)->first()->delete();
+                }
+            }
+            //حذف كل تفاصيل السند اذا كان عدد السطور  سطرين فاقل
+            else if($trns && count($trns) <= 2){
+                foreach($trns as $trn){
+                    $trn->delete();
+                }
+            }
+
+            $gl = GLJrnal::where('Tr_No', $request->Tr_No)->first();
+            $gl->status = 1;
+            $gl->save();
+        }
+    }
+
 
     public function convertToDateToHijri(Request $request){
         $hijri = date('Y-m-d',strtotime(\GeniusTS\HijriDate\Hijri::convertToHijri($request->Hijri)));
@@ -447,12 +631,12 @@ class receiptCashController extends Controller
                 'Tr_Dt' => 'sometimes',
                 'Tr_DtAr' => 'sometimes',
                 'Jr_Ty' => 'sometimes',
-                'Tr_Crncy' => 'sometimes',
-                'Tr_ExchRat' => 'sometimes',
+                'Curncy_No' => 'sometimes',
+                'Curncy_Rate' => 'sometimes',
                 'Tot_Amunt' => 'required',
-                'Tr_TaxVal' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
                 'Rcpt_By' => 'sometimes',
-                'Salman_No' => 'sometimes',
+                'Slm_No' => 'sometimes',
                 'Ac_Ty' => 'required',
                 'Sysub_Account' => 'required',
                 'Tr_Db' => 'sometimes',
@@ -467,12 +651,12 @@ class receiptCashController extends Controller
                 'Tr_Dt' => trans('admin.receipt_date'),
                 'Tr_DtAr' => trans('admin.higri_date'),
                 'Jr_Ty' => trans('admin.receipts_type'),
-                'Tr_Crncy' => trans('admin.currency'),
-                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Curncy_No' => trans('admin.currency'),
+                'Curncy_Rate' => trans('admin.exchange_rate'),
                 'Tot_Amunt' => trans('admin.amount'),
-                'Tr_TaxVal' => trans('admin.tax'),
+                'Taxp_Extra' => trans('admin.tax'),
                 'Rcpt_By' => trans('admin.Rcpt_By'),
-                'Salman_No' => trans('admin.sales_officer2'),
+                'Slm_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
                 // 'Sysub_Account' => trans('admin.'),
                 'Tr_Db' => trans('admin.amount_Db'),
@@ -531,7 +715,7 @@ class receiptCashController extends Controller
 //        }
 //    }
 
-    public function getRcptDetails(Request $request){
+    public function getCashptDetails(Request $request){
         if($request->ajax()){
             $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
                             ->where('Tr_No', $request->Tr_No)
@@ -542,6 +726,24 @@ class receiptCashController extends Controller
             $request->Brn_No = $trns->Brn_No;
             $subAccs = $this->getSubAcc($request);
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+            return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
+        }
+    }
+
+    public function getRcptDetails(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
+                ->where('Tr_No', $request->Tr_No)
+                ->first();
+
+            $new_request = new Request;
+            $new_request->Acc_Ty = $trns->Ac_Ty;
+            $new_request->Cmp_No = $trns->Cmp_No;
+            $new_request->Brn_No = $trns->Brn_No;
+            $subAccs = $this->getSubAcc($new_request);
+
+            $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+
             return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
     }

@@ -347,6 +347,7 @@
                 </ul>
             </li>
             @endhasanyrole
+<<<<<<< HEAD
 
             @hasanyrole('writer|admin')
             <li  class="">
@@ -358,6 +359,8 @@
 
             </li>
             @endhasanyrole
+=======
+>>>>>>> 5e7d966737b04f3c8599a2395381d18d96988e0d
             {{-- نهاية التقارير المحاسبيه --}}
 
             {{-- الصندوق و البنوك --}}

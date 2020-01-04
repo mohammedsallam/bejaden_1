@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.Pymt_Flg'))
+@section('title',trans('admin.Rcpt_Flg'))
 @section('content')
 @push('js')
 @endpush

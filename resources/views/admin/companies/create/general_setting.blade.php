@@ -213,8 +213,8 @@
                                     <label for="L_Curncy_No" class="col-md-">{{trans('admin.L_Curncy_No')}}</label>
                                     <select name="L_Curncy_No" id="L_Curncy_No" class="form-control col-md-">
                                         <option value="{{null}}">{{trans('admin.select')}}</option>
-                                        @foreach(App\Enums\CurrencyType::toSelectArray() as $key => $value) 
-                                            <option value="{{$key}}">{{$value}}</option>
+                                        @foreach($crncy as $crn) 
+                                            <option value="{{$crn->Curncy_No}}">{{ $crn->{'Curncy_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                 </div>
