@@ -103,9 +103,9 @@
                                         <th>{{trans('admin.receipt_date')}}</th>
                                         <th>{{trans('admin.note_for')}}</th>
                                         <th>حالة السند</th>
-                                        <th>مصاريف الإعتماد</th>
-                                        <th>العملة الأجنبية مدين </th>
-                                        <th>العملة الأجنبيه دائن </th>
+{{--                                        <th>مصاريف الإعتماد</th>--}}
+{{--                                        <th>العملة الأجنبية مدين </th>--}}
+{{--                                        <th>العملة الأجنبيه دائن </th>--}}
                                         <th>{{trans('admin.View')}}</th>
                                         <th>{{trans('admin.print')}}</th>
                                         <th>{{trans('admin.edit')}}</th>
@@ -121,10 +121,10 @@
 
                                                 <td>{{$gl->Tr_No}}</td>
                                                 <td>
-                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Doc_Type) }}
+                                                    {{\App\Enums\dataLinks\ReceiptType::getDescription($gl->Jr_Ty) }}
                                                 </td>
-                                                <td>{{$gl->Entr_Dt}}</td>
-                                                <td>{{$gl->Acc_Nm}}</td>
+                                                <td>{{$gl->Tr_Dt}}</td>
+                                                <td>{{$gl->Tr_Ds}}</td>
 
                                                 <td>
                                                     @if($gl->status == 1)
@@ -134,9 +134,9 @@
                                                     @endif
                                                 </td>
 
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+{{--                                                <td></td>--}}
+{{--                                                <td></td>--}}
+{{--                                                <td></td>--}}
 
                                                 <td>
                                                     <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>

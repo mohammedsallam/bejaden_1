@@ -17,6 +17,7 @@ use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsSuplir;
 use App\Models\Admin\GLaccBnk;
 use App\Models\Admin\MtsCostcntr;
+use App\Models\Admin\AstCurncy;
 use Carbon\Carbon;
 use Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
@@ -33,11 +34,11 @@ class ReceiptCatchController extends Controller
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-                $gls = GLJrnal::where('Jr_Ty', 2)->paginate(6);
+                $gls = GLJrnal::where('Jr_Ty', 2)->orderBy('Tr_No', 'desc')->paginate(6);
             }
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-                $gls = GLJrnal::where('Jr_Ty',2)->where('Cmp_No', session('Cmp_No'))->paginate(6);
+                $gls = GLJrnal::where('Jr_Ty',2)->where('Cmp_No', session('Cmp_No'))->orderBy('Tr_No', 'desc')->paginate(6);
             }
             return view('admin.banks.catch.index', ['companies' => $cmps, 'gls' => $gls]);
 
@@ -45,12 +46,12 @@ class ReceiptCatchController extends Controller
             if ($request->Cmp_No > 0 && $request->pranch == null) {
 
                 $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->paginate(6);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->orderBy('Tr_No', 'desc')->paginate(6);
                 return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
 
             } elseif ($request->pranch > 0) {
                 $cmps = MainCompany::get(['Cmp_Nm' . ucfirst(session('lang')), 'Cmp_No']);
-                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->where('Brn_No', $request->pranch)->paginate(6);
+                $gls = GLJrnal::where('Cmp_No', $request->Cmp_No)->where('Jr_Ty', 2)->where('Brn_No', $request->pranch)->orderBy('Tr_No', 'desc')->paginate(6);
                 return view('admin.banks.catch.table', ['companies' => $cmps, 'gls' => $gls]);
             }
         }
@@ -67,7 +68,7 @@ class ReceiptCatchController extends Controller
      */
     public function create()
     {
-        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
@@ -83,8 +84,9 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
         return view('admin.banks.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
-                                                'cost_center' => $cost_center]);
+                                                'cost_center' => $cost_center, 'crncy' => $crncy]);
     }
 
     /**
@@ -129,6 +131,7 @@ class ReceiptCatchController extends Controller
                 'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
             ]);
 
             foreach($catch_data as $data){
@@ -212,6 +215,183 @@ class ReceiptCatchController extends Controller
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
 
+                //update debt Tot_Amunt
+                //1- get all credit lines - sum credit money
+                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                                ->where('Ln_No' , '>', 1)->get();
+                if($trnses && count($trnses)){
+                    $total = 0;
+                    $ftotal = 0;
+                    foreach($trnses as $trns){
+                        $total += $trns->Tr_Cr;
+                    }
+                    foreach($trnses as $trns){
+                        $ftotal += $trns->FTr_Cr;
+                    }
+
+                    //2- get debt line - update money with new total
+                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                    $debt->update([
+                        'Tr_Db' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                    $header->update(['FTot_Amunt' => $ftotal]);
+                }
+
+            }
+        }
+    }
+
+    public function addDeletedLines(Request $request)
+    {
+        $catch_data = json_decode($request->catch_data);
+
+        //update header
+        if(count($catch_data) > 0){
+            $last_index = count($catch_data) - 1;
+            // dd($catch_data[$last_index]);
+            $header = GLJrnal::where('Tr_No', $catch_data[0]->Tr_No)->first();
+            $header->update([
+                'Cmp_No' => $catch_data[$last_index]->Cmp_No,
+                'Brn_No' => $catch_data[$last_index]->Brn_No,
+                'Jr_Ty' => 2,
+                'Month_Jvno' => $catch_data[$last_index]->Tr_No,
+                'Doc_Type' => $catch_data[$last_index]->Doc_Type,
+                'Tr_Dt' => $catch_data[$last_index]->Tr_Dt,
+                'Tr_DtAr' => $catch_data[$last_index]->Tr_DtAr,
+                'Acc_No' => $catch_data[$last_index]->Acc_No,
+                'User_ID' => auth::user()->id,
+                'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
+                'Curncy_No' => $catch_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
+                'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
+                'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
+                'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
+                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
+                'Dc_No' => $catch_data[$last_index]->Dc_No,
+                'Chq_no' => $catch_data[$last_index]->Chq_no,
+                'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
+                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
+                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
+                'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
+                'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
+                'status' => 0,
+            ]);
+
+            foreach($catch_data as $data){
+                $header->FTot_Amunt += $data->FTot_Amunt;
+            }
+            if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
+            if($catch_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $catch_data[$last_index]->Sysub_Account;}
+            $header->save();
+
+
+            $tot_rcpt_val = 0;
+            foreach($catch_data as $data){
+                $tot_rcpt_val += $data->Tot_Amunt;
+            }
+            foreach($catch_data as $data){
+
+                $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                if(!$debt){
+                    // Create transaction debt
+                    $trans_db = GLjrnTrs::create([
+                        'Cmp_No' => $data->Cmp_No,
+                        'Brn_No' => $data->Brn_No,
+                        'Jr_Ty' => 2,
+                        'Tr_No' => $data->Tr_No,
+                        'Month_No' => Carbon::now()->month,
+                        'Tr_Dt' => $data->Tr_Dt,
+                        'Tr_DtAr' => $data->Tr_DtAr,
+                        'Ac_Ty' => 1,
+                        'Sysub_Account' => 0,
+                        'Acc_No' => $data->Tr_Db_Acc_No,
+                        'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                        'Tr_Cr' => 0.00,
+                        'FTr_Db' => $header->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
+                        'Dc_No' => $data->Dc_No,
+                        'Tr_Ds' => $data->Tr_Ds_Db,
+                        'Tr_Ds1' => $data->Tr_Ds_Db,
+                        'Doc_Type' => $data->Doc_Type,
+                        'User_ID' => auth::user()->id,
+                        'Rcpt_Value' => $tot_rcpt_val,
+                        'FTot_Amunt' => $header->FTot_Amunt,
+                        'Ln_No' => 1,
+                        'Curncy_No' => $data->Curncy_No,
+                    ]);
+
+                    $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
+                    $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
+                    $trans_db->save();
+                }
+
+                //Create transaction credit
+                $trans_cr = GLjrnTrs::create([
+                    'Cmp_No' => $data->Cmp_No,
+                    'Brn_No' => $data->Brn_No,
+                    'Jr_Ty' => 2,
+                    'Tr_No' => $data->Tr_No,
+                    'Month_No' => Carbon::now()->month,
+                    'Tr_Dt' => $data->Tr_Dt,
+                    'Tr_DtAr' => $data->Tr_DtAr,
+                    'Ac_Ty' => $data->Ac_Ty,
+                    'Sysub_Account' => $data->Sysub_Account,
+                    'Acc_No' => $data->Acc_No,
+                    'Tr_Db' => 0.00,
+                    'Tr_Cr' => $data->Tr_Cr,
+                    'FTr_Db' => 0.00,
+                    'FTr_Cr' => $data->FTot_Amunt,
+                    'Dc_No' => $data->Dc_No,
+                    'Tr_Ds' => $data->Tr_Ds,
+                    'Tr_Ds1' => $data->Tr_Ds1,
+                    'Doc_Type' => $data->Doc_Type,
+                    'User_ID' => auth::user()->id,
+                    'Rcpt_Value' => $data->Tot_Amunt,
+                    'Ln_No' => $data->Ln_No,
+                    'Slm_No' => $data->Slm_No,
+                    'FTot_Amunt' => $data->FTot_Amunt,
+                    'Curncy_No' => $data->Curncy_No,
+                ]);
+                $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+                $trans_cr->save();
+
+                //update debt Tot_Amunt
+                //1- get all credit lines - sum credit money
+                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                                    ->where('Ln_No' , '>', 1)->get();
+                if($trnses && count($trnses)){
+                    $total = 0;
+                    $ftotal = 0;
+                    foreach($trnses as $trns){
+                        $total += $trns->Tr_Cr;
+                    }
+                    foreach($trnses as $trns){
+                        $ftotal += $trns->FTr_Cr;
+                    }
+
+                    //2- get debt line - update money with new total
+                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                                ->where('Ln_No', 1)->first();
+                    $debt->update([
+                        'Tr_Db' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                    $header->update(['FTot_Amunt' => $ftotal]);
+                }
+
             }
         }
     }
@@ -246,24 +426,49 @@ class ReceiptCatchController extends Controller
      */
     public function edit($id)
     {
-        if(session('Cmp_No') == -1){
-            $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        $gl = GLJrnal::where('Tr_No', $id)->first();
+        if($gl->status == 1){
+            //اضافة السطور المحذوفه للسند
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+            $flags = GLaccBnk::all();
+            // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+            $banks = [];
+            foreach($flags as $flag){
+                if($flag->RcpCsh_Voucher == 1){
+                    array_push($banks, $flag);
+                }
+            }
+            $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.add_lines', compact('gl', 'gltrns', 'cmps', 'banks', 'crncy', 'salesman'));
         }
         else{
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-        }
-        $gl = GLJrnal::where('Tr_No', $id)->first();
-        $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
-        $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
-        $banks = [];
-        foreach($flags as $flag){
-            if($flag->RcpCsh_Voucher == 1){
-                array_push($banks, $flag);
+            // تعديل سطور السند
+            if(session('Cmp_No') == -1){
+                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
             }
+            else{
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            }
+            $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+            $flags = GLaccBnk::all();
+            // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+            $banks = [];
+            foreach($flags as $flag){
+                if($flag->RcpCsh_Voucher == 1){
+                    array_push($banks, $flag);
+                }
+            }
+            $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+            $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks', 'crncy', 'salesman'));
         }
-
-        return view('admin.banks.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
     }
 
     /**
@@ -282,6 +487,45 @@ class ReceiptCatchController extends Controller
         $updated_data = json_decode($request->catch_data);
 
         if(count($updated_data) > 0){
+            $last_index = count($updated_data) - 1;
+
+            //update header
+            $header = GLJrnal::where('Tr_No', $updated_data[$last_index]->Tr_No)->first();
+            $header->update([
+                'Cmp_No' => $updated_data[$last_index]->Cmp_No,
+                'Brn_No' => $updated_data[$last_index]->Brn_No,
+                'Jr_Ty' => 2,
+                // 'Tr_No' => $updated_data[$last_index]->Tr_No,
+                'Month_No' => Carbon::now()->month,
+                'Month_Jvno' => $updated_data[$last_index]->Tr_No,
+                'Doc_Type' => $updated_data[$last_index]->Doc_Type,
+                'Tr_Dt' => $updated_data[$last_index]->Tr_Dt,
+                'Tr_DtAr' => $updated_data[$last_index]->Tr_DtAr,
+                'Acc_No' => $updated_data[$last_index]->Acc_No,
+                'User_ID' => auth::user()->id,
+                'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
+                'Curncy_No' => $updated_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
+                'Taxp_Extra' => $updated_data[$last_index]->Taxp_Extra,
+                'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
+                'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
+                'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
+                'Dc_No' => $updated_data[$last_index]->Dc_No,
+                'Chq_no' => $updated_data[$last_index]->Chq_no,
+                'Bnk_Nm' => $updated_data[$last_index]->Bnk_Nm,
+                'Issue_Dt' => $updated_data[$last_index]->Issue_Dt,
+                'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
+                'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
+                'Slm_No' => $updated_data[$last_index]->Slm_No,
+            ]);
+
+            if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
+            $header->save();
+
             foreach($updated_data as $data){
                 $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
                                 ->where('Ln_No', $data->Ln_No)->first();
@@ -298,6 +542,7 @@ class ReceiptCatchController extends Controller
                     'FTr_Db' => 0.00,
                     'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'Doc_Type' => $data->Doc_Type,
@@ -310,27 +555,28 @@ class ReceiptCatchController extends Controller
 
             //update debt Tot_Amunt
             //1- get all credit lines - sum credit money
-            $trnses = GLjrnTrs::where('Tr_No', $updated_data[0]->Tr_No)
+            $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
                                 ->where('Ln_No' , '>', 1)->get();
-            if($trnses){
+            if($trnses && count($trnses)){
                 $total = 0;
+                $ftotal = 0;
                 foreach($trnses as $trns){
                     $total += $trns->Tr_Cr;
                 }
+                foreach($trnses as $trns){
+                    $ftotal += $trns->FTr_Cr;
+                }
 
                 //2- get debt line - update money with new total
-                $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
+                $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                                 ->where('Ln_No', 1)->first();
-                $debt->update(['Tr_Db' => $total]);
-                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
-                $debt->save();
-
-
-                $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
-                $gl_debt->update([
-                    'Tr_Db' => $total,
-                    'Tr_Cr' => $total,
-                ]);
+                $debt->update([
+                        'Tr_Db' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                $header->update(['FTot_Amunt' => $ftotal]);
             }
         }
     }
@@ -352,9 +598,6 @@ class ReceiptCatchController extends Controller
             }
         }
         GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
-        // $gl->update(['status' => 1]);
-        // $gl->status = 1;
-        // $gl->save();
         return redirect(aurl('rcatchs'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
@@ -390,9 +633,8 @@ class ReceiptCatchController extends Controller
     public function getSalesMan(Request $request){
         if($request->ajax()){
             $customer = MTsCustomer::where('Cstm_No', $request->Acc_No)->get(['Slm_No'])->first();
-            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))])->first();
-            // return $salesman->{'Slm_Nm'.ucfirst(session('lang'))};
-            return view('admin.banks.catch.salman', ['salesman' => $salesman]);
+            $salesman = AstSalesman::get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.salman', ['salesman' => $salesman, 'customer' => $customer]);
         }
     }
 
@@ -608,17 +850,18 @@ class ReceiptCatchController extends Controller
         }
     }
 
-    public function branchForEdit(Request $request){
+    public function branchForEdit(Request $request){        
         if($request->ajax()){
+            $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
             if($request->id){
                 $gl = GLJrnal::where('Tr_No', $request->id)->get(['Brn_No'])->first();
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm'.ucfirst(session('lang'))]);
-                return view('admin.banks.catch.branch', compact('branches', 'gl'));
+                return view('admin.banks.catch.branch', compact('branches', 'gl', 'last_record'));
             }
             else{
                 $gl = null;
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm'.ucfirst(session('lang'))]);
-                return view('admin.banks.catch.branch', compact('branches', 'gl'));
+                return view('admin.banks.catch.branch', compact('branches', 'gl', 'last_record'));
             }
         }
     }
@@ -691,5 +934,18 @@ class ReceiptCatchController extends Controller
         //     }
         // }
 
+    }
+
+    public function getCurencyRate(Request $request){
+        if($request->ajax()){
+            return AstCurncy::where('Curncy_No', $request->Curncy_No)->pluck('Curncy_Rate')->first();
+        }
+    }
+
+    public function getCmpSalesMen(Request $request){
+        if($request->ajax()){
+            $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+            return view('admin.banks.catch.salesman', compact('salesman'));
+        }
     }
 }
