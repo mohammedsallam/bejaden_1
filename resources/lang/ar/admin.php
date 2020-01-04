@@ -8,6 +8,7 @@ return [
     'all_record' => 'كل التسجيلات',
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
+    'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',

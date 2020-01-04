@@ -26,7 +26,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 col-12">
-        <a href="">
+        <a href="customer_accounting">
         <div class="info-box">
             <span class="info-box-icon bg-warning"><i class="fa fa-user-plus"></i></span>
 
@@ -39,7 +39,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 col-12">
-        <a href="">
+        <a href="supplier_accounting">
         <div class="info-box">
             <span class="info-box-icon bg-warning"><i class="fa fa-shopping-cart"></i></span>
 
@@ -52,7 +52,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 col-12">
-        <a href="">
+        <a href="staff_accounting">
         <div class="info-box">
             <span class="info-box-icon bg-warning"><i class="fa fa-users"></i></span>
 
@@ -65,7 +65,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 col-12">
-        <a href="">
+        <a href="cc_accounting">
         <div class="info-box">
             <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i>
 </span>

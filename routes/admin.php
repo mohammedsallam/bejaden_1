@@ -177,13 +177,112 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('/country','Admin\SubscribeController@getCountries');
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
-        Route::get('financial_reports', function () {
-            return view('admin.financial_reports.financial_reports');
+
+
+
+// 0_0 Dashboard_setting
+        Route::get('general_setting', function () {
+            return view('admin.general_setting.general_setting');
         });
-        Route::get('general_accounts', function () {
-            return view('admin.financial_reports.general_accounts');
+// 1_1 Dashboard_setting
+// 0_0 Dashboard_setting
+        Route::get('Dashboard_setting', function () {
+            return view('admin.Dashboard_setting.Dashboard_setting');
+        });
+// 1_1 Dashboard_setting
+//        0_0 basic_Data
+        Route::get('basic_data', function () {
+            return view('admin.basic_data.basic_data');
+        });
+        Route::get('customer_data', function () {
+            return view('admin.basic_data.customer.customer_data');
+        });
+        Route::get('supplier_data', function () {
+            return view('admin.basic_data.supplier.supplier_data');
+        });
+            Route::get('departments_data', function () {
+            return view('admin.basic_data.departments.departments_data');
+        });
+            Route::get('cc_data', function () {
+            return view('admin.basic_data.cc.cc_data');
         });
 
+            Route::get('stuff_data', function () {
+            return view('admin.basic_data.stuff.stuff_data');
+        });
+            Route::get('Fixed_assets', function () {
+            return view('admin.basic_data.Fixed_assets.Fixed_assets');
+        });
+            Route::get('cars_data', function () {
+            return view('admin.basic_data.cars.cars_data');
+        });
+
+
+//        0_0 fininncil_report
+//        0
+        Route::get('financial_reports','Admin\financial_reports\general_accountsController@financial_reports')->name('financial_reports');
+        Route::get('general_accounts','Admin\financial_reports\general_accountsController@general_accounts')->name('general_accounts');
+        Route::get('account_statement','Admin\financial_reports\general_accountsController@account_statement')->name('account_statement');
+        Route::get('trial_balance','Admin\financial_reports\general_accountsController@trial_balance')->name('trial_balance');
+        Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
+//       1
+//        0
+        Route::get('customer_accounting','Admin\financial_reports\customer_accountingcontroller@customer_accounting')->name('customer_accounting');
+        Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');
+        Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
+        Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
+
+
+
+//        1
+//        0
+        Route::get('supplier_accounting','Admin\financial_reports\supplier_accountingController@supplier_accounting')->name('supplier_accounting');
+        Route::get('supp_account_statement','Admin\financial_reports\supplier_accountingController@supp_account_statement')->name('supp_account_statement');
+        Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@supp_trial_balance')->name('supp_trial_balance');
+        Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
+
+
+
+
+//        1
+        Route::get('staff_accounting','Admin\financial_reports\staff_accountingController@staff_accounting')->name('staff_accounting');
+        Route::get('staff_account_statement','Admin\financial_reports\staff_accountingController@staff_account_statement')->name('staff_account_statement');
+        Route::get('staff_trial_balance','Admin\financial_reports\staff_accountingController@staff_trial_balance')->name('staff_trial_balance');
+        Route::get('staff_daily_restriction','Admin\financial_reports\staff_accountingController@staff_daily_restriction')->name('staff_daily_restriction');
+
+
+
+
+//   0
+        Route::get('cc_accounting','Admin\financial_reports\CC_accountingController@cc_accounting')->name('cc_accounting');
+        Route::get('balances_cc','Admin\financial_reports\CC_accountingController@balances_cc')->name('balances_cc');
+        Route::get('motion_cc','Admin\financial_reports\CC_accountingController@motion_cc')->name('motion_cc');
+        Route::get('general_balance_cc','Admin\financial_reports\CC_accountingController@general_balance_cc')->name('general_balance_cc');
+
+//        1_1 financial_report
+
+//basic_reports
+        Route::get('basic_reports', function () {
+            return view('admin.basic_reports.basic_reports');
+        });
+        Route::get('department_print_Reports', function () {
+            return view('admin.basic_reports.Departments.department_print_Reports');
+        });
+        Route::get('department_Reports', function () {
+            return view('admin.basic_reports.Departments.department_Reports');
+        });
+        Route::get('cc_report', function () {
+            return view('admin.basic_reports.CC.cc_report');
+        });
+        Route::get('customer_report', function () {
+            return view('admin.basic_reports.customer.customer_report');
+        });
+        Route::get('supplier_report', function () {
+            return view('admin.basic_reports.supplier.supplier_report');
+        });
+        Route::get('stuff_report', function () {
+            return view('admin.basic_reports.stuff.stuff_report');
+        });
 //        report
         Route::resource('reports','Admin\report\ReportController');
         Route::resource('reportsbus','Admin\report\ReportBusController');
