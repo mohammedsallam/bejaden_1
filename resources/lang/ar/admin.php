@@ -827,6 +827,7 @@ return [
     'Pymt_Flg' => 'سند صرف',
     'debt_limitations' => 'بيانات سندات الاشعارات ',
     'create_caching_receipt'=>'اضافة سند صرف',
+    'edit_caching_receipt'=>'تعديل سند صرف',
     'data_Cach'=>'بيانات اساسية سند صرف',
     'data_Catch'=>'بيانات اساسية سند قبض',
     'accbanks_setting' => 'اعدادت الصندوق و البنوك',

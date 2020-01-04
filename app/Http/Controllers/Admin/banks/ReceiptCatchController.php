@@ -210,9 +210,6 @@ class ReceiptCatchController extends Controller
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Ln_No' => $data->Ln_No,
-                    'Slm_No' => $data->Slm_No,
-                    'FTot_Amunt' => $data->FTot_Amunt,
-                    'Curncy_No' => $data->Curncy_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
