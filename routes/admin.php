@@ -278,11 +278,14 @@ Route::group(['prefix'=>'admin'],function (){
         //Notices
         Route::resource('notice', 'Admin\Notice\NoticeController');
 
+        Route::post('deleteTrnsN','Admin\banks\ReceiptCatchController@deleteTrns')->name('deleteTrnsN');
+        Route::post('getCmpSalesMenN','Admin\banks\ReceiptCatchController@getCmpSalesMen')->name('getCmpSalesMenN');
+        Route::post('getCurencyRateN','Admin\Notice\NoticeController@getCurencyRate')->name('getCurencyRateN');
         Route::get('include', 'Admin\Notice\NoticeController@getPages')->name('getPages');
         Route::get('getcr', 'Admin\Notice\NoticeController@getSelect')->name('getSelect');
-        //Route::get('getdb', 'Admin\Notice\NoticeController@getDbSelect')->name('getDbSelect');
+        Route::post('addDeletedLinesN','Admin\Notice\NoticeController@addDeletedLines')->name('addDeletedLinesN');
         Route::get('hijriNoti', 'Admin\Notice\NoticeController@convertToDateToHijri')->name('hijriNoti');
-
+        Route::post('updateTrnsN','Admin\Notice\NoticeController@updateTrns')->name('updateTrnsN');
         Route::post('getSalesManN', 'Admin\Notice\NoticeController@getSalesMan')->name('getSalesManN');
         Route::post('createTrNoN', 'Admin\Notice\NoticeController@createTrNo')->name('createTrNoN');
         Route::post('getSubAccN', 'Admin\Notice\NoticeController@getSubAcc')->name('getSubAccN');
