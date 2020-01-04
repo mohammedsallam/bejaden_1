@@ -9,6 +9,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
@@ -217,6 +218,13 @@
             $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
 
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
+
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -321,6 +329,7 @@
                                 Ln_No: $('#Ln_No').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
 
                             catch_data.push(item);

@@ -9,6 +9,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
@@ -22,12 +23,24 @@
                     $('#Dlv_Stor').html(data);
                 }
             });
+
             //get tax value of selected company
             $.ajax({
                 url: "{{route('getTaxValue')}}",
                 type: "POST",
                 dataType: 'html',
                 data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No },
+                success: function(data){
+                    $('#Taxp_Extra').val(data);
+                }
+            });
+
+            //get tax value according to selected company on page load
+            $.ajax({
+                url: "{{route('getTaxValue')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
                 success: function(data){
                     $('#Taxp_Extra').val(data);
                 }
@@ -234,6 +247,13 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -336,6 +356,7 @@
                                 main_acc: $('#main_acc').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
                             
                             catch_data.push(item);

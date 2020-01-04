@@ -10,6 +10,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             //get branches of selected company on page load
             $.ajax({
@@ -43,6 +44,17 @@
                 success: function(data){
                     $('#Slm_No_Name').html(data);
                     $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
+
+            //get tax value according to selected company on page load
+            $.ajax({
+                url: "{{route('getTaxValue')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Taxp_Extra').val(data);
                 }
             });
 
@@ -182,7 +194,7 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
+                    // $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -226,6 +238,13 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
+
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -328,6 +347,7 @@
                                 main_acc: $('#main_acc').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
                             
                             catch_data.push(item);
@@ -345,7 +365,6 @@
                             $('#Tr_Ds1').val(null);
                             $('#Acc_No').val(null);
                             $('#Acc_No_Select').val(null);
-                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
                             $('#Slm_No_Name').val(null);
@@ -354,8 +373,6 @@
                             $('#Issue_Dt').val(null);
                             $('#Due_Issue_Dt').val(null);
                             $('#Rcpt_By').val(null);
-                            // $('#Tr_Db_Db').val(null);
-                            // $('#Tr_Cr_Db').val(null);
                             $('#Ln_No').val(-1);
                             $('#FTot_Amunt').val(null)
                             $('#Taxv_Extra').val(null)
@@ -418,7 +435,7 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
+                    // $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -441,10 +458,7 @@
                         success: function(data){
                             $('#alert').removeClass('hidden');
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            // $('#Cmp_No').val(null);
-                            // $('#Dlv_Stor').val(null);
                             $('#Tr_No').val(null);
-                            // $('#Doc_Type').val(1);
                             $('#Curncy_No').val(1);
                             $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
