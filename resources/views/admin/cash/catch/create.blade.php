@@ -23,6 +23,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             //get branches of selected company on page load
             $.ajax({
@@ -235,6 +236,13 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                    tax = true
+                }
+                else{
+                    tax = false;
+                }
+
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -270,18 +278,18 @@
                         Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                         Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                         Tr_Db_Db: $('#Tr_Db_Db').val(),
-                        Tr_Db_Db: $('#Tr_Db_Db').val(),
+                        Tr_Cr_Db: $('#Tr_Cr_Db').val(),
                         Ln_No: $('#Ln_No').val(),
                         Tr_Ds_Db: $('#Tr_Ds_Db').val(),
                         FTot_Amunt: $('#FTot_Amunt').val(),
-                        Taxv_Extra: $('#Taxv_Extra').val(),},
+                        Taxv_Extra: $('#Taxv_Extra').val(), },
 
                     success: function(data){
                         var response = JSON.parse(data);
                         if(response.success == true){
                             $('#table').append(`
                                 <tr class='tr'>
-                                     <td>`+$('#Ln_No').val()+`</td>
+                                    <td>`+$('#Ln_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
                                     <td>`+$('#Tr_Db').val()+`</td>
@@ -313,6 +321,7 @@
                                 Curncy_Rate: $('#Curncy_Rate').val(),
                                 Tot_Amunt: $('#Tot_Amunt').val(),
                                 Taxp_Extra: $('#Taxp_Extra').val(),
+                                Rcpt_By: $('#Rcpt_By').val(),
                                 Slm_No: $('#Slm_No').val(),
                                 Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
                                 Sysub_Account: $('#Sysub_Account').val(),
@@ -326,7 +335,6 @@
                                 Bnk_Nm: $('#Bnk_Nm').val(),
                                 Issue_Dt: $('#Issue_Dt').val(),
                                 Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                                Rcpt_By: $('#Rcpt_By').val(),
                                 Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                 Tr_Db_Db: $('#Tr_Db_Db').val(),
                                 Tr_Cr_Db: $('#Tr_Cr_Db').val(),
@@ -335,11 +343,12 @@
                                 main_acc: $('#main_acc').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
 
-                            catch_data.push(item);
-                            $('#Curncy_No').val(0);
-                            $('#Curncy_Rate').val(null);
+                            catch_data.push('item');
+
+                            $('#Curncy_No').val(1);
                             $('#Tot_Amunt').val(null);
                             $('#main_acc').val(null);
                             $('#Rcpt_By').val(null);
@@ -352,6 +361,7 @@
                             $('#Tr_Ds1').val(null);
                             $('#Acc_No').val(null);
                             $('#Acc_No_Select').val(null);
+                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
                             $('#Slm_No_Name').val(null);
@@ -360,6 +370,8 @@
                             $('#Issue_Dt').val(null);
                             $('#Due_Issue_Dt').val(null);
                             $('#Rcpt_By').val(null);
+                            // $('#Tr_Db_Db').val(null);
+                            // $('#Tr_Cr_Db').val(null);
                             $('#Ln_No').val(-1);
                             $('#FTot_Amunt').val(null)
                             $('#Taxv_Extra').val(null)
@@ -387,10 +399,10 @@
                         }
                     }
                 });
+                old = $('#Tr_Cr_Db').val();
 
-                old = $('#Tr_Db_Db').val();
             });
-
+//-----------------
             //handle Tr_Ty = 2 سند قبض شيك
             $('#Doc_Type').change(function(){
                 if($(this).val() == 2){
@@ -422,7 +434,7 @@
                 else{
                     $('#Tr_Db').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
+                    // $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -458,7 +470,6 @@
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
                             $('#Tr_Db').val(null);
-                            $('#Tr_Cr').val(null);
                             $('#Dc_No').val(null);
                             $('#Tr_Ds').val(null);
                             $('#Tr_Ds1').val(null);
@@ -498,7 +509,7 @@
 
             function tableText(tableCell, data) {
                 var Ln_No = tableCell.cells[0].innerHTML;
-                var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
                 old = updated_sum;
                 $('#Tr_Db_Db').val(updated_sum);
                 $('#Tr_Cr_Db').val(updated_sum);
@@ -519,7 +530,6 @@
                         $('#Ac_Ty').val(data[i].Ac_Ty);
                         $('#Sysub_Account').val(data[i].Sysub_Account);
                         $('#Tr_Db').val(data[i].Tr_Db);
-                        $('#Tr_Cr').val(data[i].Tr_Cr);
                         $('#Dc_No').val(data[i].Dc_No);
                         $('#Tr_Ds').val(data[i].Tr_Ds);
                         $('#Tr_Ds1').val(data[i].Tr_Ds1);
@@ -594,7 +604,8 @@
 <form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
     {{ csrf_field() }}
     <div class="col-md-12">
-        <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
+        <button type="submit" class="btn panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
+
     </div>
     <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
 <br>
@@ -972,4 +983,27 @@
         </div>
     </div>
 </form>
+
+
+    {{-- Modal --}}
+    <div class="modal fade" id="saveChangesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{trans('admin.close_ask')}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{trans('admin.yes')}}</button>
+                    <button type="button" class="btn btn-primary" id="modal_no">{{trans('admin.no')}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal end --}}
 @endsection

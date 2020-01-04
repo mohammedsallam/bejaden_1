@@ -103,6 +103,8 @@ class receiptCashController extends Controller
     {
 
         $catch_data = json_decode($request->catch_data);
+
+//        dd($catch_data);
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -121,7 +123,6 @@ class receiptCashController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
@@ -142,6 +143,7 @@ class receiptCashController extends Controller
             }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
+            if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
@@ -261,6 +263,9 @@ class receiptCashController extends Controller
         $gl = GLJrnal::where('Tr_No', $id)->first();
         // $salesman = AstSalesman::where('Slm_No', $gl->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+        $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
         $banks = [];
@@ -270,7 +275,7 @@ class receiptCashController extends Controller
             }
         }
 
-        return view('admin.cash.catch.edit', compact('gl', 'gltrns', 'cmps', 'banks'));
+        return view('admin.cash.catch.edit', compact('gl', 'gltrns','crncy', 'cmps', 'banks', 'salesman'));
     }
     /**
      * Update the specified resource in storage.
@@ -660,6 +665,24 @@ class receiptCashController extends Controller
             $request->Brn_No = $trns->Brn_No;
             $subAccs = $this->getSubAcc($request);
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+            return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
+        }
+    }
+
+    public function getRcptDetails(Request $request){
+        if($request->ajax()){
+            $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
+                ->where('Tr_No', $request->Tr_No)
+                ->first();
+
+            $new_request = new Request;
+            $new_request->Acc_Ty = $trns->Ac_Ty;
+            $new_request->Cmp_No = $trns->Cmp_No;
+            $new_request->Brn_No = $trns->Brn_No;
+            $subAccs = $this->getSubAcc($new_request);
+
+            $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+
             return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
     }
