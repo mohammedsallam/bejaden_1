@@ -849,7 +849,7 @@ class ReceiptCatchController extends Controller
         }
     }
 
-    public function branchForEdit(Request $request){        
+    public function branchForEdit(Request $request){
         if($request->ajax()){
             $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
             if($request->id){

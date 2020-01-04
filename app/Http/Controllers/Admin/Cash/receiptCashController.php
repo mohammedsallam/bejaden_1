@@ -103,8 +103,6 @@ class receiptCashController extends Controller
     {
 
         $catch_data = json_decode($request->catch_data);
-
-//        dd($catch_data);
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -166,6 +164,7 @@ class receiptCashController extends Controller
                         'Jr_Ty' => 4,
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
+                        'Month_Jvno' => $data->Tr_No,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => 1,
@@ -201,6 +200,7 @@ class receiptCashController extends Controller
                     'Month_No' => Carbon::now()->month,
                     'Tr_Dt' => $data->Tr_Dt,
                     'Tr_DtAr' => $data->Tr_DtAr,
+                    'Month_Jvno' => $data->Tr_No,
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
