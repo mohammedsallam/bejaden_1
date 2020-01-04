@@ -10,6 +10,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             //get branches of selected company on page load
             $.ajax({
@@ -43,6 +44,17 @@
                 success: function(data){
                     $('#Slm_No_Name').html(data);
                     $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
+
+            //get tax value according to selected company on page load
+            $.ajax({
+                url: "{{route('getTaxValue')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Taxp_Extra').val(data);
                 }
             });
 
@@ -182,7 +194,7 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
+                    // $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -226,6 +238,13 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
+
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -328,6 +347,7 @@
                                 main_acc: $('#main_acc').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
                             
                             catch_data.push(item);
@@ -415,7 +435,7 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
+                    // $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -569,7 +589,7 @@
             });
 
             $('#modal_no').click(function(){
-                 tion.reload();
+                location.reload();
             });
             
         });

@@ -98,7 +98,6 @@ class ReceiptCatchController extends Controller
     public function store(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
-
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -118,7 +117,6 @@ class ReceiptCatchController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
@@ -139,6 +137,7 @@ class ReceiptCatchController extends Controller
             }
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
+            if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
@@ -267,7 +266,6 @@ class ReceiptCatchController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
@@ -287,6 +285,8 @@ class ReceiptCatchController extends Controller
             foreach($catch_data as $data){
                 $header->FTot_Amunt += $data->FTot_Amunt;
             }
+
+            if($catch_data[$last_index]->tax){$catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $catch_data[$last_index]->Sysub_Account;}
             if($catch_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $catch_data[$last_index]->Sysub_Account;}
@@ -506,7 +506,6 @@ class ReceiptCatchController extends Controller
                 'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $updated_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
-                'Taxp_Extra' => $updated_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
@@ -520,6 +519,7 @@ class ReceiptCatchController extends Controller
                 'Slm_No' => $updated_data[$last_index]->Slm_No,
             ]);
 
+            if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
             if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
             if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
             if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
@@ -753,7 +753,7 @@ class ReceiptCatchController extends Controller
     }
 
     public function createMonthAccNo($month, $Brn_No){
-        if(count(GLJrnal::all()) == 0){
+        if(Carbon::now()->toDateString() == Carbon::now()->endOfMonth()->toDateString() || count(GLJrnal::all()) == 0){
             $Month_Jvno = $month.'01';
         }
         else{
@@ -818,7 +818,6 @@ class ReceiptCatchController extends Controller
                 'Rcpt_By' => trans('admin.Rcpt_By'),
                 'Slm_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
-                // 'Sysub_Account' => trans('admin.'),
                 'Tr_Cr' => trans('admin.amount_cr'),
                 'Dc_No' => trans('admin.receipt_number'),
                 'Tr_Ds' => trans('admin.note_ar'),
