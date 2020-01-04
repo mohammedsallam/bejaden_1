@@ -83,10 +83,12 @@
                         $('.panel_2').html('بيانات حساب دائن');
                         $('.panel_1').html('بيانات حساب المدين');
                         $('#label_db_cr').html('خصم مسموح به ');
+                        $('#label_Tr_Cr').html('المبلغ الدائن');
                     } else if(Jr_Ty === '18') {
                         $('.panel_2').html('بيانات حساب المدين');
                         $('.panel_1').html('بيانات حساب الدائن');
                         $('#label_db_cr').html('خصم مكتسب ');
+                        $('#label_Tr_Cr').html('المبلغ المدين');
                     }
 
 
@@ -766,7 +768,7 @@
                         <div class="row">
                             {{--                             المبلغ دائن--}}
                             <div class="col-md-4">
-                                <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
+                                <label id="label_Tr_Cr" for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
                                 <input type="text" disabled name="Tr_Cr" id="Tr_Cr" class="form-control Tr_Cr">
                             </div>
                             {{--                             نهاية المبلغ دائن--}}
@@ -888,7 +890,7 @@
                                         <input type="text" name="Tr_Dif" id="Tr_Dif" class="form-control Tr_Dif" disabled>
                                     </div>
                                     {{--                                     نهاية الفرق--}}
-                                      
+
                                 </div>
                             </div>
                         </div>

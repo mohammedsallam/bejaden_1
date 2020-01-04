@@ -38,7 +38,7 @@
                 $(document).on('change', '#Cmp_No', function(){
                     //get branches of specific company selection
                     $.ajax({
-                        url: "{{route('branchForEdit')}}",
+                        url: "{{route('branchForEditN')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -240,7 +240,6 @@
                             Tr_No: $('#Tr_No').val(),
                             Tr_Dt: $('#Tr_Dt').val(),
                             Tr_DtAr: $('#Tr_DtAr').val(),
-                            //Doc_Type: $('#Doc_Type').children('option:selected').val(),
                             Curncy_No: $('#Curncy_No').children('option:selected').val(),
                             Curncy_Rate: $('#Curncy_Rate').val(),
                             Tot_Amunt: $('#Tot_Amunt').val(),
@@ -255,15 +254,14 @@
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
-                            Chq_no: $('#Chq_no').val(),
-                            Bnk_Nm: $('#Bnk_Nm').val(),
-                            Issue_Dt: $('#Issue_Dt').val(),
-                            Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            Ln_No: Ln_No },
+                            Ln_No: Ln_No,
+                            FTot_Amunt: $('#FTot_Amunt').val(),
+                            Taxv_Extra: $('#Taxv_Extra').val(),
+                        },
                         success: function(data){
                             var response = JSON.parse(data);
                             if(response.success == true){
@@ -303,6 +301,7 @@
                                     Curncy_No: $('#Curncy_No').children('option:selected').val(),
                                     Curncy_Rate: $('#Curncy_Rate').val(),
                                     Tot_Amunt: $('#Tot_Amunt').val(),
+                                    FTot_Amunt: $('#FTot_Amunt').val(),
                                     Taxp_Extra: $('#Taxp_Extra').val(),
                                     Rcpt_By: $('#Rcpt_By').val(),
                                     Slm_No: $('#Slm_No').val(),
@@ -314,10 +313,6 @@
                                     Tr_Ds1: $('#Tr_Ds1').val(),
                                     Acc_No: $('#Acc_No').val(),
                                     last_record : $('#last_record').val(),
-                                    Chq_no: $('#Chq_no').val(),
-                                    Bnk_Nm: $('#Bnk_Nm').val(),
-                                    Issue_Dt: $('#Issue_Dt').val(),
-                                    Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                                     Rcpt_By: $('#Rcpt_By').val(),
                                     Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                                     Tr_Db_Db: $('#Tr_Db_Db').val(),
@@ -359,11 +354,6 @@
                         $('#Tr_Cr').val(parseFloat(amount));
                     }
 
-                    // var cr = $('#Tr_Cr').val();
-                    // var old_db = $('#Tr_Db_Db').val();
-                    // var old_cr = $('#Tr_Cr_Db').val();
-                    // $('#Tr_Db_Db').val(parseFloat(old_db) + parseFloat($('#Tr_Cr').val()));
-                    // $('#Tr_Cr_Db').val(parseFloat(old_cr) + parseFloat($('#Tr_Cr').val()));
                 }
 
                 //حفظ السند فى قاعدة البيانات
@@ -381,10 +371,7 @@
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                                // $('#Cmp_No').val(null);
-                                // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
-                                // $('#Doc_Type').val(1);
                                 $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
                                 $('#Tot_Amunt').val(null);
@@ -402,13 +389,10 @@
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Slm_No_Name').val(null);
-                                $('#Chq_no').val(null);
-                                $('#Bnk_Nm').val(null);
-                                $('#Issue_Dt').val(null);
-                                $('#Due_Issue_Dt').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
+                                $('#FTot_Amunt').val(null);
+                                $('#Taxv_Extra').val(null);
                                 $('#table_view').html(`<table class="table" id="table">
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>

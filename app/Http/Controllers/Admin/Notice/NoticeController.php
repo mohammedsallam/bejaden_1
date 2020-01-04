@@ -365,16 +365,16 @@ class NoticeController extends Controller
 
     public function updateTrns(Request $request){
         $updated_data = json_decode($request->catch_data);
-
+//        dd($updated_data);
         if(count($updated_data) > 0){
             foreach($updated_data as $data){
                 $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
                     ->where('Ln_No', $data->Ln_No)->first();
-
+                //dd($trns);
                 $trns->update([
                     'Cmp_No' => $data->Cmp_No,
                     'Brn_No' => $data->Brn_No,
-                    'Jr_Ty' =>  $data->Jr_Ty,
+                    //'Jr_Ty' =>  $data->Jr_Ty,
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
@@ -385,6 +385,7 @@ class NoticeController extends Controller
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'FTr_Db' => 0.00,
                     'FTr_Cr' => $data->FTot_Amunt,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
                     'Slm_No' => $data->Slm_No,
