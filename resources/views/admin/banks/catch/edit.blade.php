@@ -498,7 +498,6 @@
         <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
     </div>
     <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
-    {{-- <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'> --}}
     <br>
     <br>
     <br>
