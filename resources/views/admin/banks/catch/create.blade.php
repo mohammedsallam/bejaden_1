@@ -345,7 +345,6 @@
                             $('#Tr_Ds1').val(null);
                             $('#Acc_No').val(null);
                             $('#Acc_No_Select').val(null);
-                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
                             $('#Slm_No_Name').val(null);
@@ -354,8 +353,6 @@
                             $('#Issue_Dt').val(null);
                             $('#Due_Issue_Dt').val(null);
                             $('#Rcpt_By').val(null);
-                            // $('#Tr_Db_Db').val(null);
-                            // $('#Tr_Cr_Db').val(null);
                             $('#Ln_No').val(-1);
                             $('#FTot_Amunt').val(null)
                             $('#Taxv_Extra').val(null)
@@ -441,10 +438,7 @@
                         success: function(data){
                             $('#alert').removeClass('hidden');
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            // $('#Cmp_No').val(null);
-                            // $('#Dlv_Stor').val(null);
                             $('#Tr_No').val(null);
-                            // $('#Doc_Type').val(1);
                             $('#Curncy_No').val(1);
                             $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
@@ -575,7 +569,7 @@
             });
 
             $('#modal_no').click(function(){
-                location.reload();
+                 tion.reload();
             });
             
         });
