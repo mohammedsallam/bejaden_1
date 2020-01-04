@@ -321,17 +321,50 @@ class receiptCashController extends Controller
 
         $updated_data = json_decode($request->catch_data);
 
-
         if(count($updated_data) > 0){
+            $last_index = count($updated_data) - 1;
+
+            //update header
+            $header = GLJrnal::where('Tr_No', $updated_data[$last_index]->Tr_No)->first();
+                $header->update([
+                    'Cmp_No' => $updated_data[$last_index]->Cmp_No,
+                    'Brn_No' => $updated_data[$last_index]->Brn_No,
+                    'Jr_Ty' => 4,
+                    'Month_No' => Carbon::now()->month,
+                    'Month_Jvno' => $updated_data[$last_index]->Tr_No,
+                    'Doc_Type' => $updated_data[$last_index]->Doc_Type,
+                    'Tr_Dt' => $updated_data[$last_index]->Tr_Dt,
+                    'Tr_DtAr' => $updated_data[$last_index]->Tr_DtAr,
+                    'Acc_No' => $updated_data[$last_index]->Acc_No,
+                    'User_ID' => auth::user()->id,
+                    'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
+                    'Curncy_No' => $updated_data[$last_index]->Curncy_No,
+                    'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
+                    'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
+                    'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
+                    'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
+                    'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
+                    'Dc_No' => $updated_data[$last_index]->Dc_No,
+                    //'Chq_no' => $updated_data[$last_index]->Chq_no,
+                    //'Bnk_Nm' => $updated_data[$last_index]->Bnk_Nm,
+                    //'Issue_Dt' => $updated_data[$last_index]->Issue_Dt,
+                    //'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
+                    //'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
+                    'Slm_No' => $updated_data[$last_index]->Slm_No,
+                ]);
+
+               // if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
+                if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
+                if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
+                $header->save();
+
+
             foreach($updated_data as $data){
-//                dd($data);
-
-                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)->first();
-
-//                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
-//                    ->where('Ln_No', $data->Ln_No)->first();
+                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                    ->where('Ln_No', $data->Ln_No)->first();
                 //Update transaction credit
-
                 $trns->update([
                     'Cmp_No' => $data->Cmp_No,
                     'Brn_No' => $data->Brn_No,
@@ -339,7 +372,7 @@ class receiptCashController extends Controller
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
-                    'Tr_Cr' => 0.00,
+                    'Tr_Db' => 0.00,
                     'FTr_Db' => 0.00,
                     'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
@@ -353,28 +386,28 @@ class receiptCashController extends Controller
                 ]);
             }
 
-            //update debt Tot_Amunt
-            //1- get all credit lines - sum credit money
-            $trnses = GLjrnTrs::where('Tr_No', $updated_data[0]->Tr_No)
+            $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
                 ->where('Ln_No' , '>', 1)->get();
-            if($trnses){
+            if($trnses && count($trnses)){
                 $total = 0;
+                $ftotal = 0;
                 foreach($trnses as $trns){
                     $total += $trns->Tr_Db;
                 }
+                foreach($trnses as $trns){
+                    $ftotal += $trns->FTr_Cr;
+                }
 
                 //2- get debt line - update money with new total
-                $debt = GLjrnTrs::where('Tr_No', $trnses[0]->Tr_No)
+                $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                     ->where('Ln_No', 1)->first();
-                $debt->update(['Tr_Db' => $total]);
-                $debt->FTr_Db = $debt->Tr_Db / $debt->Curncy_Rate;
-                $debt->save();
-
-                $gl_debt = GLJrnal::where('Tr_No', $trnses[0]->Tr_No)->first();
-                $gl_debt->update([
+                $debt->update([
                     'Tr_Db' => $total,
-                    'Tr_Cr' => $total,
+                    'FTr_Db' => $ftotal,
+                    'FTot_Amunt' => $ftotal,
+                    'Rcpt_Value' => $total,
                 ]);
+                $header->update(['FTot_Amunt' => $ftotal]);
             }
         }
     }
