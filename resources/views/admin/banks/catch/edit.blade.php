@@ -393,7 +393,7 @@
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            window.location.replace('/work/bejaden/public/admin/rcatchs');
+                            window.location.replace('/norhan/bejaden/public/admin/rcatchs');
                             $('#Tr_No').val(null);
                             $('#Curncy_No').val(0);
                             $('#Curncy_Rate').val(null);
