@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Cash;
 
+use App\Models\Admin\AstCurncy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -85,7 +86,10 @@ class receiptCashController extends Controller
                 array_push($banks, $flag);
             }
         }
-        return view('admin.cash.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
+
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+
+        return view('admin.cash.catch.create', ['companies' => $cmps, 'crncy' => $crncy, 'banks' => $banks, 'last_record' => $last_record,
                                                 'cost_center' => $cost_center]);
     }
 
