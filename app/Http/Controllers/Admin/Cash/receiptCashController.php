@@ -221,7 +221,35 @@ class receiptCashController extends Controller
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                 $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                 $trans_cr->save();
+
+
+                //update debt Tot_Amunt
+                //1- get all credit lines - sum credit money
+                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                    ->where('Ln_No' , '>', 1)->get();
+                if($trnses && count($trnses)){
+                    $total = 0;
+                    $ftotal = 0;
+                    foreach($trnses as $trns){
+                        $total += $trns->Tr_Db;
+                    }
+                    foreach($trnses as $trns){
+                        $ftotal += $trns->FTr_Cr;
+                    }
+
+                    //2- get debt line - update money with new total
+                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No', 1)->first();
+                    $debt->update([
+                        'Tr_Cr' => $total,
+                        'FTr_Db' => $ftotal,
+                        'FTot_Amunt' => $ftotal,
+                        'Rcpt_Value' => $total,
+                    ]);
+                    $header->update(['FTot_Amunt' => $ftotal]);
             }
+        }
+
         }
 
     }
