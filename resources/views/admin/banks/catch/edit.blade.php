@@ -138,6 +138,11 @@
                 var row = tableCell;
                 var Ln_No = tableCell.cells[0].innerHTML;
                 var Tr_No = $('#Tr_No').val();
+                var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                old = updated_sum;
+                $('#Tr_Db_Db').val(updated_sum);
+                $('#Tr_Cr_Db').val(updated_sum);
+                
                 if(Ln_No != 1){
                     $.ajax({
                         url: "{{route('getRcptDetails')}}",
