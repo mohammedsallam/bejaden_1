@@ -88,7 +88,19 @@
                 });
 
                 //get salesmen of specific branch selection
-                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                $.ajax({
+                    url: "{{route('getCmpSalesMenN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Slm_No_Name').html(data);
+                        $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                    }
+                });
+
+                // //get salesmen of specific branch selection
+                // $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
 
                 $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
@@ -162,9 +174,20 @@
                     }
                 }
                 function tableText(tableCell) {
+
                     var row = tableCell;
                     var Ln_No = tableCell.cells[0].innerHTML;
                     var Tr_No = $('#Tr_No').val();
+                    var Jr_Ty = $('#Jr_Ty').attr('val');
+
+                    if(Jr_Ty == 18){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    }else if(Jr_Ty == 19){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                    }
+                    old = updated_sum;
+                    $('#Tr_Db_Db').val(updated_sum);
+                    $('#Tr_Cr_Db').val(updated_sum);
 
                     if(Ln_No != 1){
                         $.ajax({
@@ -284,11 +307,6 @@
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
-                            Chq_no: $('#Chq_no').val(),
-                            Bnk_Nm: $('#Bnk_Nm').val(),
-                            Issue_Dt: $('#Issue_Dt').val(),
-                            Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                            Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
@@ -299,30 +317,59 @@
 
                         success: function(data){
                             var response = JSON.parse(data);
-                            if(response.success == true){
-                                var rows = document.getElementById('table').rows;
-                                var sum = 0.0;
-                                for (var i=0; i<rows.length; i++) {
-                                    var txt = rows[i].textContent || rows[i].innerText;
-                                    if (txt.trim()===""){
-                                        rows[i].innerHTML=`
-                                        <td>`+$('#Ln_No').val()+`</td>
-                                        <td>`+$('#Sysub_Account').val()+`</td>
-                                        <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                        <td>0.00</td>
-                                        <td>`+$('#Tr_Cr').val()+`</td>
-                                        <td>`+$('#Tr_Ds').val()+`</td>
-                                        <td>`+$('#Dc_No').val()+`</td>
-                                        <td>`+$('#Tr_Ds1').val()+`</td>
-                                    `;
+                            var Jr_Ty = $('#Jr_Ty').val();
+
+                            if(response.success == true) {
+                                if (Jr_Ty == 18) {
+                                    var rows = document.getElementById('table').rows;
+                                    var sum = 0.0;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var txt = rows[i].textContent || rows[i].innerText;
+                                        if (txt.trim() === "") {
+                                            rows[i].innerHTML = `
+                                            <td>` + $('#Ln_No').val() + `</td>
+                                            <td>` + $('#Sysub_Account').val() + `</td>
+                                            <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                            <td>0.00</td>
+                                            <td>` + $('#Tr_Cr').val() + `</td>
+                                            <td>` + $('#Tr_Ds').val() + `</td>
+                                            <td>` + $('#Dc_No').val() + `</td>
+                                            <td>` + $('#Tr_Ds1').val() + `</td>
+                                        `;
+                                        }
                                     }
+
+                                    var sum = 0.0;
+                                    for (var i = 1; i < rows.length; i++) {
+                                        sum += parseFloat(rows[i].cells[4].innerHTML);
+                                    }
+                                    rows[1].cells[3].innerHTML = sum;
+                                }else if (Jr_Ty == 19) {
+                                    var rows = document.getElementById('table').rows;
+                                    var sum = 0.0;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var txt = rows[i].textContent || rows[i].innerText;
+                                        if (txt.trim() === "") {
+                                            rows[i].innerHTML = `
+                                            <td>` + $('#Ln_No').val() + `</td>
+                                            <td>` + $('#Sysub_Account').val() + `</td>
+                                            <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                            <td>` + $('#Tr_Cr').val() + `</td>
+                                            <td>0.00</td>
+                                            <td>` + $('#Tr_Ds').val() + `</td>
+                                            <td>` + $('#Dc_No').val() + `</td>
+                                            <td>` + $('#Tr_Ds1').val() + `</td>
+                                        `;
+                                        }
+                                    }
+
+                                    var sum = 0.0;
+                                    for (var i = 1; i < rows.length; i++) {
+                                        sum += parseFloat(rows[i].cells[3].innerHTML);
+                                    }
+                                    rows[1].cells[4].innerHTML = sum;
                                 }
 
-                                var sum = 0.0;
-                                for (var i=1; i<rows.length; i++){
-                                    sum += parseFloat(rows[i].cells[4].innerHTML);
-                                }
-                                rows[1].cells[3].innerHTML = sum;
                                 $('#Tr_Db_Db').val(sum);
                                 $('#Tr_Cr_Db').val(sum);
 
@@ -593,7 +640,7 @@
                     {{-- نوع الاشعار دائـن / مديـن --}}
                     <div class="col-md-2">
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
-                        <input type="text" name="Jr_Ty" class="form-control" disabled value="
+                        <input type="text" name="Jr_Ty" id="Jr_Ty" val="{{$gl->Jr_Ty}}" class="form-control" disabled value="
                             @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
                         @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
                         @endif

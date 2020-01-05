@@ -285,7 +285,7 @@
 
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
-                    
+
                     e.preventDefault();
                     if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
                         tax = true
@@ -347,6 +347,13 @@
                                         <td>` + $('#Dc_No').val() + `</td>
                                         <td>` + $('#Tr_Ds1').val() + `</td>
                                     </tr>`);
+                                        var rows = document.getElementById('table').rows;
+                                        var sum = 0.0;
+                                        for (var i=1; i<rows.length; i++){
+                                            if(rows[i].cells.length > 0){
+                                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                                            }
+                                        }
                                     }
                                     else if(Jr_Ty == 19){
                                         $('#table').append(`
@@ -360,15 +367,23 @@
                                             <td>` + $('#Dc_No').val() + `</td>
                                             <td>` + $('#Tr_Ds1').val() + `</td>
                                         </tr>`);
-                                }
 
-                                var rows = document.getElementById('table').rows;
-                                var sum = 0.0;
-                                for (var i=1; i<rows.length; i++){
-                                    if(rows[i].cells.length > 0){
-                                        sum += parseFloat(rows[i].cells[3].innerHTML);
+                                    var rows = document.getElementById('table').rows;
+                                    var sum = 0.0;
+                                    for (var i=1; i<rows.length; i++){
+                                        if(rows[i].cells.length > 0){
+                                            sum += parseFloat(rows[i].cells[3].innerHTML);
+                                        }
                                     }
                                 }
+                                //
+                                // var rows = document.getElementById('table').rows;
+                                // var sum = 0.0;
+                                // for (var i=1; i<rows.length; i++){
+                                //     if(rows[i].cells.length > 0){
+                                //         sum += parseFloat(rows[i].cells[3].innerHTML);
+                                //     }
+                                // }
                                 $('#Tr_Db_Db').val(sum);
                                 $('#Tr_Cr_Db').val(sum);
 
@@ -407,9 +422,9 @@
 
                                 $('#Curncy_No').val(1);
                                 $('#Tot_Amunt').val(null);
-                                $('#Jr_Ty').val(null);
+                                //$('#Jr_Ty').val(null);
                                 $('#main_acc').val(null);
-                                $('#Slm_No').val(null);
+                                //$('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
                                 $('#Tr_Cr').val(null);
@@ -421,7 +436,7 @@
                                 // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
-                                $('#Slm_No_Name').val(null);
+                                //$('#Slm_No_Name').val(null);
                                 // $('#Tr_Db_Db').val(null);
                                 // $('#Tr_Cr_Db').val(null);
                                 $('#Ln_No').val(-1);
@@ -514,11 +529,6 @@
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Slm_No_Name').val(null);
-                                $('#Chq_no').val(null);
-                                $('#Bnk_Nm').val(null);
-                                $('#Issue_Dt').val(null);
-                                $('#Due_Issue_Dt').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#FTot_Amunt').val(null);
@@ -543,7 +553,12 @@
                 //handle table lines click
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
-                    var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                    var Jr_Ty = $('#Jr_Ty').val();
+                    if(Jr_Ty == 19){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                    }else if(Jr_Ty == 18){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    }
                     old = updated_sum;
                     $('#Tr_Db_Db').val(updated_sum);
                     $('#Tr_Cr_Db').val(updated_sum);
@@ -702,8 +717,8 @@
                     <div class="col-md-2">
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
                         <select name="Jr_Ty" id="Jr_Ty" class="form-control">
-                            <option value="19">{{trans('admin.Fbal_CR_')}}</option>
-                            <option value="18">{{trans('admin.Fbal_Db_')}}</option>
+                            <option value="19">{{trans('admin.Fbal_CR_cr')}}</option>
+                            <option value="18">{{trans('admin.Fbal_Db_db')}}</option>
                         </select>
                     </div>
                     {{-- نهاية نوع الاشعار دائـن / مديـن --}}

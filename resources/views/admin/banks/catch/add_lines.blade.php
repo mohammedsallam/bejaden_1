@@ -154,7 +154,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -224,7 +223,6 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -264,12 +262,13 @@
             $('#add_line').click(function(e){
                 e.preventDefault();
 
-                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
-                {
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
                     tax = true;
-                }else{
+                }
+                else{
                     tax = false;
                 }
+                
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -378,7 +377,7 @@
                             catch_data.push(item);
 
                             $('#Curncy_No').val(1);
-                            $('#Curncy_Rate').val(null);
+                            // $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
                             $('#main_acc').val(null);
                             $('#Rcpt_By').val(null);

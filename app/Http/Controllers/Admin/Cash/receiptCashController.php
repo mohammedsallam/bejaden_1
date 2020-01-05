@@ -530,7 +530,7 @@ class receiptCashController extends Controller
                     'Slm_No' => $updated_data[$last_index]->Slm_No,
                 ]);
 
-               // if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
+            //    if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
                 if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
                 if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
                 if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
