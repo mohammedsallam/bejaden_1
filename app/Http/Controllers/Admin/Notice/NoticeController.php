@@ -133,11 +133,11 @@ class NoticeController extends Controller
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
 //                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
-                'Tot_Amunt' => $catch_data[$last_index]->Tot_Amunt,
+                'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
-                'Tr_Db' => $catch_data[$last_index]->Tr_Cr,
-                'Tr_Cr' => $catch_data[$last_index]->Tr_Cr,
+                'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
             ]);
             foreach($catch_data as $data){
                 $header->FTot_Amunt += $data->FTot_Amunt;
