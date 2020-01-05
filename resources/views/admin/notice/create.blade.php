@@ -509,11 +509,6 @@
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Slm_No_Name').val(null);
-                                $('#Chq_no').val(null);
-                                $('#Bnk_Nm').val(null);
-                                $('#Issue_Dt').val(null);
-                                $('#Due_Issue_Dt').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#FTot_Amunt').val(null);
