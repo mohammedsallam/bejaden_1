@@ -310,8 +310,8 @@
                                     <td>`+$('#Ln_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td>0.00</td>
                                     <td>`+$('#Tr_Db').val()+`</td>
+                                    <td>0.00</td>
                                     <td>`+$('#Tr_Ds').val()+`</td>
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
@@ -321,7 +321,7 @@
                                 var sum = 0.0;
                                 for (var i=1; i<rows.length; i++){
                                     if(rows[i].cells.length > 0){
-                                        sum += parseFloat(rows[i].cells[4].innerHTML);
+                                        sum += parseFloat(rows[i].cells[3].innerHTML);
                                         console.log(sum);
                                     }
                                 }
@@ -525,7 +525,7 @@
 
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
-                    var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
                     old = updated_sum;
                     $('#Tr_Db_Db').val(updated_sum);
                     $('#Tr_Cr_Db').val(updated_sum);
