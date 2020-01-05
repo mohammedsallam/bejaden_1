@@ -88,7 +88,19 @@
                 });
 
                 //get salesmen of specific branch selection
-                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                $.ajax({
+                    url: "{{route('getCmpSalesMenN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Slm_No_Name').html(data);
+                        $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                    }
+                });
+
+                // //get salesmen of specific branch selection
+                // $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
 
                 $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
@@ -162,9 +174,20 @@
                     }
                 }
                 function tableText(tableCell) {
+
                     var row = tableCell;
                     var Ln_No = tableCell.cells[0].innerHTML;
                     var Tr_No = $('#Tr_No').val();
+                    var Jr_Ty = $('#Jr_Ty').val();
+
+                    if(Jr_Ty == 18){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    }else if(Jr_Ty == 19){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                    }
+                    old = updated_sum;
+                    $('#Tr_Db_Db').val(updated_sum);
+                    $('#Tr_Cr_Db').val(updated_sum);
 
                     if(Ln_No != 1){
                         $.ajax({
@@ -617,7 +640,7 @@
                     {{-- نوع الاشعار دائـن / مديـن --}}
                     <div class="col-md-2">
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
-                        <input type="text" name="Jr_Ty" class="form-control" disabled value="
+                        <input type="text" name="Jr_Ty" id="Jr_Ty" class="form-control" disabled value="
                             @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
                         @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
                         @endif
