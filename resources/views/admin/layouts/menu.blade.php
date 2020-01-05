@@ -426,6 +426,11 @@
                             <i class="fa fa-id-card-o"></i> <span>{{trans('admin.general_setting')}}</span>
                             <span class="pull-right-container"></span>
                         </a>
+                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
+                            @hasanyrole('writer|admin')
+                            <li><a href="{{route('curencies.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.currency_setting')}} </a></li>
+                            @endhasanyrole
+                        </ul>
                     </li>
                     @endhasanyrole
                     {{-- نهاية اعدادات عامه --}}
