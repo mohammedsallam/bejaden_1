@@ -189,18 +189,21 @@
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
+
             $('#Tot_Amunt').change(function(){
                 calcTax();
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
+
             $('#Taxp_Extra').change(function(){
                 calcTax();
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
+
             $(document).on('change', '#Dc_No', function(){
                 $('#Dc_No_Db').val($('#Dc_No').val());
             });
@@ -222,7 +225,7 @@
                 else{
                     tax = false;
                 }
-                
+
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
