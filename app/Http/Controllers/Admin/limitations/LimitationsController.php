@@ -20,6 +20,7 @@ use App\Models\Admin\MtsCostcntr;
 use App\operation;
 use App\pjitmmsfl;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Matrix\Exception;
 
@@ -28,7 +29,8 @@ class LimitationsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param limitationsDataTable $limitations
+     * @return Response
      */
     public function index(limitationsDataTable $limitations)
     {
@@ -38,7 +40,7 @@ class LimitationsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -53,10 +55,10 @@ class LimitationsController extends Controller
 
         $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
         if(session('Cmp_No') == -1){
-            $companies = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+            $companies = MainCompany::all();
         }
         else{
-            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
         }
         $flags = GLaccBnk::all();
         // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
@@ -90,11 +92,13 @@ class LimitationsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         if($request->ajax()){
+
+            dd($request->all());
             $type = $request->type;
             $limitations = $request->limitations;
             $invoice = $request->invoice;
@@ -119,7 +123,7 @@ class LimitationsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id,Request $request)
     {
@@ -143,7 +147,7 @@ class LimitationsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -164,7 +168,7 @@ class LimitationsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
     public function update(Request $request, $id)
@@ -230,7 +234,7 @@ class LimitationsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

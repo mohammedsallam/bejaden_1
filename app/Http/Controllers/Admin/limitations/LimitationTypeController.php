@@ -13,6 +13,7 @@ class LimitationTypeController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param LimitationTypeDataTable $dataTable
      * @return Response
      */
     public function index(LimitationTypeDataTable $dataTable)

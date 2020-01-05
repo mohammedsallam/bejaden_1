@@ -265,10 +265,14 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
 
-        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsController@branchForEdit')->name('limitationBranchForEdit');
-        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
-        Route::post('limitationCreateTrNoN', 'Admin\Notice\NoticeController@createTrNo')->name('limitationCreateTrNoN');
         Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+
+        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
+        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
+        Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
+        Route::post('checkSetting', 'Admin\limitations\LimitationsOperationsController@checkSetting')->name('checkSetting');
+        Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
+
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
         Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');

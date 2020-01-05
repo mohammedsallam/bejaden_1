@@ -709,7 +709,7 @@ return [
     'Reference_for_contracting' => 'المرجع للتعاقد',
     'Statement_ar' => 'البيان Ar',
     'Tr_Ds1' => 'البيان En',
-    'Statement_en' => 'En البيان',
+    'Statement_en' => 'En',
     'Date_of_contract' => 'تاريخ التعاقد',
     'The_beginning_of_the_contract' => 'بداية التعاقد',
     'End_of_contract' => 'نهاية التعاقد',
@@ -1228,7 +1228,7 @@ return [
     'project_name' =>' اسم المشروع ',
     'edit_project_contract' =>'تعديل عقد المشروع',
     'limitation_date' =>'تاريخ القيد',
-    'receipt_date' =>'تاريخ السند',
+    'receipt_date' =>'تاريخ القيد',
     'number' =>'رقم',
     'line' =>'سطر',
     'limitation_kind' =>'نوع القيد',
@@ -1456,7 +1456,9 @@ return [
     'Jr_Ty_no' => 'رقم القيد',
     'save_success' => 'تم الحفظ بنجاح',
     'active_jr' => 'نوع القيد فعال',
-    'non_active_jr' => 'نوع القيد غير فعال'
+    'non_active_jr' => 'نوع القيد غير فعال',
+    'costcntr_no_input' => 'رقم مركز التكلفة',
+    'Alw_slmacc' => 'محاسبة المندوبين',
 
 
 
