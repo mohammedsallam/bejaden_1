@@ -183,7 +183,7 @@
                     if(Jr_Ty == 18){
                         var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
                     }else if(Jr_Ty == 19){
-                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                        var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
                     }
                     old = updated_sum;
                     $('#Tr_Db_Db').val(updated_sum);
@@ -317,8 +317,7 @@
 
                         success: function(data){
                             var response = JSON.parse(data);
-                            var Jr_Ty = $('#Jr_Ty').val();
-
+                            var Jr_Ty = $('#Jr_Ty').attr('val');
                             if(response.success == true) {
                                 if (Jr_Ty == 18) {
                                     var rows = document.getElementById('table').rows;
@@ -464,7 +463,6 @@
                                 $('#Curncy_Rate').val(null);
                                 $('#Tot_Amunt').val(null);
                                 $('#Taxp_Extra').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);

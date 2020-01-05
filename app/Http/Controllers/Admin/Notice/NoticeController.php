@@ -364,7 +364,7 @@ class NoticeController extends Controller
     public function addDeletedLines(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
-
+//        dd($catch_data);
         //update header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -723,7 +723,10 @@ class NoticeController extends Controller
                 'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
                 'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
                 'Dc_No' => $updated_data[$last_index]->Dc_No,
+                //'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
                 'Slm_No' => $updated_data[$last_index]->Slm_No,
+                'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $updated_data[$last_index]->Tr_Db_Db,
             ]);
 
             if($updated_data[$last_index]->tax){$header->Taxp_Extra = $updated_data[$last_index]->Taxp_Extra;}
@@ -797,43 +800,45 @@ class NoticeController extends Controller
                         'Tr_Db' => $data->Tr_Cr,
                         'Tr_Cr' => 0.00,
                         'FTr_Db' => $data->FTot_Amunt,
+                        'FTot_Amunt' => $data->FTot_Amunt,
                         'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
-                        'FTot_Amunt' => $data->FTot_Amunt,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
+                        //'Doc_Type' => $data->Doc_Type,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
                         'Slm_No' => $data->Slm_No,
                         'updated_at' => carbon::now(),
                     ]);
+
+                    //update debt Tot_Amunt
+                    //1- get all credit lines - sum credit money
+                    $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No' , '>', 1)->get();
+                    if($trnses && count($trnses)){
+                        $total = 0;
+                        $ftotal = 0;
+                        foreach($trnses as $trns){
+                            $total += $trns->Tr_Db;
+                        }
+                        foreach($trnses as $trns){
+                            $ftotal += $trns->FTr_Db;
+                        }
+
+                        //2- get debt line - update money with new total
+                        $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                            ->where('Ln_No', 1)->first();
+                        $debt->update([
+                            'Tr_Cr' => $total,
+                            'FTr_Cr' => $ftotal,
+                            'FTot_Amunt' => $ftotal,
+                            'Rcpt_Value' => $total,
+                        ]);
+                        $header->update(['FTot_Amunt' => $ftotal]);
+                    }
                 }
 
-                //update debt Tot_Amunt
-                //1- get all credit lines - sum credit money
-                $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                    ->where('Ln_No' , '>', 1)->get();
-                if($trnses && count($trnses)){
-                    $total = 0;
-                    $ftotal = 0;
-                    foreach($trnses as $trns){
-                        $total += $trns->Tr_Cr;
-                    }
-                    foreach($trnses as $trns){
-                        $ftotal += $trns->FTr_Cr;
-                    }
-
-                    //2- get debt line - update money with new total
-                    $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                        ->where('Ln_No', 1)->first();
-                    $debt->update([
-                        'Tr_Cr' => $total,
-                        'FTr_Db' => $ftotal,
-                        'FTot_Amunt' => $ftotal,
-                        'Rcpt_Value' => $total,
-                    ]);
-                    $header->update(['FTot_Amunt' => $ftotal]);
-                }
             }
 
 
