@@ -138,6 +138,7 @@ class NoticeController extends Controller
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
+
             ]);
             foreach($catch_data as $data){
                 $header->FTot_Amunt += $data->FTot_Amunt;
