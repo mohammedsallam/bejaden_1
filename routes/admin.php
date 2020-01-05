@@ -178,8 +178,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
-<<<<<<< HEAD
-
 
 // 0_0 Dashboard_setting
         Route::get('general_setting', function () {
@@ -241,8 +239,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('supp_account_statement','Admin\financial_reports\supplier_accountingController@supp_account_statement')->name('supp_account_statement');
         Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@supp_trial_balance')->name('supp_trial_balance');
         Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
-=======
->>>>>>> 5e7d966737b04f3c8599a2395381d18d96988e0d
+
 
 
 

@@ -6,12 +6,10 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
-<<<<<<< HEAD
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
-=======
->>>>>>> 5e7d966737b04f3c8599a2395381d18d96988e0d
+
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',
