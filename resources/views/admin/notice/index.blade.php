@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.catch_receipt'))
+@section('title',trans('admin.data_notics'))
 @section('content')
     @push('js')
         <script>
@@ -88,7 +88,7 @@
             <div class="box">
                 <div class="box-header">
                     <div class="row">
-                        <a class="btn btn-primary pull-left" href="{{route('notice.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a>
+                        <a class="btn btn-primary pull-left" href="{{route('notice.create')}}"><i class="fa fa-plus"></i>{{trans('admin.add_noti')}}</a>
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
