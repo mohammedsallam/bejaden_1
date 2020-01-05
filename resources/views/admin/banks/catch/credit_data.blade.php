@@ -60,7 +60,7 @@
                 {{-- المبلغ دائن --}}
                 <div class="col-md-4">
                     <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                    <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}">
+                    <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}" style="background: rgb(218, 218, 61);">
                 </div>
                 {{-- نهاية المبلغ دائن --}}
                 {{-- رقم المستند --}}

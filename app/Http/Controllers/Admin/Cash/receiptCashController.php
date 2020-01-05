@@ -530,7 +530,6 @@ class receiptCashController extends Controller
         }
         else{
             if($request->Acc_Ty == 1){
-                return 1;
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
                                     ->where('Level_Status', 1)
                                     ->where('Acc_Typ', 1)
@@ -547,7 +546,6 @@ class receiptCashController extends Controller
             }
             // موردين
             else if($request->Acc_Ty == 3){
-                return 3;
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
                                         ->where('Brn_No', $request->Brn_No)
                                         ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
@@ -555,7 +553,6 @@ class receiptCashController extends Controller
             }
             // موظفين
             else if($request->Acc_Ty == 4){
-                return 4;
             }
         }
     }
@@ -725,6 +722,7 @@ class receiptCashController extends Controller
             $request->Cmp_No = $trns->Cmp_No;
             $request->Brn_No = $trns->Brn_No;
             $subAccs = $this->getSubAcc($request);
+
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
             return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }

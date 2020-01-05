@@ -751,7 +751,7 @@
                             {{-- المبلغ دائن --}}
                             <div class="col-md-4">
                                 <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                                <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" disabled>
+                                <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" style="background: rgb(218, 218, 61);" disabled>
                             </div>
                             {{-- نهاية المبلغ دائن --}}
                             {{-- رقم المستند --}}
@@ -901,21 +901,17 @@
                                 <td>{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
-                                    @if($trns->Sysub_Account == 0)
+                                    @if($trns->Ac_Ty == 1)
                                         {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                    @else
-                                        @if($gl->Cstm_No)
-                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Sup_No)
-                                            {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Emp_No)
-                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Chrt_No)
-                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
+                                    @endif
+                                    @if($trns->Ac_Ty == 2)
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                    @endif
+                                    @if($trns->Ac_Ty == 3)
+                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                    @endif
+                                    @if($trns->Ac_Ty == 4)
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                     @endif
                                 </td>
                                 <td>{{$trns->Tr_Db}}</td>
