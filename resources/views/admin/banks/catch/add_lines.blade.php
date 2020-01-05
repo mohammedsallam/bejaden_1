@@ -264,12 +264,13 @@
             $('#add_line').click(function(e){
                 e.preventDefault();
 
-                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
-                {
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
                     tax = true;
-                }else{
+                }
+                else{
                     tax = false;
                 }
+                
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);

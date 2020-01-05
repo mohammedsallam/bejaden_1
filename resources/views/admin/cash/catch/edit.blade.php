@@ -23,6 +23,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
@@ -210,7 +211,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
                     $('#Tr_Db').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -252,6 +252,13 @@
             //اضافة سطر فى الجدول
             $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
+
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
 
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
@@ -299,6 +306,7 @@
                         var response = JSON.parse(data);
                         if(response.success == true){
                             var rows = document.getElementById('table').rows;
+                            console.log(rows);
                             var sum = 0.0;
                             for (var i=0; i<rows.length; i++) {
                                 var txt = rows[i].textContent || rows[i].innerText;
@@ -307,8 +315,8 @@
                                         <td>`+$('#Ln_No').val()+`</td>
                                         <td>`+$('#Sysub_Account').val()+`</td>
                                         <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                        <td>0.00</td>
                                         <td>`+$('#Tr_Db').val()+`</td>
+                                        <td>0.00</td>
                                         <td>`+$('#Tr_Ds').val()+`</td>
                                         <td>`+$('#Dc_No').val()+`</td>
                                         <td>`+$('#Tr_Ds1').val()+`</td>
@@ -318,9 +326,9 @@
 
                             var sum = 0.0;
                             for (var i=1; i<rows.length; i++){
-                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                                sum += parseFloat(rows[i].cells[3].innerHTML);
                             }
-                            rows[1].cells[3].innerHTML = sum;
+                            rows[1].cells[4].innerHTML = sum;
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
 
@@ -357,6 +365,7 @@
                                 Ln_No: $('#Ln_No').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
 
                             catch_data.push(item);
@@ -407,7 +416,6 @@
                 else{
                     $('#Tr_Db').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -459,19 +467,17 @@
                             $('#FTot_Amunt').val(null);
                             $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table">
-
-
-                                                    <thead>
-                                                        <th>{{trans('admin.id')}}</th>
-                                                        <th>{{trans('admin.account_number')}}</th>
-                                                        <th>{{trans('admin.account_name')}}</th>
-                                                        <th>{{trans('admin.motion_debtor')}}</th>
-                                                        <th>{{trans('admin.motion_creditor')}}</th>
-                                                        <th>{{trans('admin.note_ar')}}</th>
-                                                        <th>{{trans('admin.receipt_number')}}</th>
-                                                        <th>{{trans('admin.note_en')}}</th>
-                                                    </thead>
-                                                </table>`);
+                                            <thead>
+                                                <th>{{trans('admin.id')}}</th>
+                                                <th>{{trans('admin.account_number')}}</th>
+                                                <th>{{trans('admin.account_name')}}</th>
+                                                <th>{{trans('admin.motion_debtor')}}</th>
+                                                <th>{{trans('admin.motion_creditor')}}</th>
+                                                <th>{{trans('admin.note_ar')}}</th>
+                                                <th>{{trans('admin.receipt_number')}}</th>
+                                                <th>{{trans('admin.note_en')}}</th>
+                                            </thead>
+                                        </table>`);
                         }
                     });
                 }
