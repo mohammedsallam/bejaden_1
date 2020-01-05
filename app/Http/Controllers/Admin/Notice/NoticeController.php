@@ -130,7 +130,6 @@ class NoticeController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-//                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
@@ -140,10 +139,13 @@ class NoticeController extends Controller
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
 
             ]);
+
+            $total_header = 0;
             foreach($catch_data as $data){
-                $header->FTot_Amunt += $data->FTot_Amunt;
+                $total_header += $data->FTot_Amunt;
             }
 
+            $header->FTot_Amunt = $total_header;
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
@@ -262,6 +264,7 @@ class NoticeController extends Controller
                         ->where('Ln_No', 1)->first();
 
                     if (!$debt) {
+                        // dump('debt');
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
@@ -284,7 +287,7 @@ class NoticeController extends Controller
                             'FTot_Amunt' => $header->FTot_Amunt,
                             'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
-                            'Rcpt_Value' => $data->Tot_Amunt,
+                            'Rcpt_Value' => $tot_rcpt_val,
                             'Ln_No' => 1,
                         ]);
 
@@ -292,6 +295,8 @@ class NoticeController extends Controller
                         $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
                         $trans_db->save();
                     }
+
+
                     //Create transaction credit
                     $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
@@ -342,10 +347,10 @@ class NoticeController extends Controller
                         $debt->update([
                             'Tr_Db' => $total,
                             'FTr_Db' => $ftotal,
-                            'FTot_Amunt' => $ftotal,
+                            // 'FTot_Amunt' => $header->FTot_Amunt,
                             'Rcpt_Value' => $total,
                         ]);
-                        $header->update(['FTot_Amunt' => $ftotal]);
+                        // $header->update(['FTot_Amunt' => $ftotal]);
                     }
                 }
 
