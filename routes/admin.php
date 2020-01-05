@@ -343,6 +343,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('getCmpSalesMen','Admin\banks\ReceiptCatchController@getCmpSalesMen')->name('getCmpSalesMen');
         Route::post('addDeletedLines','Admin\banks\ReceiptCatchController@addDeletedLines')->name('addDeletedLines');
 
+        Route::resource('curencies', 'Admin\Curency\CurencyController');
+
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
         Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
