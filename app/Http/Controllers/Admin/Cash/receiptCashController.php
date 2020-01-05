@@ -340,6 +340,8 @@ class receiptCashController extends Controller
                     'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
                     'Curncy_No' => $updated_data[$last_index]->Curncy_No,
                     'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
+                    'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
+                    'Tr_Cr' => $updated_data[$last_index]->Tr_Cr_Db,
                     'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
                     'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
                     'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
@@ -372,7 +374,7 @@ class receiptCashController extends Controller
                     'Ac_Ty' => $data->Ac_Ty,
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
-                    'Tr_Db' => 0.00,
+                    'Tr_Db' => $data->Tr_Db,
                     'FTr_Db' => 0.00,
                     'FTr_Cr' => $data->FTot_Amunt,
                     'Dc_No' => $data->Dc_No,
@@ -402,7 +404,7 @@ class receiptCashController extends Controller
                 $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                     ->where('Ln_No', 1)->first();
                 $debt->update([
-                    'Tr_Db' => $total,
+                    'Tr_Cr' => $total,
                     'FTr_Db' => $ftotal,
                     'FTot_Amunt' => $ftotal,
                     'Rcpt_Value' => $total,
@@ -504,24 +506,24 @@ class receiptCashController extends Controller
             //حسابات
             if($request->Acc_Ty == 1){
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
-                                    ->where('Level_Status', 1)
-                                    ->where('Acc_Typ', 1)
-                                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Level_Status', 1)
+                    ->where('Acc_Typ', 1)
+                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.cash.catch.SubAcc', ['subAccs' => $charts]);
             }
             // عملاء
             else if($request->Acc_Ty == 2){
                 $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.cash.catch.SubAcc', ['subAccs' => $customers]);
 
             }
             // موردين
             else if($request->Acc_Ty == 3){
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.cash.catch.SubAcc', ['subAccs' => $suppliers]);
             }
             // موظفين
@@ -530,32 +532,29 @@ class receiptCashController extends Controller
         }
         else{
             if($request->Acc_Ty == 1){
-                return 1;
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
-                                    ->where('Level_Status', 1)
-                                    ->where('Acc_Typ', 1)
-                                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Level_Status', 1)
+                    ->where('Acc_Typ', 1)
+                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
                 return $charts;
             }
             // عملاء
             else if($request->Acc_Ty == 2){
                 $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
                 return $customers;
 
             }
             // موردين
             else if($request->Acc_Ty == 3){
-                return 3;
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
                 return $suppliers;
             }
             // موظفين
             else if($request->Acc_Ty == 4){
-                return 4;
             }
         }
     }
