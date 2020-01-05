@@ -178,7 +178,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
-
 // 0_0 Dashboard_setting
         Route::get('general_setting', function () {
             return view('admin.general_setting.general_setting');
@@ -230,8 +229,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
-
-
 
 //        1
 //        0

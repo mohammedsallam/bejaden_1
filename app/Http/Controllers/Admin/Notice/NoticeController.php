@@ -418,10 +418,10 @@ class NoticeController extends Controller
                             'Ac_Ty' => 1,
                             'Sysub_Account' => 0,
                             'Acc_No' => $data->Tr_Db_Acc_No,
-                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                            'Tr_Cr' => 0.00,
-                            'FTr_Db' => $header->FTot_Amunt,
-                            'FTr_Cr' => 0.00,
+                            'Tr_Db' => 0.00,
+                            'Tr_Cr' => $data->Tr_Cr,
+                            'FTr_Db' => 0.00,
+                            'FTr_Cr' => $data->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
                             'Tr_Ds' => $data->Tr_Ds_Db,
                             'Tr_Ds1' => $data->Tr_Ds_Db,
@@ -449,10 +449,10 @@ class NoticeController extends Controller
                         'Ac_Ty' => $data->Ac_Ty,
                         'Sysub_Account' => $data->Sysub_Account,
                         'Acc_No' => $data->Acc_No,
-                        'Tr_Db' => 0.00,
-                        'Tr_Cr' => $data->Tr_Cr,
-                        'FTr_Db' => 0.00,
-                        'FTr_Cr' => $data->FTot_Amunt,
+                        'Tr_Db' => $data->Tr_Cr,
+                        'Tr_Cr' => 0.00,
+                        'FTr_Db' => $data->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
@@ -493,7 +493,9 @@ class NoticeController extends Controller
                         $header->update(['FTot_Amunt' => $ftotal]);
                     }
 
-                }else if ($data->Jr_Ty == 19) {
+
+                }else if ($data->Jr_Ty == 19)
+                {
 
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();

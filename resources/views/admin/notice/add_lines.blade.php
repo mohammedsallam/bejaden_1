@@ -1,6 +1,18 @@
 @extends('admin.index')
-@section('title',trans('admin.edit_catch_receipt'))
+@section('title',trans('admin.edit_noti'))
 @section('content')
+    @push('css')
+        <style>
+            .panel-H{
+                border-color: #26333a !important;
+            }
+            .panel-A {
+                background-color: #26333a !important;
+                border-color: #26333a !important;
+            }
+        </style>
+
+    @endpush
 @push('js')
     <script>
         $(document).ready(function(){
@@ -9,6 +21,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
@@ -219,6 +232,12 @@
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
+                    tax = true
+                }
+                else{
+                    tax = false;
+                }
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -229,46 +248,63 @@
                     type: "post",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}",Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                            Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                            Tr_No: $('#Tr_No').val(),
-                            Tr_Dt: $('#Tr_Dt').val(),
-                            Tr_DtAr: $('#Tr_DtAr').val(),
-                            Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                            Curncy_No: $('#Curncy_No').children('option:selected').val(),
-                            Curncy_Rate: $('#Curncy_Rate').val(),
-                            Tot_Amunt: $('#Tot_Amunt').val(),
-                            Taxp_Extra: $('#Taxp_Extra').val(),
-                            Slm_No: $('#Slm_No').val(),
-                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
-                            Sysub_Account: $('#Sysub_Account').val(),
-                            Tr_Cr: $('#Tr_Cr').val(),
-                            Dc_No: $('#Dc_No').val(),
-                            Tr_Ds: $('#Tr_Ds').val(),
-                            Tr_Ds1: $('#Tr_Ds1').val(),
-                            Acc_No: $('#Acc_No').val(),
-                            last_record : $('#last_record').val(),
-                            Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
-                            Tr_Db_Db: $('#Tr_Db_Db').val(),
-                            Tr_Cr_Db: $('#Tr_Cr_Db').val(),
-                            Ln_No: $('#Ln_No').val(),
-                            Tr_Ds_Db: $('#Tr_Ds_Db').val(),
-                            FTot_Amunt: $('#FTot_Amunt').val(),
-                            Taxv_Extra: $('#Taxv_Extra').val(), },
+                        Cmp_No: $('#Cmp_No').children('option:selected').val(),
+                        Tr_No: $('#Tr_No').val(),
+                        Jr_Ty: $('#Jr_Ty').val(),
+                        Tr_Dt: $('#Tr_Dt').val(),
+                        Tr_DtAr: $('#Tr_DtAr').val(),
+                        Doc_Type: $('#Doc_Type').children('option:selected').val(),
+                        Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                        Curncy_Rate: $('#Curncy_Rate').val(),
+                        Tot_Amunt: $('#Tot_Amunt').val(),
+                        Taxp_Extra: $('#Taxp_Extra').val(),
+                        Slm_No: $('#Slm_No').val(),
+                        Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                        Sysub_Account: $('#Sysub_Account').val(),
+                        Tr_Cr: $('#Tr_Cr').val(),
+                        Dc_No: $('#Dc_No').val(),
+                        Tr_Ds: $('#Tr_Ds').val(),
+                        Tr_Ds1: $('#Tr_Ds1').val(),
+                        Acc_No: $('#Acc_No').val(),
+                        last_record : $('#last_record').val(),
+                        Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
+                        Tr_Db_Db: $('#Tr_Db_Db').val(),
+                        Tr_Cr_Db: $('#Tr_Cr_Db').val(),
+                        Ln_No: $('#Ln_No').val(),
+                        Tr_Ds_Db: $('#Tr_Ds_Db').val(),
+                        FTot_Amunt: $('#FTot_Amunt').val(),
+                        Taxv_Extra: $('#Taxv_Extra').val(), },
 
                     success: function(data){
                         var response = JSON.parse(data);
+                        var Jr_Ty = $('#Jr_Ty').val();
+
                         if(response.success == true){
-                            $('#table').append(`
+                            if(Jr_Ty == 18) {
+                                $('#table').append(`
                                 <tr class='tr'>
-                                    <td>`+$('#Ln_No').val()+`</td>
-                                    <td>`+$('#Sysub_Account').val()+`</td>
-                                    <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                                    <td>` + $('#Ln_No').val() + `</td>
+                                    <td>` + $('#Sysub_Account').val() + `</td>
+                                    <td>` + $('#Acc_No_Select option:selected').html() + `</td>
                                     <td>0.00</td>
-                                    <td>`+$('#Tr_Cr').val()+`</td>
-                                    <td>`+$('#Tr_Ds').val()+`</td>
-                                    <td>`+$('#Dc_No').val()+`</td>
-                                    <td>`+$('#Tr_Ds1').val()+`</td>
+                                    <td>` + $('#Tr_Cr').val() + `</td>
+                                    <td>` + $('#Tr_Ds').val() + `</td>
+                                    <td>` + $('#Dc_No').val() + `</td>
+                                    <td>` + $('#Tr_Ds1').val() + `</td>
                                 </tr>`);
+                            }else if(Jr_Ty == 19){
+                                $('#table').append(`
+                                    <tr class='tr'>
+                                        <td>` + $('#Ln_No').val() + `</td>
+                                        <td>` + $('#Sysub_Account').val() + `</td>
+                                        <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                        <td>` + $('#Tr_Cr').val() + `</td>
+                                        <td>0.00</td>
+                                        <td>` + $('#Tr_Ds').val() + `</td>
+                                        <td>` + $('#Dc_No').val() + `</td>
+                                        <td>` + $('#Tr_Ds1').val() + `</td>
+                                    </tr>`);
+                            }
 
                             var rows = document.getElementById('table').rows;
                             var sum = 0.0;
@@ -285,9 +321,9 @@
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
                                 Tr_No: $('#Tr_No').val(),
+                                Jr_Ty: $('#Jr_Ty').val(),
                                 Tr_Dt: $('#Tr_Dt').val(),
                                 Tr_DtAr: $('#Tr_DtAr').val(),
-                                Doc_Type: $('#Doc_Type').children('option:selected').val(),
                                 Curncy_No: $('#Curncy_No').children('option:selected').val(),
                                 Curncy_Rate: $('#Curncy_Rate').val(),
                                 Tot_Amunt: $('#Tot_Amunt').val(),
@@ -309,15 +345,15 @@
                                 main_acc: $('#main_acc').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
 
                             catch_data.push(item);
 
                             $('#Curncy_No').val(1);
-                            $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
+                            $('#Jr_Ty').val(null);
                             $('#main_acc').val(null);
-                            $('#Rcpt_By').val(null);
                             $('#Slm_No').val(null);
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
@@ -327,9 +363,12 @@
                             $('#Tr_Ds1').val(null);
                             $('#Acc_No').val(null);
                             $('#Acc_No_Select').val(null);
+                            // $('#Acc_No_Select option:eq(0)').attr('selected','selected');
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
                             $('#Slm_No_Name').val(null);
+                            // $('#Tr_Db_Db').val(null);
+                            // $('#Tr_Cr_Db').val(null);
                             $('#Ln_No').val(-1);
                             $('#FTot_Amunt').val(null)
                             $('#Taxv_Extra').val(null)
@@ -339,10 +378,10 @@
                             if (table != null) {
                                 for (var i = 0; i < table.rows.length; i++) {
                                     for (var j = 0; j < table.rows[i].cells.length; j++)
-                                    table.rows[i].onclick = function () {
-                                        tableText(this, catch_data);
-                                        this.innerHTML = '';
-                                    };
+                                        table.rows[i].onclick = function () {
+                                            tableText(this, catch_data);
+                                            this.innerHTML = '';
+                                        };
                                 }
                             }
 
@@ -381,9 +420,10 @@
                             //window.location.replace('{{ url('admin/notice')}}');
                             $('#Tr_No').val(null);
                             $('#Curncy_No').val(1);
-                            // $('#Curncy_Rate').val(null);
+                            $('#Curncy_Rate').val(null);
                             $('#Tot_Amunt').val(null);
                             $('#Taxp_Extra').val(null);
+                            $('#Rcpt_By').val(null);
                             $('#Slm_No').val(null);
                             $('#Ac_Ty').val(null);
                             $('#Sysub_Account').val(null);
@@ -396,12 +436,17 @@
                             $('#Dc_No_Db').val(null);
                             $('#Tr_Ds_Db').val(null);
                             $('#Slm_No_Name').val(null);
+                            $('#Chq_no').val(null);
+                            $('#Bnk_Nm').val(null);
+                            $('#Issue_Dt').val(null);
+                            $('#Due_Issue_Dt').val(null);
+                            $('#Rcpt_By').val(null);
                             $('#Tr_Db_Db').val(null);
                             $('#Tr_Cr_Db').val(null);
                             $('#FTot_Amunt').val(null);
                             $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table">
-                                                    <thead>
+                                                        <thead>
                                                         <th>{{trans('admin.id')}}</th>
                                                         <th>{{trans('admin.account_number')}}</th>
                                                         <th>{{trans('admin.account_name')}}</th>
@@ -467,10 +512,12 @@
     <br>
     <br>
     <br>
-    {{-- بيانات اساسيه سند قبض --}}
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="panel-title">{{trans('admin.data_Catch')}}</div>
+    {{-- بيانات اساسيه اشعارات --}}
+    <div class="panel panel-primary panel-H ">
+        <div class="panel-heading panel-A">
+            <div class="panel-title panel_1">
+                <div class="panel-title">{{trans('admin.data_notice')}}</div>
+            </div>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -523,6 +570,18 @@
             </div>
 
             <div class="row">
+                {{-- نوع الاشعار دائـن / مديـن --}}
+                <div class="col-md-2">
+                    <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
+                    <input type="text" name="Jr_Ty" class="form-control" disabled value="
+                            @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
+                    @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
+                    @endif
+                        ">
+
+                </div>
+                {{-- نهاية نوع الاشعار دائـن / مديـن --}}
+
                 {{-- العمله --}}
                 <div class="col-md-2">
                     <label for="Curncy_No">{{trans('admin.currency')}}</label>
@@ -591,9 +650,9 @@
         <br>
         {{-- بيانات الحساب الدائن --}}
         <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div class="panel-title">
+            <div class="panel panel-primary panel-H">
+                <div class="panel-heading panel-A panel-A">
+                    <div class="panel-title panel_2">
                         {{trans('admin.information_account')}}
                     </div>
                 </div>
@@ -689,9 +748,9 @@
         {{-- نهاية بيانات الحساب الدائن --}}
         {{-- بيانات الحساب المدين --}}
         <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div class="panel-title">
+            <div class="panel panel-primary panel-H">
+                <div class="panel-heading panel-A panel-A">
+                    <div class="panel-title panel_2">
                         {{trans('admin.dept_account')}}
                     </div>
                 </div>
