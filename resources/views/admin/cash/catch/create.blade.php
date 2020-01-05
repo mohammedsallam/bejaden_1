@@ -322,7 +322,6 @@
                                 for (var i=1; i<rows.length; i++){
                                     if(rows[i].cells.length > 0){
                                         sum += parseFloat(rows[i].cells[3].innerHTML);
-                                        console.log(sum);
                                     }
                                 }
                                 $('#Tr_Db_Db').val(sum);

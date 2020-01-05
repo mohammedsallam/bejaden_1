@@ -9,6 +9,7 @@
             var old = 0;
             var Ln_No = 1;
             var tax = false;
+
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
             //get branches of specific company selection
@@ -142,7 +143,7 @@
                 old = updated_sum;
                 $('#Tr_Db_Db').val(updated_sum);
                 $('#Tr_Cr_Db').val(updated_sum);
-                
+
                 if(Ln_No != 1){
                     $.ajax({
                         url: "{{route('getRcptDetails')}}",
@@ -181,7 +182,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -215,12 +215,14 @@
             //اضافة سطر فى الجدول
             $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
-                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
-                {
+
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
                     tax = true;
-                }else{
+                }
+                else{
                     tax = false;
                 }
+                
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
@@ -367,7 +369,6 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
                 }
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
             }

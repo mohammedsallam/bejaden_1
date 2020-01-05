@@ -198,7 +198,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    // $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -439,7 +438,6 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    // $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
