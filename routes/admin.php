@@ -355,6 +355,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('updateTrnsC', 'Admin\Cash\receiptCashController@updateTrnsC')->name('updateTrnsC');
         Route::post('getCatchRecptC', 'Admin\Cash\receiptCashController@getCatchRecpt')->name('getCatchRecptC');
         Route::post('getCashptDetails','Admin\Cash\receiptCashController@getCashptDetails')->name('getCashptDetails');
+        Route::post('addDeletedLiness','Admin\Cash\receiptCashController@addDeletedLines')->name('addDeletedLiness');
+
 
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');

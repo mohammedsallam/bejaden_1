@@ -636,7 +636,7 @@
             <div class="panel-body">
                 <div class="row">
                     {{-- الشركه --}}
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="Cmp_No">{{trans('admin.company')}}</label>
                             <select name="Cmp_No" id="Cmp_No" class="form-control">
@@ -660,7 +660,7 @@
                     </div>
                     {{-- نهاية الفرع --}}
                     {{-- رقم السند --}}
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="Tr_No">{{trans('admin.number_of_receipt')}}</label>
                             <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
