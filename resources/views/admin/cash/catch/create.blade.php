@@ -60,6 +60,10 @@
                     }
                 });
 
+                $(document).on('change', '#Slm_No_Name', function(){
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                });
+
                 //get tax value according to selected company on page load
                 $.ajax({
                     url: "{{route('getTaxValue')}}",
@@ -194,6 +198,7 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                         });
                     }

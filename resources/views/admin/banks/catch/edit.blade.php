@@ -5,12 +5,10 @@
     <script>
         $(document).ready(function(){
             $('#Acc_No_Select').select2({});
-
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
             var tax = false;
-
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
             //get branches of specific company selection
@@ -33,7 +31,6 @@
                     $('#Taxp_Extra').val(data);
                 }
             });
-
             $(document).on('change', '#Cmp_No', function(){
                 //get branches of specific company selection
                 $.ajax({
@@ -58,13 +55,24 @@
             });
 
             //get salesmen of specific branch selection
-            $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+            $.ajax({
+                url: "{{route('getCmpSalesMen')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Slm_No_Name').html(data);
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
+            $(document).on('change', '#Slm_No_Name', function(){
+                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+            });
 
             $(document).on('change', '#Ac_Ty', function(){
                 var Cmp_No = $('#Cmp_No').children('option:selected').val();
                 var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                 var Acc_Ty = $(this).val();
-
                 //get all leaf accounts when selecting account type (leaf acounts: customers / suppliers / employees...)
                 $.ajax({
                     url: "{{route('getSubAcc')}}",
@@ -76,13 +84,11 @@
                     }
                 });
             });
-
             $(document).on('change', '#Acc_No_Select', function(){
                 var Cmp_No = $('#Cmp_No').children('option:selected').val();
                 var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                 var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
                 var Acc_No = $(this).val();
-
                 //get parent account number on account select
                 $.ajax({
                     url: "{{route('getMainAccNo')}}",
@@ -93,7 +99,6 @@
                         $('#Sysub_Account').val($('#Acc_No_Select').val());
                         $('#Acc_No').val(data.mainAccNo.acc_no);
                         $('#main_acc').val(data.mainAccNm.acc_name);
-
                         if(data.AccNm && data.AccNm.cc_flag && data.AccNm.cc_no){
                             $('#Costcntr_No_content').removeClass('hidden');
                         }
@@ -103,7 +108,6 @@
                         }
                     }
                 });
-
                 //get salesman in case Acc_Ty == 2 (customers)
                 if(Acc_Ty == 2){
                         $.ajax({
@@ -113,12 +117,11 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                     });
                 }
             });
-
-
             // handle click table rows click
             var table = document.getElementById("table");
             if (table != null) {
@@ -135,7 +138,6 @@
                 var row = tableCell;
                 var Ln_No = tableCell.cells[0].innerHTML;
                 var Tr_No = $('#Tr_No').val();
-
                 if(Ln_No != 1){
                     $.ajax({
                         url: "{{route('getRcptDetails')}}",
@@ -166,7 +168,6 @@
                     });
                 }
             }
-
             //add tax
             $('#create_cache :checkbox[id=Taxp_Extra_check]').change(function(){
                 if($(this).is(':checked')){
@@ -179,57 +180,46 @@
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
-
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
-
             $('#Tot_Amunt').change(function(){
                 calcTax();
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
-
             $('#Taxp_Extra').change(function(){
                 calcTax();
-
                 $('#Tr_Db_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Cr_Db').val(parseFloat(old) + parseFloat($('#Tr_Cr').val()));
                 $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
             });
-
             $(document).on('change', '#Dc_No', function(){
                 $('#Dc_No_Db').val($('#Dc_No').val());
             });
-
             $(document).on('change', '#Tr_Ds', function(){
                 $('#Tr_Ds_Db').val($('#Tr_Ds').val());
             });
-
             //رقم حساب الصندوق الرئيسى
             $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
             $('#Tr_Db_Select').change(function(){
                 $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
             });
-
             //اضافة سطر فى الجدول
             $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
-
                 if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
                 {
                     tax = true;
                 }else{
                     tax = false;
                 }
-
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
                     $('#Ln_No').val(Ln_No);
                 }
-
                 $.ajax({
                     url: "{{route('validateCache')}}",
                     type: "post",
@@ -266,7 +256,6 @@
                             Ln_No: Ln_No,
                             FTot_Amunt: $('#FTot_Amunt').val(),
                             Taxv_Extra: $('#Taxv_Extra').val(), },
-
                     success: function(data){
                         var response = JSON.parse(data);
                         if(response.success == true){
@@ -287,7 +276,6 @@
                                     `;
                                 }
                             }
-
                             var sum = 0.0;
                             for (var i=1; i<rows.length; i++){
                                 sum += parseFloat(rows[i].cells[4].innerHTML);
@@ -295,7 +283,6 @@
                             rows[1].cells[3].innerHTML = sum;
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
-
                             var item = {
                                 Brn_No: $('#Dlv_Stor').children('option:selected').val(),
                                 Cmp_No: $('#Cmp_No').children('option:selected').val(),
@@ -331,7 +318,6 @@
                                 Taxv_Extra: $('#Taxv_Extra').val(),
                                 tax: tax,
                             };
-
                             catch_data.push(item);
                         }
                         else{
@@ -342,13 +328,10 @@
                                 $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
                             }
                         }
-
                     }
                 });
-
                 old = $('#Tr_Db_Db').val();
             });
-
             //handle Tr_Ty = 2 سند قبض شيك
             $('#Doc_Type').change(function(){
                 if($(this).val() == 2){
@@ -363,7 +346,6 @@
                     $('#Rcpt_By').val(null);
                 }
             });
-
             //حساب الضريبه
             var calcTax = function(){
                 var amount = $('#Tot_Amunt').val();
@@ -382,11 +364,8 @@
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                     $('#Taxp_Extra').val(null);
                 }
-
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-
             }
-
             //حفظ السند فى قاعدة البيانات
             $('#save').click(function(e){
                 e.preventDefault();
@@ -432,8 +411,6 @@
                             $('#FTot_Amunt').val(null);
                             $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table">
-
-
                                                     <thead>
                                                         <th>{{trans('admin.id')}}</th>
                                                         <th>{{trans('admin.account_number')}}</th>
@@ -449,7 +426,6 @@
                     });
                 }
             });
-
             //حذف سطر من السند
             $('#delete_button').click(function(e){
                 e.preventDefault();
@@ -466,7 +442,6 @@
                     }
                 });
             });
-
             $(document).on('change', '#Curncy_No', function(){
                 $.ajax({
                     url: "{{route('getCurencyRate')}}",
@@ -485,7 +460,6 @@
                     }
                 });
             });
-
             $('#FTot_Amunt').change(function(){
                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
@@ -495,7 +469,6 @@
                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
                 }
             });
-
 //              $('#Curncy_Rate').change(function(){
 //                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
 //                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
@@ -505,7 +478,6 @@
 //                     $('#Tr_Dif').val( $('#Tr_Db_Db').val() - $('#Tr_Cr_Db').val() );
 //                 }
 //             });
-
         });
     </script>
 @endpush
