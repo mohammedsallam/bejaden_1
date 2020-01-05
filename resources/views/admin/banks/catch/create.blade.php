@@ -820,7 +820,7 @@
                         {{-- المبلغ دائن --}}
                         <div class="col-md-4">
                             <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" disabled>
+                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" style="background: rgb(218, 218, 61);" disabled>
                         </div>
                         {{-- نهاية المبلغ دائن --}}
                         {{-- رقم المستند --}}
@@ -984,7 +984,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{trans('admin.yes')}}</button>
-          <button type="button" class="btn btn-primary" id="modal_no">{{trans('admin.no')}}</button>
+          <button type="button" class="btn btn-primary" id="modal_no"  data-dismiss="modal" aria-label="Close">{{trans('admin.no')}}</button>
         </div>
       </div>
     </div>

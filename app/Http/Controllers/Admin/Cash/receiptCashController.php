@@ -724,6 +724,7 @@ class receiptCashController extends Controller
             $request->Cmp_No = $trns->Cmp_No;
             $request->Brn_No = $trns->Brn_No;
             $subAccs = $this->getSubAcc($request);
+
             $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
             return view('admin.cash.catch.credit_data', compact('trns', 'subAccs', 'cost_center'));
         }
