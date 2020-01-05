@@ -46,6 +46,21 @@
                 }
             });
 
+            //get salesmen of specific branch selection
+            $.ajax({
+                url: "{{route('getCmpSalesMen')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Slm_No_Name').html(data);
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
+            $(document).on('change', '#Slm_No_Name', function(){
+                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+            });
+
             $(document).on('change', '#Cmp_No', function(){  
                 //get branches of specific company selection
                 $.ajax({
@@ -125,6 +140,7 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                     });
                 }

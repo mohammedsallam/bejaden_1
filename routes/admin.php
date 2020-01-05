@@ -95,22 +95,22 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cc/department/reviewdepartment','Admin\Cc\CcController@reviewdepartment')->name('reviewdeCcpartment');
 
 //        projects
-        Route::resource('projects','Admin\Project\ProjectController');
-        Route::get('projects/department/print','Admin\Project\ProjectController@print');
-        Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
-        Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
-        Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
-        Route::post('projects/getproj','Admin\Project\ProjectController@getproj')->name('getproj');
-        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
-        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
-        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
+        Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects/department/print','Admin\Project\ProjectController1@print');
+        Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
+        Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
+        Route::post('projects/reports/pdf','Admin\Project\ProjectController1@pdf');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController1@getTree')->name('getTreePrj');
+        Route::post('projects/getproj','Admin\Project\ProjectController1@getproj')->name('getproj');
+        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController1@getEditBlade')->name('getEditBladePrj');
+        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController1@createNewPrj')->name('createNewAccPrj');
+        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController1@initChartPrj')->name('initChartAccPrj');
 
-        Route::get('getCity','Admin\Project\ProjectController@getCities')->name('getCity');
+        Route::get('getCity','Admin\Project\ProjectController1@getCities')->name('getCity');
 
 
-        Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
-        Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController@reviewdepartment')->name('reviewdepartment');
+        Route::get('projects/department/Review','Admin\Project\ProjectController1@Review');
+        Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController1@reviewdepartment')->name('reviewdepartment');
 
 
 
@@ -230,8 +230,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
-
-
 
 //        1
 //        0

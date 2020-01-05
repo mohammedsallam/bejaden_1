@@ -880,19 +880,19 @@
                                 <td>{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
-                                    @if($trns->Sysub_Account == 0)
+                                    @if($trns->Sysub_AccountA == 0)
                                         {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
                                     @else
-                                        @if($gl->Cstm_No)
+                                        @if($gl->Ac_Ty == 1)
                                             {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Sup_No)
+                                        @if($gl->Ac_Ty == 2)
                                             {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Emp_No)
+                                        @if($gl->Ac_Ty == 3)
                                             {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Chrt_No)
+                                        @if($gl->Ac_Ty == 4)
                                             {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
                                     @endif

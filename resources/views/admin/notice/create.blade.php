@@ -90,7 +90,7 @@
                     }
                 });
 
-                //get companies on page load
+                //get salesman of selected company on page load
                 $.ajax({
                     url: "{{route('getCmpSalesMenN')}}",
                     type: "POST",
@@ -100,6 +100,9 @@
                         $('#Slm_No_Name').html(data);
                         $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                     }
+                });
+                $(document).on('change', '#Slm_No_Name', function(){
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                 });
 
                 //get branches of selected company on company select
@@ -225,6 +228,7 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                         });
                     }
@@ -281,6 +285,7 @@
 
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
+                    
                     e.preventDefault();
                     if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked')){
                         tax = true
@@ -332,36 +337,36 @@
                             if(response.success == true){
                                 if(Jr_Ty == 18) {
                                     $('#table').append(`
-                                <tr class='tr'>
-                                    <td>` + $('#Ln_No').val() + `</td>
-                                    <td>` + $('#Sysub_Account').val() + `</td>
-                                    <td>` + $('#Acc_No_Select option:selected').html() + `</td>
-                                    <td>0.00</td>
-                                    <td>` + $('#Tr_Cr').val() + `</td>
-                                    <td>` + $('#Tr_Ds').val() + `</td>
-                                    <td>` + $('#Dc_No').val() + `</td>
-                                    <td>` + $('#Tr_Ds1').val() + `</td>
-                                </tr>`);
-                                }else if(Jr_Ty == 19){
-                                    $('#table').append(`
                                     <tr class='tr'>
                                         <td>` + $('#Ln_No').val() + `</td>
                                         <td>` + $('#Sysub_Account').val() + `</td>
                                         <td>` + $('#Acc_No_Select option:selected').html() + `</td>
-                                        <td>` + $('#Tr_Cr').val() + `</td>
                                         <td>0.00</td>
+                                        <td>` + $('#Tr_Cr').val() + `</td>
                                         <td>` + $('#Tr_Ds').val() + `</td>
                                         <td>` + $('#Dc_No').val() + `</td>
                                         <td>` + $('#Tr_Ds1').val() + `</td>
                                     </tr>`);
+                                    }
+                                    else if(Jr_Ty == 19){
+                                        $('#table').append(`
+                                        <tr class='tr'>
+                                            <td>` + $('#Ln_No').val() + `</td>
+                                            <td>` + $('#Sysub_Account').val() + `</td>
+                                            <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                            <td>` + $('#Tr_Cr').val() + `</td>
+                                            <td>0.00</td>
+                                            <td>` + $('#Tr_Ds').val() + `</td>
+                                            <td>` + $('#Dc_No').val() + `</td>
+                                            <td>` + $('#Tr_Ds1').val() + `</td>
+                                        </tr>`);
                                 }
 
                                 var rows = document.getElementById('table').rows;
                                 var sum = 0.0;
                                 for (var i=1; i<rows.length; i++){
                                     if(rows[i].cells.length > 0){
-                                        sum += parseFloat(rows[i].cells[4].innerHTML);
-                                        console.log(sum);
+                                        sum += parseFloat(rows[i].cells[3].innerHTML);
                                     }
                                 }
                                 $('#Tr_Db_Db').val(sum);
@@ -538,7 +543,7 @@
                 //handle table lines click
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
-                    var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
                     old = updated_sum;
                     $('#Tr_Db_Db').val(updated_sum);
                     $('#Tr_Cr_Db').val(updated_sum);
