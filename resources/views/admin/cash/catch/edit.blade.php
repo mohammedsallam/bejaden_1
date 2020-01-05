@@ -165,6 +165,11 @@
                 var row = tableCell;
                 var Ln_No = tableCell.cells[0].innerHTML;
                 var Tr_No = $('#Tr_No').val();
+                var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                old = updated_sum;
+
+                $('#Tr_Db_Db').val(updated_sum);
+                $('#Tr_Cr_Db').val(updated_sum);
 
                 if(Ln_No != 1){
                     $.ajax({
@@ -914,8 +919,8 @@
                                         {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                     @endif
                                 </td>
-                                <td>{{$trns->Tr_Cr}}</td>
                                 <td>{{$trns->Tr_Db}}</td>
+                                <td>{{$trns->Tr_Cr}}</td>
                                 <td>{{$trns->Tr_Ds}}</td>
                                 <td>{{$trns->Dc_No}}</td>
                                 <td>{{$trns->Tr_Ds1}}</td>
