@@ -492,12 +492,11 @@
                                 // $('#Cmp_No').val(null);
                                 // $('#Dlv_Stor').val(null);
                                 $('#Tr_No').val(null);
-                                // $('#Doc_Type').val(1);
                                 $('#Curncy_No').val(1);
-                                $('#Jr_Ty').val(null);
                                 $('#Curncy_Rate').val(null);
                                 $('#Tot_Amunt').val(null);
                                 $('#Taxp_Extra').val(null);
+                                $('#Rcpt_By').val(null);
                                 $('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
@@ -510,6 +509,11 @@
                                 $('#Dc_No_Db').val(null);
                                 $('#Tr_Ds_Db').val(null);
                                 $('#Slm_No_Name').val(null);
+                                $('#Chq_no').val(null);
+                                $('#Bnk_Nm').val(null);
+                                $('#Issue_Dt').val(null);
+                                $('#Due_Issue_Dt').val(null);
+                                $('#Rcpt_By').val(null);
                                 $('#Tr_Db_Db').val(null);
                                 $('#Tr_Cr_Db').val(null);
                                 $('#FTot_Amunt').val(null);

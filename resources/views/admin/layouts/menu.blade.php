@@ -293,6 +293,46 @@
 
             {{-- التقارير المحاسبيه --}}
             @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/Dashboard_setting')}}">
+                    <i class="fa fa-credit-card"></i> <span>اعدادات لوحة التحكم</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/general_setting')}}">
+                    <i class="fa fa-credit-card"></i> <span>اعدادات</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/basic_data')}}">
+                    <i class="fa fa-credit-card"></i> <span>البيانات الاساسية</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/financial_reports')}}">
+                    <i class="fa fa-credit-card"></i> <span>التقارير الماليه</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+            @hasanyrole('writer|admin')
             <li class="treeview {{ active_menu('dailyReport')[0]  }} {{ active_menu('accountStatement')[0]  }} {{ active_menu('trialbalance')[0]  }}">
                 <a href="#">
                     <i class="fa fa-credit-card"></i> <span>{{trans('admin.accounting_reports')}}</span>
@@ -307,6 +347,20 @@
                 </ul>
             </li>
             @endhasanyrole
+<<<<<<< HEAD
+
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="{{url('/admin/basic_reports')}}">
+                    <i class="fa fa-credit-card"></i> <span>التقارير البيانات الاساسية</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+=======
+>>>>>>> 5e7d966737b04f3c8599a2395381d18d96988e0d
             {{-- نهاية التقارير المحاسبيه --}}
 
             {{-- الصندوق و البنوك --}}
