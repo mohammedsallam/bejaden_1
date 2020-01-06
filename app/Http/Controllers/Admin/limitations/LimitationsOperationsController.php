@@ -55,9 +55,11 @@ class LimitationsOperationsController extends Controller
     }
 
     public function createTrNo(Request $request){
-        if ($request->ajax() && ($request->Cmp_No && $request->Brn_No)){
-            $flag = MainCompany::where('Cmp_No', $request->Cmp_No)->first();
 
+
+        if ($request->ajax() && ($request->Cmp_No || $request->Brn_No)){
+
+            $flag = MainCompany::where('Cmp_No', $request->Cmp_No)->first();
             $last_no = 0;
             if($flag->JvAuto_Mnth == 1){
                 return response()->json([
@@ -212,51 +214,48 @@ class LimitationsOperationsController extends Controller
     public function validateCache(Request $request)
     {
         if ($request->ajax()) {
-
-            dd($request->all());
             $validator = Validator::make($request->all(), [
                 'Cmp_No' => 'required',
                 'Brn_No' => 'required',
-                'Tr_No' => 'sometimes',
-                'Tr_Dt' => 'sometimes',
-                'Tr_DtAr' => 'sometimes',
-                'Jr_Ty' => 'sometimes',
-                'Tr_Crncy' => 'sometimes',
-                'Tr_ExchRat' => 'sometimes',
+                'Jr_Ty' => 'required',
+                'Tr_No' => 'required',
+                'Tr_Dt' => 'required',
+                'Tr_DtAr'  => 'required',
+                'Curncy_No' => 'required',
+                'FTot_Amunt' => 'required',
+                'Curncy_Rate' => 'required',
                 'Tot_Amunt' => 'required',
-                'Tr_TaxVal' => 'sometimes',
-                'Rcpt_By' => 'sometimes',
-                'Salman_No' => 'sometimes',
-                'Ac_Ty' => 'sometimes',
-                'Sysub_Account' => 'sometimes',
+                'Ac_Ty' => 'required',
+                'Acc_No' => 'sometimes',
+                'Sysub_Account' => 'required',
                 'Tr_Cr' => 'sometimes',
-                'Dc_No' => 'sometimes',
+                'Tr_Db' => 'sometimes',
                 'Tr_Ds' => 'sometimes',
                 'Tr_Ds1' => 'sometimes',
-                'Tr_Db_Acc_No' => 'sometimes',
+                'Dc_No' => 'required',
+                'Costcntr_No' => 'sometimes',
+                'Slm_No' => 'sometimes',
+                'debit_sum',
+                'credit_sum',
+                'Ln_No',
             ], [], [
                 'Cmp_No' => trans('admin.Cmp_No'),
                 'Brn_No' => trans('admin.branche'),
+                'Jr_Ty' => trans('admin.receipts_type'),
                 'Tr_No' => trans('admin.number_of_receipt'),
                 'Tr_Dt' => trans('admin.receipt_date'),
                 'Tr_DtAr' => trans('admin.higri_date'),
-                'Jr_Ty' => trans('admin.receipts_type'),
-                'Tr_Crncy' => trans('admin.currency'),
-                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Curncy_No' => trans('admin.currency'),
+                'FTot_Amunt' => trans('admin.Linv_Net'),
                 'Tot_Amunt' => trans('admin.amount'),
-                'Tr_TaxVal' => trans('admin.tax'),
-                'Rcpt_By' => trans('admin.Rcpt_By'),
                 'Salman_No' => trans('admin.sales_officer2'),
                 'Ac_Ty' => trans('admin.Level_Status'),
-                // 'Sysub_Account' => trans('admin.'),
+                'Sysub_Account' => trans('admin.account_number'),
                 'Tr_Cr' => trans('admin.amount_cr'),
                 'Dc_No' => trans('admin.receipt_number'),
                 'Tr_Ds' => trans('admin.note_ar'),
                 'Tr_Ds1' => trans('admin.note_en'),
-                'Tr_Db_Acc_No' => trans('admin.main_cache'),
             ]);
-
-            // dd($validator->messages());
 
             if ($validator->fails()) {
                 return response([
