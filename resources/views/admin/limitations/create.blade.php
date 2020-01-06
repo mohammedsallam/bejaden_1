@@ -356,42 +356,44 @@
                     }
 
                     $.ajax({
-                        url: "{{route('validateCache')}}", // ReceiptCatchController
+                        url: "{{route('limitationValidate')}}", // ReceiptCatchController
                         type: "post",
                         dataType: 'html',
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            Brn_No: $('#Dlv_Stor').children('option:selected').val(),
-                            Cmp_No: $('#Cmp_No').children('option:selected').val(),
-                            Tr_No: $('#Tr_No').val(),
+                            Cmp_No: $('#Cmp_No').val(),
+                            Brn_No: $('#Dlv_Stor').val(),
+                            Jr_Ty: $('#Jr_Ty').val(),
+                            Tr_No: parseInt($('#Tr_No1').val())+''+parseInt($('#Tr_No').val()),
                             Tr_Dt: $('#Tr_Dt').val(),
                             Tr_DtAr: $('#Tr_DtAr').val(),
-                            // Doc_Type: $('#Doc_Type').children('option:selected').val(),
-                            Curncy_No: $('#Curncy_No').children('option:selected').val(),
+                            Curncy_No: $('#Curncy_No').val(),
+                            FTot_Amunt: $('#FTot_Amunt').val(),
                             Curncy_Rate: $('#Curncy_Rate').val(),
                             Tot_Amunt: $('#Tot_Amunt').val(),
-                            // Taxp_Extra: $('#Taxp_Extra').val(),
-                            Rcpt_By: $('#Rcpt_By').val(),
-                            Slm_No: $('#Slm_No').val(),
-                            Ac_Ty: $('#Ac_Ty').children('option:selected').val(),
+                            Ac_Ty: $('#Ac_Ty').val(),
+                            Acc_No_Select: $('#Acc_No_Select').val(),
                             Sysub_Account: $('#Sysub_Account').val(),
                             Tr_Cr: $('#Tr_Cr').val(),
-                            Dc_No: $('#Dc_No').val(),
                             Tr_Ds: $('#Tr_Ds').val(),
                             Tr_Ds1: $('#Tr_Ds1').val(),
+                            Dc_No: $('#Dc_No').val(),
+                            Costcntr_No: $('#Costcntr_No'),
                             Acc_No: $('#Acc_No').val(),
+                            Slm_No_Name: $('#Slm_No_Name').val(),
+                            Slm_No: $('#Slm_No').val(),
+
+
+
+
+
                             last_record : $('#last_record').val(),
-                            // Chq_no: $('#Chq_no').val(),
-                            // Bnk_Nm: $('#Bnk_Nm').val(),
-                            // Issue_Dt: $('#Issue_Dt').val(),
-                            // Due_Issue_Dt: $('#Due_Issue_Dt').val(),
                             Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
                             Ln_No: $('#Ln_No').val(),
                             Tr_Ds_Db: $('#Tr_Ds_Db').val(),
-                            FTot_Amunt: $('#FTot_Amunt').val(),
                             // Taxv_Extra: $('#Taxv_Extra').val(),
                             },
 
@@ -855,6 +857,25 @@
                                 </div>
                                 {{-- نهاية المبلغ دائن --}}
                             </div>
+                                {{--جمع المدين والداين والفرق بينهما--}}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <input id="debit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_Db_')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <input id="credit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_CR_')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <input id="credit_debit_dif" type="text" name="" class="form-control" placeholder="{{trans('admin.subtract')}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{--نهاية جمع المدين والداين والفرق بينهما--}}
                             <div class="row">
                                 {{-- البيان عربى --}}
                                 <div class="col-md-6">
@@ -871,6 +892,7 @@
                                 </div>
                                 {{-- نهاية البيان انجليزى --}}
                             </div>
+
                             <div class="row">
                                 {{-- رقم المستند --}}
                                 <div class="col-md-2">

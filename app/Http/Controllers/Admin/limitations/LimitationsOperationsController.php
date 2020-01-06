@@ -12,6 +12,7 @@ use App\Models\Admin\MtsSuplir;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class LimitationsOperationsController extends Controller
 {
@@ -207,6 +208,70 @@ class LimitationsOperationsController extends Controller
                 break;
         }
     }
+
+    public function validateCache(Request $request)
+    {
+        if ($request->ajax()) {
+
+            dd($request->all());
+            $validator = Validator::make($request->all(), [
+                'Cmp_No' => 'required',
+                'Brn_No' => 'required',
+                'Tr_No' => 'sometimes',
+                'Tr_Dt' => 'sometimes',
+                'Tr_DtAr' => 'sometimes',
+                'Jr_Ty' => 'sometimes',
+                'Tr_Crncy' => 'sometimes',
+                'Tr_ExchRat' => 'sometimes',
+                'Tot_Amunt' => 'required',
+                'Tr_TaxVal' => 'sometimes',
+                'Rcpt_By' => 'sometimes',
+                'Salman_No' => 'sometimes',
+                'Ac_Ty' => 'sometimes',
+                'Sysub_Account' => 'sometimes',
+                'Tr_Cr' => 'sometimes',
+                'Dc_No' => 'sometimes',
+                'Tr_Ds' => 'sometimes',
+                'Tr_Ds1' => 'sometimes',
+                'Tr_Db_Acc_No' => 'sometimes',
+            ], [], [
+                'Cmp_No' => trans('admin.Cmp_No'),
+                'Brn_No' => trans('admin.branche'),
+                'Tr_No' => trans('admin.number_of_receipt'),
+                'Tr_Dt' => trans('admin.receipt_date'),
+                'Tr_DtAr' => trans('admin.higri_date'),
+                'Jr_Ty' => trans('admin.receipts_type'),
+                'Tr_Crncy' => trans('admin.currency'),
+                'Tr_ExchRat' => trans('admin.exchange_rate'),
+                'Tot_Amunt' => trans('admin.amount'),
+                'Tr_TaxVal' => trans('admin.tax'),
+                'Rcpt_By' => trans('admin.Rcpt_By'),
+                'Salman_No' => trans('admin.sales_officer2'),
+                'Ac_Ty' => trans('admin.Level_Status'),
+                // 'Sysub_Account' => trans('admin.'),
+                'Tr_Cr' => trans('admin.amount_cr'),
+                'Dc_No' => trans('admin.receipt_number'),
+                'Tr_Ds' => trans('admin.note_ar'),
+                'Tr_Ds1' => trans('admin.note_en'),
+                'Tr_Db_Acc_No' => trans('admin.main_cache'),
+            ]);
+
+            // dd($validator->messages());
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'data' => $validator->messages(),
+                ]);
+            } else {
+                return response([
+                    'success' => true,
+                    'data' => $validator->messages(),
+                ]);
+            }
+        }
+    }
+
     public function createMonthAccNo($month, $Brn_No){
         if(count(GLJrnal::all()) == 0){
             $Month_Jvno = $month.'01';

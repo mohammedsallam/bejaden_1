@@ -277,6 +277,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('limitationGetMainAccNoN', 'Admin\limitations\LimitationsOperationsController@getMainAccNo')->name('limitationGetMainAccNoN');
         Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
         Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
+        Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
 
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
