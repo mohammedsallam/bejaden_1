@@ -443,9 +443,8 @@
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
                             $('#alert').removeClass('hidden');
-                            $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            //window.location.replace('/mai/bejaden_1/public/admin/notice');
-                            //window.location.replace('{{ url('admin/notice')}}');
+                            $('#alert').html(`<div class='alert alert-info'>تم التعديل بنجاح</div>`);
+                            window.location.replace('{{ url('admin/notice')}}');
                             $('#Tr_No').val(null);
                             $('#Curncy_No').val(1);
                             $('#Curncy_Rate').val(null);
@@ -736,7 +735,7 @@
                         {{-- المبلغ دائن --}}
                         <div class="col-md-4">
                             <label for="Tr_Cr" id="label_Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$gl->Tot_Amunt}}" disabled>
+                            <input style="background-color: #e9ea92;" type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$gl->Tot_Amunt}}" disabled>
                         </div>
                         {{-- نهاية المبلغ دائن --}}
                         {{-- رقم المستند --}}

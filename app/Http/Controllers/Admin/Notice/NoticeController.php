@@ -133,6 +133,7 @@ class NoticeController extends Controller
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
+                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
@@ -163,13 +164,14 @@ class NoticeController extends Controller
         }
 
         if ($request->catch_data) {
-
             foreach ($catch_data as $data) {
+
                 if($data->Jr_Ty == 18) { //Debit مدين
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();
 
                     if (!$debt) {
+
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
@@ -221,7 +223,7 @@ class NoticeController extends Controller
                         'FTr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
-                        //'Tr_Ds1' => $data->Tr_Ds1,
+                        'Tr_Ds1' => $data->Tr_Ds1,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
                         'Ln_No' => $data->Ln_No,
@@ -229,6 +231,7 @@ class NoticeController extends Controller
                         'FTot_Amunt' => $data->FTot_Amunt,
                         'Curncy_No' => $data->Curncy_No,
                     ]);
+
                     $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                     $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                     $trans_cr->save();
@@ -264,6 +267,8 @@ class NoticeController extends Controller
                         ->where('Ln_No', 1)->first();
 
                     if (!$debt) {
+                        //dd($tot_rcpt_val);
+
                         // dump('debt');
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
@@ -290,10 +295,11 @@ class NoticeController extends Controller
                             'Rcpt_Value' => $tot_rcpt_val,
                             'Ln_No' => 1,
                         ]);
-
                         $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
                         $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
                         $trans_db->save();
+                        //dd($tot_rcpt_val);
+
                     }
 
 
@@ -335,22 +341,21 @@ class NoticeController extends Controller
                         $total = 0;
                         $ftotal = 0;
                         foreach($trnses as $trns){
-                            $total += $trns->Tr_Cr;
+                            $total += $trns->Tr_Db;
                         }
                         foreach($trnses as $trns){
-                            $ftotal += $trns->FTr_Cr;
+                            $ftotal += $trns->FTr_Db;
                         }
-
                         //2- get debt line - update money with new total
                         $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                             ->where('Ln_No', 1)->first();
                         $debt->update([
-                            'Tr_Db' => $total,
-                            'FTr_Db' => $ftotal,
-                            // 'FTot_Amunt' => $header->FTot_Amunt,
+                            'Tr_Cr' => $total,
+                            'FTr_Cr' => $ftotal,
+                            'FTot_Amunt' => $ftotal,
                             'Rcpt_Value' => $total,
                         ]);
-                        // $header->update(['FTot_Amunt' => $ftotal]);
+                        $header->update(['FTot_Amunt' => $ftotal]);
                     }
                 }
 

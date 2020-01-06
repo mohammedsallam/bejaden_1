@@ -102,7 +102,7 @@
                 <div class="box-header">
                     {{-- header end --}}
                     <div class="row">
-                        <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_caching_receipt')}}</a>
+                        <a class="btn btn-primary" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_caching_receipt')}}</a>
 
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">

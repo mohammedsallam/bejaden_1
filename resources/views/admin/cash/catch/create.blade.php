@@ -619,7 +619,7 @@
     <form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         <div class="col-md-12">
-            <button type="submit" class="btn panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
+            <button type="submit" class="btn btn-danger panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
 
         </div>
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
