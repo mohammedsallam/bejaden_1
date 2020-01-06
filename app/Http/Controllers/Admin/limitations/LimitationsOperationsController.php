@@ -37,6 +37,15 @@ class LimitationsOperationsController extends Controller
         }
     }
 
+    public function getSalesMan(Request $request){
+        if($request->ajax()){
+            $customer = MTsCustomer::where('Cstm_No', $request->Acc_No)->get(['Slm_No'])->first();
+            $salesman = AstSalesman::where('Slm_No', $customer->Slm_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))])->first();
+            // return $salesman->{'Slm_Nm'.ucfirst(session('lang'))};
+            return view('admin.cash.catch.salman', ['salesman' => $salesman]);
+        }
+    }
+
     public function checkSetting(Request $request){
         if ($request->ajax()){
             $settings = MainCompany::find($request->Cmp_No);
@@ -82,6 +91,38 @@ class LimitationsOperationsController extends Controller
         }
     }
 
+    public function getMainAccNo(Request $request){
+        if($request->ajax()){
+            // حسابات
+            if($request->Acc_Ty == 1){
+                $AccNm = MtsChartAc::where('Cmp_No', $request->Cmp_No)
+                    ->where('Acc_No', $request->Acc_No)
+                    ->get(['Parnt_Acc', 'CostCntr_Flag as cc_flag', 'Costcntr_No as cc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
+                    ->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                $mainAccNo = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
+                    ->get(['Acc_No as acc_no'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm, 'AccNm' => $AccNm] );
+            }
+            // عملاء
+            else if($request->Acc_Ty == 2){
+                $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Customer as acc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->acc_no)->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
+            }
+            // موردين
+            else if($request->Acc_Ty == 3){
+                $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Suplier as acc_no'])->first();
+                $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->acc_no)->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
+            }
+            // موظفين
+            else if($request->Acc_Ty == 4){
+
+            }
+        }
+    }
+
     public function getSubAcc(Request $request)
     {
         if ($request->ajax()) {
@@ -108,6 +149,8 @@ class LimitationsOperationsController extends Controller
             } // موظفين
             else if ($request->Acc_Ty == 4) {
             }
+
+
         } else {
             if ($request->Acc_Ty == 1) {
                 return 1;
@@ -137,7 +180,33 @@ class LimitationsOperationsController extends Controller
         }
     }
 
+    public function getSubAccByNumber(Request $request)
+    {
+        $Ac_Ty = $request->Ac_Ty;
 
+
+        switch ($Ac_Ty){
+            case "1":
+                $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
+                    ->where('Level_Status', 1)
+                    ->where('Acc_Typ', 1)
+                    ->get(['Acc_No as no', 'Acc_Nm' . ucfirst(session('lang')) . ' as name']);
+                return view('admin.limitations.notice.SubAcc', ['subAccs' => $charts]);
+                break;
+            case '2':
+                $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Cstm_No as no', 'Cstm_Nm' . ucfirst(session('lang')) . ' as name']);
+                return view('admin.limitations.notice.SubAcc', ['subAccs' => $customers]);
+                break;
+            case '3':
+                $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Sup_No as no', 'Sup_Nm' . ucfirst(session('lang')) . ' as name']);
+                return view('admin.limitations.notice.SubAcc', ['subAccs' => $suppliers]);
+                break;
+        }
+    }
     public function createMonthAccNo($month, $Brn_No){
         if(count(GLJrnal::all()) == 0){
             $Month_Jvno = $month.'01';

@@ -172,9 +172,8 @@
                     $('#Slm_No').val($(this).val())
                 });
 
-                $(document).on('change', '#Curncy_No', function(){
-
-                    if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
+                $('#Curncy_No').change(function(){
+                    if($('#FTot_Amunt').val() != '' && $('#Curncy_Rate').val() != ''){
                         $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
                     }
                     $.ajax({
@@ -250,7 +249,7 @@
                     });
                 });
 
-                $(document).on('change', '#Acc_No_Select', function(){
+                $('#Acc_No_Select').change(function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
                     var Brn_No = $('#Dlv_Stor').children('option:selected').val();
                     var Acc_Ty = $('#Ac_Ty').children('option:selected').val();
@@ -262,7 +261,7 @@
 
                     //get parent account number on account select
                     $.ajax({
-                        url: "{{route('getMainAccNo')}}", //ReceiptCatchController
+                        url: "{{route('limitationGetMainAccNoN')}}", //ReceiptCatchController
                         type: "POST",
                         dataType: 'json',
                         data: {"_token": "{{ csrf_token() }}", Brn_No: Brn_No, Cmp_No: Cmp_No, Acc_Ty: Acc_Ty, Acc_No: Acc_No },
@@ -284,7 +283,7 @@
                     //get salesman in case Acc_Ty == 2 (customers)
                     if(Acc_Ty == 2){
                         $.ajax({
-                            url: "{{route('getSalesMan')}}", //ReceiptCatchController
+                            url: "{{route('limitationGetSalesMan')}}", //ReceiptCatchController
                             type: "POST",
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
@@ -293,6 +292,42 @@
                             }
                         });
                     }
+                });
+
+                $('#Sysub_Account').change(function () {
+                    let SysubAccount = $(this).val(),
+                        selectHtml = $('#Acc_No_Select option[value="'+SysubAccount+'"]'),
+                        optionSelected = $('<option value="'+SysubAccount+'" selected>'+selectHtml.html()+'</option>');
+                        $('#Acc_No_Select option:not([value="'+SysubAccount+'"])').removeAttr('selected');
+                    $('#Acc_No_Select').prepend(optionSelected);
+                    if (selectHtml.length === 1){
+                        $('#Acc_No_Select ul.select2-results__options').prepend(`
+                            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+                        `);
+                    }
+
+                    selectHtml.remove();
+                });
+
+                $('#Costcntr_No').change(function () {
+                    $('#Costcntr_No_input').val($(this).val())
+                });
+
+                $('#Costcntr_No_input').change(function () {
+                    let SysubAccount = $(this).val(),
+                        selectHtml = $('#Costcntr_No option[value="'+SysubAccount+'"]'),
+                        optionSelected = $('<option value="'+SysubAccount+'" selected>'+selectHtml.html()+'</option>');
+                    $('#Costcntr_No option:not([value="'+SysubAccount+'"])').removeAttr('selected');
+
+                    $('#Costcntr_No').prepend(optionSelected);
+
+                    if (selectHtml.length === 1){
+                        $('#Costcntr_No ul.select2-results__options').prepend(`
+                            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+                        `);
+                    }
+
+                    selectHtml.remove();
                 });
 
                 $('#Dc_No').change(function(){
