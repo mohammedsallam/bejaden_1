@@ -1,4 +1,4 @@
-    <option value="{{null}}">{{trans('admin.select')}}</option>
+<option value="{{null}}">{{trans('admin.select')}}</option>
 @if(count($subAccs) > 0)
     @foreach($subAccs as $sub)
         <option value="{{$sub->no}}">{{$sub->name}}</option>

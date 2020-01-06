@@ -37,7 +37,7 @@ use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use Up;
 
 
-class ProjectController extends Controller
+class ProjectController1 extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -46,7 +46,6 @@ class ProjectController extends Controller
      */
     public function index()
     {
-
         $chart = Projectmfs::get(['Prj_Nm'.ucfirst(session('lang')), 'Prj_No']);
         if(count($chart) > 0){
             if(session('Cmp_No') == -1){
@@ -58,7 +57,6 @@ class ProjectController extends Controller
             $chart_item = Projectmfs::first();
             $total = $this->getTotalTransaction($chart_item);
             $cc = MtsCostcntr::where('Cmp_No',session('Chart_Cmp_No'))->where('Level_Status',0)->get(['Costcntr_Nmar', 'Costcntr_No']);
-
             $children = [];
 //            dd($cmps);
             return view('admin.projects.index', ['title' => trans('admin.projects'),

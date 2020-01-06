@@ -5,8 +5,9 @@
                 {{trans('admin.information_account')}}
             </div>
         </div>
+
         <input type="text" name="getSalNo" id="getSalNo" value="{{$trns->Slm_No}}" hidden>
-        <input type="text" name="getSalName" id="getSalName" 
+        <input type="text" name="getSalName" id="getSalName"
             value="{{\App\Models\Admin\AstSalesman::where('Slm_No', $trns->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first()}}" hidden>
         <div class="panel-body">
             <input type="text" name="Ln_No" id="Ln_No" value="{{$trns->Ln_No}}" hidden>
@@ -14,7 +15,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
-                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled 
+                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled
                     value="{{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}">
                 </div>
                 <div class="col-md-4">
@@ -59,7 +60,7 @@
                 {{-- المبلغ دائن --}}
                 <div class="col-md-4">
                     <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                    <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}">
+                    <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}" style="background: rgb(218, 218, 61);">
                 </div>
                 {{-- نهاية المبلغ دائن --}}
                 {{-- رقم المستند --}}
@@ -100,7 +101,7 @@
                     <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6" value="{{$trns->Tr_Ds1}}">
                     <button style="margin-right: 10px" class="btn btn-primary col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
                 </div>
-                {{-- نهاية البيان انجليزى --}} 
+                {{-- نهاية البيان انجليزى --}}
             </div>
         </div>
     </div>

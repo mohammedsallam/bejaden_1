@@ -6,6 +6,10 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
+    'financial_reports' => 'التقارير المحاسبية',
+    'general_accounts' => 'التقارير الحسابات العامة',
+    'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
+
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',
@@ -243,6 +247,8 @@ return [
     // bus/cartype // create
     'create_new_countrytrans' => 'انشاء مناطق جديدة',
     'made_in' => 'صنع في',
+    'yes' => 'نعم',
+    'no' => 'لا',
     // bus/cartype // index
     'car_type' => 'نوع السيارة',
     // bus/create // buscategory
@@ -805,6 +811,7 @@ return [
     'number_account'=>'الرقم المحاسبي',
     'please_modify'=>'من فضلك قم بتعديل تاريخ رحلة العميل',
     'code'=>'الكود المحاسبي',
+    'close_ask' => 'هل تريد طباعة السند؟',
     'fund_and_banks'=>'الصندوق والبنوك',
     'create_catch_receipt'=>'اضافة سند قبض',
     'edit_catch_receipt'=>'تعديل سند قبض',
@@ -817,6 +824,8 @@ return [
     'rcpt_deleted' => 'السند محذوف',
     'rcpt_status' => 'حالة السند',
     'Accredit_expens' => 'مصاريف الاعتماد',
+    'currency_setting' => 'العملات',
+    'curency_types' => 'انواع العملات',
     'Foreign_Curncy' => 'متعدد العملات',
     'L_Curncy_No' => 'العمله المحليه',
     'caching_receipt' => 'بيانات سندات صرف',
@@ -824,6 +833,7 @@ return [
     'Pymt_Flg' => 'سند صرف',
     'debt_limitations' => 'بيانات سندات الاشعارات ',
     'create_caching_receipt'=>'اضافة سند صرف',
+    'edit_caching_receipt'=>'تعديل سند صرف',
     'data_Cach'=>'بيانات اساسية سند صرف',
     'data_Catch'=>'بيانات اساسية سند قبض',
     'accbanks_setting' => 'اعدادت الصندوق و البنوك',
@@ -1027,7 +1037,10 @@ return [
     'PhyTy_CostPrice' => 'الجرد الدورى - بالتكلفه',
     'PhyTy_SalePrice' => 'ترحيل العهده بسعر البيع',
     'exchange_rate' => 'سعر الصرف',
+    'add_curency' => 'اضافة عمله',
+    'edit_curency' => 'تعديل عمله',
     'bank_trans' => 'تحويل بنكى',
+    'Curncy_No' => 'رقم العمله',
     'Fraction_Cost' => 'تكلفة الصنف لاقرب 4 علامات عشريه',
     'Fraction_Curncy' => 'الارقام العشريه للعمله',
     'JVPst_SalCash' => 'ترحيل المبيعات النقديه للصندوق اليا',
@@ -1460,6 +1473,8 @@ return [
     'costcntr_no_input' => 'رقم مركز التكلفة',
     'Alw_slmacc' => 'محاسبة المندوبين',
 
+    'add_noti'           =>'اضافـة اشعار',
+    'edit_noti'          =>'تعديل الاشعارات',
 
 
 

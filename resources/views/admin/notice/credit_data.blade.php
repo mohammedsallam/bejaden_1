@@ -1,17 +1,22 @@
 <div class="col-md-6">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="panel-title">
+    <div class="panel panel-primary panel-H ">
+        <div class="panel-heading panel-A">
+            <div class="panel-title panel_1">
                 {{trans('admin.information_account')}}
             </div>
         </div>
+
+        <input type="text" name="getSalNo" id="getSalNo" value="{{$trns->Slm_No}}" hidden>
+        <input type="text" name="getSalName" id="getSalName"
+               value="{{\App\Models\Admin\AstSalesman::where('Slm_No', $trns->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first()}}" hidden>
         <div class="panel-body">
+            <input type="text" name="Ln_No" id="Ln_No" value="{{$trns->Ln_No}}" hidden>
             {{-- الحساب الرئيسى --}}
             <div class="row">
                 <div class="col-md-8">
                     <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
-                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled 
-                    value="{{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}">
+                    <input type="text" name="main_acc" id="main_acc" class="form-control" disabled
+                           value="{{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}">
                 </div>
                 <div class="col-md-4">
                     <label for="Acc_No"></label>
@@ -83,24 +88,20 @@
             </div>
             <div class="row">
                 {{-- البيان عربى --}}
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <br>
                     <label for="Tr_Ds" class="col-md-2">{{trans('admin.Statement_ar')}}</label>
-                    <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-10" value="{{$trns->Tr_Ds}}">
+                    <input type="text" name="Tr_Ds" id="Tr_Ds" class="form-control col-md-6" value="{{$trns->Tr_Ds}}">
                 </div>
                 {{-- نهاية البيان عربى --}}
                 {{-- البيان انجليزى --}}
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <br>
                     <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
-                    <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-10" value="{{$trns->Tr_Ds1}}">
+                    <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6" value="{{$trns->Tr_Ds1}}">
+                    <button style="margin-right: 10px" class="btn btn-primary panel-A col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
                 </div>
                 {{-- نهاية البيان انجليزى --}}
-                {{-- اضافة سطر --}}
-                <div class="col-md-2">
-                    <button class="btn btn-primary" id="add_line">{{trans('admin.add_line')}}</button>
-                </div>
-                {{-- نهاية اضافة سطر --}}
             </div>
         </div>
     </div>

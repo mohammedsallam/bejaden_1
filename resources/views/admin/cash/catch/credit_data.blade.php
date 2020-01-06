@@ -1,11 +1,16 @@
 <div class="col-md-6">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
+    <div class="panel panel-primary panel-H">
+        <div class="panel-heading panel-A">
             <div class="panel-title">
-                {{trans('admin.information_account')}}
+                {{trans('admin.dept_account')}}
             </div>
         </div>
+
+        <input type="text" name="getSalNo" id="getSalNo" value="{{$trns->Slm_No}}" hidden>
+        <input type="text" name="getSalName" id="getSalName"
+               value="{{\App\Models\Admin\AstSalesman::where('Slm_No', $trns->Slm_No)->pluck('Slm_Nm'.ucfirst(session('lang')))->first()}}" hidden>
         <div class="panel-body">
+            <input type="text" name="Ln_No" id="Ln_No" value="{{$trns->Ln_No}}" hidden>
             {{-- الحساب الرئيسى --}}
             <div class="row">
                 <div class="col-md-8">
@@ -54,8 +59,8 @@
             <div class="row">
                 {{-- المبلغ دائن --}}
                 <div class="col-md-4">
-{{--                    <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>--}}
-                    <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" value="{{$trns->Tr_Cr}}">
+                    <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
+                    <input type="text" name="Tr_Db" id="Tr_Db" class="form-control" value="{{$trns->Tr_Db}}">
                 </div>
                 {{-- نهاية المبلغ دائن --}}
                 {{-- رقم المستند --}}
@@ -90,16 +95,19 @@
                 </div>
                 {{-- نهاية البيان عربى --}}
                 {{-- البيان انجليزى --}}
-                <div class="col-md-10">
-                    <br>
+                <div class="row">
+                    {{-- البيان انجليزى --}}
+                    <div class="col-md-12">
+                        <br>
                     <label for="Tr_Ds1" class="col-md-2">{{trans('admin.Statement_en')}}</label>
-                    <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-10" value="{{$trns->Tr_Ds1}}">
+                    <input type="text" name="Tr_Ds1" id="Tr_Ds1" class="form-control col-md-6" value="{{$trns->Tr_Ds1}}">
+                    <button  style="margin-right: 10px" class="btn btn-primary panel-A col-md-3" id="add_line">{{trans('admin.add_line')}}</button>
+
+                    </div>
                 </div>
                 {{-- نهاية البيان انجليزى --}}
                 {{-- اضافة سطر --}}
-                <div class="col-md-2">
-                    <button class="btn btn-primary" id="add_line">{{trans('admin.add_line')}}</button>
-                </div>
+
                 {{-- نهاية اضافة سطر --}}
             </div>
         </div>

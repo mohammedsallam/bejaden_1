@@ -8,6 +8,7 @@ class GLJrnal extends Model
 {
     protected $table = 'GLJrnal';
     protected $primaryKey = 'ID_No';
+    public $incrementing = true;
     protected $fillable = [
         'Cmp_No',
         'Brn_No',

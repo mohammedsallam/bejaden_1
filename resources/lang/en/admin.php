@@ -15,6 +15,7 @@ return [
     'sInfoFiltered' => 'sInfoFiltered',
     'sInfoPostFix' => 'sInfoPostFix',
     'department_type' => 'type',
+    'allactivities' => 'All activities',
     'cc_type' => 'cc type',
     'sSearch' => 'sSearch',
     'sUrl' => 'sUrl',
