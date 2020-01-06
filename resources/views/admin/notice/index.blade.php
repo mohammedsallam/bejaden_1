@@ -47,6 +47,18 @@
                         }
                     });
                 });
+
+                // Modal - هل انت متأكد من الحذف؟
+                $('#myModal').on('shown.bs.modal', function () {
+                    $('#myInput').trigger('focus')
+                });
+
+                $('#delete').click(function(e){
+                    e.preventDefault();
+                });
+                $('#modal_yes').click(function(){
+                    $('#delete_form').submit();
+                });
             });
         </script>
     @endpush
@@ -140,7 +152,7 @@
                                                     <a href="{{route('notice.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('notice.destroy', $gl->ID_No)}}" method="POST">
+                                                    <form action="{{route('notice.destroy', $gl->ID_No)}}" method="POST" id="delete_form">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
                                                         <button type="submit" class="btn btn-danger" id="delete" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-trash" ></i></button>

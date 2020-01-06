@@ -910,6 +910,8 @@
                                         @foreach($banks as $bnk)
                                             <option value="{{$bnk->Acc_No}}">{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
+                                    @else
+                                        <option>{{trans('admin.nodata')}}</option>
                                     @endif
                                 </select>
                             </div>

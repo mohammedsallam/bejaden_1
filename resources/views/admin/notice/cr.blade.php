@@ -3,4 +3,6 @@
     @foreach($credits as $credit)
         <option value="{{$credit->Acc_No}}">{{$credit->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
     @endforeach
+@else
+    <option>{{trans('admin.nodata')}}</option>
 @endif

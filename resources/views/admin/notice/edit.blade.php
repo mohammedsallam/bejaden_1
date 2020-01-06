@@ -63,6 +63,18 @@
                     }
                 });
 
+                var Jr_Ty = $('#Jr_Ty').attr('val');
+                if(Jr_Ty === '19'){
+                    $('.panel_2').html('بيانات حساب دائن');
+                    $('.panel_1').html('بيانات حساب المدين');
+                    $('#label_db_cr').html('خصم مسموح به ');
+                    $('#label_Tr_Cr').html('المبلغ الدائن');
+                } else if(Jr_Ty === '18') {
+                    $('.panel_2').html('بيانات حساب المدين');
+                    $('.panel_1').html('بيانات حساب الدائن');
+                    $('#label_db_cr').html('خصم مكتسب ');
+                    $('#label_Tr_Cr').html('المبلغ المدين');
+                }
 
                 $(document).on('change', '#Cmp_No', function(){
                     //get branches of specific company selection
@@ -774,7 +786,7 @@
                             <div class="row">
                                 {{-- المبلغ دائن --}}
                                 <div class="col-md-4">
-                                    <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
+                                    <label for="Tr_Cr" id="label_Tr_Cr">{{trans('admin.amount_cr')}}</label>
                                     <input type="text" name="Tr_Cr" id="Tr_Cr" value="{{$gl->Tr_Cr}}" class="form-control">
                                 </div>
                                 {{-- نهاية المبلغ دائن --}}
@@ -820,7 +832,7 @@
             <div class="col-md-6">
                 <div class="panel panel-primary panel-H">
                     <div class="panel-heading panel-A panel-A">
-                        <div class="panel-title panel_2">
+                        <div class="panel-title panel_1">
                             {{trans('admin.dept_account')}}
                         </div>
                     </div>
@@ -828,12 +840,14 @@
                         <div class="row">
                             {{-- الصندوق الرئيسى --}}
                             <div class="col-md-6">
-                                <label for="Tr_Db_Select">{{trans('admin.main_cache')}}</label>
+                                <label for="Tr_Db_Select" id="label_db_cr">{{trans('admin.main_cache')}}</label>
                                 <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control">
                                     @if(count($banks) > 0)
                                         @foreach($banks as $bnk)
                                             <option value="{{$bnk->Acc_No}}" @if($gl->Acc_No == $bnk->Acc_No) selected @endif>{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
+                                    @else
+                                        <option>{{trans('admin.nodata')}}</option>
                                     @endif
                                 </select>
                             </div>

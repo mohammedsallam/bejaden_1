@@ -70,7 +70,7 @@ class receiptCashController extends Controller
      */
     public function create()
     {
-        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
         if(session('Cmp_No') == -1){
             $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
