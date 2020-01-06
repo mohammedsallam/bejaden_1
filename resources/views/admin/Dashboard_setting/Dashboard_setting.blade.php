@@ -18,7 +18,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الاعدادات لوحة التحكم</h2>
+                        <h2 class="info-box-text">بيانات لوحة التحكم</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>

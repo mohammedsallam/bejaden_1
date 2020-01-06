@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\limitations;
 
 use App\Branches;
 use App\DataTables\limitationsDataTable;
-use App\DataTables\noticedebtDataTable; 
+use App\DataTables\noticedebtDataTable;
 use App\Department;
 use App\Http\Controllers\Controller;
 use App\limitationReceipts;
@@ -28,7 +28,9 @@ class LimitationsController extends Controller
     {
         return $limitations->render('admin.limitations.invoice.index',['title'=>trans('admin.limitations')]);
     }
-
+    public function get_limitions (){
+        return view('admin.limitations.get_limitions');
+    }
     /**
      * Show the form for creating a new resource.
      *

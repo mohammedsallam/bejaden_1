@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',' البيانات الاصول الثابتة')
+@section('title','اعدادات الحسابات')
 
 @section('content')
     @push('css')
@@ -17,28 +17,41 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text"> بيانات الاساسية الاصول الثابتة</h2>
+                        <h2 class="info-box-text"> اعدادات القيود اليومية</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
                 <!-- /.info-box -->
             </a>
         </div>
-
-
         <div class="col-md-3 col-sm-6 col-12">
             <a href="#">
                 <div class="info-box">
-                    <span class="info-box-icon bg-warning"><i class="fa fa-file" aria-hidden="true"></i></span>
+                    <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">تقارير الاصول الثابتة </h2>
+                        <h2 class="info-box-text"> اعدادات الاصول</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
                 <!-- /.info-box -->
             </a>
         </div>
+        <div class="col-md-3 col-sm-6 col-12">
+            <a href="accbanks">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
+
+                    <div class="info-box-content">
+                        <h2 class="info-box-text"> بيانات البنوك و الصندوق</h2>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </a>
+        </div>
+
+
 
     </div>
 

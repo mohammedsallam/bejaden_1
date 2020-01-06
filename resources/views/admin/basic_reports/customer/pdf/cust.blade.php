@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>glcc Report</title>
+    <title></title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <!-- Optional theme -->
@@ -49,101 +49,99 @@
         text-align: center;
         font-size: 11px;
     }
-    .table td, .table th {
+    .table td{
+        text-align: right;
+    }
+    table td, table th {
         padding: .5rem;
         vertical-align: middle;
         border: 1px solid #000000 !important;
-        text-align:center;
     }
-    .table .th-empty{
+    table .th-empty{
         border: none !important;
         background: none
     }
 </style>
-
 <body>
+<div style="display: none">
+    {{$allCredit = 0}}
+    {{$allDebtor = 0}}</div>
 <div>
     <div style="float:right;font-weight:bold;width:50%">{{setting()->sitename_ar}}</div>
     <div style="float:left;font-weight:bold;width:50%;text-align:left">{{setting()->sitename_en}}</div>
 </div>
 <div style="text-align:center">
-    <img src="{{asset('../storage/app/public/' . setting()->icon)}}" style="max-width:70px;margin:15px 0">
+    <img src="{{asset('storage/'. setting()->icon)}}" style="max-width:70px;margin:15px 0">
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.motion_detection')}} {{$ccname}}</span>
-    {{--<span>{{$typeLimitationReceipts->name_ar}}</span>--}}
+    <span>تقارير العملاء</span>
 </div>
 
 <div class="clearfix"></div>
 <div class="el-date">
-
+{{--    <p>من تاريخ : {{}}</p>--}}
+{{--    <p>الى تاريخ : {{}}</p>--}}
 </div>
 
 
 <div class="clearfix"></div>
-
-
-{{--<div>--}}
-    {{--<div style="float:right">رقم مركز التكلفة : </div>--}}
-    {{--<div style="float:left">اسم مركز التكلفة : </div>--}}
-{{--</div>--}}
-
-<div class="hidden">{{ $i = 1 }}
-    {{$balance = 0}}
-    {{$dataDebtor = 0}}
-    {{$dataCredit = 0}}
-</div>
 <div class="table-responsive">
-    <table style="border:none" class="table table-bordered table-striped table-hover">
+    <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th rowspan="2">التاريخ</th>
-            <th rowspan="2">القيد</th>
-            <th rowspan="2">{{trans('admin.account_number')}}</th>
-            <th rowspan="2">{{trans('admin.note_for')}}</th>
-            <th colspan="2" style="vertical-align: middle;">الرصيد</th>
+            <th colspan="3">بيانات العميل</th>
+            <th colspan="3">وسائل الاتصال</th>
+            <th colspan="2">حد الائتمان</th>
+            <th colspan="2">اول المدة</th>
+        </tr>
+        <tr>
+            <th>رقم العميل</th>
+            <th>اسم العميل</th>
+            <th>المندوب</th>
+            <th>رقم التلفون</th>
+            <th>رقم موبايل</th>
+            <th>العنوان</th>
+            <th>مدة</th>
+            <th>مبلغ</th>
+            <th>مدين</th>
+            <th>دائن</th>
+
         </tr>
 
+        @foreach ($MTsCustomer as $merged){
         <tr>
-            <th>{{trans('admin.debtor')}}</th>
-            <th>{{trans('admin.creditor')}}</th>
+            <td>
+                {{$merged->ID_No}}
+            </td>
+            <td>
+                {{session_lang($merged->Cstm_NmEn,$merged->Cstm_NmAr)}}
+            </td>
+            <td>
+
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+
+            </td>
         </tr>
+        @endforeach
 
-
-        <tr>
-        </tr>
-        {{--by level--}}
-        @if($hastask || $hastask2)
-            {{--{{dd($value_merged)}}--}}
-
-            @foreach($value_merged as $merged)
-
-                <tr>
-                    <td>{{ date('Y-m-d',strtotime($merged->created_at)) }}</td>
-                    <td>{{ $merged->limitations['limitationId'] }}
-                        {{ $merged->receipts['receiptId'] }}</td>
-                    <td>{{ $merged->departments->code }}</td>
-                    <td>{{session_lang($merged->name_en,$merged->name_ar)}}</td>
-                    <td>{{$merged->debtor}}
-                        <div class="hidden">{{$dataDebtor += $merged->debtor}}</div>
-                    </td>
-                    <td>{{$merged->creditor}}
-                    <div class="hidden">{{$dataCredit += $merged->creditor}}</div>
-                    </td>
-                </tr>
-
-            @endforeach
-            <tr>
-                <th colspan="3" class="th-empty"></th>
-                <th>{{trans('admin.Total_motion')}}</th>
-                <th style="text-align: center">{{$dataDebtor}} </th>
-                <th style="text-align: center">{{$dataCredit}} </th>
-            </tr>
-        @endif
 
     </table>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

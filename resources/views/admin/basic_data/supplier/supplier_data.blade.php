@@ -12,7 +12,7 @@
     @endpush
     <div class="box">
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_data">
+            <a href="suppliers">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
 
@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_report">
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
 
@@ -39,7 +39,21 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_report">
+            <a href="astsupctg">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
+
+                    <div class="info-box-content">
+                        <h2 class="info-box-text">بيانات  تصنيف الموردين
+                        </h2>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12">
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-file" aria-hidden="true"></i></span>
 

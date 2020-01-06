@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title','اعدادات')
+@section('title','المدراء')
 
 @section('content')
     @push('css')
@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="sales_data">
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
@@ -78,7 +78,6 @@
                 <!-- /.info-box -->
             </a>
         </div>
-
 
     </div>
 

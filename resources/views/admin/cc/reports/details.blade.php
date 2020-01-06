@@ -1,15 +1,24 @@
-{!! Form::open(array('url' => 'admin/departments/reports/pdf', 'method' => 'POST', 'target' => '_blank')) !!}
-@if(!empty($type))
-{{Form::hidden('type', $type)}}
-@endif
-@if(!empty($typeRange))
-{{Form::hidden('typeRange', $typeRange)}}
-@endif
-@if(!empty($search))
-    {{Form::hidden('search', $search)}}
-@endif
-{{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin-right: 10px;')) }}
+@if($hasTask || $hasTask1)
+    {!! Form::open(array('url' => 'admin/cc/reports/pdf', 'method' => 'POST', 'target' => '_blank')) !!}
+
+    {{Form::hidden('glcc',$glcc)}}
+    {{Form::hidden('from',$from)}}
+    {{Form::hidden('to',$to)}}
 
 
-{!! Form::close() !!}
+    {{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin-right: 10px;')) }}
 
+    {!! Form::close() !!}
+
+@else
+    <div class="alert alert-danger">{{trans('admin.no_account_between_this_date')}}</div>
+@endif
+
+
+{{-- above this comment edited by Ibrahim El Monier--}}
+
+
+{{--by level--}}
+{{--@if(!empty($value_merged))--}}
+    {{--{{dd($value_merged)}}--}}
+{{--@endif--}}

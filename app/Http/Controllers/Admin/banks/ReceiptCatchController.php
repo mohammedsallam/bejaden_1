@@ -57,6 +57,9 @@ class ReceiptCatchController extends Controller
         }
     }
 
+    public function get_snadat(){
+        return view('admin.banks.get_snadat');
+    }
     public function getRecieptByCmp(Request $request){
         session(['recpt_cmp_no' => $request->Cmp_No]);
     }
