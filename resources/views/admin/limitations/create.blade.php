@@ -50,11 +50,9 @@
                 $('#Acc_No_Select').select2({});
                 $('#Costcntr_No').select2({});
 
-
-
                 //get branches and salesmen of specific company selection
                 $.ajax({
-                    url: "{{route('limitationBranchForEdit')}}", //ReceiptCatchController
+                    url: "{{route('limitationBranchForEdit')}}",
                     type: "post",
                     dataType: 'html',
                     data: {
@@ -68,7 +66,7 @@
 
                 //سعر الصرف حسب اختيار العمله
                 $.ajax({
-                    url: "{{route('getCurencyRate')}}", //ReceiptCatchController
+                    url: "{{route('getCurencyRate')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Curncy_No: $('#Curncy_No').children('option:selected').val() },
@@ -78,7 +76,7 @@
                 });
 
                 $.ajax({
-                    url: "{{route('checkSetting')}}", //ReceiptCatchController
+                    url: "{{route('checkSetting')}}",
                     type: "post",
                     dataType: 'json',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val()},
@@ -86,7 +84,7 @@
                         if (data.settings.Foreign_Curncy === 0){
                             $('.all_about_currency').removeClass('hidden')
                         } else if(data.settings.Foreign_Curncy === 1) {
-                            // $('.all_about_currency').addClass('hidden')
+                            $('.all_about_currency').addClass('hidden')
                         }
                         if(data.settings.Alw_slmacc === 0){
                             $('.sales_man_content').removeClass('hidden');
@@ -110,7 +108,7 @@
                     $('#Tr_No').val('');
                     $('#Tr_No1').val('');
                     $.ajax({
-                        url: "{{route('limitationBranchForEdit')}}", // ReceiptCatchController
+                        url: "{{route('limitationBranchForEdit')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -120,7 +118,7 @@
                     });
 
                     $.ajax({
-                        url: "{{route('checkSetting')}}", //ReceiptCatchController
+                        url: "{{route('checkSetting')}}",
                         type: "post",
                         dataType: 'json',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val()},
@@ -128,7 +126,7 @@
                             if (data.settings.Foreign_Curncy === 0){
                                 $('.all_about_currency').removeClass('hidden')
                             } else if(data.settings.Foreign_Curncy === 1) {
-                                // $('.all_about_currency').addClass('hidden')
+                                $('.all_about_currency').addClass('hidden')
                             }
                             if(data.settings.Alw_slmacc === 0){
                                 $('.sales_man_content').removeClass('hidden');
@@ -143,7 +141,7 @@
                                     }
                                 });
                             } else if(data.settings.Alw_slmacc === 1){
-                                // $('.sales_man_content').addClass('hidden');
+                                $('.sales_man_content').addClass('hidden');
                             }
                         }
                     });
@@ -329,6 +327,11 @@
 
                     selectHtml.remove();
                 });
+
+
+                /**
+                 * finish to here
+                 */
 
                 $('#Dc_No').change(function(){
                     $('#Dc_No_Db').val($('#Dc_No').val());
@@ -738,7 +741,7 @@
                         <div class="panel panel-primary">
                             <div class="panel-body">
                                 <input type="text" name="Ln_No" id="Ln_No" value="{{-1}}" hidden>
-                                <div class="row all_about_currency">
+                                <div class="row all_about_currency hidden">
                                     {{-- العمله --}}
                                     <div class="col-md-2">
                                         <div class="form-group">
@@ -788,7 +791,7 @@
                                     {{--نهاية الدائن والمدين--}}
                                 </div>
                                 {{-- الحساب الرئيسى --}}
-                            <div class="main_account_chart row">
+                            <div class="main_account_chart row hidden">
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="main_acc">{{trans('admin.main_account_chart')}}</label>
