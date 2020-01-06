@@ -313,6 +313,7 @@
                                     console.log(sum);
                                 }
                             }
+
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
 
@@ -574,7 +575,7 @@
                 });
             });
 
-            //حسال اجمالى المبلغ المطلوب بالعمله الاجنبيه
+            //حساب اجمالى المبلغ المطلوب بالعمله الاجنبيه
             $('#FTot_Amunt').change(function(){
                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
