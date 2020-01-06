@@ -11,9 +11,16 @@ use App\limitationReceipts;
 use App\limitations;
 use App\limitationsData;
 use App\limitationsType;
+use App\Models\Admin\AstCurncy;
+use App\Models\Admin\AstSalesman;
+use App\Models\Admin\GLaccBnk;
+use App\Models\Admin\GLJrnal;
+use App\Models\Admin\MainCompany;
+use App\Models\Admin\MtsCostcntr;
 use App\operation;
 use App\pjitmmsfl;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Matrix\Exception;
 
@@ -22,7 +29,8 @@ class LimitationsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param limitationsDataTable $limitations
+     * @return Response
      */
     public function index(limitationsDataTable $limitations)
     {
@@ -34,28 +42,65 @@ class LimitationsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
         DB::table('limitations_type')->where('status',0)->delete();
         DB::table('limitations')->where('status',0)->delete();
         DB::table('limitations_datas')->where('limitations_id',null)->delete();
+
         $limitationReceipts = limitationReceipts::where('type',1)->pluck('name_'.session('lang'),'id');
         $title = trans('admin.create_limitations');
         $branches = Branches::pluck('name_'.session('lang'),'id');
-        return view('admin.limitations.create',compact('title','branches','limitationReceipts'));
+
+
+        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        if(session('Cmp_No') == -1){
+            $companies = MainCompany::all();
+        }
+        else{
+            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
+        }
+        $flags = GLaccBnk::all();
+        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+        $banks = [];
+        $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+        foreach($flags as $flag){
+            if($flag->RcpCsh_Voucher == 1){
+                array_push($banks, $flag);
+            }
+        }
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+//        $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+        $AllSalesman = AstSalesman::all();
+
+
+        return view('admin.limitations.create',compact([
+            'title',
+            'branches',
+            'limitationReceipts',
+            'companies',
+            'banks',
+            'last_record',
+            'cost_center',
+            'crncy',
+            'AllSalesman',
+
+        ]));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         if($request->ajax()){
+
+            dd($request->all());
             $type = $request->type;
             $limitations = $request->limitations;
             $invoice = $request->invoice;
@@ -80,7 +125,7 @@ class LimitationsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id,Request $request)
     {
@@ -104,7 +149,7 @@ class LimitationsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -125,7 +170,7 @@ class LimitationsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
     public function update(Request $request, $id)
@@ -191,7 +236,7 @@ class LimitationsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

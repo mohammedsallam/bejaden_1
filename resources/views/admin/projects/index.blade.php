@@ -283,8 +283,8 @@
                 {{-- form start --}}
                 <div class="col-md-6" id="chart_form">
                     {!! Form::open(['method'=>'POST','route' => ['projects.update', $chart_item->Prj_No? $chart_item->Prj_No : null], 'id' => 'edit_form','files' => true]) !!}
-                        {{csrf_field()}}
-                        {{method_field('PUT')}}
+                    {{csrf_field()}}
+                    {{method_field('PUT')}}
 
 
                         <!-- Nav tabs -->

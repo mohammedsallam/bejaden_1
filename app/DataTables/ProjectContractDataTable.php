@@ -18,10 +18,10 @@ class ProjectContractDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a href="project_contract/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . trans('admin.edit') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i></a>';
             })
             ->addColumn('show', function ($query) {
-                return '<a href="project_contract/'.$query->ID_No.'" class="btn btn-primary show"><i class="fa fa-show"></i> ' . trans('admin.show') . '</a>';
+                return '<a href="project_contract/'.$query->ID_No.'" class="btn btn-primary show"><i class="fa fa-search"></i></a>';
             })
             ->addColumn('branshes', function ($query) {
                 return $query->branshe->map(function($branshe) {

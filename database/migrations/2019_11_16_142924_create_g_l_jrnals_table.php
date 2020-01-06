@@ -18,7 +18,7 @@ class CreateGLJrnalsTable extends Migration
             $table->integer('Cmp_No')->nullable();//الشركه
             $table->integer('Brn_No')->nullable();//الفرع
             $table->integer('Jr_Ty')->nullable();//نوع القيد
-            $table->enum('noti_Ty', [1,2])->nullable(); //نوع الاشعار
+            // $table->enum('noti_Ty', [1,2])->nullable(); //نوع الاشعار
             $table->bigInteger('Tr_No')->nullable();//رقم القيد
             $table->integer('Month_No')->nullable();//رقم الشهر
             $table->integer('Month_Jvno')->nullable();//رقم القيد\الشهر

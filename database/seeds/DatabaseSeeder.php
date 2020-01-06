@@ -13,18 +13,18 @@ class DatabaseSeeder extends Seeder
     {
 
 
-        $this->call(branche::class);
-        $this->call(setting::class);
         $this->call(admin::class);
-        $this->call(visitor::class);
-        $this->call(operations::class);
-        $this->call(countiestableseeder::class);
-        $this->call(permissions::class);
-        $this->call(roles::class);
-        $this->call(model_has_permissions::class);
-        $this->call(model_has_roles::class);
-        $this->call(levels::class);
-        $this->call(limitation_Receipts::class);
+//        $this->call(branche::class);
+//        $this->call(setting::class);
+//        $this->call(visitor::class);
+//        $this->call(operations::class);
+//        $this->call(countiestableseeder::class);
+//        $this->call(permissions::class);
+//        $this->call(roles::class);
+//        $this->call(model_has_permissions::class);
+//        $this->call(model_has_roles::class);
+//        $this->call(levels::class);
+//        $this->call(limitation_Receipts::class);
 
     }
 }

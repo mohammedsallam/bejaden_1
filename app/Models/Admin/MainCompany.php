@@ -20,6 +20,8 @@ class MainCompany extends Model
         'Picture',
         'Accredit_expens',
         'Foreign_Curncy',
+        'Alw_slmacc',
+        'L_Curncy_No',
     ];
 
     public function admin(){

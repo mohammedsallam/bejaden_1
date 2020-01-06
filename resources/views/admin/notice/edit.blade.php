@@ -27,7 +27,7 @@
                 var id = $('#id').val();
                 //get branches of specific company selection
                 $.ajax({
-                    url: "{{route('branchForEditN')}}",
+                    url: "{{route('branchForEdit')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No, id: id },
@@ -63,11 +63,23 @@
                     }
                 });
 
+                var Jr_Ty = $('#Jr_Ty').attr('val');
+                if(Jr_Ty === '19'){
+                    $('.panel_2').html('بيانات حساب دائن');
+                    $('.panel_1').html('بيانات حساب المدين');
+                    $('#label_db_cr').html('خصم مسموح به ');
+                    $('#label_Tr_Cr').html('المبلغ الدائن');
+                } else if(Jr_Ty === '18') {
+                    $('.panel_2').html('بيانات حساب المدين');
+                    $('.panel_1').html('بيانات حساب الدائن');
+                    $('#label_db_cr').html('خصم مكتسب ');
+                    $('#label_Tr_Cr').html('المبلغ المدين');
+                }
 
                 $(document).on('change', '#Cmp_No', function(){
                     //get branches of specific company selection
                     $.ajax({
-                        url: "{{route('branchForEditN')}}",
+                        url: "{{route('branchForEdit')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -77,7 +89,7 @@
                     });
                     //get tax value of selected company
                     $.ajax({
-                        url: "{{route('getTaxValueN')}}",
+                        url: "{{route('getTaxValue')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -88,7 +100,19 @@
                 });
 
                 //get salesmen of specific branch selection
-                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                $.ajax({
+                    url: "{{route('getCmpSalesMenN')}}",
+                    type: "POST",
+                    dataType: 'html',
+                    data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                    success: function(data){
+                        $('#Slm_No_Name').html(data);
+                        $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                    }
+                });
+
+                // //get salesmen of specific branch selection
+                // $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
 
                 $(document).on('change', '#Ac_Ty', function(){
                     var Cmp_No = $('#Cmp_No').children('option:selected').val();
@@ -162,9 +186,20 @@
                     }
                 }
                 function tableText(tableCell) {
+
                     var row = tableCell;
                     var Ln_No = tableCell.cells[0].innerHTML;
                     var Tr_No = $('#Tr_No').val();
+                    var Jr_Ty = $('#Jr_Ty').attr('val');
+
+                    if(Jr_Ty == 18){
+                        var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    }else if(Jr_Ty == 19){
+                        var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                    }
+                    old = updated_sum;
+                    $('#Tr_Db_Db').val(updated_sum);
+                    $('#Tr_Cr_Db').val(updated_sum);
 
                     if(Ln_No != 1){
                         $.ajax({
@@ -284,11 +319,6 @@
                             Tr_Ds1: $('#Tr_Ds1').val(),
                             Acc_No: $('#Acc_No').val(),
                             last_record : $('#last_record').val(),
-                            Chq_no: $('#Chq_no').val(),
-                            Bnk_Nm: $('#Bnk_Nm').val(),
-                            Issue_Dt: $('#Issue_Dt').val(),
-                            Due_Issue_Dt: $('#Due_Issue_Dt').val(),
-                            Rcpt_By: $('#Rcpt_By').val(),
                             Tr_Db_Acc_No: $('#Tr_Db_Acc_No').val(),
                             Tr_Db_Db: $('#Tr_Db_Db').val(),
                             Tr_Cr_Db: $('#Tr_Cr_Db').val(),
@@ -299,30 +329,58 @@
 
                         success: function(data){
                             var response = JSON.parse(data);
-                            if(response.success == true){
-                                var rows = document.getElementById('table').rows;
-                                var sum = 0.0;
-                                for (var i=0; i<rows.length; i++) {
-                                    var txt = rows[i].textContent || rows[i].innerText;
-                                    if (txt.trim()===""){
-                                        rows[i].innerHTML=`
-                                        <td>`+$('#Ln_No').val()+`</td>
-                                        <td>`+$('#Sysub_Account').val()+`</td>
-                                        <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                        <td>0.00</td>
-                                        <td>`+$('#Tr_Cr').val()+`</td>
-                                        <td>`+$('#Tr_Ds').val()+`</td>
-                                        <td>`+$('#Dc_No').val()+`</td>
-                                        <td>`+$('#Tr_Ds1').val()+`</td>
-                                    `;
+                            var Jr_Ty = $('#Jr_Ty').attr('val');
+                            if(response.success == true) {
+                                if (Jr_Ty == 18) {
+                                    var rows = document.getElementById('table').rows;
+                                    var sum = 0.0;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var txt = rows[i].textContent || rows[i].innerText;
+                                        if (txt.trim() === "") {
+                                            rows[i].innerHTML = `
+                                            <td>` + $('#Ln_No').val() + `</td>
+                                            <td>` + $('#Sysub_Account').val() + `</td>
+                                            <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                            <td>0.00</td>
+                                            <td>` + $('#Tr_Cr').val() + `</td>
+                                            <td>` + $('#Tr_Ds').val() + `</td>
+                                            <td>` + $('#Dc_No').val() + `</td>
+                                            <td>` + $('#Tr_Ds1').val() + `</td>
+                                        `;
+                                        }
                                     }
+
+                                    var sum = 0.0;
+                                    for (var i = 1; i < rows.length; i++) {
+                                        sum += parseFloat(rows[i].cells[4].innerHTML);
+                                    }
+                                    rows[1].cells[3].innerHTML = sum;
+                                }else if (Jr_Ty == 19) {
+                                    var rows = document.getElementById('table').rows;
+                                    var sum = 0.0;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var txt = rows[i].textContent || rows[i].innerText;
+                                        if (txt.trim() === "") {
+                                            rows[i].innerHTML = `
+                                            <td>` + $('#Ln_No').val() + `</td>
+                                            <td>` + $('#Sysub_Account').val() + `</td>
+                                            <td>` + $('#Acc_No_Select option:selected').html() + `</td>
+                                            <td>` + $('#Tr_Cr').val() + `</td>
+                                            <td>0.00</td>
+                                            <td>` + $('#Tr_Ds').val() + `</td>
+                                            <td>` + $('#Dc_No').val() + `</td>
+                                            <td>` + $('#Tr_Ds1').val() + `</td>
+                                        `;
+                                        }
+                                    }
+
+                                    var sum = 0.0;
+                                    for (var i = 1; i < rows.length; i++) {
+                                        sum += parseFloat(rows[i].cells[3].innerHTML);
+                                    }
+                                    rows[1].cells[4].innerHTML = sum;
                                 }
 
-                                var sum = 0.0;
-                                for (var i=1; i<rows.length; i++){
-                                    sum += parseFloat(rows[i].cells[4].innerHTML);
-                                }
-                                rows[1].cells[3].innerHTML = sum;
                                 $('#Tr_Db_Db').val(sum);
                                 $('#Tr_Cr_Db').val(sum);
 
@@ -411,13 +469,12 @@
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                                window.location.replace('/mai/bejaden_1/public/admin/notice');
+                                window.location.replace('{{ url('admin/notice')}}');
                                 $('#Tr_No').val(null);
                                 $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
                                 $('#Tot_Amunt').val(null);
                                 $('#Taxp_Extra').val(null);
-                                $('#Rcpt_By').val(null);
                                 $('#Slm_No').val(null);
                                 $('#Ac_Ty').val(null);
                                 $('#Sysub_Account').val(null);
@@ -527,6 +584,10 @@
             <button type="submit" class="btn btn-danger" id="delete_button" style="float:left;"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
         </div>
+
+        <br>
+        <br>
+        <br>
         <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
 
         {{-- header start --}}
@@ -593,7 +654,7 @@
                     {{-- نوع الاشعار دائـن / مديـن --}}
                     <div class="col-md-2">
                         <label for="Jr_Ty">{{trans('admin.noti_type')}}</label>
-                        <input type="text" name="Jr_Ty" class="form-control" disabled value="
+                        <input type="text" name="Jr_Ty" id="Jr_Ty" val="{{$gl->Jr_Ty}}" class="form-control" disabled value="
                             @if($gl->Jr_Ty == 19) {{trans('admin.Fbal_CR_cr')}}
                         @elseif($gl->Jr_Ty == 18){{trans('admin.Fbal_Db_db')}}
                         @endif
@@ -729,8 +790,8 @@
                             <div class="row">
                                 {{-- المبلغ دائن --}}
                                 <div class="col-md-4">
-                                    <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                                    <input type="text" name="Tr_Cr" id="Tr_Cr" value="{{$gl->Tr_Cr}}" class="form-control">
+                                    <label for="Tr_Cr" id="label_Tr_Cr">{{trans('admin.amount_cr')}}</label>
+                                    <input style="background-color: #e9ea92;" type="text" name="Tr_Cr" id="Tr_Cr" value="{{$gl->Tr_Cr}}" class="form-control">
                                 </div>
                                 {{-- نهاية المبلغ دائن --}}
                                 {{-- رقم المستند --}}
@@ -775,7 +836,7 @@
             <div class="col-md-6">
                 <div class="panel panel-primary panel-H">
                     <div class="panel-heading panel-A panel-A">
-                        <div class="panel-title panel_2">
+                        <div class="panel-title panel_1">
                             {{trans('admin.dept_account')}}
                         </div>
                     </div>
@@ -783,12 +844,14 @@
                         <div class="row">
                             {{-- الصندوق الرئيسى --}}
                             <div class="col-md-6">
-                                <label for="Tr_Db_Select">{{trans('admin.main_cache')}}</label>
+                                <label for="Tr_Db_Select" id="label_db_cr">{{trans('admin.main_cache')}}</label>
                                 <select name="Tr_Db_Select" id="Tr_Db_Select" class="form-control">
                                     @if(count($banks) > 0)
                                         @foreach($banks as $bnk)
                                             <option value="{{$bnk->Acc_No}}" @if($gl->Acc_No == $bnk->Acc_No) selected @endif>{{$bnk->{'Acc_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
+                                    @else
+                                        <option>{{trans('admin.nodata')}}</option>
                                     @endif
                                 </select>
                             </div>
@@ -880,19 +943,19 @@
                                 <td>{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
-                                    @if($trns->Sysub_Account == 0)
+                                    @if($trns->Sysub_AccountA == 0)
                                         {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
                                     @else
-                                        @if($gl->Cstm_No)
+                                        @if($gl->Ac_Ty == 1)
                                             {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Sup_No)
+                                        @if($gl->Ac_Ty == 2)
                                             {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Emp_No)
+                                        @if($gl->Ac_Ty == 3)
                                             {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
-                                        @if($gl->Chrt_No)
+                                        @if($gl->Ac_Ty == 4)
                                             {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
                                         @endif
                                     @endif

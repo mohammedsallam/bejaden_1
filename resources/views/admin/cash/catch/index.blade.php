@@ -48,6 +48,18 @@
                         }
                     });
                 });
+
+                // Modal - هل انت متأكد من الحذف؟
+                $('#myModal').on('shown.bs.modal', function () {
+                    $('#myInput').trigger('focus')
+                });
+
+                $('#delete').click(function(e){
+                    e.preventDefault();
+                });
+                $('#modal_yes').click(function(){
+                    $('#delete_form').submit();
+                });
             });
         </script>
     @endpush
@@ -90,7 +102,7 @@
                 <div class="box-header">
                     {{-- header end --}}
                     <div class="row">
-                        <a class="btn btn-info" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_caching_receipt')}}</a>
+                        <a class="btn btn-primary" style="float: left;margin-left: 20px" href="{{route('receiptCash.create')}}">{{trans('admin.create_caching_receipt')}}</a>
 
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
@@ -148,10 +160,10 @@
                                                     <a href="{{route('receiptCash.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>
                                                 <td>
-                                                    <form action="{{route('receiptCash.destroy', $gl->ID_No)}}" method="POST">
+                                                    <form action="{{route('receiptCash.destroy', $gl->ID_No)}}" id="delete_form" method="POST">
                                                         {{csrf_field()}}
                                                         {{method_field('DELETE')}}
-                                                        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                                        <button type="submit" class="btn btn-danger" id="delete" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-trash" ></i></button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -171,5 +183,27 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal --}}
+    <div class="modal fade" id="saveChangesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{trans('admin.You_Want_You_Sure_Delete_This_Record')}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_yes">{{trans('admin.yes')}}</button>
+                    <button type="button" class="btn btn-primary" id="modal_no" data-dismiss="modal" aria-label="Close">{{trans('admin.no')}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal end --}}
 
 @endsection

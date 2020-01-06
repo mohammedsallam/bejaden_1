@@ -35,7 +35,7 @@
                 }
             });
 
-            //get companies on page load
+            //get salesman on page load
             $.ajax({
                 url: "{{route('getCmpSalesMen')}}",
                 type: "POST",
@@ -45,6 +45,9 @@
                     $('#Slm_No_Name').html(data);
                     $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                 }
+            });
+            $(document).on('change', '#Slm_No_Name', function(){
+                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
             });
 
             //get tax value according to selected company on page load
@@ -181,6 +184,7 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                     });
                 }
@@ -194,7 +198,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    // $('#Taxp_Extra').val(null);
                     $('#Tr_Cr').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -310,6 +313,7 @@
                                     console.log(sum);
                                 }
                             }
+
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
 
@@ -435,7 +439,6 @@
                 else{
                     $('#Tr_Cr').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
-                    // $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Cr').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -572,7 +575,7 @@
                 });
             });
 
-            //حسال اجمالى المبلغ المطلوب بالعمله الاجنبيه
+            //حساب اجمالى المبلغ المطلوب بالعمله الاجنبيه
             $('#FTot_Amunt').change(function(){
                 if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null){
                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
@@ -820,7 +823,7 @@
                         {{-- المبلغ دائن --}}
                         <div class="col-md-4">
                             <label for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" disabled>
+                            <input type="text" name="Tr_Cr" id="Tr_Cr" class="form-control" style="background: rgb(218, 218, 61);" disabled>
                         </div>
                         {{-- نهاية المبلغ دائن --}}
                         {{-- رقم المستند --}}
@@ -984,7 +987,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{trans('admin.yes')}}</button>
-          <button type="button" class="btn btn-primary" id="modal_no">{{trans('admin.no')}}</button>
+          <button type="button" class="btn btn-primary" id="modal_no"  data-dismiss="modal" aria-label="Close">{{trans('admin.no')}}</button>
         </div>
       </div>
     </div>

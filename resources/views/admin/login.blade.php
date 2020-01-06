@@ -32,7 +32,7 @@
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="../../index2.html"><b>Info</b>SAS</a>
+        <a href="#"><b>Info</b>SAS</a>
     </div>
 
 @include('admin.layouts.message')

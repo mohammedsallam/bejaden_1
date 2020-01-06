@@ -111,6 +111,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
 //        projects
+<<<<<<< HEAD
         Route::resource('projects','Admin\Project\ProjectController');
         Route::get('projects_section','Admin\Project\ProjectController@projects_section')->name('projects.projects_section');
         Route::get('projects/department/print','Admin\Project\ProjectController@print');
@@ -122,12 +123,24 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
+=======
+        Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects/department/print','Admin\Project\ProjectController1@print');
+        Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
+        Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
+        Route::post('projects/reports/pdf','Admin\Project\ProjectController1@pdf');
+        Route::post('projects/getTreePrj','Admin\Project\ProjectController1@getTree')->name('getTreePrj');
+        Route::post('projects/getproj','Admin\Project\ProjectController1@getproj')->name('getproj');
+        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController1@getEditBlade')->name('getEditBladePrj');
+        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController1@createNewPrj')->name('createNewAccPrj');
+        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController1@initChartPrj')->name('initChartAccPrj');
+>>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
 
-        Route::get('getCity','Admin\Project\ProjectController@getCities')->name('getCity');
+        Route::get('getCity','Admin\Project\ProjectController1@getCities')->name('getCity');
 
 
-        Route::get('projects/department/Review','Admin\Project\ProjectController@Review');
-        Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController@reviewdepartment')->name('reviewdepartment');
+        Route::get('projects/department/Review','Admin\Project\ProjectController1@Review');
+        Route::get('projects/department/reviewdepartment','Admin\Project\ProjectController1@reviewdepartment')->name('reviewdepartment');
 
 
 
@@ -199,8 +212,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
 
 // 0_0 Dashboard_setting
         Route::get('general_setting', function () {
@@ -256,8 +272,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
-
-
 
 //        1
 //        0
@@ -370,6 +384,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('getCmpSalesMen','Admin\banks\ReceiptCatchController@getCmpSalesMen')->name('getCmpSalesMen');
         Route::post('addDeletedLines','Admin\banks\ReceiptCatchController@addDeletedLines')->name('addDeletedLines');
 
+        Route::resource('curencies', 'Admin\Curency\CurencyController');
+
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
         Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
@@ -382,6 +398,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('updateTrnsC', 'Admin\Cash\receiptCashController@updateTrnsC')->name('updateTrnsC');
         Route::post('getCatchRecptC', 'Admin\Cash\receiptCashController@getCatchRecpt')->name('getCatchRecptC');
         Route::post('getCashptDetails','Admin\Cash\receiptCashController@getCashptDetails')->name('getCashptDetails');
+        Route::post('addDeletedLiness','Admin\Cash\receiptCashController@addDeletedLines')->name('addDeletedLiness');
+
 
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
@@ -395,8 +413,23 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
         Route::get('banks/Receipt/receipts/catch/all','Admin\banks\ReceiptController@catch')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/all','Admin\banks\ReceiptController@caching')->name('receipts.caching');
+
+
+        /**
+         * Limitation routes
+         */
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
+        Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
+        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
+        Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
+        Route::post('checkSetting', 'Admin\limitations\LimitationsOperationsController@checkSetting')->name('checkSetting');
+        Route::post('limitationGetMainAccNoN', 'Admin\limitations\LimitationsOperationsController@getMainAccNo')->name('limitationGetMainAccNoN');
+        Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
+        Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
+        Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
+
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
         Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');

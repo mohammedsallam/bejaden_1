@@ -23,6 +23,7 @@
             var catch_data = [];
             var old = 0;
             var Ln_No = 1;
+            var tax = false;
 
             var Cmp_No = $('#Cmp_No').children('option:selected').val();
             var id = $('#id').val();
@@ -45,6 +46,21 @@
                 success: function(data){
                     $('#Taxp_Extra').val(data);
                 }
+            });
+
+            //get companies on page load
+            $.ajax({
+                url: "{{route('getCmpSalesMen')}}",
+                type: "POST",
+                dataType: 'html',
+                data: {"_token": "{{ csrf_token() }}", Cmp_No: $('#Cmp_No').children('option:selected').val() },
+                success: function(data){
+                    $('#Slm_No_Name').html(data);
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                }
+            });
+            $(document).on('change', '#Slm_No_Name', function(){
+                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
             });
 
             $(document).on('change', '#Cmp_No', function(){
@@ -126,6 +142,8 @@
                         data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                         success: function(data){
                             $('#Slm_No_Name').html(data);
+                            $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+
                         }
                     });
                 }
@@ -148,6 +166,11 @@
                 var row = tableCell;
                 var Ln_No = tableCell.cells[0].innerHTML;
                 var Tr_No = $('#Tr_No').val();
+                var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
+                old = updated_sum;
+
+                $('#Tr_Db_Db').val(updated_sum);
+                $('#Tr_Cr_Db').val(updated_sum);
 
                 if(Ln_No != 1){
                     $.ajax({
@@ -188,7 +211,6 @@
                 }
                 else{
                     $('#Taxp_Extra').attr('disabled','disabled');
-                    $('#Taxp_Extra').val(null);
                     $('#Tr_Db').val($('#Tot_Amunt').val());
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
                 }
@@ -230,6 +252,13 @@
             //اضافة سطر فى الجدول
             $(document).on('click', '#add_line', function(e){
                 e.preventDefault();
+
+                if($('#create_cache :checkbox[id=Taxp_Extra_check]').is(':checked'))
+                {
+                    tax = true;
+                }else{
+                    tax = false;
+                }
 
                 if($('#Ln_No').val() == -1){
                     Ln_No = Ln_No + 1;
@@ -277,6 +306,7 @@
                         var response = JSON.parse(data);
                         if(response.success == true){
                             var rows = document.getElementById('table').rows;
+                            console.log(rows);
                             var sum = 0.0;
                             for (var i=0; i<rows.length; i++) {
                                 var txt = rows[i].textContent || rows[i].innerText;
@@ -285,8 +315,8 @@
                                         <td>`+$('#Ln_No').val()+`</td>
                                         <td>`+$('#Sysub_Account').val()+`</td>
                                         <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                        <td>0.00</td>
                                         <td>`+$('#Tr_Db').val()+`</td>
+                                        <td>0.00</td>
                                         <td>`+$('#Tr_Ds').val()+`</td>
                                         <td>`+$('#Dc_No').val()+`</td>
                                         <td>`+$('#Tr_Ds1').val()+`</td>
@@ -296,9 +326,9 @@
 
                             var sum = 0.0;
                             for (var i=1; i<rows.length; i++){
-                                sum += parseFloat(rows[i].cells[4].innerHTML);
+                                sum += parseFloat(rows[i].cells[3].innerHTML);
                             }
-                            rows[1].cells[3].innerHTML = sum;
+                            rows[1].cells[4].innerHTML = sum;
                             $('#Tr_Db_Db').val(sum);
                             $('#Tr_Cr_Db').val(sum);
 
@@ -335,6 +365,7 @@
                                 Ln_No: $('#Ln_No').val(),
                                 FTot_Amunt: $('#FTot_Amunt').val(),
                                 Taxv_Extra: $('#Taxv_Extra').val(),
+                                tax: tax,
                             };
 
                             catch_data.push(item);
@@ -385,7 +416,6 @@
                 else{
                     $('#Tr_Db').val(parseFloat(amount));
                     $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
-                    $('#Taxp_Extra').val(null);
                 }
 
                 $('#Taxv_Extra').val(parseFloat($('#Tr_Db').val()) - parseFloat($('#Tot_Amunt').val()));
@@ -407,7 +437,7 @@
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
                             $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            window.location.replace('/94/bejaden_1/public/admin/receiptCash');
+                            window.location.replace('{{ url('admin/receiptCash')}}');
                             $('#Tr_No').val(null);
                             $('#Curncy_No').val(0);
                             $('#Curncy_Rate').val(null);
@@ -437,19 +467,17 @@
                             $('#FTot_Amunt').val(null);
                             $('#Taxv_Extra').val(null);
                             $('#table_view').html(`<table class="table" id="table">
-
-
-                                                    <thead>
-                                                        <th>{{trans('admin.id')}}</th>
-                                                        <th>{{trans('admin.account_number')}}</th>
-                                                        <th>{{trans('admin.account_name')}}</th>
-                                                        <th>{{trans('admin.motion_debtor')}}</th>
-                                                        <th>{{trans('admin.motion_creditor')}}</th>
-                                                        <th>{{trans('admin.note_ar')}}</th>
-                                                        <th>{{trans('admin.receipt_number')}}</th>
-                                                        <th>{{trans('admin.note_en')}}</th>
-                                                    </thead>
-                                                </table>`);
+                                            <thead>
+                                                <th>{{trans('admin.id')}}</th>
+                                                <th>{{trans('admin.account_number')}}</th>
+                                                <th>{{trans('admin.account_name')}}</th>
+                                                <th>{{trans('admin.motion_debtor')}}</th>
+                                                <th>{{trans('admin.motion_creditor')}}</th>
+                                                <th>{{trans('admin.note_ar')}}</th>
+                                                <th>{{trans('admin.receipt_number')}}</th>
+                                                <th>{{trans('admin.note_en')}}</th>
+                                            </thead>
+                                        </table>`);
                         }
                     });
                 }
@@ -884,25 +912,21 @@
                                 <td>{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
-                                    @if($trns->Sysub_Account == 0)
+                                    @if($trns->Ac_Ty == 1)
                                         {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                    @else
-                                        @if($gl->Cstm_No)
-                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Sup_No)
-                                            {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Emp_No)
-                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
-                                        @if($gl->Chrt_No)
-                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                        @endif
+                                    @endif
+                                    @if($trns->Ac_Ty == 2)
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                    @endif
+                                    @if($trns->Ac_Ty == 3)
+                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                    @endif
+                                    @if($trns->Ac_Ty == 4)
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
                                     @endif
                                 </td>
-                                <td>{{$trns->Tr_Cr}}</td>
                                 <td>{{$trns->Tr_Db}}</td>
+                                <td>{{$trns->Tr_Cr}}</td>
                                 <td>{{$trns->Tr_Ds}}</td>
                                 <td>{{$trns->Dc_No}}</td>
                                 <td>{{$trns->Tr_Ds1}}</td>

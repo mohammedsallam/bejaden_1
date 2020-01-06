@@ -213,6 +213,7 @@ class ReceiptCatchController extends Controller
                     'Doc_Type' => $data->Doc_Type,
                     'User_ID' => auth::user()->id,
                     'Rcpt_Value' => $data->Tot_Amunt,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'Ln_No' => $data->Ln_No,
                 ]);
                 $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
@@ -286,10 +287,6 @@ class ReceiptCatchController extends Controller
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'status' => 0,
             ]);
-
-            foreach($catch_data as $data){
-                $header->FTot_Amunt += $data->FTot_Amunt;
-            }
 
             if($catch_data[$last_index]->tax){$catch_data[$last_index]->Taxp_Extra;}
             if($catch_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $catch_data[$last_index]->Sysub_Account;}
@@ -500,7 +497,6 @@ class ReceiptCatchController extends Controller
                 'Cmp_No' => $updated_data[$last_index]->Cmp_No,
                 'Brn_No' => $updated_data[$last_index]->Brn_No,
                 'Jr_Ty' => 2,
-                // 'Tr_No' => $updated_data[$last_index]->Tr_No,
                 'Month_No' => Carbon::now()->month,
                 'Month_Jvno' => $updated_data[$last_index]->Tr_No,
                 'Doc_Type' => $updated_data[$last_index]->Doc_Type,
@@ -522,6 +518,8 @@ class ReceiptCatchController extends Controller
                 'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
                 'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
                 'Slm_No' => $updated_data[$last_index]->Slm_No,
+                'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $updated_data[$last_index]->Tr_Cr_Db,
             ]);
 
             if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}

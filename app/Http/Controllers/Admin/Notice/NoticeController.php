@@ -113,7 +113,6 @@ class NoticeController extends Controller
     public function store(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
-//        dd($catch_data);
         if (count($catch_data) > 0) {
 
             $last_index =count($catch_data) - 1;
@@ -131,18 +130,23 @@ class NoticeController extends Controller
                 'Ac_Ty' => $catch_data[$last_index]->Ac_Ty,
                 'Curncy_No' => $catch_data[$last_index]->Curncy_No,
                 'Curncy_Rate' => $catch_data[$last_index]->Curncy_Rate,
-//                'Taxp_Extra' => $catch_data[$last_index]->Taxp_Extra,
                 'Taxv_Extra' => $catch_data[$last_index]->Taxv_Extra,
                 'Tot_Amunt' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds,
+                'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds1,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
+                'Slm_No' => $catch_data[$last_index]->Slm_No,
+
             ]);
+
+            $total_header = 0;
             foreach($catch_data as $data){
-                $header->FTot_Amunt += $data->FTot_Amunt;
+                $total_header += $data->FTot_Amunt;
             }
 
+            $header->FTot_Amunt = $total_header;
             $header->Entr_Dt = $header->created_at->format('Y-m-d');
             $header->Entr_Time = $header->created_at->format('H:i:s');
             if($catch_data[$last_index]->tax){$header->Taxp_Extra = $catch_data[$last_index]->Taxp_Extra;}
@@ -160,29 +164,31 @@ class NoticeController extends Controller
         }
 
         if ($request->catch_data) {
-
             foreach ($catch_data as $data) {
-                if($data->Jr_Ty == 18) {
+
+                if($data->Jr_Ty == 18) { //Debit مدين
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();
 
                     if (!$debt) {
+
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
                             'Brn_No' => $data->Brn_No,
                             'Jr_Ty' => $data->Jr_Ty,
                             'Tr_No' => $data->Tr_No,
+                            'Month_Jvno' => $data->Tr_No,
                             'Month_No' => Carbon::now()->month,
                             'Tr_Dt' => $data->Tr_Dt,
                             'Tr_DtAr' => $data->Tr_DtAr,
                             'Ac_Ty' => 1,
                             'Sysub_Account' => 0,
                             'Acc_No' => $data->Tr_Db_Acc_No,
-                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                             'Tr_Cr' => 0.00,
-                            'FTr_Db' => $header->FTot_Amunt,
+                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                             'FTr_Cr' => 0.00,
+                            'FTr_Db' => $header->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
                             'Tr_Ds' => $data->Tr_Ds,
                             'Tr_Ds1' => $data->Tr_Ds1,
@@ -206,17 +212,18 @@ class NoticeController extends Controller
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
+                        'Month_Jvno' => $data->Tr_No,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => $data->Ac_Ty,
                         'Sysub_Account' => $data->Sysub_Account,
                         'Acc_No' => $data->Acc_No,
-                        'Tr_Db' => 0.00,
                         'Tr_Cr' => $data->Tr_Cr,
-                        'FTr_Db' => 0.00,
+                        'Tr_Db' => 0.00,
                         'FTr_Cr' => $data->FTot_Amunt,
+                        'FTr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
-                        //'Tr_Ds1' => $data->Tr_Ds1,
+                        'Tr_Ds1' => $data->Tr_Ds1,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
                         'Ln_No' => $data->Ln_No,
@@ -224,6 +231,7 @@ class NoticeController extends Controller
                         'FTot_Amunt' => $data->FTot_Amunt,
                         'Curncy_No' => $data->Curncy_No,
                     ]);
+
                     $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
                     $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                     $trans_cr->save();
@@ -254,55 +262,64 @@ class NoticeController extends Controller
                         $header->update(['FTot_Amunt' => $ftotal]);
                     }
                 }
-                else if($data->Jr_Ty == 19) {
+                else if($data->Jr_Ty == 19) {  // Credit دائن
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();
 
                     if (!$debt) {
+                        //dd($tot_rcpt_val);
+
+                        // dump('debt');
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
                             'Brn_No' => $data->Brn_No,
                             'Jr_Ty' => $data->Jr_Ty,
                             'Tr_No' => $data->Tr_No,
+                            'Month_Jvno' => $data->Tr_No,
                             'Month_No' => Carbon::now()->month,
                             'Tr_Dt' => $data->Tr_Dt,
                             'Tr_DtAr' => $data->Tr_DtAr,
                             'Ac_Ty' => 1,
                             'Sysub_Account' => 0,
                             'Acc_No' => $data->Tr_Db_Acc_No,
-                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
-                            'Tr_Cr' => 0.00,
-                            'FTr_Db' => $header->FTot_Amunt,
-                            'FTr_Cr' => 0.00,
+                            'Tr_Db' => 0.00,
+                            'Tr_Cr' => $catch_data[$last_index]->Tr_Db_Db,
+                            'FTr_Db' => 0.00,
+                            'FTr_Cr' => $header->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
                             'Tr_Ds' => $data->Tr_Ds,
-                            //'Tr_Ds1' => $data->Tr_Ds1,
+                            'FTot_Amunt' => $header->FTot_Amunt,
+                            'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
-                            'Rcpt_Value' => $data->Tot_Amunt,
+                            'Rcpt_Value' => $tot_rcpt_val,
                             'Ln_No' => 1,
                         ]);
-
                         $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
                         $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
                         $trans_db->save();
+                        //dd($tot_rcpt_val);
+
                     }
+
+
                     //Create transaction credit
                     $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
                         'Jr_Ty' => $data->Jr_Ty,
                         'Tr_No' => $data->Tr_No,
+                        'Month_Jvno' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => $data->Ac_Ty,
                         'Sysub_Account' => $data->Sysub_Account,
                         'Acc_No' => $data->Acc_No,
-                        'Tr_Db' => $data->Tr_Db_Db,
+                        'Tr_Db' => $data->Tr_Cr,
                         'Tr_Cr' => 0.00,
-                        'FTr_Db' => 0.00,
-                        'FTr_Cr' => $data->FTot_Amunt,
+                        'FTr_Db' => $data->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
@@ -324,18 +341,17 @@ class NoticeController extends Controller
                         $total = 0;
                         $ftotal = 0;
                         foreach($trnses as $trns){
-                            $total += $trns->Tr_Cr;
+                            $total += $trns->Tr_Db;
                         }
                         foreach($trnses as $trns){
-                            $ftotal += $trns->FTr_Cr;
+                            $ftotal += $trns->FTr_Db;
                         }
-
                         //2- get debt line - update money with new total
                         $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                             ->where('Ln_No', 1)->first();
                         $debt->update([
-                            'Tr_Db' => $total,
-                            'FTr_Db' => $ftotal,
+                            'Tr_Cr' => $total,
+                            'FTr_Cr' => $ftotal,
                             'FTot_Amunt' => $ftotal,
                             'Rcpt_Value' => $total,
                         ]);
@@ -353,7 +369,7 @@ class NoticeController extends Controller
     public function addDeletedLines(Request $request)
     {
         $catch_data = json_decode($request->catch_data);
-
+//        dd($catch_data);
         //update header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
@@ -398,41 +414,43 @@ class NoticeController extends Controller
                 $tot_rcpt_val += $data->Tot_Amunt;
             }
             foreach($catch_data as $data) {
-                if ($data->Jr_Ty == 18) { //مدين
-
+                if($data->Jr_Ty == 18) { //Debit مدين
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();
+
                     if (!$debt) {
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
                             'Brn_No' => $data->Brn_No,
+                            'Jr_Ty' => $data->Jr_Ty,
                             'Tr_No' => $data->Tr_No,
+                            'Month_Jvno' => $data->Tr_No,
                             'Month_No' => Carbon::now()->month,
                             'Tr_Dt' => $data->Tr_Dt,
                             'Tr_DtAr' => $data->Tr_DtAr,
                             'Ac_Ty' => 1,
                             'Sysub_Account' => 0,
                             'Acc_No' => $data->Tr_Db_Acc_No,
-                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                             'Tr_Cr' => 0.00,
-                            'FTr_Db' => $header->FTot_Amunt,
+                            'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                             'FTr_Cr' => 0.00,
+                            'FTr_Db' => $header->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
-                            'Tr_Ds' => $data->Tr_Ds_Db,
-                            'Tr_Ds1' => $data->Tr_Ds_Db,
+                            'Tr_Ds' => $data->Tr_Ds,
+                            'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
                             'Rcpt_Value' => $tot_rcpt_val,
                             'FTot_Amunt' => $header->FTot_Amunt,
                             'Ln_No' => 1,
                             'Curncy_No' => $data->Curncy_No,
+
                         ]);
 
                         $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
                         $trans_db->Entr_Time = $trans_db->created_at->format('H:i:s');
                         $trans_db->save();
                     }
-
                     //Create transaction credit
                     $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
@@ -441,17 +459,18 @@ class NoticeController extends Controller
                         'Tr_No' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
+                        'Month_Jvno' => $data->Tr_No,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => $data->Ac_Ty,
                         'Sysub_Account' => $data->Sysub_Account,
                         'Acc_No' => $data->Acc_No,
-                        'Tr_Db' => 0.00,
                         'Tr_Cr' => $data->Tr_Cr,
-                        'FTr_Db' => 0.00,
+                        'Tr_Db' => 0.00,
                         'FTr_Cr' => $data->FTot_Amunt,
+                        'FTr_Db' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
-                        'Tr_Ds1' => $data->Tr_Ds1,
+                        //'Tr_Ds1' => $data->Tr_Ds1,
                         'User_ID' => auth::user()->id,
                         'Rcpt_Value' => $data->Tot_Amunt,
                         'Ln_No' => $data->Ln_No,
@@ -465,15 +484,15 @@ class NoticeController extends Controller
 
                     //update debt Tot_Amunt
                     //1- get all credit lines - sum credit money
-                    $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                        ->where('Ln_No', '>', 1)->get();
-                    if ($trnses && count($trnses)) {
+                    $trnses = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No' , '>', 1)->get();
+                    if($trnses && count($trnses)){
                         $total = 0;
                         $ftotal = 0;
-                        foreach ($trnses as $trns) {
+                        foreach($trnses as $trns){
                             $total += $trns->Tr_Cr;
                         }
-                        foreach ($trnses as $trns) {
+                        foreach($trnses as $trns){
                             $ftotal += $trns->FTr_Cr;
                         }
 
@@ -488,17 +507,20 @@ class NoticeController extends Controller
                         ]);
                         $header->update(['FTot_Amunt' => $ftotal]);
                     }
-
-                }else if ($data->Jr_Ty == 19) {
-
+                }
+                else if($data->Jr_Ty == 19) {  // Credit دائن
                     $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
                         ->where('Ln_No', 1)->first();
+
                     if (!$debt) {
+                        // dump('debt');
                         // Create transaction debt
                         $trans_db = GLjrnTrs::create([
                             'Cmp_No' => $data->Cmp_No,
                             'Brn_No' => $data->Brn_No,
+                            'Jr_Ty' => $data->Jr_Ty,
                             'Tr_No' => $data->Tr_No,
+                            'Month_Jvno' => $data->Tr_No,
                             'Month_No' => Carbon::now()->month,
                             'Tr_Dt' => $data->Tr_Dt,
                             'Tr_DtAr' => $data->Tr_DtAr,
@@ -510,13 +532,12 @@ class NoticeController extends Controller
                             'FTr_Db' => 0.00,
                             'FTr_Cr' => $header->FTot_Amunt,
                             'Dc_No' => $data->Dc_No,
-                            'Tr_Ds' => $data->Tr_Ds_Db,
-                            'Tr_Ds1' => $data->Tr_Ds_Db,
+                            'Tr_Ds' => $data->Tr_Ds,
+                            'FTot_Amunt' => $header->FTot_Amunt,
+                            'Tr_Ds1' => $data->Tr_Ds1,
                             'User_ID' => auth::user()->id,
                             'Rcpt_Value' => $tot_rcpt_val,
-                            'FTot_Amunt' => $header->FTot_Amunt,
                             'Ln_No' => 1,
-                            'Curncy_No' => $data->Curncy_No,
                         ]);
 
                         $trans_db->Entr_Dt = $trans_db->created_at->format('Y-m-d');
@@ -524,21 +545,24 @@ class NoticeController extends Controller
                         $trans_db->save();
                     }
 
+
                     //Create transaction credit
                     $trans_cr = GLjrnTrs::create([
                         'Cmp_No' => $data->Cmp_No,
                         'Brn_No' => $data->Brn_No,
+                        'Jr_Ty' => $data->Jr_Ty,
                         'Tr_No' => $data->Tr_No,
+                        'Month_Jvno' => $data->Tr_No,
                         'Month_No' => Carbon::now()->month,
                         'Tr_Dt' => $data->Tr_Dt,
                         'Tr_DtAr' => $data->Tr_DtAr,
                         'Ac_Ty' => $data->Ac_Ty,
                         'Sysub_Account' => $data->Sysub_Account,
                         'Acc_No' => $data->Acc_No,
-                        'Tr_Db' => 0.00,
-                        'Tr_Cr' => $data->Tr_Cr,
-                        'FTr_Db' => 0.00,
-                        'FTr_Cr' => $data->FTot_Amunt,
+                        'Tr_Db' => $data->Tr_Cr,
+                        'Tr_Cr' => 0.00,
+                        'FTr_Db' => $data->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
                         'Dc_No' => $data->Dc_No,
                         'Tr_Ds' => $data->Tr_Ds,
                         'Tr_Ds1' => $data->Tr_Ds1,
@@ -547,23 +571,22 @@ class NoticeController extends Controller
                         'Ln_No' => $data->Ln_No,
                         'Slm_No' => $data->Slm_No,
                         'FTot_Amunt' => $data->FTot_Amunt,
-                        'Curncy_No' => $data->Curncy_No,
                     ]);
-                    $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                    $trans_cr->Entr_Dt   = $trans_cr->created_at->format('Y-m-d');
                     $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
                     $trans_cr->save();
 
                     //update debt Tot_Amunt
                     //1- get all credit lines - sum credit money
-                    $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                        ->where('Ln_No', '>', 1)->get();
-                    if ($trnses && count($trnses)) {
+                    $trnses = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No' , '>', 1)->get();
+                    if($trnses && count($trnses)){
                         $total = 0;
                         $ftotal = 0;
-                        foreach ($trnses as $trns) {
+                        foreach($trnses as $trns){
                             $total += $trns->Tr_Cr;
                         }
-                        foreach ($trnses as $trns) {
+                        foreach($trnses as $trns){
                             $ftotal += $trns->FTr_Cr;
                         }
 
@@ -573,10 +596,10 @@ class NoticeController extends Controller
                         $debt->update([
                             'Tr_Db' => $total,
                             'FTr_Db' => $ftotal,
-                            'FTot_Amunt' => $ftotal,
+                            // 'FTot_Amunt' => $header->FTot_Amunt,
                             'Rcpt_Value' => $total,
                         ]);
-                        $header->update(['FTot_Amunt' => $ftotal]);
+                        // $header->update(['FTot_Amunt' => $ftotal]);
                     }
                 }
             }
@@ -710,7 +733,10 @@ class NoticeController extends Controller
                 'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
                 'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
                 'Dc_No' => $updated_data[$last_index]->Dc_No,
+                //'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
                 'Slm_No' => $updated_data[$last_index]->Slm_No,
+                'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $updated_data[$last_index]->Tr_Db_Db,
             ]);
 
             if($updated_data[$last_index]->tax){$header->Taxp_Extra = $updated_data[$last_index]->Taxp_Extra;}
@@ -720,56 +746,112 @@ class NoticeController extends Controller
             if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
             $header->save();
 
-            foreach($updated_data as $data){
-                $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                    ->where('Ln_No', $data->Ln_No)->first();
-                //Update transaction credit
-                $trns->update([
-                    'Cmp_No' => $data->Cmp_No,
-                    'Brn_No' => $data->Brn_No,
-                    'Ac_Ty' => $data->Ac_Ty,
-                    'Sysub_Account' => $data->Sysub_Account,
-                    'Acc_No' => $data->Acc_No,
-                    'Tr_Db' => 0.00,
-                    'Tr_Cr' => $data->Tr_Cr,
-                    'FTr_Db' => 0.00,
-                    'FTr_Cr' => $data->FTot_Amunt,
-                    'Dc_No' => $data->Dc_No,
-                    'FTot_Amunt' => $data->FTot_Amunt,
-                    'Tr_Ds' => $data->Tr_Ds,
-                    'Tr_Ds1' => $data->Tr_Ds1,
-                    'User_ID' => auth::user()->id,
-                    'Rcpt_Value' => $data->Tot_Amunt,
-                    'Slm_No' => $data->Slm_No,
-                    'updated_at' => carbon::now(),
-                ]);
+            foreach($updated_data as $data) {
+                if ($header->Jr_Ty == 18) { //مدين debit
+
+                    $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No', $data->Ln_No)->first();
+                    //Update transaction credit
+                    $trns->update([
+                        'Cmp_No' => $data->Cmp_No,
+                        'Brn_No' => $data->Brn_No,
+                        'Ac_Ty' => $data->Ac_Ty,
+                        'Sysub_Account' => $data->Sysub_Account,
+                        'Acc_No' => $data->Acc_No,
+                        'Tr_Db' => 0.00,
+                        'Tr_Cr' => $data->Tr_Cr,
+                        'FTr_Db' => 0.00,
+                        'FTr_Cr' => $data->FTot_Amunt,
+                        'Dc_No' => $data->Dc_No,
+                        'FTot_Amunt' => $data->FTot_Amunt,
+                        'Tr_Ds' => $data->Tr_Ds,
+                        'Tr_Ds1' => $data->Tr_Ds1,
+                        'User_ID' => auth::user()->id,
+                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Slm_No' => $data->Slm_No,
+                        'updated_at' => carbon::now(),
+                    ]);
+                    //update debt Tot_Amunt
+                    //1- get all credit lines - sum credit money
+                    $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No' , '>', 1)->get();
+                    if($trnses && count($trnses)){
+                        $total = 0;
+                        $ftotal = 0;
+                        foreach($trnses as $trns){
+                            $total += $trns->Tr_Cr;
+                        }
+                        foreach($trnses as $trns){
+                            $ftotal += $trns->FTr_Cr;
+                        }
+
+                        //2- get debt line - update money with new total
+                        $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                            ->where('Ln_No', 1)->first();
+                        $debt->update([
+                            'Tr_Db' => $total,
+                            'FTr_Db' => $ftotal,
+                            'FTot_Amunt' => $ftotal,
+                            'Rcpt_Value' => $total,
+                        ]);
+                        $header->update(['FTot_Amunt' => $ftotal]);
+                    }
+                }
+                else if($header->Jr_Ty == 19){
+                    $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
+                        ->where('Ln_No', $data->Ln_No)->first();
+                    //Update transaction credit
+                    $trns->update([
+                        'Cmp_No' => $data->Cmp_No,
+                        'Brn_No' => $data->Brn_No,
+                        'Ac_Ty' => $data->Ac_Ty,
+                        'Sysub_Account' => $data->Sysub_Account,
+                        'Acc_No' => $data->Acc_No,
+                        'Tr_Db' => $data->Tr_Cr,
+                        'Tr_Cr' => 0.00,
+                        'FTr_Db' => $data->FTot_Amunt,
+                        'FTot_Amunt' => $data->FTot_Amunt,
+                        'FTr_Cr' => 0.00,
+                        'Dc_No' => $data->Dc_No,
+                        'Tr_Ds' => $data->Tr_Ds,
+                        'Tr_Ds1' => $data->Tr_Ds1,
+                        //'Doc_Type' => $data->Doc_Type,
+                        'User_ID' => auth::user()->id,
+                        'Rcpt_Value' => $data->Tot_Amunt,
+                        'Slm_No' => $data->Slm_No,
+                        'updated_at' => carbon::now(),
+                    ]);
+
+                    //update debt Tot_Amunt
+                    //1- get all credit lines - sum credit money
+                    $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                        ->where('Ln_No' , '>', 1)->get();
+                    if($trnses && count($trnses)){
+                        $total = 0;
+                        $ftotal = 0;
+                        foreach($trnses as $trns){
+                            $total += $trns->Tr_Db;
+                        }
+                        foreach($trnses as $trns){
+                            $ftotal += $trns->FTr_Db;
+                        }
+
+                        //2- get debt line - update money with new total
+                        $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+                            ->where('Ln_No', 1)->first();
+                        $debt->update([
+                            'Tr_Cr' => $total,
+                            'FTr_Cr' => $ftotal,
+                            'FTot_Amunt' => $ftotal,
+                            'Rcpt_Value' => $total,
+                        ]);
+                        $header->update(['FTot_Amunt' => $ftotal]);
+                    }
+                }
+
             }
 
-            //update debt Tot_Amunt
-            //1- get all credit lines - sum credit money
-            $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                ->where('Ln_No' , '>', 1)->get();
-            if($trnses && count($trnses)){
-                $total = 0;
-                $ftotal = 0;
-                foreach($trnses as $trns){
-                    $total += $trns->Tr_Cr;
-                }
-                foreach($trnses as $trns){
-                    $ftotal += $trns->FTr_Cr;
-                }
 
-                //2- get debt line - update money with new total
-                $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                    ->where('Ln_No', 1)->first();
-                $debt->update([
-                    'Tr_Db' => $total,
-                    'FTr_Db' => $ftotal,
-                    'FTot_Amunt' => $ftotal,
-                    'Rcpt_Value' => $total,
-                ]);
-                $header->update(['FTot_Amunt' => $ftotal]);
-            }
         }
     }
 
@@ -1041,6 +1123,8 @@ class NoticeController extends Controller
     public function branchForEdit(Request $request)
     {
         if ($request->ajax()) {
+            $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
+
             if ($request->id) {
                 $gl = GLJrnal::where('Tr_No', $request->id)->get(['Brn_No'])->first();
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm' . ucfirst(session('lang'))]);
@@ -1048,7 +1132,7 @@ class NoticeController extends Controller
             } else {
                 $gl = null;
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm' . ucfirst(session('lang'))]);
-                return view('admin.notice.branch', compact('branches', 'gl'));
+                return view('admin.notice.branch', compact('branches', 'gl', 'last_record'));
             }
         }
     }

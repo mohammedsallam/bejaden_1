@@ -15,7 +15,7 @@ class CreateMainCompaniesTable extends Migration
     {
         Schema::create('MainCompany', function (Blueprint $table) {
             $table->increments('ID_No');
-            
+
             //ثوابت الشركه - tap
             $table->integer('Cmp_No')->nullable()->unique();//رقم الشركه و يتم انشاءه يدوي
             $table->integer('Local_Lang')->nullable()->default('0');// رقم اللغه
@@ -82,14 +82,14 @@ class CreateMainCompaniesTable extends Migration
             $table->boolean('PrintOrder_DNV')->nullable()->default(0);//طباعة سند التسليم مع فاتورة المبيعات
             $table->boolean('PrintOrder_SRV')->nullable()->default(0);//طباعة سند الاستلام مع فاتورة المشتريات
             $table->boolean('SelctNorm_Prntr1')->nullable()->default(0);//اختيار طابعة تقارير 1
-            $table->boolean('SelctNorm_Prntr2')->nullable()->default(0);//اختيار طابعة تقارير 2 
+            $table->boolean('SelctNorm_Prntr2')->nullable()->default(0);//اختيار طابعة تقارير 2
             $table->boolean('SelctNorm_Prntr3')->nullable()->default(0);//اختيار طابعة تقارير 3
-            $table->boolean('SelctBarCod_Prntr1')->nullable()->default(0);//اختيار طابعة الباركود 1 
-            $table->boolean('SelctBarCod_Prntr2')->nullable()->default(0);//اختيار طابعة الباركود 2 
-            $table->boolean('SelctBarCod_Prntr3')->nullable()->default(0);//اختيار طابعة الباركود 3 
-            $table->boolean('SelctPosSlip_Prntr1')->nullable()->default(0);//اختيار طابعة نقاط البيع 1 
-            $table->boolean('SelctPosSlip_Prntr2')->nullable()->default(0);//اختيار طابعة نقاط البيع 2 
-            $table->boolean('SelctPosSlip_Prntr3')->nullable()->default(0);//اختيار طابعة نقاط البيع 3 
+            $table->boolean('SelctBarCod_Prntr1')->nullable()->default(0);//اختيار طابعة الباركود 1
+            $table->boolean('SelctBarCod_Prntr2')->nullable()->default(0);//اختيار طابعة الباركود 2
+            $table->boolean('SelctBarCod_Prntr3')->nullable()->default(0);//اختيار طابعة الباركود 3
+            $table->boolean('SelctPosSlip_Prntr1')->nullable()->default(0);//اختيار طابعة نقاط البيع 1
+            $table->boolean('SelctPosSlip_Prntr2')->nullable()->default(0);//اختيار طابعة نقاط البيع 2
+            $table->boolean('SelctPosSlip_Prntr3')->nullable()->default(0);//اختيار طابعة نقاط البيع 3
 
             //اعدادات عامه
             $table->boolean('AllwItm_RepatVch')->nullable()->default(0);//سماحية بتكرارالصنف بنفس السند
@@ -99,7 +99,7 @@ class CreateMainCompaniesTable extends Migration
             $table->boolean('AllwDisc2Pur_Dis2Sal')->nullable()->default(0);//سماحية خصم 2 بيع = خصم 2 شراء
             $table->boolean('AllwStock_Minus')->nullable()->default(0);//سماحية تسليم البضاعه بالسالب
             $table->boolean('AllwPur_Disc1')->nullable()->default(0);//سماحية بخصم شراء 1
-            $table->boolean('AllwPur_Disc2')->nullable()->default(0);//سماحية بخصم شراء 2 
+            $table->boolean('AllwPur_Disc2')->nullable()->default(0);//سماحية بخصم شراء 2
             $table->boolean('AllwPur_Bouns')->nullable()->default(0);//سماحية بونص شراء
             $table->boolean('AllwSal_Disc1')->nullable()->default(0);//سماحية خصم بيع 1
             $table->boolean('AllwSal_Disc2')->nullable()->default(0);//سماحية خصم بيع 2
@@ -114,8 +114,9 @@ class CreateMainCompaniesTable extends Migration
             $table->boolean('ActvTrnf_No')->nullable()->default(0);//تفعيل سندات تحويل بضاعه
             $table->boolean('TabOrder_Pur')->nullable()->default(0);//ترتيب خاص لشاشة المشتريات
             $table->boolean('TabOrder_SaL')->nullable()->default(0);//ترتيب خاص لشاشة المبيعات
-            $table->boolean('Accredit_expens')->nullable()->default(0);//مصاريف الاعتماد   
+            $table->boolean('Accredit_expens')->nullable()->default(0);//مصاريف الاعتماد
             $table->boolean('Foreign_Curncy')->nullable()->default(0);//متعدد العملات
+            $table->boolean('Alw_slmacc')->nullable()->default(0);//متعدد العملات
             $table->integer('L_Curncy_No')->nullable();//العمله المحليه
 
 
@@ -133,7 +134,7 @@ class CreateMainCompaniesTable extends Migration
             $table->boolean('Month_Post11')->nullable()->default(0);//اقفال حركة شهر 11
             $table->boolean('Month_Post12')->nullable()->default(0);//اقفال حركة شهر 12
             //checkboxes end
-            
+
             $table->timestamps();
         });
     }

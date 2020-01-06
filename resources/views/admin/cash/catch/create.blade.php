@@ -60,6 +60,10 @@
                     }
                 });
 
+                $(document).on('change', '#Slm_No_Name', function(){
+                    $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
+                });
+
                 //get tax value according to selected company on page load
                 $.ajax({
                     url: "{{route('getTaxValue')}}",
@@ -194,6 +198,7 @@
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
                             success: function(data){
                                 $('#Slm_No_Name').html(data);
+                                $('#Slm_No').val($('#Slm_No_Name').children('option:selected').val());
                             }
                         });
                     }
@@ -305,8 +310,8 @@
                                     <td>`+$('#Ln_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td>0.00</td>
                                     <td>`+$('#Tr_Db').val()+`</td>
+                                    <td>0.00</td>
                                     <td>`+$('#Tr_Ds').val()+`</td>
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
@@ -316,8 +321,7 @@
                                 var sum = 0.0;
                                 for (var i=1; i<rows.length; i++){
                                     if(rows[i].cells.length > 0){
-                                        sum += parseFloat(rows[i].cells[4].innerHTML);
-                                        console.log(sum);
+                                        sum += parseFloat(rows[i].cells[3].innerHTML);
                                     }
                                 }
                                 $('#Tr_Db_Db').val(sum);
@@ -520,7 +524,7 @@
 
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
-                    var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
+                    var updated_sum = parseFloat($('#Tr_Cr_Db').val()) - parseFloat(tableCell.cells[3].innerHTML);
                     old = updated_sum;
                     $('#Tr_Db_Db').val(updated_sum);
                     $('#Tr_Cr_Db').val(updated_sum);
@@ -615,7 +619,7 @@
     <form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
         <div class="col-md-12">
-            <button type="submit" class="btn panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
+            <button type="submit" class="btn btn-danger panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
 
         </div>
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
@@ -631,7 +635,7 @@
             <div class="panel-body">
                 <div class="row">
                     {{-- الشركه --}}
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="Cmp_No">{{trans('admin.company')}}</label>
                             <select name="Cmp_No" id="Cmp_No" class="form-control">
@@ -655,7 +659,7 @@
                     </div>
                     {{-- نهاية الفرع --}}
                     {{-- رقم السند --}}
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="Tr_No">{{trans('admin.number_of_receipt')}}</label>
                             <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>

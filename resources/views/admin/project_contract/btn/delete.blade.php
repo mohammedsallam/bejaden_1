@@ -20,7 +20,7 @@
     });
 </script>
 
-<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('project_contract.destroy', $id) }}" data-id="{{$id}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i> {{trans('admin.delete')}}</a>
+<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('project_contract.destroy', $id) }}" data-id="{{$id}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i></a>
 
 
 <form action="" method="POST" class="remove-record-model">
