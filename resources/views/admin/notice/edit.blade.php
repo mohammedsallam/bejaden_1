@@ -584,6 +584,10 @@
             <button type="submit" class="btn btn-danger" id="delete_button" style="float:left;"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
         </div>
+
+        <br>
+        <br>
+        <br>
         <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
 
         {{-- header start --}}
