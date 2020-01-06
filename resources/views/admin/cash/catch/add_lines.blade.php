@@ -460,8 +460,8 @@
                         data: {"_token": "{{ csrf_token() }}", catch_data},
                         success: function(data){
                             $('#alert').removeClass('hidden');
-                            $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                            window.location.replace('/94/bejaden_1/public/admin/receiptCash');
+                            $('#alert').html(`<div class='alert alert-info'>تم التعديل بنجاح</div>`);
+                            window.location.replace('{{ url('admin/receiptCash')}}');
                             $('#Tr_No').val(null);
                             $('#Curncy_No').val(1);
                             // $('#Curncy_Rate').val(null);

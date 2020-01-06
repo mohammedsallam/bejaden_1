@@ -111,62 +111,61 @@
 
                                         <tbody>
                                         <tr>
-                                        @if(count($gltrns) > 0)
-                                            @foreach($gltrns as $trns)
-                                                <tr>
-                                                    @if($trns->Sysub_Account == 0)
-                                                        <td>{{$trns->Ln_No}}</td>
-                                                        <td>{{$trns->Acc_No}}</td>
-                                                        <td>
-                                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                                        </td>
-                                                        <td>{{$trns->Tr_Db}}</td>
-                                                        <td>{{$trns->Tr_Cr}}</td>
-                                                        <td>{{$trns->Tr_Ds}}</td>
-                                                        <td>{{$trns->Dc_No}}</td>
-                                                        <td>
-                                                            {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
-                                                        </td>
-                                                    @else
-                                                        <td>{{$trns->Ln_No}}</td>
-                                                        <td>{{$trns->Sysub_Account}}</td>
-                                                        <td>
-                                                            @if($trns->Ac_Ty == 1)
-                                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                                            @endif
-                                                            @if($trns->Ac_Ty == 2)
-                                                                {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                                            @endif
-                                                            @if($trns->Ac_Ty == 3)
-                                                                {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}   
-                                                            @endif
-                                                            @if($trns->Ac_Ty == 4)
-                                                               Employees
-                                                            @endif
-                                                        </td>
-                                                        <td>{{$trns->Tr_Db}}</td>
-                                                        <td>{{$trns->Tr_Cr}}</td>
-                                                        <td>{{$trns->Tr_Ds}}</td>
-                                                        <td>{{$trns->Dc_No}}</td>
-                                                        <td>
-                                                            {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
-                                                        </td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                                {{$gl->Tot_Amunt}}
-                                            </td>
-                                            <td>
-                                                {{$gl->Tr_Db}}
-                                            </td>
-                                            <td></td>
-
+                                            @if(count($gltrns) > 0)
+                                                @foreach($gltrns as $trns)
+                                                    <tr>
+                                                        @if($trns->Sysub_Account == 0)
+                                                            <td>{{$trns->Ln_No}}</td>
+                                                            <td>{{$trns->Acc_No}}</td>
+                                                            <td>
+                                                                {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                                            </td>
+                                                            <td>{{$trns->Tr_Db}}</td>
+                                                            <td>{{$trns->Tr_Cr}}</td>
+                                                            <td>{{$trns->Tr_Ds}}</td>
+                                                            <td>{{$trns->Dc_No}}</td>
+                                                            <td>
+                                                                {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
+                                                            </td>
+                                                        @else
+                                                            <td>{{$trns->Ln_No}}</td>
+                                                            <td>{{$trns->Sysub_Account}}</td>
+                                                            <td>
+                                                                @if($trns->Ac_Ty == 1)
+                                                                {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                                                @endif
+                                                                @if($trns->Ac_Ty == 2)
+                                                                    {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                                                @endif
+                                                                @if($trns->Ac_Ty == 3)
+                                                                    {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                                                @endif
+                                                                @if($trns->Ac_Ty == 4)
+                                                                   Employees
+                                                                @endif
+                                                            </td>
+                                                            <td>{{$trns->Tr_Db}}</td>
+                                                            <td>{{$trns->Tr_Cr}}</td>
+                                                            <td>{{$trns->Tr_Ds}}</td>
+                                                            <td>{{$trns->Dc_No}}</td>
+                                                            <td>
+                                                                {{\App\Models\Admin\MtsCostcntr::where('Costcntr_No', $trns->Costcntr_No)->pluck('Costcntr_Nm'.session('lang'))->first()}}
+                                                            </td>
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    {{$gl->Tot_Amunt}}
+                                                </td>
+                                                <td>
+                                                    {{$gl->Tr_Db}}
+                                                </td>
+                                                <td></td>
                                             @endif
-                                            </tr>
+                                        </tr>
                                         </tbody>
 
                                     </table>

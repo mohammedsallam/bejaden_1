@@ -27,7 +27,7 @@
                 var id = $('#id').val();
                 //get branches of specific company selection
                 $.ajax({
-                    url: "{{route('branchForEditN')}}",
+                    url: "{{route('branchForEdit')}}",
                     type: "POST",
                     dataType: 'html',
                     data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No, id: id },
@@ -79,7 +79,7 @@
                 $(document).on('change', '#Cmp_No', function(){
                     //get branches of specific company selection
                     $.ajax({
-                        url: "{{route('branchForEditN')}}",
+                        url: "{{route('branchForEdit')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -89,7 +89,7 @@
                     });
                     //get tax value of selected company
                     $.ajax({
-                        url: "{{route('getTaxValueN')}}",
+                        url: "{{route('getTaxValue')}}",
                         type: "POST",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: $(this).val() },
@@ -469,7 +469,7 @@
                             data: {"_token": "{{ csrf_token() }}", catch_data},
                             success: function(data){
                                 $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                                window.location.replace('/mai/bejaden_1/public/admin/notice');
+                                window.location.replace('{{ url('admin/notice')}}');
                                 $('#Tr_No').val(null);
                                 $('#Curncy_No').val(0);
                                 $('#Curncy_Rate').val(null);
@@ -791,7 +791,7 @@
                                 {{-- المبلغ دائن --}}
                                 <div class="col-md-4">
                                     <label for="Tr_Cr" id="label_Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                                    <input type="text" name="Tr_Cr" id="Tr_Cr" value="{{$gl->Tr_Cr}}" class="form-control">
+                                    <input style="background-color: #e9ea92;" type="text" name="Tr_Cr" id="Tr_Cr" value="{{$gl->Tr_Cr}}" class="form-control">
                                 </div>
                                 {{-- نهاية المبلغ دائن --}}
                                 {{-- رقم المستند --}}

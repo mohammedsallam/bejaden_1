@@ -234,7 +234,7 @@ class receiptCashController extends Controller
                         $total += $trns->Tr_Db;
                     }
                     foreach($trnses as $trns){
-                        $ftotal += $trns->FTr_Cr;
+                        $ftotal += $trns->FTr_Db;
                     }
 
                     //2- get debt line - update money with new total
@@ -242,7 +242,7 @@ class receiptCashController extends Controller
                         ->where('Ln_No', 1)->first();
                     $debt->update([
                         'Tr_Cr' => $total,
-                        'FTr_Db' => $ftotal,
+                        'FTr_Cr' => $ftotal,
                         'FTot_Amunt' => $ftotal,
                         'Rcpt_Value' => $total,
                     ]);
@@ -282,12 +282,12 @@ class receiptCashController extends Controller
                 'Tr_Ds' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Tr_Ds1' => $catch_data[$last_index]->Tr_Ds_Db,
                 'Dc_No' => $catch_data[$last_index]->Dc_No,
-                'Chq_no' => $catch_data[$last_index]->Chq_no,
-                'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
-                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
-                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
-                'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
-                'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
+//                'Chq_no' => $catch_data[$last_index]->Chq_no,
+//                'Bnk_Nm' => $catch_data[$last_index]->Bnk_Nm,
+//                'Issue_Dt' => $catch_data[$last_index]->Issue_Dt,
+//                'Due_Issue_Dt' => $catch_data[$last_index]->Due_Issue_Dt,
+//                'Rcpt_By' => $catch_data[$last_index]->Rcpt_By,
+                 'Tr_Db' => $catch_data[$last_index]->Tr_Db_Db,
                 'Tr_Cr' => $catch_data[$last_index]->Tr_Cr_Db,
                 'Slm_No' => $catch_data[$last_index]->Slm_No,
                 'status' => 0,
@@ -385,18 +385,18 @@ class receiptCashController extends Controller
                     $total = 0;
                     $ftotal = 0;
                     foreach($trnses as $trns){
-                        $total += $trns->Tr_Cr;
+                        $total += $trns->Tr_Db;
                     }
                     foreach($trnses as $trns){
-                        $ftotal += $trns->FTr_Cr;
+                        $ftotal += $trns->FTr_Db;
                     }
 
                     //2- get debt line - update money with new total
                     $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
                         ->where('Ln_No', 1)->first();
                     $debt->update([
-                        'Tr_Db' => $total,
-                        'FTr_Db' => $ftotal,
+                        'Tr_Cr' => $total,
+                        'FTr_Cr' => $ftotal,
                         'FTot_Amunt' => $ftotal,
                         'Rcpt_Value' => $total,
                     ]);
@@ -501,42 +501,41 @@ class receiptCashController extends Controller
 
             //update header
             $header = GLJrnal::where('Tr_No', $updated_data[$last_index]->Tr_No)->first();
-                $header->update([
-                    'Cmp_No' => $updated_data[$last_index]->Cmp_No,
-                    'Brn_No' => $updated_data[$last_index]->Brn_No,
-                    'Jr_Ty' => 4,
-                    'Month_No' => Carbon::now()->month,
-                    'Month_Jvno' => $updated_data[$last_index]->Tr_No,
-                    'Doc_Type' => $updated_data[$last_index]->Doc_Type,
-                    'Tr_Dt' => $updated_data[$last_index]->Tr_Dt,
-                    'Tr_DtAr' => $updated_data[$last_index]->Tr_DtAr,
-                    'Acc_No' => $updated_data[$last_index]->Acc_No,
-                    'User_ID' => auth::user()->id,
-                    'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
-                    'Curncy_No' => $updated_data[$last_index]->Curncy_No,
-                    'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
-                    'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
-                    'Tr_Cr' => $updated_data[$last_index]->Tr_Cr_Db,
-                    'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
-                    'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
-                    'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
-                    'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
-                    'Dc_No' => $updated_data[$last_index]->Dc_No,
-                    //'Chq_no' => $updated_data[$last_index]->Chq_no,
-                    //'Bnk_Nm' => $updated_data[$last_index]->Bnk_Nm,
-                    //'Issue_Dt' => $updated_data[$last_index]->Issue_Dt,
-                    //'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
-                    //'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
-                    'Slm_No' => $updated_data[$last_index]->Slm_No,
-                ]);
+            $header->update([
+                'Cmp_No' => $updated_data[$last_index]->Cmp_No,
+                'Brn_No' => $updated_data[$last_index]->Brn_No,
+                'Jr_Ty' => 4,
+                'Month_No' => Carbon::now()->month,
+                'Month_Jvno' => $updated_data[$last_index]->Tr_No,
+                'Doc_Type' => $updated_data[$last_index]->Doc_Type,
+                'Tr_Dt' => $updated_data[$last_index]->Tr_Dt,
+                'Tr_DtAr' => $updated_data[$last_index]->Tr_DtAr,
+                'Acc_No' => $updated_data[$last_index]->Acc_No,
+                'User_ID' => auth::user()->id,
+                'Ac_Ty' => $updated_data[$last_index]->Ac_Ty,
+                'Curncy_No' => $updated_data[$last_index]->Curncy_No,
+                'Curncy_Rate' => $updated_data[$last_index]->Curncy_Rate,
+                'Taxv_Extra' => $updated_data[$last_index]->Taxv_Extra,
+                'Tot_Amunt' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Ds' => $updated_data[$last_index]->Tr_Ds_Db,
+                'Tr_Ds1' => $updated_data[$last_index]->Tr_Ds_Db,
+                'Dc_No' => $updated_data[$last_index]->Dc_No,
+//                'Chq_no' => $updated_data[$last_index]->Chq_no,
+//                'Bnk_Nm' => $updated_data[$last_index]->Bnk_Nm,
+//                'Issue_Dt' => $updated_data[$last_index]->Issue_Dt,
+//                'Due_Issue_Dt' => $updated_data[$last_index]->Due_Issue_Dt,
+//                'Rcpt_By' => $updated_data[$last_index]->Rcpt_By,
+                'Slm_No' => $updated_data[$last_index]->Slm_No,
+                'Tr_Db' => $updated_data[$last_index]->Tr_Db_Db,
+                'Tr_Cr' => $updated_data[$last_index]->Tr_Cr_Db,
+            ]);
 
-            //    if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
-                if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
-                if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
-                if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
-                if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
-                $header->save();
-
+            if($updated_data[$last_index]->tax){$updated_data[$last_index]->Taxp_Extra;}
+            if($updated_data[$last_index]->Ac_Ty == 1){$header->Chrt_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 2){$header->Cstm_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 3){$header->Sup_No = $updated_data[$last_index]->Sysub_Account;}
+            if($updated_data[$last_index]->Ac_Ty == 4){$header->Emp_No = $updated_data[$last_index]->Sysub_Account;}
+            $header->save();
 
             foreach($updated_data as $data){
                 $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
@@ -550,9 +549,11 @@ class receiptCashController extends Controller
                     'Sysub_Account' => $data->Sysub_Account,
                     'Acc_No' => $data->Acc_No,
                     'Tr_Db' => $data->Tr_Db,
-                    'FTr_Db' => 0.00,
-                    'FTr_Cr' => $data->FTot_Amunt,
+                    'Tr_Cr' => 0.00,
+                    'FTr_Db' => $data->FTot_Amunt,
+                    'FTr_Cr' => 0.00,
                     'Dc_No' => $data->Dc_No,
+                    'FTot_Amunt' => $data->FTot_Amunt,
                     'Tr_Ds' => $data->Tr_Ds,
                     'Tr_Ds1' => $data->Tr_Ds1,
                     'Doc_Type' => $data->Doc_Type,
@@ -563,6 +564,8 @@ class receiptCashController extends Controller
                 ]);
             }
 
+            //update debt Tot_Amunt
+            //1- get all credit lines - sum credit money
             $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
                 ->where('Ln_No' , '>', 1)->get();
             if($trnses && count($trnses)){
@@ -572,7 +575,7 @@ class receiptCashController extends Controller
                     $total += $trns->Tr_Db;
                 }
                 foreach($trnses as $trns){
-                    $ftotal += $trns->FTr_Cr;
+                    $ftotal += $trns->FTr_Db;
                 }
 
                 //2- get debt line - update money with new total
@@ -580,7 +583,7 @@ class receiptCashController extends Controller
                     ->where('Ln_No', 1)->first();
                 $debt->update([
                     'Tr_Cr' => $total,
-                    'FTr_Db' => $ftotal,
+                    'FTr_Cr' => $ftotal,
                     'FTot_Amunt' => $ftotal,
                     'Rcpt_Value' => $total,
                 ]);

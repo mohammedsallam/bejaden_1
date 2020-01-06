@@ -842,7 +842,7 @@
                             {{--                             المبلغ دائن--}}
                             <div class="col-md-4">
                                 <label id="label_Tr_Cr" for="Tr_Cr">{{trans('admin.amount_cr')}}</label>
-                                <input type="text" disabled name="Tr_Cr" id="Tr_Cr" class="form-control Tr_Cr">
+                                <input style="background-color: #e9ea92;" type="text" disabled name="Tr_Cr" id="Tr_Cr" class="form-control Tr_Cr">
                             </div>
                             {{--                             نهاية المبلغ دائن--}}
                             {{--                             رقم المستند--}}
@@ -956,7 +956,7 @@
                                     {{--                                     دائن--}}
                                     <div class="col-md-3">
                                         <label for="Tr_Cr_Db">{{trans('admin.Fbal_CR_')}}</label>
-                                        <input type="text" name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control Tr_Cr_Db" value='0.00'>
+                                        <input  type="text" name="Tr_Cr_Db" id="Tr_Cr_Db" class="form-control Tr_Cr_Db" value='0.00'>
                                     </div>
                                     {{--                                     نهاية دائن--}}
                                     {{--                                     الفرق--}}

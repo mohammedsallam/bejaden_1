@@ -23,7 +23,7 @@ class supplierDataTable extends DataTable
                 return CurrencyType::getDescription($query->currency);
             })
             ->addColumn('show', function ($query) {
-                return '<a href="suppliers/'.$query->ID_No.'" class="btn btn-info edit"><i class="fa fa-eye"></i> '. '</a>';
+                return '<a href="suppliers/'.$query->ID_No.'" class="btn btn-info edit"><i class="fa fa-search"></i> '. '</a>';
             })
             ->addColumn('edit', function ($query) {
                 return '<a href="suppliers/'.$query->ID_No.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' . '</a>';
