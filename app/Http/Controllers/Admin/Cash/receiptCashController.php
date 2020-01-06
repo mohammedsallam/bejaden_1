@@ -866,6 +866,8 @@ class receiptCashController extends Controller
 
     public function branchForEdit(Request $request){
         if($request->ajax()){
+            $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
+
             if($request->id){
                 $gl = GLJrnal::where('Tr_No', $request->id)->get(['Brn_No'])->first();
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm'.ucfirst(session('lang'))]);
@@ -874,7 +876,7 @@ class receiptCashController extends Controller
             else{
                 $gl = null;
                 $branches = MainBranch::where('Cmp_No', $request->Cmp_No)->get(['Brn_No', 'Brn_Nm'.ucfirst(session('lang'))]);
-                return view('admin.cash.catch.branch', compact('branches', 'gl'));
+                return view('admin.cash.catch.branch', compact('branches', 'gl', 'last_record'));
             }
         }
     }
