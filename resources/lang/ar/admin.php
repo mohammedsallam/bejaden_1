@@ -6,10 +6,7 @@ return [
     'the_link_reset_sent' => 'نجاح الارسال',
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
-<<<<<<< HEAD
 
-=======
->>>>>>> ef8e37a95b9bfe59ed2795b9a6ccb0ec93790742
     'report_client' => 'تقارير العملاء',
     'AstSalesman' => 'مندوبين',
     'ActivityTypes' => 'انواع الانشطة',
@@ -17,18 +14,13 @@ return [
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
-<<<<<<< HEAD
 
-=======
->>>>>>> ef8e37a95b9bfe59ed2795b9a6ccb0ec93790742
+
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
 
-<<<<<<< HEAD
 
-=======
->>>>>>> ef8e37a95b9bfe59ed2795b9a6ccb0ec93790742
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',

@@ -110,9 +110,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::POST('cc/report/ccpublicbalance/pdf','Admin\Cc\ReportController@CCpublicbalancepdf');
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-//        projects
 
-<<<<<<< HEAD
         Route::resource('projects','Admin\Project\ProjectController');
         Route::get('projects_section','Admin\Project\ProjectController@projects_section')->name('projects.projects_section');
         Route::get('projects/department/print','Admin\Project\ProjectController@print');
@@ -125,8 +123,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
 
-=======
->>>>>>> ef8e37a95b9bfe59ed2795b9a6ccb0ec93790742
         Route::resource('projects','Admin\Project\ProjectController1');
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
@@ -137,10 +133,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('projects/getEditBladePrj','Admin\Project\ProjectController1@getEditBlade')->name('getEditBladePrj');
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController1@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController1@initChartPrj')->name('initChartAccPrj');
-<<<<<<< HEAD
-
-=======
->>>>>>> ef8e37a95b9bfe59ed2795b9a6ccb0ec93790742
 
         Route::get('getCity','Admin\Project\ProjectController1@getCities')->name('getCity');
 
