@@ -25,7 +25,7 @@
             </a>
         </div>
 
-        <div class="col-md-3 col-sm-6 col-12">
+        <div class="col-md-3 col-sm-6 col-12" hidden>
             <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
@@ -38,7 +38,7 @@
                 <!-- /.info-box -->
             </a>
         </div>
-        <div class="col-md-3 col-sm-6 col-12">
+        <div class="col-md-3 col-sm-6 col-12" >
             <a href="astsupctg">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
@@ -51,9 +51,9 @@
                 </div>
                 <!-- /.info-box -->
             </a>
-        </div>
+        </div >
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="#">
+            <a href="supplier_report">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-file" aria-hidden="true"></i></span>
 

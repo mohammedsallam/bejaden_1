@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12" hidden>
-            <a href="customer_report">
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-exchange" aria-hidden="true"></i></span>
 

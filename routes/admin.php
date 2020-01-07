@@ -110,9 +110,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::POST('cc/report/ccpublicbalance/pdf','Admin\Cc\ReportController@CCpublicbalancepdf');
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-//        projects
+
 
         Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
+
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
@@ -162,6 +164,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -297,9 +300,7 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_reports.CC.cc_report');
         });
 
-        Route::get('supplier_report', function () {
-            return view('admin.basic_reports.supplier.supplier_report');
-        });
+
         Route::get('stuff_report', function () {
             return view('admin.basic_reports.stuff.stuff_report');
         });
@@ -503,11 +504,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('projects', 'Admin\Project\ProjectController1');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');
