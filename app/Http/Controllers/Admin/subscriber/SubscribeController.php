@@ -347,7 +347,7 @@ class SubscribeController extends Controller
             if($request->myradio == 1) {
             $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
             return view('admin.basic_reports.customer.ajax.cust_report_form', ['mainCompany' => $mainCompany,'myradio' => $myradio]);
-        }else if($request->myradio == 2)
+            }else if($request->myradio == 2)
         {
             $MainBranch = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')), 'Brn_No');
             return view('admin.basic_reports.customer.ajax.cust_report_form', ['MainBranch' => $MainBranch,'myradio' => $myradio]);

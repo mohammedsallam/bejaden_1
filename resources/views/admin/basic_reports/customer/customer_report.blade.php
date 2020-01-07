@@ -88,12 +88,6 @@
                 });
             });
 
-        </script>
-    @endpush
-
-    @push('js')
-
-            <script>
             $(document).ready(function(){
 
                 $('.myradio__input').on('click',function(){
@@ -118,24 +112,28 @@
                     }
 
 
-                      });
-                 });
+                });
+            });
         </script>
 
-{{--        <script>--}}
+    @endpush
 
-{{--                $('#one').on('click',function () {--}}
+{{--    @push('js')--}}
 
+{{--            <script>--}}
+{{--            $(document).ready(function(){--}}
 
+{{--                $('.myradio__input').on('click',function(){--}}
 {{--                    $("#loadingmessage").css("display","block");--}}
 {{--                    $(".column-data").css("display","none");--}}
-
+{{--                    var myradio = $(this).val();--}}
+{{--                    console.log(myradio);--}}
 {{--                    if (this){--}}
 {{--                        $.ajax({--}}
-{{--                            url: '{{aurl('cc/report/motioncc/show')}}',--}}
+{{--                            url: '{{route('cust_report_radio')}}',--}}
 {{--                            type:'get',--}}
 {{--                            dataType:'html',--}}
-{{--                            data:{from_glcc : from_glcc,to_glcc : to_glcc},--}}
+{{--                            data:{myradio : myradio},--}}
 {{--                            success: function (data) {--}}
 {{--                                $("#loadingmessage").css("display","none");--}}
 {{--                                $('.column-data').css("display","block").html(data);--}}
@@ -145,14 +143,15 @@
 {{--                    }else{--}}
 {{--                        $('.column-data').html('');--}}
 {{--                    }--}}
-{{--                });--}}
 
 
-{{--            });--}}
+{{--                      });--}}
+{{--                 });--}}
 {{--        </script>--}}
 
 
-    @endpush
+
+{{--    @endpush--}}
 
 
     <div class="box">
