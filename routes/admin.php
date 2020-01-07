@@ -111,19 +111,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
 
-        Route::resource('projects','Admin\Project\ProjectController');
-        Route::get('projects_section','Admin\Project\ProjectController@projects_section')->name('projects.projects_section');
-        Route::get('projects/department/print','Admin\Project\ProjectController@print');
-        Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
-        Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
-        Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
-        Route::post('projects/getproj','Admin\Project\ProjectController@getproj')->name('getproj');
-        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
-        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
-        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
 
         Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
+
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
@@ -513,7 +504,6 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-        Route::resource('projects', 'Admin\Project\ProjectController');
         Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
