@@ -1,5 +1,9 @@
 
     <style>
+.vertical-menu{
+    padding-top: 46px;
+    margin-right: 146px
+}
         .myradio__input {
             opacity: 0;
             position: absolute;
