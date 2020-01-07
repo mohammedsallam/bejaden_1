@@ -359,12 +359,12 @@
 {{--                    <span class="pull-right-container"></span>--}}
 {{--                </a>--}}
 
-<<<<<<< HEAD
+
 {{--            </li>--}}
 {{--            @endhasanyrole--}}
-=======
-            </li>
-            @endhasanyrole
+
+{{--            </li>--}}
+{{--            @endhasanyrole--}}
             @hasanyrole('writer|admin')
             <li class="treeview {{ active_menu('dailyReport')[0]  }} {{ active_menu('accountStatement')[0]  }} {{ active_menu('trialbalance')[0]  }}">
                 <a href="#">
@@ -380,7 +380,7 @@
                 </ul>
             </li>
             @endhasanyrole
->>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
+
 
 
             {{-- نهاية التقارير المحاسبيه --}}
@@ -394,12 +394,11 @@
 
             </li>
             @endhasanyrole
-<<<<<<< HEAD
-=======
+
 
             {{-- نهاية التقارير المحاسبيه --}}
 
->>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
+
             {{-- الصندوق و البنوك --}}
 {{--            @hasanyrole('account|admin|Casher')--}}
 {{--            <li class="treeview {{ active_menu('banks')[0]  }}">--}}
@@ -469,8 +468,7 @@
                     <i class="fa fa-credit-card"></i> <span>{{trans('admin.settings')}}</span>
                     <span class="pull-right-container"></span>
                 </a>
-<<<<<<< HEAD
-=======
+
                 <ul class="treeview-menu" style="{{ active_menu('settings')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
                     {{-- اعدادات عامه --}}
                     @hasanyrole('writer|admin')
@@ -576,7 +574,6 @@
                     </li>
                     @endhasanyrole
                     {{-- نهاية الدول و المدن --}}
->>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
 
             </li>
             @endhasanyrole

@@ -111,19 +111,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
 //        projects
-<<<<<<< HEAD
-        Route::resource('projects','Admin\Project\ProjectController');
-        Route::get('projects_section','Admin\Project\ProjectController@projects_section')->name('projects.projects_section');
-        Route::get('projects/department/print','Admin\Project\ProjectController@print');
-        Route::get('projects/reports/report','Admin\Project\ProjectController@reports')->name('projects.reports');
-        Route::get('projects/reports/details','Admin\Project\ProjectController@details')->name('projects.details');
-        Route::post('projects/reports/pdf','Admin\Project\ProjectController@pdf');
-        Route::post('projects/getTreePrj','Admin\Project\ProjectController@getTree')->name('getTreePrj');
-        Route::post('projects/getproj','Admin\Project\ProjectController@getproj')->name('getproj');
-        Route::post('projects/getEditBladePrj','Admin\Project\ProjectController@getEditBlade')->name('getEditBladePrj');
-        Route::post('projects/createNewAccPrj','Admin\Project\ProjectController@createNewPrj')->name('createNewAccPrj');
-        Route::post('projects/initChartAccPrj','Admin\Project\ProjectController@initChartPrj')->name('initChartAccPrj');
-=======
+
         Route::resource('projects','Admin\Project\ProjectController1');
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
@@ -134,7 +122,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('projects/getEditBladePrj','Admin\Project\ProjectController1@getEditBlade')->name('getEditBladePrj');
         Route::post('projects/createNewAccPrj','Admin\Project\ProjectController1@createNewPrj')->name('createNewAccPrj');
         Route::post('projects/initChartAccPrj','Admin\Project\ProjectController1@initChartPrj')->name('initChartAccPrj');
->>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
 
         Route::get('getCity','Admin\Project\ProjectController1@getCities')->name('getCity');
 
@@ -212,11 +199,6 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('city','Admin\subscriber\SubscribeController@getCities')->name('getCities');
         Route::get('getBranch','Admin\subscriber\SubscribeController@getBranches')->name('getBranch');
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> cb0ce8b31cbfa1ee2b60b35d23429e1147d3e63d
 
 // 0_0 Dashboard_setting
         Route::get('general_setting', function () {
