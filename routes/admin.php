@@ -380,6 +380,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
         Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+        Route::resource('limitationOperation', 'Admin\limitations\LimitationsOperationsController');
         Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
         Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
         Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
@@ -388,6 +389,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
         Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
         Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
+
 
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');

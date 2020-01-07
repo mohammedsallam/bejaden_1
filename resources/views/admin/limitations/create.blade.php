@@ -148,6 +148,8 @@
                                 success: function(data){
                                     $('#Tr_No').val(data.last_no);
                                     $('#Tr_No1').val(data.activity+''+data.company+''+data.branch);
+                                    $('.Tr_No3').val(data.activity+''+data.company+''+data.branch+''+data.last_no);
+
                                 }
                             });
 
@@ -203,6 +205,7 @@
                         success: function(data){
                             $('#Tr_No').val(data.last_no);
                             $('#Tr_No1').val(data.activity+''+data.company+''+data.branch);
+                            $('.Tr_No3').val(data.activity+''+data.company+''+data.branch+''+data.last_no);
                         }
                     });
                 });
@@ -344,11 +347,11 @@
                             $('#main_acc').val(data.mainAccNm.acc_name);
 
                             if(data.AccNm && data.AccNm.cc_flag && data.AccNm.cc_no){
-                                $('#Costcntr_No_content').removeClass('hidden');
+                                $('.Costcntr_No_content').removeClass('hidden');
                             }
                             else{
-                                $('#Costcntr_No_content').addClass('hidden');
-                                $('#Costcntr_No').val(null);
+                                $('.Costcntr_No_content').addClass('hidden');
+                                $('.Costcntr_No').val(null);
                             }
                         }
                     });
@@ -406,15 +409,10 @@
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
                     e.preventDefault();
-
-
-
                     if($('#Ln_No').val() == -1){
                         Ln_No = Ln_No + 1;
                         $('#Ln_No').val(Ln_No);
                     }
-
-
 
                     if($('#debit').prop('checked') === true){
                         old_debit_sum += parseFloat($('#Tot_Amunt').val());
@@ -528,7 +526,7 @@
                                     Tr_Ds: $('#Tr_Ds').val(),
                                     Tr_Ds1: $('#Tr_Ds1').val(),
                                     Dc_No: $('#Dc_No').val(),
-                                    Costcntr_No: $('#Costcntr_No'),
+                                    Costcntr_No: $('#Costcntr_No').val(),
                                     Acc_No: $('#Acc_No').val(),
                                     Slm_No_Name: $('#Slm_No_Name').val(),
                                     Slm_No: $('#Slm_No').val(),
@@ -580,6 +578,71 @@
                     });
                 });
 
+                //حفظ السند فى قاعدة البيانات
+                $('#save').click(function(e){
+                    e.preventDefault();
+                    if($('#credit_debit_dif').val() !== '0'){
+                        alert('القيد غير متزن');
+                        return false
+                    }
+                        // catch_data = JSON.stringify(catch_data);
+                    $.ajax({
+                        url: "{{route('limitationOperation.store')}}",
+                        type: "post",
+                        dataType: 'html',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            catch_data:catch_data,
+                            credit_sum: $('#credit_sum').val(),
+                            debit_sum:$('#debit_sum').val(),
+                            Jr_Ty: $('#Jr_Ty').val(),
+                            Cmp_No: $('#Cmp_No').val(),
+                            Brn_No: $('#Dlv_Stor').val(),
+                            Tr_No: $('.Tr_No3').val(),
+                        },
+                        success: function(data){
+                            $('#alert').removeClass('hidden');
+                            $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
+                            // $('#Cmp_No').val(null);
+                            // $('#Dlv_Stor').val(null);
+                            {{--$('#Tr_No').val(null);--}}
+                            {{--// $('#Doc_Type').val(1);--}}
+                            {{--$('#Curncy_No').val(1);--}}
+                            {{--$('#Curncy_Rate').val(null);--}}
+                            {{--$('#Tot_Amunt').val(null);--}}
+                            {{--// $('#Taxp_Extra').val(null);--}}
+                            {{--$('#Slm_No').val(null);--}}
+                            {{--$('#Ac_Ty').val(null);--}}
+                            {{--$('#Sysub_Account').val(null);--}}
+                            {{--$('#Tr_Cr').val(null);--}}
+                            {{--$('#Dc_No').val(null);--}}
+                            {{--$('#Tr_Ds').val(null);--}}
+                            {{--$('#Tr_Ds1').val(null);--}}
+                            {{--$('#Acc_No').val(null);--}}
+                            {{--$('#Acc_No_Select').val(null);--}}
+                            {{--$('#Dc_No_Db').val(null);--}}
+                            {{--$('#Tr_Ds_Db').val(null);--}}
+                            {{--$('#Slm_No_Name').val(null);--}}
+                            {{--$('#Rcpt_By').val(null);--}}
+                            {{--$('#Tr_Db_Db').val(null);--}}
+                            {{--$('#Tr_Cr_Db').val(null);--}}
+                            {{--$('#FTot_Amunt').val(null);--}}
+                            {{--$('#table_view').html(`<table class="table" id="table">--}}
+                            {{--                        <thead>--}}
+                            {{--                            <th>{{trans('admin.id')}}</th>--}}
+                            {{--                            <th>{{trans('admin.account_number')}}</th>--}}
+                            {{--                            <th>{{trans('admin.account_name')}}</th>--}}
+                            {{--                            <th>{{trans('admin.motion_debtor')}}</th>--}}
+                            {{--                            <th>{{trans('admin.motion_creditor')}}</th>--}}
+                            {{--                            <th>{{trans('admin.note_ar')}}</th>--}}
+                            {{--                            <th>{{trans('admin.receipt_number')}}</th>--}}
+                            {{--                            <th>{{trans('admin.note_en')}}</th>--}}
+                            {{--                        </thead>--}}
+                            {{--                    </table>`);--}}
+                        }
+                    });
+                });
+
 
                 /**
                  * finish to here
@@ -600,73 +663,10 @@
                 });
 
 
-                //حفظ السند فى قاعدة البيانات
-                $('#save').click(function(e){
-                    e.preventDefault();
-                    if($('#credit_debit_dif').val() !== '0'){
-                        alert('القيد غير متزن');
-                        return false
-                    }
-                    else{
-                        catch_data = JSON.stringify(catch_data);
-                        $.ajax({
-                            url: "{{route('rcatchs.store')}}",
-                            type: "post",
-                            dataType: 'html',
-                            data: {"_token": "{{ csrf_token() }}", catch_data},
-                            success: function(data){
-                                $('#alert').removeClass('hidden');
-                                $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
-                                // $('#Cmp_No').val(null);
-                                // $('#Dlv_Stor').val(null);
-                                $('#Tr_No').val(null);
-                                // $('#Doc_Type').val(1);
-                                $('#Curncy_No').val(1);
-                                $('#Curncy_Rate').val(null);
-                                $('#Tot_Amunt').val(null);
-                                // $('#Taxp_Extra').val(null);
-                                $('#Slm_No').val(null);
-                                $('#Ac_Ty').val(null);
-                                $('#Sysub_Account').val(null);
-                                $('#Tr_Cr').val(null);
-                                $('#Dc_No').val(null);
-                                $('#Tr_Ds').val(null);
-                                $('#Tr_Ds1').val(null);
-                                $('#Acc_No').val(null);
-                                $('#Acc_No_Select').val(null);
-                                $('#Dc_No_Db').val(null);
-                                $('#Tr_Ds_Db').val(null);
-                                $('#Slm_No_Name').val(null);
-                                $('#Rcpt_By').val(null);
-                                $('#Tr_Db_Db').val(null);
-                                $('#Tr_Cr_Db').val(null);
-                                $('#FTot_Amunt').val(null);
-                                $('#table_view').html(`<table class="table" id="table">
-                                                    <thead>
-                                                        <th>{{trans('admin.id')}}</th>
-                                                        <th>{{trans('admin.account_number')}}</th>
-                                                        <th>{{trans('admin.account_name')}}</th>
-                                                        <th>{{trans('admin.motion_debtor')}}</th>
-                                                        <th>{{trans('admin.motion_creditor')}}</th>
-                                                        <th>{{trans('admin.note_ar')}}</th>
-                                                        <th>{{trans('admin.receipt_number')}}</th>
-                                                        <th>{{trans('admin.note_en')}}</th>
-                                                    </thead>
-                                                </table>`);
-                            }
-                        });
-                    }
-                });
+
 
                 function tableText(tableCell, data) {
                     var Ln_No = tableCell.cells[0].innerHTML;
-                    var updated_sum = parseFloat($('#Tr_Db_Db').val()) - parseFloat(tableCell.cells[4].innerHTML);
-                    old = updated_sum;
-                    $('#Tr_Db_Db').val(updated_sum);
-                    $('#Tr_Cr_Db').val(updated_sum);
-
-
-
                     for(var i = 0; i < data.length; i++){
                         if(data[i].Ln_No == Ln_No){
                             if(tableCell.classList[1] === 'credit_row'){
@@ -677,7 +677,6 @@
                                 old_credit_sum = old_credit_sum - parseFloat(data[i].Tr_Cr);
                                 $('#credit_sum').val(old_credit_sum);
                             } else if(tableCell.classList[1] === 'debit_row'){
-                                alert(data[i].Tr_Db)
                                 $('#debit').prop('checked', true);
                                 $('#credit').prop('checked', false);
                                 $('#Tr_Cr').attr('readonly', 'readonly').val(0);
@@ -799,8 +798,9 @@
                     <div class="col-md-2">
                         <label for="Tr_No">{{trans('admin.Tr_No')}}</label>
                         <div class="form-group" style="display: flex">
-                            <input type="text" name="Tr_No" id="Tr_No" value="" class="form-control" disabled>
-                            <input type="text" name="Tr_No1" id="Tr_No1" value="" class="form-control" disabled>
+                            <input type="text" name="" id="Tr_No" value="" class="form-control" disabled>
+                            <input type="text" name="" id="Tr_No1" value="" class="form-control" disabled>
+                            <input type="hidden" name="Tr_No" id="Tr_No3" class="Tr_No3" value="">
                         </div>
 
                     </div>
@@ -964,12 +964,12 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="debit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_Db_')}}" value="0">
+                                                    <input id="debit_sum" type="text" name="debit_sum" class="form-control" placeholder="{{trans('admin.Fbal_Db_')}}" value="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="credit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_CR_')}}" value="0">
+                                                    <input id="credit_sum" type="text" name="credit_sum" class="form-control" placeholder="{{trans('admin.Fbal_CR_')}}" value="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -1008,10 +1008,10 @@
                                 </div>
                                 {{-- نهاية رقم المستند --}}
                                 {{-- مركز التكلفه --}}
-                                <div class="col-md-6" id="Costcntr_No_content">
+                                <div class="col-md-6 Costcntr_No_content" id="Costcntr_No_content">
                                     <div class="form-group">
                                         <label for="Costcntr_No">{{trans('admin.with_cc')}}</label>
-                                        <select name="Costcntr_No" id="Costcntr_No" class="form-control select2">
+                                        <select name="Costcntr_No" id="Costcntr_No" class="form-control">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
                                             @if(count($cost_center) > 0)
                                                 @foreach($cost_center as $cc)
@@ -1022,13 +1022,14 @@
 
                                     </div>
                                 </div>
+                               <div class="col-md-2 Costcntr_No_content">
+                                   <div class="form-group">
+                                       <label for="Costcntr_No_input">{{trans('admin.costcntr_no_input')}}</label>
+                                       <input id="Costcntr_No_input" type="text" name="" class="form-control Costcntr_No_input">
+                                   </div>
+                               </div>
                                 {{-- نهاية مركز التكلفه --}}
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="Costcntr_No_input">{{trans('admin.costcntr_no_input')}}</label>
-                                        <input id="Costcntr_No_input" type="text" name="" class="form-control Costcntr_No_input">
-                                    </div>
-                                </div>
+
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <a style="margin-top: 19.2%" href="#" id="add_line" class="form-control btn btn-primary">{{trans('admin.add_line')}}</a>
