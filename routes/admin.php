@@ -140,11 +140,12 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
+        Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
         Route::get('get_mainbranches','Admin\subscriber\SubscribeController@get_mainbranches')->name('get_mainbranches');
         Route::get('get_data_client','Admin\subscriber\SubscribeController@get_data_client')->name('get_data_client');
-        Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
         Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
-        Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
+        Route::get('cust_report_print','Admin\subscriber\SubscribeController@cust_report_print')->name('cust_report_print');
+//        Route::get('cust_report_input','Admin\subscriber\SubscribeController@cust_report_input')->name('cust_report_input');
         Route::post('cust_report_pdf','Admin\subscriber\SubscribeController@cust_report_pdf')->name('cust_report_pdf');
         Route::post('createCstmNo','Admin\subscriber\SubscribeController@createCstmNo')->name('createCstmNo');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');

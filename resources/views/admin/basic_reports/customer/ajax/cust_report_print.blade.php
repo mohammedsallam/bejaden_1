@@ -1,15 +1,11 @@
 
-    {!! Form::open(array('route' => 'cust_report_pdf', 'method' => 'POST', 'target' => '_blank')) !!}
+{!! Form::open(array('url' => 'admin/accountStatement/pdf', 'method' => 'POST', 'target' => '_blank')) !!}
+{{Form::hidden('mainCompany',$mainCompany)}}
+{{Form::hidden('MainBranch',$MainBranch)}}
+{{Form::hidden('myradio',$myradio)}}
 
-    {{Form::hidden('name',$name)}}
-    {{Form::hidden('value',$value)}}
-<div class="button" style="margin: 18px">
+{{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin: 47px 102px 0 0;')) }}
 
-    <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
-    {{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin-right: 10px;')) }}
-
-</div>
-    {!! Form::close() !!}
-
+{!! Form::close() !!}
 
 
