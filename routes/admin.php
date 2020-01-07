@@ -165,9 +165,10 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
-        Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
-        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
-        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
+        Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplierReport')->name('supplierReport');
+        Route::get('sup_report_select','Admin\supplier\MtsSuplirController@supReportSelect')->name('supReportSelect');
+        Route::get('sup_report_form','Admin\supplier\MtsSuplirController@supReportForm')->name('supReportRadio');
+        Route::get('sup_report_pdf','Admin\supplier\MtsSuplirController@supReportPdf')->name('supReportPdf');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
