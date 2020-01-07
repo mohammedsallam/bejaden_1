@@ -230,7 +230,7 @@ class LimitationsOperationsController extends Controller
                 'Sysub_Account' => 'required',
                 'Tr_Cr' => 'sometimes',
                 'Tr_Db' => 'sometimes',
-                'Tr_Ds' => 'sometimes',
+                'Tr_Ds' => 'required',
                 'Tr_Ds1' => 'sometimes',
                 'Dc_No' => 'required',
                 'Costcntr_No' => 'sometimes',
