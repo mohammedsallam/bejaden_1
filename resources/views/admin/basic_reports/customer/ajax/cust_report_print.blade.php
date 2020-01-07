@@ -1,11 +1,13 @@
+<div class="row">
 
-{!! Form::open(array('url' => 'admin/accountStatement/pdf', 'method' => 'POST', 'target' => '_blank')) !!}
-{{Form::hidden('mainCompany',$mainCompany)}}
-{{Form::hidden('MainBranch',$MainBranch)}}
-{{Form::hidden('myradio',$myradio)}}
+    {!! Form::open(array('route' => 'cust_report_pdf', 'method' => 'POST', 'target' => '_blank')) !!}
+    {{Form::hidden('mainCompany',$mainCompany)}}
+    {{Form::hidden('MainBranch',$MainBranch)}}
+    {{Form::hidden('myradio',$myradio)}}
+    {{Form::hidden('selecd_input',$selecd_input)}}
+    <div class="col-md-2" style='margin: 47px 102px 0 0;'><button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i></button></div>
 
-{{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin: 47px 102px 0 0;')) }}
+    {!! Form::close() !!}
 
-{!! Form::close() !!}
-
+</div>
 

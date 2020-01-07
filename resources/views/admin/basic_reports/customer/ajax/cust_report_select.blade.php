@@ -10,7 +10,7 @@
             var mainCompany = '{{$mainCompany}}';
             var MainBranch = '{{$MainBranch}}';
             var myradio = '{{$myradio}}';
-        alert(selecd_input);
+
             $("#loadingmessage").css("display","block");
             if (this){
                 $.ajax({
@@ -32,13 +32,15 @@
         });
     });
 </script>
+@if($mainCompany != null)
 @if($myradio == 'country')
 
 <div class="row">
 
     {{ Form::label('country',trans('admin.country'), ['class' => 'col-md-2']) }}
     <select class="col-md-9 selecd_input" >
-            <option class="" value="-1">{{trans('admin.select')}}</option>
+            <option>{{trans('admin.select')}}</option>
+            <option class="" value="-1">{{trans('admin.public')}}</option>
         @foreach($country as $one)
 
             <option  value="{{$one->id}}">{{$one->{'country_name_'. session('lang')}   }}</option>
@@ -46,20 +48,7 @@
 
     </select>
 </div>
-<div class="div_print">
 
-    {!! Form::open(array('url' => 'admin/accountStatement/pdf', 'method' => 'POST', 'target' => '_blank')) !!}
-    {{Form::hidden('mainCompany',$mainCompany)}}
-    {{Form::hidden('MainBranch',$MainBranch)}}
-    {{Form::hidden('myradio',$myradio)}}
-    {{Form::hidden('selecd_input',-1)}}
-
-    {{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin: 47px 102px 0 0;')) }}
-
-    {!! Form::close() !!}
-
-
-</div>
 
 @elseif($myradio == 'city')
     <div class="row">
@@ -125,12 +114,15 @@
     </div>
 
 @endif
+@endif
 
 
 
 
 
+<div class="div_print">
 
+</div>
 
 <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
     <img src="{{ url('/') }}/images/ajax-loader.gif"/>
