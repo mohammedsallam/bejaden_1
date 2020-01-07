@@ -33,7 +33,7 @@
 
                 var catch_data = [],
                     old = 0,
-                    Ln_No = 1;
+                    Ln_No = 0;
 
                 // convert Tr_Dt ro hijry
                 let Hijri = $('input#Tr_Dt').val();
@@ -226,29 +226,63 @@
                     });
                 });
 
+                var debit_sum = 0, credit_sum = 0, old_credit_sum = 0, old_debit_sum = 0;
+
+                if($('.debit').prop("checked") === true){
+                    $('#Tr_Cr').attr('readonly', 'readonly').val('');
+                    $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
+                    debit_sum = parseFloat($('#Tot_Amunt').val());
+                    $('#debit_sum').val(old_debit_sum);
+
+                }
+
+                if($('.credit').prop("checked") === true){
+                    $('#Tr_Db').attr('readonly', 'readonly').val('');
+                    $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
+                    credit_sum = parseFloat($('#Tot_Amunt').val());
+                    $('#credit_sum').val(old_credit_sum);
+
+                }
+
                 $('.debit').change(function () {
                     $('#Tr_Cr').attr('readonly', 'readonly').val('');
-                    $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val())
+                    $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
+                    if($('.debit').prop("checked") === true){
+                        $('#Tr_Cr').attr('readonly', 'readonly').val('');
+                        $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
+                        debit_sum = parseFloat($('#Tot_Amunt').val());
+                        $('#debit_sum').val(old_debit_sum);
+                    }
                 });
 
                 $('.credit').change(function () {
                     $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
-                    $('#Tr_Db').attr('readonly', 'readonly').val('')
+                    $('#Tr_Db').attr('readonly', 'readonly').val('');
+                    if($('.credit').prop("checked") === true){
+                        $('#Tr_Db').attr('readonly', 'readonly').val('');
+                        $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
+                        credit_sum = parseFloat($('#Tot_Amunt').val());
+                        $('#credit_sum').val(old_credit_sum);
+                    }
                 });
 
                 $('#FTot_Amunt, #Curncy_Rate, #Tot_Amunt').change(function(){
                     if($('#FTot_Amunt').val() != null && $('#Curncy_Rate').val() != null || $('#Tot_Amunt').val() != null){
                         $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
-                    }
 
-                    if($('.debit').prop("checked") === true){
-                        $('#Tr_Cr').attr('readonly', 'readonly').val('');
-                        $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val())
-                    }
+                        if($('.debit').prop("checked") === true){
+                            $('#Tr_Cr').attr('readonly', 'readonly').val('');
+                            $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
+                            debit_sum = parseFloat($('#Tot_Amunt').val());
+                            $('#debit_sum').val(old_debit_sum);
+                        }
 
-                    if($('.credit').prop("checked") === true){
-                        $('#Tr_Db').attr('readonly', 'readonly').val('');
-                        $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val())
+                        if($('.credit').prop("checked") === true){
+                            $('#Tr_Db').attr('readonly', 'readonly').val('');
+                            $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
+                            credit_sum = parseFloat($('#Tot_Amunt').val());
+                            $('#credit_sum').val(old_credit_sum);
+                        }
                     }
 
                 });
@@ -368,14 +402,23 @@
 
                     selectHtml.remove();
                 });
-
+``
                 //اضافة سطر فى الجدول
                 $('#add_line').click(function(e){
                     e.preventDefault();
-                    // if($('#Ln_No').val() == -1){
-                    //     Ln_No = Ln_No + 1;
-                    //     $('#Ln_No').val(Ln_No);
-                    // }
+                    Ln_No = Ln_No + 1;
+                    $('#Ln_No').val(Ln_No);
+
+                    if($('#debit').prop('checked') === true){
+                        old_debit_sum += parseFloat($('#Tot_Amunt').val());
+                    }
+
+                    if($('#credit').prop('checked') === true){
+                        old_credit_sum += parseFloat($('#Tot_Amunt').val());
+                    }
+
+                    $('#credit_sum').val(old_credit_sum);
+                    $('#debit_sum').val(old_debit_sum);
 
                     $.ajax({
                         url: "{{route('limitationValidate')}}",
@@ -415,21 +458,24 @@
                         success: function(data){
                             var response = JSON.parse(data);
                             if(response.success == true){
+                                let Tr_Db = $('#Tr_Db').val(),Tr_Cr = $('#Tr_Cr').val();
+                                if(Tr_Db === ''){$('#Tr_Db').val(0.0)}
+                                if(Tr_Cr === ''){$('#Tr_Cr').val(0.0)}
                                 $('#table').append(`
                                 <tr class='tr'>
                                     <td>`+$('#Ln_No').val()+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td class="Tr_Db_td">`+$('#Tr_Db').val()+`</td>
-                                    <td>`+$('#Tr_Cr').val()+`</td>
+                                    <td class="Tr_Db_td">`+Tr_Db+`</td>
+                                    <td class="Tr_Cr_td">`+Tr_Cr+`</td>
                                     <td>`+$('#Tr_Ds').val()+`</td>
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
                                 </tr>`);
 
                                 var rows = document.getElementById('table').rows;
-                                var debit_sum = 0.0;
-                                var credit_sum = 0.0;
+                                var debit_sum = 0;
+                                var credit_sum = 0;
                                 for (var i=1; i<rows.length; i++){
                                     if(rows[i].cells.length > 0){
                                         debit_sum += parseFloat(rows[i].cells[3].innerHTML);
@@ -437,8 +483,8 @@
                                     }
                                 }
 
-                                $('#debit_sum').val(debit_sum !== NaN ? debit_sum : 0.0);
-                                $('#credit_sum').val(credit_sum !== NaN ? credit_sum : 0.0);
+                                $('#debit_sum').val(debit_sum);
+                                $('#credit_sum').val(credit_sum);
 
                                 var item = {
                                     Cmp_No: $('#Cmp_No').val(),
@@ -491,7 +537,7 @@
                                     for (var i = 0; i < table.rows.length; i++) {
                                         for (var j = 0; j < table.rows[i].cells.length; j++)
                                             table.rows[i].onclick = function () {
-                                                
+
                                                 tableText(this, catch_data);
                                                 this.innerHTML = '';
                                             };
@@ -655,7 +701,7 @@
     <div class="hidden" id="alert"></div>
     <form action="{{route('rcatchs.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
-        <input type="text" name="Ln_No" id="Ln_No" value="1" hidden>
+        <input type="text" name="Ln_No" id="Ln_No" hidden>
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
         {{-- بيانات اساسيه سند قبض --}}
         <div class="panel panel-primary">
@@ -872,17 +918,17 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="debit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_Db_')}}">
+                                                    <input id="debit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_Db_')}}" value="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="credit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_CR_')}}">
+                                                    <input id="credit_sum" type="text" name="" class="form-control" placeholder="{{trans('admin.Fbal_CR_')}}" value="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="credit_debit_dif" type="text" name="" class="form-control" placeholder="{{trans('admin.subtract')}}">
+                                                    <input id="credit_debit_dif" type="text" name="" class="form-control" placeholder="{{trans('admin.subtract')}}" value="0">
                                                 </div>
                                             </div>
                                         </div>
