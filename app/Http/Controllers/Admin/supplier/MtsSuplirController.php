@@ -326,6 +326,12 @@ class MtsSuplirController extends Controller
     }
 
 
+       public function supplier_report()
+    {
+      return  view('admin.basic_reports.supplier.supplier_report');
+    }
+
+
     public function createSupNo(Request $request){
         if($request->ajax()){
             $last_no = 0;

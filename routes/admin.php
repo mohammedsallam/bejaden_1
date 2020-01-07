@@ -31,6 +31,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        admins
         Route::resource('admins','Admin\AdminController');
+        Route::get('admin_setting','Admin\AdminController@admin_setting');
         Route::delete('admins/{id}','Admin\AdminController@destroy');
 
 
@@ -63,6 +64,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        departments
         Route::resource('departments','Admin\Department\DepartmentsController');
+        Route::get('department_setting','Admin\Department\DepartmentsController@department_setting');
         Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
@@ -93,9 +95,26 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::get('cc/department/Review','Admin\Cc\CcController@Review');
         Route::get('cc/department/reviewdepartment','Admin\Cc\CcController@reviewdepartment')->name('reviewdeCcpartment');
+        Route::get('cc/report/checkReports','Admin\Cc\ReportController@checkReports');
+        Route::get('cc/report/checkReports/show','Admin\Cc\ReportController@checkShow');
+        Route::get('cc/report/checkReports/details','Admin\Cc\ReportController@checkDetails');
+        Route::post('cc/report/checkReports/pdf','Admin\Cc\ReportController@print');
 
-//        projects
+        Route::get('cc/report/motioncc','Admin\Cc\ReportController@motioncc');
+        Route::get('cc/report/motioncc/show','Admin\Cc\ReportController@show');
+        Route::get('cc/report/motioncc/details','Admin\Cc\ReportController@details');
+
+        Route::get('cc/report/ccpublicbalance','Admin\Cc\ReportController@CCpublicbalance');
+        Route::get('cc/report/ccpublicbalance/level','Admin\Cc\ReportController@CCpublicbalancelevel');
+        Route::get('cc/report/ccpublicbalance/print','Admin\Cc\ReportController@CCpublicbalanceprint');
+        Route::POST('cc/report/ccpublicbalance/pdf','Admin\Cc\ReportController@CCpublicbalancepdf');
+
+        Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
+
+
         Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
+
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
@@ -121,6 +140,10 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
+        Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
+        Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
+        Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
+        Route::post('cust_report_pdf','Admin\subscriber\SubscribeController@cust_report_pdf')->name('cust_report_pdf');
         Route::post('createCstmNo','Admin\subscriber\SubscribeController@createCstmNo')->name('createCstmNo');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
 
@@ -141,6 +164,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -215,6 +239,9 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('cars_data', function () {
             return view('admin.basic_data.cars.cars_data');
         });
+            Route::get('sales_data', function () {
+            return view('admin.general_setting.sales.sales_data');
+        });
 
 
 //        0_0 fininncil_report
@@ -272,12 +299,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('cc_report', function () {
             return view('admin.basic_reports.CC.cc_report');
         });
-        Route::get('customer_report', function () {
-            return view('admin.basic_reports.customer.customer_report');
-        });
-        Route::get('supplier_report', function () {
-            return view('admin.basic_reports.supplier.supplier_report');
-        });
+
+
         Route::get('stuff_report', function () {
             return view('admin.basic_reports.stuff.stuff_report');
         });
@@ -325,6 +348,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('receiptsData/singledelete','Admin\banks\ReceiptController@singledelete');
 
         Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
+        Route::get('get_snadat', 'Admin\banks\ReceiptCatchController@get_snadat');
         Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
         Route::post('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
         Route::post('createTrNo', 'Admin\banks\ReceiptCatchController@createTrNo')->name('createTrNo');
@@ -372,8 +396,23 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('banks/Receipt/receipts/caching/caching','Admin\banks\ReceiptController@cachingindex')->name('receipts.caching');
         Route::get('banks/Receipt/receipts/catch/all','Admin\banks\ReceiptController@catch')->name('receipts.catch');
         Route::get('banks/Receipt/receipts/caching/all','Admin\banks\ReceiptController@caching')->name('receipts.caching');
+
+
+        /**
+         * Limitation routes
+         */
         Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
         Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
+        Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
+        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
+        Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
+        Route::post('checkSetting', 'Admin\limitations\LimitationsOperationsController@checkSetting')->name('checkSetting');
+        Route::post('limitationGetMainAccNoN', 'Admin\limitations\LimitationsOperationsController@getMainAccNo')->name('limitationGetMainAccNoN');
+        Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
+        Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
+        Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
+
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
         Route::post('accbanks/getAcc', 'Admin\setting\GLaccBnkCintroller@getAcc')->name('getAcc');
@@ -407,6 +446,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
+        Route::get('get_limitions','Admin\limitations\LimitationsController@get_limitions');
         Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
         Route::post('limitationsData/create','Admin\limitations\limitationsData@create');
         Route::post('limitationsData/editdatatable','Admin\limitations\limitationsData@editdatatable');
@@ -464,11 +504,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('projects', 'Admin\Project\ProjectController1');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');

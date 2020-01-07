@@ -108,6 +108,7 @@ class CompaniesController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         // return $request;
 
         //ثوابت الشركه
@@ -118,7 +119,7 @@ class CompaniesController extends Controller
             'Cmp_NmEn' => 'required',
             'Cmp_AddAr' => 'required',
             'Cmp_Tel' => 'required',
-           
+
         ],[],[
             'Actvty_No' => trans('admin.activity_type'),
             'Local_Lang' => trans('admin.main_lang'),
@@ -136,7 +137,7 @@ class CompaniesController extends Controller
                 'path'=>'companies',
                 'upload_type' => 'single',
                 'delete_file'=> $cmp->Picture
-            ]);   
+            ]);
         }
 
         $cmp->Actvty_No = $request->Actvty_No;
@@ -238,6 +239,7 @@ class CompaniesController extends Controller
         if($request->TabOrder_Pur){$cmp->TabOrder_Pur = 1;}else{$cmp->TabOrder_Pur = 0;}
         if($request->TabOrder_SaL){$cmp->TabOrder_SaL = 1;}else{$cmp->TabOrder_SaL = 0;}
         if($request->Foreign_Curncy){$cmp->Foreign_Curncy = 1;}else{$cmp->Foreign_Curncy = 0;}
+        if($request->Alw_slmacc){$cmp->Alw_slmacc = 1;}else{$cmp->Alw_slmacc = 0;}
         $cmp->L_Curncy_No = $request->L_Curncy_No;
         $cmp->save();
 
