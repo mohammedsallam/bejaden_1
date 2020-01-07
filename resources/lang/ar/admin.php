@@ -7,7 +7,7 @@ return [
     'title' => 'لوحة التحكم',
     'all_record' => 'كل التسجيلات',
 
-    'report_client' => 'تقارير العملاء',
+    'report_client' => 'تقاريرالبيانات الاساسية للعملاء',
     'AstSalesman' => 'مندوبين',
     'ActivityTypes' => 'انواع الانشطة',
     'Astsupctg' => 'تصنيف العملاء',
@@ -17,6 +17,10 @@ return [
 
 
     'financial_reports' => 'التقارير المحاسبية',
+    'report_supplier' => 'تقارير الموردين',
+    'AstCurncy' => 'العملات',
+    'MtsChartAc' => 'تصنيف الحسابات',
+    'MtsChartAc_sup' => 'تصنيف الموراد',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
 

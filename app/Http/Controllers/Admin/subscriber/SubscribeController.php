@@ -335,7 +335,21 @@ class SubscribeController extends Controller
     }
     public function customer_report()
     {
-        return view('admin.basic_reports.customer.customer_report');
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+
+        return view('admin.basic_reports.customer.customer_report',compact('mainCompany'));
+    }
+    public function get_mainbranches(Request $request)
+    {
+
+        if($request->ajax())
+        {
+           $mainCompany =  $request->mainCompany;
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')), 'Brn_No');
+
+        return view('admin.basic_reports.customer.ajax.get_mainbranches',compact('MainBranch'));
+        }
+
     }
     public function cust_report_form(Request $request)
     {

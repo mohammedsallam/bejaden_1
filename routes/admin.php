@@ -140,6 +140,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
+        Route::get('get_mainbranches','Admin\subscriber\SubscribeController@get_mainbranches')->name('get_mainbranches');
         Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
         Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
         Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
@@ -165,6 +166,8 @@ Route::group(['prefix'=>'admin'],function (){
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
+        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
+        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
