@@ -188,7 +188,7 @@ class SubscribeController extends Controller
         $subscriber= MTsCustomer::findOrFail($ID_No); //id
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $branches = MainBranch::pluck('name_'.session('lang'),'id');
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
         $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
         return view('admin.subscribers.show1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
@@ -205,11 +205,11 @@ class SubscribeController extends Controller
         $subscriber = MTsCustomer::findOrFail($ID_No);
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $branches = MainBranch::all();
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
         $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
 
-        return view('admin.subscribers.edit1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
+        return view('admin.subscribers.edit1',compact(['subscriber', 'astsupctg','companies','countries','branches', 'activities']));
     }
 
     /**

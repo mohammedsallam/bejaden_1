@@ -112,6 +112,7 @@
         <h3 class="box-title"></h3> {{-- {{$title}} --}}
     </div>
 <div>
+
   {{Form::model($subscriber,['method'=>'PUT','route'=>['subscribers.update',$subscriber->ID_No],'class'=>'form-group','files'=>true])}}
   <button class="btn btn-primary" style="float: left;"><i class="fa fa-save"></i></button>
   <!-- Nav tabs -->
@@ -132,27 +133,35 @@
 
                 <div class="col-md-6">
 
+
+
                 <div class="form-group row">
 
                     <div class="form-group col-md-12">
                         <div class="col-md-2">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
-                        @if(auth()->user()->company_id == '-1')
-                        <div class="col-md-10">{!!Form::select('Cmp_No', $companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null, [
+                        @if(auth()->user()->company_id == '1')
+                        <div class="col-md-10">
+                            {!!Form::select('Cmp_No', $companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null, [
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')
-                        ])!!}</div>
+                        ])!!}
+                        </div>
                         @else
                             <div class="col-md-10">{!!Form::text('Cmp_No', null, ['class'=>'form-control'])!!}</div>
                         @endif
                     </div>
 
+
+
                     <div class="form-group col-md-12">
                         <div class="col-md-2">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
                         <div class="col-md-10">
-                            <select class="form-control" name="Brn_No" id="branches" value="{{$branches}}">
-                               <option>{{trans('admin.select')}}</option>
+                            <select class="form-control" name="Brn_No" id="branches">
+                                <option>{{trans('admin.select')}}</option>
+                                @foreach(\App\Models\Admin\MainBranch::all() as $branch)
+                                    <option @if($subscriber->Brn_No == $branch->ID_No) selected @endif value="{{$branch->ID_NO}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
                            </select>
                         </div>
-
                     </div>
 
                 </div>

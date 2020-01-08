@@ -55,7 +55,6 @@
          // })
 
          $("#companies").change(function(){
-
                 var Cmp_No = $(this).val();
                  if(Cmp_No){
                         $.ajax({
@@ -69,6 +68,7 @@
                     });
                  }
             });
+
          $("#branches").change(function () {
              $.ajax({
                  url : "{{route('createCstmNo')}}",
@@ -153,7 +153,7 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-2">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
-                        @if(auth()->user()->company_id == '-1')
+                        @if(auth()->user()->company_id == '1')
                         <div class="col-md-10">{!!Form::select('Cmp_No', $companies->pluck('Cmp_NmAr', 'ID_NO')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')
                         ])!!}</div>
