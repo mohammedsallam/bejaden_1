@@ -468,122 +468,27 @@
                     <i class="fa fa-credit-card"></i> <span>{{trans('admin.settings')}}</span>
                     <span class="pull-right-container"></span>
                 </a>
-
-                <ul class="treeview-menu" style="{{ active_menu('settings')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
-                    {{-- اعدادات عامه --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('general_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.general_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
-                            @hasanyrole('writer|admin')
-                            <li><a href="{{route('curencies.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.currency_setting')}} </a></li>
-                            @endhasanyrole
-                        </ul>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادات عامه --}}
-
-                    {{-- اعدادات الحسابات --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('accounting_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accounting_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
-                            @hasanyrole('writer|admin')
-                            <li class="active"><a href="{{route('limitationType.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>
-                            <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
-                            @endhasanyrole
-                        </ul>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادات الحسابات --}}
-
-                    {{-- اعدادات الصندوق و البنوك --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('accbanks_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accbanks_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">
-                            @hasanyrole('writer|admin')
-                            <li><a href="{{route('accbanks.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>
-                            @endhasanyrole
-                        </ul>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادت الصندوق و البنوك --}}
-
-                    {{-- اعدادات الموظفين --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('employee_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.employee_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادات الموظفين --}}
-
-                    {{-- اعدادات السيارات --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('car_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.car_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادات السيارات --}}
-
-                    {{-- اعدادات المشاريع --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('project_setting')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.project_setting')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                        <ul class="treeview-menu" style=" {{ active_menu('fund_and_banks')[1]  }}">
-                            <li><a href="{{route('contractor.type')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Types_of_Contractors')}}</a></li>
-                        </ul>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية اعدادات المشاريع --}}
-
-                    {{-- الدول و المدن --}}
-                    @hasanyrole('writer|admin')
-                    <li class="treeview {{ active_menu('countries')[0]  }} {{ active_menu('cities')[0]  }} {{ active_menu('state')[0]  }}">
-                        <a href="#">
-                            <i class="fa fa-flag-o"></i> <span>{{trans('admin.Countries_and_Cities')}}</span>
-                            <span class="pull-right-container"></span>
-                        </a>
-                        <ul class="treeview-menu" style="{{ active_menu('countries')[1]  }} {{ active_menu('cities')[1]  }} {{ active_menu('state')[1]  }}">
-                            <li class="active"><a href="{{url('admin/countries')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Countries_and_Cities')}}</a></li>
-                            @can('create')
-                            <li><a href="{{url('admin/countries/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_country')}}</a></li>
-                            <li><a href="{{url('admin/cities/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_city')}}</a></li>
-                            <li><a href="{{url('admin/state/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_state')}}</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                    @endhasanyrole
-                    {{-- نهاية الدول و المدن --}}
-
             </li>
-            @endhasanyrole
-{{--            <li class="treeview">--}}
-{{--                <a href="#">--}}
-{{--                    <i class="fa fa-dashboard"></i> <span>{{trans('admin.settings')}}</span>--}}
-{{--                    <span class="pull-right-container"></span>--}}
-{{--                </a>--}}
-{{--                <ul class="treeview-menu">--}}
+{{--            <li  class="">--}}
 
+{{--                <ul class="treeview-menu" style="{{ active_menu('settings')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                    --}}{{-- اعدادات عامه --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('general_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.general_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li><a href="{{route('curencies.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.currency_setting')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات عامه --}}
+
+{{--                    --}}{{-- اعدادات الحسابات --}}
 {{--                    @hasanyrole('writer|admin')--}}
 {{--                    <li class="treeview {{ active_menu('accounting_setting')[0]  }}">--}}
 {{--                        <a href="#">--}}
@@ -592,7 +497,7 @@
 {{--                        </a>--}}
 {{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
 {{--                            @hasanyrole('writer|admin')--}}
-{{--                            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>--}}
+{{--                            <li class="active"><a href="{{route('limitationType.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>--}}
 {{--                            <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>--}}
 {{--                            <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>--}}
 {{--                            @endhasanyrole--}}
@@ -663,6 +568,213 @@
 {{--                        <ul class="treeview-menu" style="{{ active_menu('countries')[1]  }} {{ active_menu('cities')[1]  }} {{ active_menu('state')[1]  }}">--}}
 {{--                            <li class="active"><a href="{{url('admin/countries')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Countries_and_Cities')}}</a></li>--}}
 {{--                            @can('create')--}}
+{{--                            <li><a href="{{url('admin/countries/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_country')}}</a></li>--}}
+{{--                            <li><a href="{{url('admin/cities/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_city')}}</a></li>--}}
+{{--                            <li><a href="{{url('admin/state/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_state')}}</a></li>--}}
+{{--                            @endcan--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية الدول و المدن --}}
+
+{{--            </li>--}}
+            @endhasanyrole
+{{--         <li class="treeview {{ active_menu('news')[0]  }}">--}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('settings')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                    --}}{{-- اعدادات عامه --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('general_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.general_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li><a href="{{route('curencies.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.currency_setting')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات عامه --}}
+
+{{--                    --}}{{-- اعدادات الحسابات --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('accounting_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accounting_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li class="active"><a href="{{route('limitationType.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>--}}
+{{--                            <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>--}}
+{{--                            <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات الحسابات --}}
+
+{{--                    --}}{{-- اعدادات الصندوق و البنوك --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('accbanks_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accbanks_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li><a href="{{route('accbanks.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادت الصندوق و البنوك --}}
+
+{{--                    --}}{{-- اعدادات الموظفين --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('employee_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.employee_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات الموظفين --}}
+
+{{--                    --}}{{-- اعدادات السيارات --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('car_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.car_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات السيارات --}}
+
+{{--                    --}}{{-- اعدادات المشاريع --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('project_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.project_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style=" {{ active_menu('fund_and_banks')[1]  }}">--}}
+{{--                            <li><a href="{{route('contractor.type')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Types_of_Contractors')}}</a></li>--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية اعدادات المشاريع --}}
+
+{{--                    --}}{{-- الدول و المدن --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('countries')[0]  }} {{ active_menu('cities')[0]  }} {{ active_menu('state')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-flag-o"></i> <span>{{trans('admin.Countries_and_Cities')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('countries')[1]  }} {{ active_menu('cities')[1]  }} {{ active_menu('state')[1]  }}">--}}
+{{--                            <li class="active"><a href="{{url('admin/countries')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Countries_and_Cities')}}</a></li>--}}
+{{--                            @can('create')--}}
+{{--                            <li><a href="{{url('admin/countries/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_country')}}</a></li>--}}
+{{--                            <li><a href="{{url('admin/cities/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_city')}}</a></li>--}}
+{{--                            <li><a href="{{url('admin/state/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_state')}}</a></li>--}}
+{{--                            @endcan--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{-- نهاية الدول و المدن --}}
+
+
+{{--            </li>--}}
+{{--            @endhasanyrole--}}
+{{--            <li class="treeview">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-dashboard"></i> <span>{{trans('admin.settings')}}</span>--}}
+{{--                    <span class="pull-right-container"></span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu">--}}
+
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('accounting_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accounting_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.limitation_setting')}} </a></li>--}}
+{{--                            <li><a href="#"><i class="fa fa-circle-o"></i>{{trans('admin.asset_setting')}} </a></li>--}}
+{{--                            <li><a href="{{route('accbanks.create')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{----}}{{-- نهاية اعدادات الحسابات --}}
+
+{{--                    --}}{{----}}{{-- اعدادات الصندوق و البنوك --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('accbanks_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.accbanks_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('accounting_setting')[1]  }}{{ active_menu('setting')[1]  }}{{ active_menu('branches')[1]  }}">--}}
+{{--                            @hasanyrole('writer|admin')--}}
+{{--                            <li><a href="{{route('accbanks.index')}}"><i class="fa fa-circle-o"></i>{{trans('admin.accbanks')}} </a></li>--}}
+{{--                            @endhasanyrole--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{----}}{{-- نهاية اعدادت الصندوق و البنوك --}}
+
+{{--                    --}}{{----}}{{-- اعدادات الموظفين --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('employee_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.employee_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{----}}{{-- نهاية اعدادات الموظفين --}}
+
+{{--                    --}}{{----}}{{-- اعدادات السيارات --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('car_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.car_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{----}}{{-- نهاية اعدادات السيارات --}}
+
+{{--                    --}}{{----}}{{-- اعدادات المشاريع --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('project_setting')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-id-card-o"></i> <span>{{trans('admin.project_setting')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style=" {{ active_menu('fund_and_banks')[1]  }}">--}}
+{{--                            <li><a href="{{route('contractor.type')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Types_of_Contractors')}}</a></li>--}}
+{{--                        </ul>--}}
+{{--                    </li>--}}
+{{--                    @endhasanyrole--}}
+{{--                    --}}{{----}}{{-- نهاية اعدادات المشاريع --}}
+
+{{--                    --}}{{----}}{{-- الدول و المدن --}}
+{{--                    @hasanyrole('writer|admin')--}}
+{{--                    <li class="treeview {{ active_menu('countries')[0]  }} {{ active_menu('cities')[0]  }} {{ active_menu('state')[0]  }}">--}}
+{{--                        <a href="#">--}}
+{{--                            <i class="fa fa-flag-o"></i> <span>{{trans('admin.Countries_and_Cities')}}</span>--}}
+{{--                            <span class="pull-right-container"></span>--}}
+{{--                        </a>--}}
+{{--                        <ul class="treeview-menu" style="{{ active_menu('countries')[1]  }} {{ active_menu('cities')[1]  }} {{ active_menu('state')[1]  }}">--}}
+{{--                            <li class="active"><a href="{{url('admin/countries')}}"><i class="fa fa-circle-o"></i> {{trans('admin.Countries_and_Cities')}}</a></li>--}}
+{{--                            @can('create')--}}
 {{--                                <li><a href="{{url('admin/countries/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_country')}}</a></li>--}}
 {{--                                <li><a href="{{url('admin/cities/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_city')}}</a></li>--}}
 {{--                                <li><a href="{{url('admin/state/create')}}"><i class="fa fa-plus"></i> {{trans('admin.create_new_state')}}</a></li>--}}
@@ -670,99 +782,100 @@
 {{--                        </ul>--}}
 {{--                    </li>--}}
 {{--                    @endhasanyrole--}}
-{{--                    --}}{{-- نهاية الدول و المدن --}}
+{{--                    --}}{{----}}{{-- نهاية الدول و المدن --}}
 
 {{--                </ul>--}}
 {{--            </li>--}}
 
-            {{-- حساب المدير --}}
-            @hasrole('admin')
-            <li class="treeview {{ active_menu('admins')[0]  }} {{ active_menu('permissions')[0]  }} {{ active_menu('roles')[0]  }}">
-                <a href="#">
-                    <i class="fa fa-users"></i> <span>{{trans('admin.Admin_Account')}}</span>
-                    <span class="pull-right-container"></span>
-                </a>
-                <ul class="treeview-menu" style="{{ active_menu('admins')[1]  }} {{ active_menu('permissions')[1]  }} {{ active_menu('roles')[1]  }}">
-                    <li class="active"><a href="{{url('/admin/admins')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Admin_Account')}} </a></li>
-                    <li><a href="{{url('/admin/permissions')}}"><i class="fa fa-circle-o"></i>{{trans('admin.permission')}} </a></li>
-                    <li><a href="{{url('/admin/roles')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Roles')}} </a></li>
-                </ul>
-            </li>
-            @endhasrole
+{{--            --}}{{-- حساب المدير --}}
+{{--            @hasrole('admin')--}}
+{{--            <li class="treeview {{ active_menu('admins')[0]  }} {{ active_menu('permissions')[0]  }} {{ active_menu('roles')[0]  }}">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-users"></i> <span>{{trans('admin.Admin_Account')}}</span>--}}
+{{--                    <span class="pull-right-container"></span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('admins')[1]  }} {{ active_menu('permissions')[1]  }} {{ active_menu('roles')[1]  }}">--}}
+{{--                    <li class="active"><a href="{{url('/admin/admins')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Admin_Account')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/permissions')}}"><i class="fa fa-circle-o"></i>{{trans('admin.permission')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/roles')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Roles')}} </a></li>--}}
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--            @endhasrole--}}
 
-            @hasanyrole('writer|admin')
-            <li  class="">
+{{--            @hasanyrole('writer|admin')--}}
+{{--            <li  class="">--}}
 
-                <a href="{{url('/admin/admin_setting')}}">
-                    <i class="fa fa-money"></i> <span>{{trans('admin.Admin_Account')}}</span>
-                    <span class="pull-right-container"></span>
-                </a>
+{{--                <a href="{{url('/admin/admin_setting')}}">--}}
+{{--                    <i class="fa fa-money"></i> <span>{{trans('admin.Admin_Account')}}</span>--}}
+{{--                    <span class="pull-right-container"></span>--}}
+{{--                </a>--}}
 
-            </li>
-            @endhasanyrole
-            {{-- نهاية حساب المدير --}}
+{{--            </li>--}}
+{{--            @endhasanyrole--}}
+{{--            --}}{{-- نهاية حساب المدير --}}
 
-            {{-- حساب المستخدم --}}
-            @hasrole('admin')
-            <li class="treeview {{ active_menu('relatedness')[0]  }} {{ active_menu('systems')[0]  }} {{ active_menu('users')[0]  }}">
-                <a href="#">
-                    <i class="fa fa-users"></i> <span>{{trans('admin.User_Account')}}</span>
-                    <span class="pull-right-container">
-                </span>
-                </a>
+{{--            --}}{{-- حساب المستخدم --}}
+{{--            @hasrole('admin')--}}
+{{--            <li class="treeview {{ active_menu('relatedness')[0]  }} {{ active_menu('systems')[0]  }} {{ active_menu('users')[0]  }}">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-users"></i> <span>{{trans('admin.User_Account')}}</span>--}}
+{{--                    <span class="pull-right-container">--}}
+{{--                </span>--}}
+{{--                </a>--}}
 
-                <ul class="treeview-menu" style="{{ active_menu('subscribers')[1]  }} {{ active_menu('relatedness')[1]  }} {{ active_menu('systems')[1]  }} {{ active_menu('users')[1]  }}">
-                    <li class="active"><a href="{{url('/admin/users')}}"><i class="fa fa-circle-o"></i>{{trans('admin.User_Account')}}</a></li>
-                    @can('create')
-                                            <li><a href="{{url('admin/subscribers/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Subscriber')}}</a></li>
-                        @hasanyrole('writer|admin')
-                                            <li><a href="{{url('admin/systems/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Sub_System')}}</a></li>
-                        @endhasanyrole
-                    @endcan
-                </ul>
-            </li>
-            @endhasrole
-            {{-- نهاية حساب المستخدم --}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('subscribers')[1]  }} {{ active_menu('relatedness')[1]  }} {{ active_menu('systems')[1]  }} {{ active_menu('users')[1]  }}">--}}
+{{--                    <li class="active"><a href="{{url('/admin/users')}}"><i class="fa fa-circle-o"></i>{{trans('admin.User_Account')}}</a></li>--}}
+{{--                    @can('create')--}}
+{{--                                            <li><a href="{{url('admin/subscribers/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Subscriber')}}</a></li>--}}
+{{--                        @hasanyrole('writer|admin')--}}
+{{--                                            <li><a href="{{url('admin/systems/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Sub_System')}}</a></li>--}}
+{{--                        @endhasanyrole--}}
+{{--                    @endcan--}}
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--            @endhasrole--}}
+{{--            --}}{{-- نهاية حساب المستخدم --}}
 
-            {{-- البيانات الاساسيه للعملاء --}}
-            {{-- <li class="treeview {{ active_menu('subscribers')[0]  }}">
-                <a href="#">
-                    <i class="fa fa-users"></i> <span>{{trans('admin.Subscriber_Account')}}</span>
-                    <span class="pull-right-container">
-                    </span>
-                </a>
-                <ul class="treeview-menu" style="{{ active_menu('subscribers')[1]  }} {{ active_menu('relatedness')[1]  }} {{ active_menu('systems')[1]  }} {{ active_menu('users')[1]  }}">
-                    <li><a href="{{url('/admin/subscribers')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Subscriber_Account')}} </a></li>
-                    <li><a href="{{url('/admin/relatedness')}}"><i class="fa fa-circle-o"></i>{{trans('admin.related_Account')}} </a></li>
-                    <li><a href="{{route('activities.index')}}"><i class="fa fa-circle-o"></i> {{trans('admin.types_of_activities')}}</a></li>
-                @can('create')
-                    <li><a href="{{url('admin/subscribers/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Subscriber')}}</a></li>
-                @endcan
-                </ul>
-            </li> --}}
-            {{-- نهاية البيانات الاساسيه للعملاء --}}
+{{--            --}}{{-- البيانات الاساسيه للعملاء --}}
+{{--            --}}{{-- <li class="treeview {{ active_menu('subscribers')[0]  }}">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-users"></i> <span>{{trans('admin.Subscriber_Account')}}</span>--}}
+{{--                    <span class="pull-right-container">--}}
+{{--                    </span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('subscribers')[1]  }} {{ active_menu('relatedness')[1]  }} {{ active_menu('systems')[1]  }} {{ active_menu('users')[1]  }}">--}}
+{{--                    <li><a href="{{url('/admin/subscribers')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Subscriber_Account')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/relatedness')}}"><i class="fa fa-circle-o"></i>{{trans('admin.related_Account')}} </a></li>--}}
+{{--                    <li><a href="{{route('activities.index')}}"><i class="fa fa-circle-o"></i> {{trans('admin.types_of_activities')}}</a></li>--}}
+{{--                @can('create')--}}
+{{--                    <li><a href="{{url('admin/subscribers/create')}}"><i class="fa fa-plus"></i> {{trans('admin.Create_New_Subscriber')}}</a></li>--}}
+{{--                @endcan--}}
+{{--                </ul>--}}
+{{--            </li> --}}
+{{--            --}}{{-- نهاية البيانات الاساسيه للعملاء --}}
 
-            {{-- بيانات مقاولين الباطن --}}
-            {{-- @hasanyrole('writer|admin')
-            <li class="treeview {{ active_menu('contracts')[0]  }}">
-                <a href="#">
-                    <i class="fa fa-id-card-o"></i>
-                    <span>{{trans('admin.Data_of_subcontractors')}}</span>
-                    <span class="pull-right-container"></span>
-                </a>
-                <ul class="treeview-menu" style="{{ active_menu('contracts')[1]  }}">
-                    <li class=""><a href="{{url('/admin/contractors')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Contractors_data')}}</a></li>
-                    <li class=""><a href="{{url('/admin/contracts')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Contractors_contracts_data')}}</a></li>
-                    <li class="active"><a href="{{url('/admin/contract')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cost_staff')}}</a></li>
-                    @can('create')
-                    <li><a href="{{route('contractors.create')}}"><i class="fa fa-plus"></i>{{trans('admin.Add_a_contractor')}}</a></li>
-                    <li><a href="{{route('contracts.create')}}"><i class="fa fa-plus"></i>{{trans('admin.Add_a_contract')}}</a></li>
-                    @endcan
+{{--            --}}{{-- بيانات مقاولين الباطن --}}
+{{--            --}}{{-- @hasanyrole('writer|admin')--}}
+{{--            <li class="treeview {{ active_menu('contracts')[0]  }}">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-id-card-o"></i>--}}
+{{--                    <span>{{trans('admin.Data_of_subcontractors')}}</span>--}}
+{{--                    <span class="pull-right-container"></span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('contracts')[1]  }}">--}}
+{{--                    <li class=""><a href="{{url('/admin/contractors')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Contractors_data')}}</a></li>--}}
+{{--                    <li class=""><a href="{{url('/admin/contracts')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Contractors_contracts_data')}}</a></li>--}}
+{{--                    <li class="active"><a href="{{url('/admin/contract')}}"><i class="fa fa-circle-o"></i>{{trans('admin.cost_staff')}}</a></li>--}}
+{{--                    @can('create')--}}
+{{--                    <li><a href="{{route('contractors.create')}}"><i class="fa fa-plus"></i>{{trans('admin.Add_a_contractor')}}</a></li>--}}
+{{--                    <li><a href="{{route('contracts.create')}}"><i class="fa fa-plus"></i>{{trans('admin.Add_a_contract')}}</a></li>--}}
+{{--                    <li><a href="{{route('contracts.create')}}"><i class="fa fa-plus"></i>{{trans('admin.Add_a_contract')}}</a></li>--}}
+{{--                    @endcan--}}
 
-                </ul>
-            </li>
-            @endhasanyrole --}}
-            {{-- نهاية بيانات مقاولين الباطن --}}
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--            @endhasanyrole --}}
+{{--            --}}{{-- نهاية بيانات مقاولين الباطن --}}
         </ul>
     </section>
     <!-- /.sidebar -->
