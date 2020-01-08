@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.report_client'))
+@section('title',trans('admin.report_supplier'))
 @section('content')
     @push('css')
         <style>
@@ -101,24 +101,17 @@
         </style>
     @endpush
     <?php $to_glcc_select = null;?>
+
     @push('js')
+
         <script>
-            $(document).ready(function() {
+            $(document).ready(function(){
 
                 $(".e2").select2({
                     placeholder: "{{trans('admin.select')}}",
                     // allowClear: true,
                     dir: '{{direction()}}'
                 });
-            });
-
-        </script>
-    @endpush
-
-    @push('js')
-
-        <script>
-            $(document).ready(function(){
 
                 $('.mainCompany').on('change',function(){
                     $("#loadingmessage").css("display","block");
@@ -155,7 +148,7 @@
                         dataType: 'html',
                         data:{value:value,mainCompany:mainCompany},
                         type:'get',
-                        url:'{{route('cust_report_select')}}',
+                        url:'{{route('sup_report_select')}}',
                         success:function (data) {
                             $("#loadingmessage").css("display","none");
                             if (value == 'bransh'){
@@ -202,28 +195,28 @@
                                 $('#countryIn').removeClass('hidden');
                                 $('#countryIn').html(data);
 
-                            }else if(value == 'city'){
+                            }else if(value == 'Currency'){
                                 $('#ActivityTypes').addClass('hidden');
                                 $('#ActivityTypesIn').addClass('hidden');
                                 $('#AstSalesmanIn').addClass('hidden');
-                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
                                 $('#AstMarketIn').addClass('hidden');
                                 $('#AstsupctgIn').addClass('hidden');
                                 $('#branshIn').addClass('hidden');
-                                $('#cityIn').removeClass('hidden');
-                                $('#cityIn').html(data);
+                                $('#CurrencyIn').removeClass('hidden');
+                                $('#CurrencyIn').html(data);
                             }
-                            else if(value == 'AstMarket'){
-                                $('#ActivityTypes').addClass('hidden');
-                                $('#ActivityTypesIn').addClass('hidden');
-                                $('#AstSalesmanIn').addClass('hidden');
-                                $('#countryIn').addClass('hidden');
-                                $('#cityIn').addClass('hidden');
-                                $('#AstsupctgIn').addClass('hidden');
-                                $('#branshIn').addClass('hidden');
-                                $('#AstMarketIn').removeClass('hidden');
-                                $('#AstMarketIn').html(data);
-                            }
+                            // else if(value == 'AstMarket'){
+                            //     $('#ActivityTypes').addClass('hidden');
+                            //     $('#ActivityTypesIn').addClass('hidden');
+                            //     $('#AstSalesmanIn').addClass('hidden');
+                            //     $('#countryIn').addClass('hidden');
+                            //     $('#cityIn').addClass('hidden');
+                            //     $('#AstsupctgIn').addClass('hidden');
+                            //     $('#branshIn').addClass('hidden');
+                            //     $('#AstMarketIn').removeClass('hidden');
+                            //     $('#AstMarketIn').html(data);
+                            // }
 
                             else if(value == 'Astsupctg'){
                                 $('#ActivityTypes').addClass('hidden');
@@ -262,18 +255,18 @@
 
         <div class="box-body">
 
-            <form action="{{route('cust_report_pdf')}}" method="POST">
+            <form action="{{route('sup_report_pdf')}}" method="POST">
                 {{ csrf_field() }}
                 <div class="panel panel-primary" style="width:100%; margin:auto auto;">
                     <div class="panel-heading">
                         <div class="panel-title">
-                            {{trans('admin.report_client')}}
+                            {{trans('admin.report_supplier')}}
                         </div>
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-md-4">
-                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                            <div class="col-md-8">
+                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-3']) }}
                                 {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
                             </div>
                         </div>
@@ -292,18 +285,6 @@
                                     <div class="col-md-8" id="branshIn"></div>
                                 </div>
 
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="custom_radio">
-                                            <input value="AstSalesman" type="radio" name="myRadio" id="two"  class="myradio__input" >
-                                            <label  for="two" class="myradio__label">المندوب</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-8" id="AstSalesmanIn"></div>
-                                </div>
-
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="custom_radio">
@@ -314,6 +295,17 @@
                                     <div class="col-md-8" id="ActivityTypesIn"></div>
 
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="Currency" type="radio" name="myRadio" id="eight"  class="myradio__input" >
+                                            <label for="eight" class="myradio__label">العمله</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="CurrencyIn"></div>
+                                </div>
+
 
                             </div>
 
@@ -329,34 +321,25 @@
                                     <div class="col-md-8" id="countryIn"></div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="custom_radio">
-                                            <input value="city" type="radio" name="myRadio" id="five"  class="myradio__input" >
-                                            <label for="five" class="myradio__label">المدينة</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8" id="cityIn"></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="custom_radio">
-                                            <input value="AstMarket" type="radio" name="myRadio" id="six"  class="myradio__input" >
-                                            <label for="six" class="myradio__label">المشرف</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8" id="AstMarketIn"></div>
-                                </div>
 
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="custom_radio">
                                             <input value="Astsupctg" type="radio" name="myRadio" id="seven"  class="myradio__input" >
-                                            <label for="seven" class="myradio__label">تصنيف العميل</label>
+                                            <label for="seven" class="myradio__label">تصنيف المورد</label>
                                         </div>
                                     </div>
                                     <div class="col-md-8" id="AstsupctgIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="AccNo" type="radio" name="myRadio" id="nine"  class="myradio__input" >
+                                            <label for="nine" class="myradio__label">رقم الحساب</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="AccNoIn"></div>
                                 </div>
                             </div>
                         </div>
