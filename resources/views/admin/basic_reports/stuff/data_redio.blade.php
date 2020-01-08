@@ -54,20 +54,22 @@
 
 </style>
 
+<br>
+<br>
 <div class="row">
     <div class="col-md-6">
         <div class="vertical-menu">
             <div class="custom_radio">
-                <input   value="2" type="radio" name="myRadio" id="one"  class="myradio__input" >
-                <label  for="one" class="myradio__label">الفرع</label>
+                <input style="width: 100px"  value="2" type="radio" name="myRadio" id="one"  class="myradio__input" >
+                <label for="one" class="myradio__label">دليل الحسابات</label>
             </div>
             <div class="custom_radio">
-                <input   value="2" type="radio" name="myRadio" id="two"  class="myradio__input" >
-                <label  for="two" class="myradio__label">الفرع</label>
+                <input style="width: 250px"  value="2" type="radio" name="myRadio" id="two"  class="myradio__input" >
+                <label for="two" class="myradio__label">الراتب</label>
             </div>
             <div class="custom_radio">
-                <input   value="2" type="radio" name="myRadio" id="three"  class="myradio__input" >
-                <label  for="three" class="myradio__label">الفرع</label>
+                <input style="width: 250px" value="2" type="radio" name="myRadio" id="three"  class="myradio__input" >
+                <label for="three" class="myradio__label">نوع الدوام </label>
             </div>
         </div>
     </div>
@@ -77,15 +79,15 @@
         <div class="vertical-menu">
             <div class="custom_radio">
                 <input   value="2" type="radio" name="myRadio" id="four"  class="myradio__input" >
-                <label  for="four" class="myradio__label">الفرع</label>
+                <label  for="four" class="myradio__label">الحالة الوظيفية </label>
             </div>
             <div class="custom_radio">
                 <input   value="2" type="radio" name="myRadio" id="five"  class="myradio__input" >
-                <label  for="five" class="myradio__label">الفرع</label>
+                <label  for="five" class="myradio__label">بنك الشركة</label>
             </div>
             <div class="custom_radio">
                 <input   value="2" type="radio" name="myRadio" id="six"  class="myradio__input" >
-                <label  for="six" class="myradio__label">الفرع</label>
+                <label  for="six" class="myradio__label">بنك الموظف</label>
             </div>
         </div>
     </div>

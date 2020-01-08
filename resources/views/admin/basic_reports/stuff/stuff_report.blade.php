@@ -56,7 +56,8 @@
                 transform: scale(0.6);
             }
 
-        </style>    @endpush
+        </style>
+    @endpush
     <?php $to_glcc_select = null;?>
     @push('js')
         <script>
@@ -81,7 +82,6 @@
                     $("#loadingmessage").css("display","block");
                     $(".column-data").css("display","none");
                     var mainCompany = $('.mainCompany').val();
-                    console.log(mainCompany);
 
                     if (this){
                         $.ajax({

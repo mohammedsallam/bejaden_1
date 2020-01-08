@@ -162,6 +162,7 @@ Route::group(['prefix'=>'admin'],function (){
 //        employees
         Route::resource('employees','Admin\employees\EmployeeController');
 
+        Route::get('stuff_data','Admin\employees\EmployeeController@stuff_data')->name('stuff_data');
         Route::get('employees_report','Admin\employees\EmployeeController@employees_report')->name('employees_report');
         Route::get('get_Branches','Admin\employees\EmployeeController@get_Branches')->name('get_BranchesR');
         Route::get('get_data_redio','Admin\employees\EmployeeController@get_data_redio')->name('get_data_redio');
@@ -238,9 +239,9 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_data.cc.cc_data');
         });
 
-            Route::get('stuff_data', function () {
-            return view('admin.basic_data.stuff.stuff_data');
-        });
+//            Route::get('stuff_data', function () {
+//            return view('admin.basic_data.stuff.stuff_data');
+//        });
 
 
 

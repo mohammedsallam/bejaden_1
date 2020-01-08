@@ -231,6 +231,10 @@ class EmployeeController extends Controller
         return redirect(aurl('employees'));
     }
 
+    public function stuff_data(){
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return view('admin.basic_data.stuff.stuff_data',compact('mainCompany'));
+    }
 
     public function get_Branches(Request $request){
 
