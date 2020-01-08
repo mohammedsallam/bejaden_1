@@ -165,6 +165,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::get('sup_report_print','Admin\supplier\MtsSuplirController@sup_report_print')->name('sup_report_print');
         Route::get('get_branches','Admin\supplier\MtsSuplirController@get_mainbranches')->name('get_branches');
         Route::get('get_data_supplier','Admin\supplier\MtsSuplirController@get_data_supplier')->name('get_data_supplier');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplierReport')->name('supplierReport');

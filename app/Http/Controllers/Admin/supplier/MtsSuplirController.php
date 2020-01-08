@@ -358,6 +358,7 @@ class MtsSuplirController extends Controller
     public function supplierReport()
     {
         $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        //dd($mainBranch);
 
         return view('admin.basic_reports.supplier.supplier_report',compact('mainCompany'));
     }
