@@ -110,9 +110,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::POST('cc/report/ccpublicbalance/pdf','Admin\Cc\ReportController@CCpublicbalancepdf');
 
         Route::post('cc/reports/pdf','Admin\Cc\ReportController@pdf');
-//        projects
+
 
         Route::resource('projects','Admin\Project\ProjectController1');
+        Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
+
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
         Route::get('projects/reports/report','Admin\Project\ProjectController1@reports')->name('projects.reports');
         Route::get('projects/reports/details','Admin\Project\ProjectController1@details')->name('projects.details');
@@ -139,8 +141,9 @@ Route::group(['prefix'=>'admin'],function (){
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
+        Route::get('get_mainbranches','Admin\subscriber\SubscribeController@get_mainbranches')->name('get_mainbranches');
         Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
-        Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
+        Route::get('cust_report_print','Admin\subscriber\SubscribeController@cust_report_print')->name('cust_report_print');
         Route::post('cust_report_pdf','Admin\subscriber\SubscribeController@cust_report_pdf')->name('cust_report_pdf');
         Route::post('createCstmNo','Admin\subscriber\SubscribeController@createCstmNo')->name('createCstmNo');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
@@ -162,6 +165,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
+        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
+        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -297,9 +303,7 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_reports.CC.cc_report');
         });
 
-        Route::get('supplier_report', function () {
-            return view('admin.basic_reports.supplier.supplier_report');
-        });
+
         Route::get('stuff_report', function () {
             return view('admin.basic_reports.stuff.stuff_report');
         });
@@ -503,11 +507,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
-//        Route::resource('projects', 'Admin\Project\ProjectController');
-//        Route::resource('projects', 'Admin\Project\ProjectController1');
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');
