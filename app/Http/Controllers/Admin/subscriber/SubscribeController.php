@@ -336,8 +336,8 @@ class SubscribeController extends Controller
     public function customer_report()
     {
         $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return $data =  view('admin.basic_reports.customer.customer_report',compact('mainCompany'))->render();
 
-        return view('admin.basic_reports.customer.customer_report',compact('mainCompany'));
     }
     public function get_mainbranches(Request $request)
     {
@@ -345,173 +345,82 @@ class SubscribeController extends Controller
         if($request->ajax())
         {
            $mainCompany =  $request->mainCompany;
-            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')), 'Brn_No');
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+            return $data =  view('admin.basic_reports.customer.ajax.get_mainbranches',compact('mainCompany','MainBranch'))->render();
 
-        return view('admin.basic_reports.customer.ajax.get_mainbranches',compact('MainBranch'));
+
         }
 
     }
-    public function cust_report_form(Request $request)
-    {
-        if($request->ajax())
-        {
-            $myradio = $request->myradio;
 
 
-            if($request->myradio == 1) {
-            $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['mainCompany' => $mainCompany,'myradio' => $myradio]);
-        }else if($request->myradio == 2)
-        {
-            $MainBranch = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')), 'Brn_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['MainBranch' => $MainBranch,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 3)
-        {
-            $AstSalesman = AstSalesman::pluck('Slm_Nm'.ucfirst(session('lang')), 'Slm_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['AstSalesman' => $AstSalesman,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 4)
-        {
-            $ActivityTypes = ActivityTypes::pluck('Name_'.ucfirst(session('lang')), 'Actvty_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['ActivityTypes' => $ActivityTypes,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 5)
-        {
-            $Astsupctg = Astsupctg::pluck('Supctg_Nm'.ucfirst(session('lang')), 'Supctg_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['Astsupctg' => $Astsupctg,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio ==6 )
-        {
-            $country = country::pluck('country_name_'.ucfirst(session('lang')), 'id');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['country' => $country,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 7 )
-        {
-            $city = city::pluck('city_name_'.ucfirst(session('lang')), 'id');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['city' => $city,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 9 )
-        {
-            $MtsChartAc = MtsChartAc::where('Acc_Typ',4)->pluck('Acc_Nm'.ucfirst(session('lang')), 'Cmp_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['MtsChartAc' => $MtsChartAc,'myradio' => $myradio]);
-
-        }
-            else if($request->myradio == 10 )
-        {
-            $AstMarket = AstMarket::pluck('Mrkt_Nm'.ucfirst(session('lang')), 'Mrkt_No');
-            return view('admin.basic_reports.customer.ajax.cust_report_form', ['AstMarket' => $AstMarket,'myradio' => $myradio]);
-
-        }
-        }
-
-    }
-//    public function cust_report_select(Request $request)
-//    {
-//        if($request->ajax())
-//
-//        {
-//            $name = $request->name;
-//            $value = $request->value;
-//            if($name == 'company')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Cmp_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            } if($name == 'MainBranch')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'AstSalesman')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Slm_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'ActivityTypes')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'ActivityTypes')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Cstm_Ctg',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'country')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'city')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('City_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'MtsChartAc')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Acc_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }if($name == 'AstMarket')
-//            {
-//
-//                $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->get();
-//                return view('admin.basic_reports.customer.ajax.cust_report_print', ['MTsCustomer' => $MTsCustomer,'value' => $value]);
-//
-//
-//            }
-//
-//        }
-//    }
-//    public function cust_report_pdf(Request $request)
-//    {
-//
-//        $name = $request->name;
-//        $value = $request->value;
-//        $MTsCustomer = MTsCustomer::where('Cmp_No',$value)->get();
-//
-//        $config = ['instanceConfigurator' => function($mpdf) {
-//            $mpdf->SetHTMLFooter('
-//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-//            );
-//        }];
-//        $pdf = Pdf::loadView('admin.basic_reports.customer.pdf.cust', compact('MTsCustomer'),[], $config);
-//        return $pdf->stream();
-//    }
 
     public function cust_report_select(Request $request)
     {
+
         if($request->ajax())
 
         {
-            $name = $request->name;
-            $value = $request->value;
+            $mainCompany = $request->mainCompany;
+            $MainBranch = $request->MainBranch;
+            $myradio = $request->value;
+            if($myradio =='country')
+            {
+                $country = country::get();
 
-            return view('admin.basic_reports.customer.ajax.cust_report_print', ['name' => $name,'value' => $value]);
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('country','myradio','MainBranch','mainCompany'))->render();
+
+
+            }elseif ( $myradio == 'city')
+            {
+                $city = city::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('city','myradio','MainBranch','mainCompany'))->render();
+
+
+            }else if($myradio == 'AstSalesman')
+            {
+                $AstSalesman = AstSalesman::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstSalesman','myradio','MainBranch','mainCompany'))->render();
+
+
+            }else if($myradio == 'AstMarket')
+            {
+                $AstMarket = AstMarket::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstMarket','myradio','MainBranch','mainCompany'))->render();
+
+
+            }else if($myradio == 'ActivityTypes')
+            {
+                $ActivityTypes = ActivityTypes::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('ActivityTypes','myradio','MainBranch','mainCompany'))->render();
+
+            }else if($myradio == 'Astsupctg')
+            {
+                $Astsupctg = Astsupctg::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('Astsupctg','myradio','MainBranch','mainCompany'))->render();
+
+            }
+
+
+//
+
+
+
+        }
+    }
+
+    public function cust_report_print(Request $request)
+    {
+
+        if($request->ajax())
+
+        {
+            $mainCompany = $request->mainCompany;
+            $MainBranch = $request->MainBranch;
+            $myradio = $request->myradio;
+            $selecd_input = $request->selecd_input;
+
+                return $data=  view('admin.basic_reports.customer.ajax.cust_report_print',compact('selecd_input','myradio','MainBranch','mainCompany'))->render();
 
         }
     }
@@ -520,8 +429,7 @@ class SubscribeController extends Controller
 
 
 
-            $name = $request->name;
-            $value = $request->value;
+         @dd($request->all());
             if($name == 'company')
             {
 
