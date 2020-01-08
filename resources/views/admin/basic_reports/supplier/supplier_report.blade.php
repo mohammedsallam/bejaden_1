@@ -75,7 +75,7 @@
                 margin: 5rem 0;
             }
         </style>
-        @endpush
+    @endpush
     <?php $to_glcc_select = null;?>
     @push('js')
         <script>
@@ -95,10 +95,9 @@
                     $(".column-data").css("display","none");
                     var mainCompany = $('.mainCompany').val();
 
-                    //console.log(mainCompany,MainBranch);
                     if (this){
                         $.ajax({
-                            url: '{{route('get_mainbranches')}}',
+                            url: '{{route('get_branches')}}',
                             type:'get',
                             dataType:'html',
                             data:{mainCompany : mainCompany},
@@ -123,88 +122,43 @@
         @include('admin.layouts.message')
         @include('admin.layouts.error')
 
-        <div class="box-body">
+    <div class="box-body">
 
+        <form action="{{route('activities.store')}}" method="POST">
+            {{ csrf_field() }}
+            <div class="panel panel-primary" style="width:100%; margin:auto auto;">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        {{trans('admin.report_supplier')}}
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                            {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                            {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control e2 mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
 
-
-            {{--    {{ Form::label('date', trans('admin.account_statement').' '.session_lang($operation->name_en,$operation->name_ar), ['class' => 'control-label text-center']) }}--}}
-
-                <form action="{{route('activities.store')}}" method="POST">
-                    {{ csrf_field() }}
-                    <div class="panel panel-primary" style="width:100%; margin:auto auto;">
-                        <div class="panel-heading">
-                            <div class="panel-title">
-                                {{trans('admin.report_supplier')}}
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                    {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
-                                    {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control e2 mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                            </div>
-                            <div class="row">
-                                <br>
-                                {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                <div class="column-data">
-                                {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                                </div>
-                            </div>
-                            <div class="row hidden supCat">
-                                <br>
-                                {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                <div class="column-data">
-                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                                </div>
-                            </div>
-                            <div class="row hidden country">
-                                <br>
-                                {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                <div class="column-data">
-                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                                </div>
-                            </div>
-                            <div class="row hidden currency">
-                                <br>
-                                {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                <div class="column-data">
-                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                                </div>
-                            </div>
-                            <div class="row hidden accNo">
-                                <br>
-                                {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                <div class="column-data">
-                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
-
-                                </div>
-                            </div>
-                            <div class="row col-md-12">
-                                <label class="radio-inline col-md-2"><input type="radio" name="optradio">{{trans('admin.Astsupctgg')}}</label>
-                                <label class="radio-inline col-md-2"><input type="radio" name="optradio">{{trans('admin.country')}}</label>
-                                <label class="radio-inline col-md-2"><input type="radio" name="optradio">{{trans('admin.currency')}}</label>
-                                <label class="radio-inline col-md-2"><input type="radio" name="optradio">{{trans('admin.account_number')}}</label>
-                            </div>
-
+                    </div>
+                    <div class="row">
+                        <br>
+                        {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
+                        <div class="column-data">
+                        {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
 
                         </div>
                     </div>
-                </form>
-
-
                 </div>
+            </div>
+        </form>
+
+    </div>
 
 
-                </div>
+    </div>
 
 
-        <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
-            <img src="{{ url('/') }}/images/ajax-loader.gif"/>
-        </div>
+    <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
+        <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+    </div>
 
 
 

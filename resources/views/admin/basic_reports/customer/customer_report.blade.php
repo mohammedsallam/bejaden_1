@@ -92,10 +92,10 @@
 
                 $('.mainCompany').on('change',function(){
                     $("#loadingmessage").css("display","block");
-                    $(".column-data").css("display","none");
+                    $(".column_data").css("display","none");
                     var mainCompany = $('.mainCompany').val();
 
-                    console.log(mainCompany,MainBranch);
+                    console.log(mainCompany);
                     if (this){
                         $.ajax({
                             url: '{{route('get_mainbranches')}}',
@@ -104,55 +104,26 @@
                             data:{mainCompany : mainCompany},
                             success: function (data) {
                                 $("#loadingmessage").css("display","none");
-                                $('.column-data').css("display","block").html(data);
+                                $('.column_data').css("display","block").html(data);
 
                             }
                         });
                     }else{
-                        $('.column-data').html('');
+                        $('.column_data').html('');
                     }
-
-
                 });
+
+
+
+
+
             });
         </script>
 
     @endpush
 
-{{--    @push('js')--}}
-
-{{--            <script>--}}
-{{--            $(document).ready(function(){--}}
-
-{{--                $('.myradio__input').on('click',function(){--}}
-{{--                    $("#loadingmessage").css("display","block");--}}
-{{--                    $(".column-data").css("display","none");--}}
-{{--                    var myradio = $(this).val();--}}
-{{--                    console.log(myradio);--}}
-{{--                    if (this){--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('cust_report_radio')}}',--}}
-{{--                            type:'get',--}}
-{{--                            dataType:'html',--}}
-{{--                            data:{myradio : myradio},--}}
-{{--                            success: function (data) {--}}
-{{--                                $("#loadingmessage").css("display","none");--}}
-{{--                                $('.column-data').css("display","block").html(data);--}}
-
-{{--                            }--}}
-{{--                        });--}}
-{{--                    }else{--}}
-{{--                        $('.column-data').html('');--}}
-{{--                    }--}}
 
 
-{{--                      });--}}
-{{--                 });--}}
-{{--        </script>--}}
-
-
-
-{{--    @endpush--}}
 
 
     <div class="box">
@@ -160,10 +131,6 @@
         @include('admin.layouts.error')
 
         <div class="box-body">
-
-
-
-            {{--    {{ Form::label('date', trans('admin.account_statement').' '.session_lang($operation->name_en,$operation->name_ar), ['class' => 'control-label text-center']) }}--}}
 
                 <form action="{{route('activities.store')}}" method="POST">
                     {{ csrf_field() }}
@@ -175,23 +142,22 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-
-
-                                    {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
-                                    {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control e2 mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
-
+                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                                {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
 
                             </div>
 
 
-                                <div class="row">
+                            <div class="row">
 
-                                    <br>
-                                    {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
-                                    <div class="column-data">
-                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
+                                <br>
+                                <label class="col-md-2" for="MainBranch">الفرع</label>
+                                <div class="column_data">
+                                <select class="form-control e2 MainBranch col-md-9">
+                                    <option  value="-1"> {{trans('admin.select')}}</option>
+                                </select>
+                                </div>
 
-                                         </div>
                             </div>
 
 

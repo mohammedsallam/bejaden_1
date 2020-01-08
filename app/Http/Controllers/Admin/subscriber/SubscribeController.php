@@ -336,8 +336,8 @@ class SubscribeController extends Controller
     public function customer_report()
     {
         $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return $data =  view('admin.basic_reports.customer.customer_report',compact('mainCompany'))->render();
 
-        return view('admin.basic_reports.customer.customer_report',compact('mainCompany'));
     }
     public function get_mainbranches(Request $request)
     {
@@ -345,9 +345,33 @@ class SubscribeController extends Controller
         if($request->ajax())
         {
            $mainCompany =  $request->mainCompany;
-            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')), 'Brn_No');
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+            return $data =  view('admin.basic_reports.customer.ajax.get_mainbranches',compact('mainCompany','MainBranch'))->render();
 
-        return view('admin.basic_reports.customer.ajax.get_mainbranches',compact('MainBranch'));
+
+        }
+
+    }
+    public function get_data_client(Request $request)
+    {
+
+
+        if($request->ajax())
+        {
+            $mainCompany =  $request->mainCompany;
+            $MainBranch =  $request->MainBranch;
+            $AstSalesman = AstSalesman::pluck('Slm_Nm'.ucfirst(session('lang')), 'Slm_No');
+            $ActivityTypes = ActivityTypes::pluck('Name_'.ucfirst(session('lang')), 'Actvty_No');
+            $Astsupctg = Astsupctg::pluck('Supctg_Nm'.ucfirst(session('lang')), 'Supctg_No');
+            $ActivityTypes = ActivityTypes::pluck('Name_'.ucfirst(session('lang')), 'Actvty_No');
+
+            $country = country::pluck('country_name_'.ucfirst(session('lang')), 'id');
+            $city = city::pluck('city_name_'.ucfirst(session('lang')), 'id');
+
+            $MtsChartAc = MtsChartAc::where('Acc_Typ',4)->pluck('Acc_Nm'.ucfirst(session('lang')), 'Cmp_No');
+
+
+        return view('admin.basic_reports.customer.ajax.get_data_client',compact('MainBranch'));
         }
 
     }

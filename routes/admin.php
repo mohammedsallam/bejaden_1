@@ -141,6 +141,7 @@ Route::group(['prefix'=>'admin'],function (){
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::get('get_mainbranches','Admin\subscriber\SubscribeController@get_mainbranches')->name('get_mainbranches');
+        Route::get('get_data_client','Admin\subscriber\SubscribeController@get_data_client')->name('get_data_client');
         Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
         Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
         Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
@@ -165,6 +166,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
+        Route::get('get_branches','Admin\supplier\MtsSuplirController@get_mainbranches')->name('get_branches');
+        Route::get('get_data_supplier','Admin\supplier\MtsSuplirController@get_data_supplier')->name('get_data_supplier');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplierReport')->name('supplierReport');
         Route::get('sup_report_select','Admin\supplier\MtsSuplirController@supReportSelect')->name('supReportSelect');
         Route::get('sup_report_form','Admin\supplier\MtsSuplirController@supReportForm')->name('supReportRadio');

@@ -361,6 +361,7 @@ class MtsSuplirController extends Controller
 
         return view('admin.basic_reports.supplier.supplier_report',compact('mainCompany'));
     }
+
     public function supReportForm(Request $request)
     {
         if($request->ajax())
@@ -422,6 +423,7 @@ class MtsSuplirController extends Controller
         }
 
     }
+
     public function supReportSelect(Request $request)
     {
         if($request->ajax())
@@ -434,6 +436,7 @@ class MtsSuplirController extends Controller
 
         }
     }
+
     public function supReportPdf(Request $request)
     {
         $name = $request->name;
@@ -491,4 +494,41 @@ class MtsSuplirController extends Controller
         $pdf = Pdf::loadView('admin.basic_reports.supplier.pdf.sup', compact('MtsSuplir'),[], $config);
         return $pdf->stream();
     }
+
+    public function get_data_supplier(Request $request)
+    {
+        if ($request->ajax()) {
+            $mainCompany = $request->mainCompany;
+            $main_branch = $request->MainBranch;
+            $ast_salesman = AstSalesman::pluck('Slm_Nm' . ucfirst(session('lang')), 'Slm_No');
+            $activity_types = ActivityTypes::pluck('Name_' . ucfirst(session('lang')), 'Actvty_No');
+            $astsupctg = Astsupctg::pluck('Supctg_Nm' . ucfirst(session('lang')), 'Supctg_No');
+            //$activity_types = ActivityTypes::pluck('Name_'.ucfirst(session('lang')), 'Actvty_No');
+
+            $country = country::pluck('country_name_' . ucfirst(session('lang')), 'id');
+            $city = city::pluck('city_name_' . ucfirst(session('lang')), 'id');
+
+            $mtsChartAc = MtsChartAc::where('Acc_Typ', 4)->pluck('Acc_Nm' . ucfirst(session('lang')), 'Cmp_No');
+
+
+            return view('admin.basic_reports.supplier.ajax.get_data_supplier', compact('main_branch', 'ast_salesman',
+                'activity_types', 'astsupctg', 'country', 'city', 'mtsChartAc'));
+        }
+    }
+
+    public function get_mainbranches(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            $mainCompany =  $request->mainCompany;
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+            return $data =  view('admin.basic_reports.supplier.ajax.get_mainbranches',compact('mainCompany','MainBranch'))->render();
+
+
+        }
+
+    }
+
+
 }
