@@ -96,17 +96,18 @@
             <script>
             $(document).ready(function(){
 
-                $('.myradio__input').on('click',function(){
+                $('.mainCompany').on('change',function(){
                     $("#loadingmessage").css("display","block");
                     $(".column-data").css("display","none");
-                    var myradio = $(this).val();
-                    console.log(myradio);
+                    var mainCompany = $('.mainCompany').val();
+
+                    console.log(mainCompany,MainBranch);
                     if (this){
                         $.ajax({
-                            url: '{{route('cust_report_radio')}}',
+                            url: '{{route('get_mainbranches')}}',
                             type:'get',
                             dataType:'html',
-                            data:{myradio : myradio},
+                            data:{mainCompany : mainCompany},
                             success: function (data) {
                                 $("#loadingmessage").css("display","none");
                                 $('.column-data').css("display","block").html(data);
@@ -158,56 +159,51 @@
     <div class="box">
         @include('admin.layouts.message')
         @include('admin.layouts.error')
-        <div class="box-header">
-            <h3 class="box-title">{{trans('admin.report_client')}}</h3>
-        </div>
+
         <div class="box-body">
 
 
 
             {{--    {{ Form::label('date', trans('admin.account_statement').' '.session_lang($operation->name_en,$operation->name_ar), ['class' => 'control-label text-center']) }}--}}
-            <div class="row">
-                <div class="col-md-2">
-                    <input  value="1" type="radio" name="myRadio" id="one" class="myradio__input" >
-                    <label for="one" class="myradio__label">الشركة</label>
-                </div>
-                    <div class="col-md-2">
-                        <input   value="2" type="radio" name="myRadio" id="two" value="branches" class="myradio__input" >
-                        <label for="two" class="myradio__label">الفرع</label>
-                    </div>
-                    <div class="col-md-2">
-                        <input  value="3"  value="city" type="radio" name="myRadio" id="three" class="myradio__input">
-                        <label for="three" class="myradio__label">المندوب</label>
-                    </div>
 
-                    <div class="col-md-2">
-                        <input value="4" type="radio" name="myRadio" id="four" class="myradio__input">
-                        <label for="four" class="myradio__label">نوع النشاط</label>
+                <form action="{{route('activities.store')}}" method="POST">
+                    {{ csrf_field() }}
+                    <div class="panel panel-primary" style="width:100%; margin:auto auto;">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                {{trans('admin.report_client')}}
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+
+
+                                    {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                                    {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control e2 mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
+
+
+                            </div>
+
+
+                                <div class="row">
+
+                                    <br>
+                                    {{ Form::label('MainBranch','الفرع', ['class' => 'col-md-2']) }}
+                                    <div class="column-data">
+                                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control e2 MainBranch col-md-9','placeholder'=> trans('admin.select') ])) }}
+
+                                         </div>
+                            </div>
+
+
+                        </div>
                     </div>
-                <div class="col-md-2">
-                    <input value="5" type="radio" name="myRadio" id="five" class="myradio__input">
-                    <label for="five" class="myradio__label">تصنيف العملاء</label>
+                </form>
+
+
                 </div>
-                <div class="col-md-2">
-                    <input value="6" type="radio" name="myRadio" id="sex" class="myradio__input">
-                    <label for="sex" class="myradio__label">الدولة</label>
-                </div>
-                <div class="col-md-2">
-                    <input value="7" type="radio" name="myRadio" id="seven" class="myradio__input">
-                    <label for="seven" class="myradio__label">المدينة</label>
-                </div>
-                <div class="col-md-2">
-                    <input value="8" type="radio" name="myRadio" id="eight" class="myradio__input">
-                    <label for="eight" class="myradio__label">المنطقة</label>
-                </div>
-                      <div class="col-md-2">
-                        <input value="9" type="radio" name="myRadio" id="nine" class="myradio__input">
-                        <label for="nine" class="myradio__label">تصنيف الحسابات</label>
-                    </div>
-                     <div class="col-md-2">
-                        <input value="10" type="radio" name="myRadio" id="ten" class="myradio__input">
-                        <label for="ten" class="myradio__label">مشرف المبيعات</label>
-                    </div>
+
+
                 </div>
 
 
@@ -215,10 +211,7 @@
             <img src="{{ url('/') }}/images/ajax-loader.gif"/>
         </div>
 
-        <div class="column-data">
 
-
-        </div>
 
     </div>
 

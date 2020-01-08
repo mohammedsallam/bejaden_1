@@ -9,6 +9,8 @@ use App\drivers;
 use App\employee;
 use App\glcc;
 use App\Http\Controllers\Controller;
+use App\Models\Admin\MainBranch;
+use App\Models\Admin\MainCompany;
 use App\state;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -227,5 +229,33 @@ class EmployeeController extends Controller
         DB::table('branche_employee')->where('employee_id',$id)->delete();
         $employee->delete();
         return redirect(aurl('employees'));
+    }
+
+
+    public function get_Branches(Request $request){
+
+        if($request->ajax())
+        {
+            $mainCompany =  $request->mainCompany;
+            $MainBranch = MainBranch::where('Cmp_No',$request->mainCompany)->get();
+            return view('admin.basic_reports.stuff.bran' ,['MainBranch' => $MainBranch,'mainCompany' => $mainCompany]);
+
+        }
+
+    }
+
+    public function get_data_redio (Request $request){
+        if($request->ajax())
+        {
+
+            return view('admin.basic_reports.stuff.data_redio');
+        }
+    }
+
+    public function employees_report(){
+
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return view('admin.basic_reports.stuff.stuff_report',['title'=> trans('admin.edit_employee') ,'mainCompany' => $mainCompany]);
+
     }
 }

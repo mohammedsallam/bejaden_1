@@ -140,6 +140,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        subcriber
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
+        Route::get('get_mainbranches','Admin\subscriber\SubscribeController@get_mainbranches')->name('get_mainbranches');
         Route::get('customer_report','Admin\subscriber\SubscribeController@customer_report')->name('customer_report');
         Route::get('cust_report_select','Admin\subscriber\SubscribeController@cust_report_select')->name('cust_report_select');
         Route::get('cust_report_form','Admin\subscriber\SubscribeController@cust_report_form')->name('cust_report_radio');
@@ -161,10 +162,17 @@ Route::group(['prefix'=>'admin'],function (){
 //        employees
         Route::resource('employees','Admin\employees\EmployeeController');
 
+        Route::get('employees_report','Admin\employees\EmployeeController@employees_report')->name('employees_report');
+        Route::get('get_Branches','Admin\employees\EmployeeController@get_Branches')->name('get_BranchesR');
+        Route::get('get_data_redio','Admin\employees\EmployeeController@get_data_redio')->name('get_data_redio');
+
+
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
+        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
+        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -233,7 +241,11 @@ Route::group(['prefix'=>'admin'],function (){
             Route::get('stuff_data', function () {
             return view('admin.basic_data.stuff.stuff_data');
         });
-            Route::get('Fixed_assets', function () {
+
+
+
+
+        Route::get('Fixed_assets', function () {
             return view('admin.basic_data.Fixed_assets.Fixed_assets');
         });
             Route::get('cars_data', function () {

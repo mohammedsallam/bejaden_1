@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.report_client'))
+@section('title',trans('admin.report_supplier'))
 @section('content')
     @push('css')
         <style>
@@ -103,7 +103,7 @@
                     console.log(myradio);
                     if (this){
                         $.ajax({
-                            url: '{{route('cust_report_radio')}}',
+                            url: '{{route('supp_report_form')}}',
                             type:'get',
                             dataType:'html',
                             data:{myradio : myradio},
@@ -159,7 +159,7 @@
         @include('admin.layouts.message')
         @include('admin.layouts.error')
         <div class="box-header">
-            <h3 class="box-title">{{trans('admin.report_client')}}</h3>
+            <h3 class="box-title">{{trans('admin.report_supplier')}}</h3>
         </div>
         <div class="box-body">
 
@@ -175,39 +175,36 @@
                     <input   value="2" type="radio" name="myRadio" id="two" value="branches" class="myradio__input" >
                     <label for="two" class="myradio__label">الفرع</label>
                 </div>
-                <div class="col-md-2">
-                    <input  value="3"  value="city" type="radio" name="myRadio" id="three" class="myradio__input">
-                    <label for="three" class="myradio__label">المندوب</label>
-                </div>
+{{--                <div class="col-md-2">--}}
+{{--                    <input  value="3"  value="city" type="radio" name="myRadio" id="three" class="myradio__input">--}}
+{{--                    <label for="three" class="myradio__label"></label>--}}
+{{--                </div>--}}
 
+{{--                <div class="col-md-2">--}}
+{{--                    <input value="4" type="radio" name="myRadio" id="four" class="myradio__input">--}}
+{{--                    <label for="four" class="myradio__label">نوع النشاط</label>--}}
+{{--                </div>--}}
                 <div class="col-md-2">
-                    <input value="4" type="radio" name="myRadio" id="four" class="myradio__input">
-                    <label for="four" class="myradio__label">نوع النشاط</label>
+                    <input value="3" type="radio" name="myRadio" id="five" class="myradio__input">
+                    <label for="five" class="myradio__label">تصنيف الموارد</label>
                 </div>
                 <div class="col-md-2">
-                    <input value="5" type="radio" name="myRadio" id="five" class="myradio__input">
-                    <label for="five" class="myradio__label">تصنيف العملاء</label>
-                </div>
-                <div class="col-md-2">
-                    <input value="6" type="radio" name="myRadio" id="sex" class="myradio__input">
+                    <input value="4" type="radio" name="myRadio" id="sex" class="myradio__input">
                     <label for="sex" class="myradio__label">الدولة</label>
                 </div>
                 <div class="col-md-2">
-                    <input value="7" type="radio" name="myRadio" id="seven" class="myradio__input">
-                    <label for="seven" class="myradio__label">المدينة</label>
+                    <input value="5" type="radio" name="myRadio" id="seven" class="myradio__input">
+                    <label for="seven" class="myradio__label">العملة</label>
                 </div>
+{{--                <div class="col-md-2">--}}
+{{--                    <input value="8" type="radio" name="myRadio" id="eight" class="myradio__input">--}}
+{{--                    <label for="eight" class="myradio__label">المنطقة</label>--}}
+{{--                </div>--}}
                 <div class="col-md-2">
-                    <input value="8" type="radio" name="myRadio" id="eight" class="myradio__input">
-                    <label for="eight" class="myradio__label">المنطقة</label>
-                </div>
-                <div class="col-md-2">
-                    <input value="9" type="radio" name="myRadio" id="nine" class="myradio__input">
+                    <input value="6" type="radio" name="myRadio" id="nine" class="myradio__input">
                     <label for="nine" class="myradio__label">تصنيف الحسابات</label>
                 </div>
-                <div class="col-md-2">
-                    <input value="10" type="radio" name="myRadio" id="ten" class="myradio__input">
-                    <label for="ten" class="myradio__label">مشرف المبيعات</label>
-                </div>
+
             </div>
 
 
