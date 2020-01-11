@@ -75,7 +75,7 @@
 </div>
 
 <div class="el-no3">
-    <span>تقارير العملاء</span>
+    <span>تقارير الموردين</span>
 </div>
 
 <div class="clearfix"></div>
@@ -89,15 +89,14 @@
 <div class="table-responsive">
     <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th colspan="3">بيانات العميل</th>
+            <th colspan="2">بيانات المورد</th>
             <th colspan="3">وسائل الاتصال</th>
             <th colspan="2">حد الائتمان</th>
             <th colspan="2">اول المدة</th>
         </tr>
         <tr>
-            <th>رقم العميل</th>
-            <th>اسم العميل</th>
-            <th>المندوب</th>
+            <th>رقم المورد</th>
+            <th>اسم المورد</th>
             <th>رقم التلفون</th>
             <th>رقم موبايل</th>
             <th>العنوان</th>
@@ -108,34 +107,16 @@
 
         </tr>
 
-        @foreach ($MTsCustomer as $merged){
+        @foreach ($MtsSuplir as $merged){
         <tr>
-            <td>
-                {{$merged->ID_No}}
-            </td>
-            <td>
-                {{session_lang($merged->Cstm_NmEn,$merged->Cstm_NmAr)}}
-            </td>
-            <td>
-
-
-            </td>
-            <td>
-
-            </td>
-            <td>
-
-            </td>
-            <td>
-
-            </td>
-            <td>
-
-            </td>
-            <td>
-
-
-            </td>
+            <td>{{$merged->Sup_No}}</td>
+            <td>{{session_lang($merged->Sup_NmEn,$merged->Sup_NmAr)}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         @endforeach
 

@@ -5,7 +5,8 @@
 
             var selecd_input = $(this).val();
             var mainCompany = '{{$mainCompany}}';
-            {{--var MainBranch = '{{$MainBranch}}';--}}
+            var active = '{{$active}}';
+            var notactive = '{{$notactive}}';
             var myradio = '{{$myradio}}';
 
             $("#loadingmessage").css("display","block");
@@ -14,7 +15,7 @@
                     url: '{{route('sup_report_print')}}',
                     type:'get',
                     dataType:'html',
-                    data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio},
+                    data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio, active:active, notactive:notactive},
                     success: function (data) {
                         $("#loadingmessage").css("display","none");
                         $('.div_print').css("display","block").html(data);

@@ -188,12 +188,14 @@
             $('.myradio__input').on('click',function () {
                 var value = $(this).val();
                 var mainCompany =$('.mainCompany').val();
+                var active = $('.active:checked').val();
+                var notactive = $('.notactive:checked').val();
                 // var MainBranch =$('.MainBranch').val();
                 //console.log(mainCompany,MainBranch,value);
                 if(this){
                     $.ajax({
                         dataType: 'html',
-                        data:{value:value,mainCompany:mainCompany},
+                        data:{value:value,mainCompany:mainCompany,active:active,notactive:notactive},
                         type:'get',
                         url:'{{route('sup_report_select')}}',
 

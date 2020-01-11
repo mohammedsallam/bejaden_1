@@ -384,49 +384,51 @@ class MtsSuplirController extends Controller
         {
             $mainCompany = $request->mainCompany;
             $myradio = $request->value;
+            $active = $request->active;
+            $notactive = $request->notactive;
             if($myradio =='country')
             {
                 $country = country::get();
 
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('country','myradio','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','country','myradio','mainCompany'))->render();
                 dd($country);
 
             }elseif ( $myradio == 'bransh')
             {
                 $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','myradio','MainBranch','mainCompany'))->render();
 
             }
             elseif ( $myradio == 'Currency')
             {
 
                 $currency = AstCurncy::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('currency','myradio','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','currency','myradio','mainCompany'))->render();
 
 
             }else if($myradio == 'AstSalesman')
             {
                 $AstSalesman = AstSalesman::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('AstSalesman','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','AstSalesman','myradio','MainBranch','mainCompany'))->render();
 
 
 
             }else if($myradio == 'AstMarket')
             {
                 $AstMarket = AstMarket::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('AstMarket','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','AstMarket','myradio','MainBranch','mainCompany'))->render();
 
 
 
             }else if($myradio == 'ActivityTypes')
             {
                 $ActivityTypes = ActivityTypes::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('ActivityTypes','myradio','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','ActivityTypes','myradio','mainCompany'))->render();
 
             }else if($myradio == 'Astsupctg')
             {
                 $Astsupctg = Astsupctg::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('Astsupctg','myradio','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','Astsupctg','myradio','mainCompany'))->render();
 
             }
 
@@ -441,66 +443,65 @@ class MtsSuplirController extends Controller
     public function sup_report_print(Request $request)
     {
 //        dd($request->all());
-//        dd('fdfd');
         if($request->ajax())
         {
-//            dd('gdfgd');
             $mainCompany = $request->mainCompany;
             $myradio = $request->myradio;
             $selecd_input = $request->selecd_input;
-//dd($mainCompany);
-            return $data=  view('admin.basic_reports.supplier.ajax.sup_report_print',compact('selecd_input','myradio','mainCompany'))->render();
+            $active = $request->active;
+            $notactive = $request->notactive;
+            return $data=  view('admin.basic_reports.supplier.ajax.sup_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
 
         }
     }
     public function sup_report_pdf(Request $request)
     {
-        dd('hkh');
-
-        if ($request->ajax()) {
-            $name = $request->name;
-            $value = $request->value;
+//        dd('hkh');
+//dd($request->myradio);
+//dd($request->selecd_input);
+            $name = $request->myradio;
+            $value = $request->selecd_input;
             if ($name == 'company') {
 
-                $MTsCustomer = MTsCustomer::where('Cmp_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Cmp_No', $value)->get();
 
             }
             if ($name == 'MainBranch') {
 
-                $MTsCustomer = MTsCustomer::where('Brn_No', $value)->get();//
+                $MtsSuplir = MtsSuplir::where('Brn_No', $value)->get();//
     //
             }
             if ($name == 'AstSalesman') {
 
-                $MTsCustomer = MTsCustomer::where('Slm_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Slm_No', $value)->get();
 
 
             }
             if ($name == 'ActivityTypes') {
-                $MTsCustomer = MTsCustomer::where('Nutr_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Nutr_No', $value)->get();
             }
             if ($name == 'ActivityTypes') {
-                $MTsCustomer = MTsCustomer::where('Cstm_Ctg', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Cstm_Ctg', $value)->get();
 
 
             }
             if ($name == 'country') {
-                $MTsCustomer = MTsCustomer::where('Cntry_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Cntry_No', $value)->get();
 
 
             }
             if ($name == 'city') {
-                $MTsCustomer = MTsCustomer::where('City_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('City_No', $value)->get();
 
             }
             if ($name == 'MtsChartAc') {
 
-                $MTsCustomer = MTsCustomer::where('Acc_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Acc_No', $value)->get();
 
 
             }
             if ($name == 'AstMarket') {
-                $MTsCustomer = MTsCustomer::where('Mrkt_No', $value)->get();
+                $MtsSuplir = MtsSuplir::where('Mrkt_No', $value)->get();
             }
 
 
@@ -510,10 +511,10 @@ class MtsSuplirController extends Controller
                         <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = Pdf::loadView('admin.basic_reports.supplier.pdf.sup', compact('MTsCustomer'), [], $config);
+            $pdf = Pdf::loadView('admin.basic_reports.supplier.pdf.sup', compact('MtsSuplir'), [], $config);
             return $pdf->stream();
 
-    }
+
     }
 
 
