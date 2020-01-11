@@ -95,6 +95,7 @@
             <th colspan="2">اول المدة</th>
         </tr>
         <tr>
+            <th>المسلسل</th>
             <th>رقم العميل</th>
             <th>اسم العميل</th>
             <th>المندوب</th>
@@ -110,31 +111,37 @@
 
         @foreach ($MTsCustomer as $merged){
         <tr>
+            <td>{{$merged->ID_No}}</td>
             <td>
-                {{$merged->ID_No}}
+                {{$merged->Cstm_No}}
             </td>
             <td>
                 {{session_lang($merged->Cstm_NmEn,$merged->Cstm_NmAr)}}
             </td>
             <td>
-
-
+{{--                {{$merged->delegate->{'Slm_Nm'.ucfirst(session('lang'))} }}--}}
+                {{$merged->Slm_No}}
             </td>
             <td>
-
+                {{$merged->Cstm_Tel}}
             </td>
             <td>
-
+                {{$merged->Tel2}}
             </td>
             <td>
-
+                {{$merged->Cstm_Adr}}
             </td>
             <td>
-
+                {{$merged->Credit_Days}}
             </td>
             <td>
-
-
+                {{$merged->Credit_Value}}
+            </td>
+            <td>
+                {{$merged->Fbal_Db}}
+            </td>
+            <td>
+                {{$merged->Fbal_CR}}
             </td>
         </tr>
         @endforeach

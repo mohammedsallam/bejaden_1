@@ -437,32 +437,29 @@ class SubscribeController extends Controller
     public function cust_report_pdf(Request $request)
     {
 
+        $name = $request->myradio;
+        $value = $request->selecd_input;
 
             if($name == 'company')
             {
-
                 $MTsCustomer = MTsCustomer::where('Cmp_No',$value)->get();
-
-            } if($name == 'MainBranch')
+            }if($name == 'MainBranch')
             {
-
-                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->get();//
-//
+                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->get();
             }if($name == 'AstSalesman')
             {
-
                 $MTsCustomer = MTsCustomer::where('Slm_No',$value)->get();
-
 
             }if($name == 'ActivityTypes')
             {
                 $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->get();
-            }if($name == 'ActivityTypes')
-            {
-                $MTsCustomer = MTsCustomer::where('Cstm_Ctg',$value)->get();
-
-
-            }if($name == 'country')
+            }
+//if($name == 'ActivityTypes')
+//            {
+//                $MTsCustomer = MTsCustomer::where('Cstm_Ctg',$value)->get();
+//
+//            }
+            if($name == 'country')
             {
                 $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->get();
 

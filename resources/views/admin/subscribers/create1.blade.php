@@ -6,7 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\ActivityTypes')
+@inject('activities', 'App\Models\Admin\AstNutrbusn')
 @inject('cities', 'App\city')
 
 @section('title',trans('admin.Create_New_Subscriber'))
