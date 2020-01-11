@@ -625,7 +625,7 @@ return [
     // supplier // edit
     'edit_suppliers' => 'تعديل المودين',
     'show_suppliers' => 'بيانات المورد ',
-
+    'public'         =>'كل الدول',
 
     // users // index
     'Data_Table' => 'جدول البيانات',

@@ -5,7 +5,7 @@
 
             var selecd_input = $(this).val();
             var mainCompany = '{{$mainCompany}}';
-            var MainBranch = '{{$MainBranch}}';
+            {{--var MainBranch = '{{$MainBranch}}';--}}
             var myradio = '{{$myradio}}';
 
             $("#loadingmessage").css("display","block");
@@ -14,7 +14,7 @@
                     url: '{{route('sup_report_print')}}',
                     type:'get',
                     dataType:'html',
-                    data:{selecd_input : selecd_input,mainCompany:mainCompany,MainBranch:MainBranch,myradio:myradio},
+                    data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio},
                     success: function (data) {
                         $("#loadingmessage").css("display","none");
                         $('.div_print').css("display","block").html(data);
@@ -26,6 +26,8 @@
             }
 
         });
+
+
     });
 </script>
 @if($mainCompany != null)
@@ -45,7 +47,7 @@
 
 @elseif($myradio == 'bransh')
 <div class="row">
-    <select class="form-control e2 MainBranch col-md-9">
+    <select class="form-control e2 selecd_input col-md-9">
         <option  value="-1"> {{trans('admin.select')}}</option>
         @foreach($MainBranch as $one)
             <option value="{{$one->Brn_No}}">{{$one->{'Brn_Nm'.ucfirst(session('lang'))} }}
@@ -54,8 +56,7 @@
     </select>
 </div>
 
-
-@elseif($myradio == 'currency')
+@elseif($myradio == 'Currency')
     <div class="row">
     <select class="col-md-9 form-control selecd_input">
         <option value="-1">{{trans('admin.select')}}</option>
@@ -64,6 +65,8 @@
         @endforeach
     </select>
     </div>
+
+
 
 @elseif($myradio == 'AstSalesman')
     <div class="row">
@@ -90,11 +93,10 @@
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($Astsupctg as $one)
-                <option value="{{$one->Supctg_No}}">{{$one->{'Supctg_Nm'.ucfirst(session('lang'))} }}</option>
+                <option value="{{$one->Supctg_No}}">{{$one->{'Supctg_Nm'.session('lang')} }}</option>
             @endforeach
         </select>
     </div>
-
 @endif
 @endif
 

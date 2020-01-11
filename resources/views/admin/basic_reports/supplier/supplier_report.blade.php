@@ -3,10 +3,66 @@
 @section('content')
     @push('css')
         <style>
-
+            .container {
+                display: block;
+                position: relative;
+                padding-left: 35px;
+                margin-bottom: 12px;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            /* Hide the browser's default checkbox */
+            .container input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+            /* Create a custom checkbox */
+            .checkmark {
+                position: absolute;
+                top: 0;
+                left: 28px;
+                height: 25px;
+                width: 25px;
+                background-color: #eee;
+            }
+            /* On mouse-over, add a grey background color */
+            .container:hover input ~ .checkmark {
+                background-color: #ccc;
+            }
+            /* When the checkbox is checked, add a blue background */
+            .container input:checked ~ .checkmark {
+                background-color: #2196F3;
+            }
+            /* Create the checkmark/indicator (hidden when not checked) */
+            .checkmark:after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+            /* Show the checkmark when checked */
+            .container input:checked ~ .checkmark:after {
+                display: block;
+            }
+            /* Style the checkmark/indicator */
+            .container .checkmark:after {
+                left: 9px;
+                top: 5px;
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 3px 3px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                transform: rotate(45deg);
+            }
             .vertical-menu{
                 padding-top: 46px;
-
             }
             .myradio__input {
                 opacity: 0;
@@ -61,10 +117,7 @@
                 transform: scale(0.6);
             }
             .container {
-                display: grid;
                 grid-template-rows: 1fr auto;
-                height: 95vh;
-                min-height: 10rem;
                 text-align: center;
             }
             .form {
@@ -74,24 +127,18 @@
                 font-size: 1.8rem;
                 margin: 5rem 0;
             }
-
-
             .vertical-menu a ,.custom_radio{
-
                 color: black;
                 display: block;
                 padding: 12px;
                 text-decoration: none;
             }
-
             .right
             {
                 float: right;
                 clear: right;
                 padding-right: 270px;
-
             }
-
             .left
             {
                 float: left;
@@ -149,6 +196,7 @@
                         data:{value:value,mainCompany:mainCompany},
                         type:'get',
                         url:'{{route('sup_report_select')}}',
+
                         success:function (data) {
                             $("#loadingmessage").css("display","none");
                             if (value == 'bransh'){
@@ -165,6 +213,7 @@
                             }else if(value == 'AstSalesman'){
                                 $('#ActivityTypes').addClass('hidden');
                                 $('#ActivityTypesIn').addClass('hidden');
+                                $('#CurrencyIn').addClass('hidden');
                                 $('#countryIn').addClass('hidden');
                                 $('#cityIn').addClass('hidden');
                                 $('#AstMarketIn').addClass('hidden');
@@ -175,7 +224,7 @@
 
                             }else if(value == 'ActivityTypes'){
                                 $('#AstSalesmanIn').addClass('hidden');
-                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#CurrencyIn').addClass('hidden');
                                 $('#countryIn').addClass('hidden');
                                 $('#cityIn').addClass('hidden');
                                 $('#AstMarketIn').addClass('hidden');
@@ -187,6 +236,7 @@
                             }else if(value == 'country'){
                                 $('#ActivityTypes').addClass('hidden');
                                 $('#ActivityTypesIn').addClass('hidden');
+                                $('#CurrencyIn').addClass('hidden');
                                 $('#AstSalesmanIn').addClass('hidden');
                                 $('#cityIn').addClass('hidden');
                                 $('#AstMarketIn').addClass('hidden');
@@ -206,21 +256,11 @@
                                 $('#CurrencyIn').removeClass('hidden');
                                 $('#CurrencyIn').html(data);
                             }
-                            // else if(value == 'AstMarket'){
-                            //     $('#ActivityTypes').addClass('hidden');
-                            //     $('#ActivityTypesIn').addClass('hidden');
-                            //     $('#AstSalesmanIn').addClass('hidden');
-                            //     $('#countryIn').addClass('hidden');
-                            //     $('#cityIn').addClass('hidden');
-                            //     $('#AstsupctgIn').addClass('hidden');
-                            //     $('#branshIn').addClass('hidden');
-                            //     $('#AstMarketIn').removeClass('hidden');
-                            //     $('#AstMarketIn').html(data);
-                            // }
 
                             else if(value == 'Astsupctg'){
                                 $('#ActivityTypes').addClass('hidden');
                                 $('#ActivityTypesIn').addClass('hidden');
+                                $('#CurrencyIn').addClass('hidden');
                                 $('#AstSalesmanIn').addClass('hidden');
                                 $('#countryIn').addClass('hidden');
                                 $('#cityIn').addClass('hidden');
@@ -240,7 +280,12 @@
                 }
 
 
-            })
+            });
+
+            // $(document).on('change', '.mainCompany', function () {
+            //     $('#print').removeClass('hidden');
+            //     $('#print').html(data);
+            // });
 
         </script>
 
@@ -265,9 +310,24 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-md-8">
-                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-3']) }}
+                            <div class="col-md-6">
+                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
                                 {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
+                            </div>
+                            <div class="col-md-2">
+                                <label class="container">فعال
+                                    <input type="checkbox" checked="checked">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="container">غير فعال
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="sup_report_print" id="#print" class="btn btn-primary">طباعه</a>
                             </div>
                         </div>
 
