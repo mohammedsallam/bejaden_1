@@ -123,6 +123,17 @@
 
             </li>
             @endhasanyrole
+
+            {{-- ترحيل البيانات القديمه الى النظام الجديد --}}
+            @hasanyrole('writer|admin')
+            <li  class="">
+                <a href="{{route('import')}}">
+                    <i class="fa fa-money"></i> <span>{{trans('admin.data_transfere')}}</span>
+                    <span class="pull-right-container"></span>
+                </a>
+            </li>
+            @endhasanyrole
+            {{-- نهاية ترحل البيانات القديمه الى النظام الجديد --}}
             {{-- data --}}
 {{--            <li class="treeview {{ active_menu('main_data')[0]  }} {{ active_menu('setting')[0]  }} {{ active_menu('branches')[0]  }}">--}}
 {{--                <a href="#">--}}

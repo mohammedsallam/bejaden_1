@@ -172,8 +172,10 @@ Route::group(['prefix'=>'admin'],function (){
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
-        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
-        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
+        //Route::get('get_mainbranches','Admin\supplier\MtsSuplirController@get_mainbranches')->name('get_mainbranches');
+        Route::get('sup_report_select','Admin\supplier\MtsSuplirController@sup_report_select')->name('sup_report_select');
+        Route::get('sup_report_print','Admin\supplier\MtsSuplirController@sup_report_print')->name('sup_report_print');
+        Route::post('sup_report_pdf','Admin\supplier\MtsSuplirController@sup_report_pdf')->name('sup_report_pdf');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -384,6 +386,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('addDeletedLines','Admin\banks\ReceiptCatchController@addDeletedLines')->name('addDeletedLines');
 
         Route::resource('curencies', 'Admin\Curency\CurencyController');
+
+        //import external db
+        Route::get('import', 'Admin\import_db\ImportController@import')->name('import');
+        Route::post('import/send', 'Admin\import_db\ImportController@send')->name('send');
 
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف

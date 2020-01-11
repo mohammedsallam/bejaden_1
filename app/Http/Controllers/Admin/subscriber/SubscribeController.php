@@ -391,10 +391,12 @@ class SubscribeController extends Controller
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstSalesman','myradio','MainBranch','mainCompany'))->render();
 
 
+
             }else if($myradio == 'AstMarket')
             {
                 $AstMarket = AstMarket::get();
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstMarket','myradio','MainBranch','mainCompany'))->render();
+
 
 
             }else if($myradio == 'ActivityTypes')

@@ -163,7 +163,7 @@
                 padding-left: 230px;
             }
         </style>
-        @endpush
+    @endpush
     <?php $to_glcc_select = null;?>
     @push('js')
         <script>
@@ -181,7 +181,7 @@
 
     @push('js')
 
-            <script>
+        <script>
             $(document).ready(function(){
 
                 $('.mainCompany').on('change',function(){
@@ -207,14 +207,14 @@
                     }
 
 
-                      });
-                 });
+                });
+            });
             $('.myradio__input').on('click',function () {
                 var value = $(this).val();
                 var active = $('.active:checked').val();
                 var notactive = $('.notactive:checked').val();
                 var mainCompany =$('.mainCompany').val();
-               // var MainBranch =$('.MainBranch').val();
+                // var MainBranch =$('.MainBranch').val();
                 //console.log(mainCompany,MainBranch,value);
                 if(this){
                     $.ajax({
@@ -302,7 +302,7 @@
                                 $('#AstsupctgIn').removeClass('hidden');
                                 $('#AstsupctgIn').html(data);
                             }
-                           // $('.row_input').css("display","block").html(data);
+                            // $('.row_input').css("display","block").html(data);
                         }
 
                     })
@@ -315,7 +315,7 @@
 
             })
 
-            </script>
+        </script>
 
 
 
@@ -328,136 +328,136 @@
 
         <div class="box-body">
 
-                <form action="{{route('cust_report_pdf')}}" method="POST">
-                    {{ csrf_field() }}
-                    <div class="panel panel-primary" style="width:100%; margin:auto auto;">
-                        <div class="panel-heading">
-                            <div class="panel-title">
-                                {{trans('admin.report_client')}}
+            <form action="{{route('cust_report_pdf')}}" method="POST">
+                {{ csrf_field() }}
+                <div class="panel panel-primary" style="width:100%; margin:auto auto;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            {{trans('admin.report_client')}}
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                                {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
+                            </div>
+                            <div class="col-md-2">
+                                <label class="container">فعال
+                                    <input class="active" name="active" value="1"  type="checkbox" checked="checked">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="container">غير فعال
+                                    <input class="notactive" name="notactive" value="0" type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
                             </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
-                                    {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="container">فعال
-                                        <input class="active" name="active" value="1"  type="checkbox" checked="checked">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="container">غير فعال
-                                        <input class="notactive" name="notactive" value="0" type="checkbox">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </div>
 
-                                    <div class="row">
+                        <div class="row">
 
-                                        <div class="vertical-menu  col-md-5">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input  value="bransh" type="radio" name="myRadio" id="one"  class="myradio__input" >
-                                                        <label  for="one" class="myradio__label">الفرع</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-8" id="branshIn"></div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="AstSalesman" type="radio" name="myRadio" id="two"  class="myradio__input" >
-                                                        <label  for="two" class="myradio__label">المندوب</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-8" id="AstSalesmanIn"></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="ActivityTypes" type="radio" name="myRadio" id="three"  class="myradio__input" >
-                                                        <label  for="three" class="myradio__label"> النشاط</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8" id="ActivityTypesIn"></div>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="vertical-menu  col-md-5">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="country" type="radio" name="myRadio" id="four"  class="myradio__input" >
-                                                        <label for="four" class="myradio__label">الدول</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8" id="countryIn"></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="city" type="radio" name="myRadio" id="five"  class="myradio__input" >
-                                                        <label for="five" class="myradio__label">المدينة</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8" id="cityIn"></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="AstMarket" type="radio" name="myRadio" id="six"  class="myradio__input" >
-                                                        <label for="six" class="myradio__label">المشرف</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8" id="AstMarketIn"></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="custom_radio">
-                                                        <input value="Astsupctg" type="radio" name="myRadio" id="seven"  class="myradio__input" >
-                                                        <label for="seven" class="myradio__label">تصنيف العميل</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8" id="AstsupctgIn"></div>
-                                            </div>
+                            <div class="vertical-menu  col-md-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input  value="bransh" type="radio" name="myRadio" id="one"  class="myradio__input" >
+                                            <label  for="one" class="myradio__label">الفرع</label>
                                         </div>
                                     </div>
 
-                                    <div class="row_input">
+                                    <div class="col-md-8" id="branshIn"></div>
+                                </div>
 
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="AstSalesman" type="radio" name="myRadio" id="two"  class="myradio__input" >
+                                            <label  for="two" class="myradio__label">المندوب</label>
+                                        </div>
                                     </div>
+
+                                    <div class="col-md-8" id="AstSalesmanIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="ActivityTypes" type="radio" name="myRadio" id="three"  class="myradio__input" >
+                                            <label  for="three" class="myradio__label"> النشاط</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="ActivityTypesIn"></div>
+
+                                </div>
+
                             </div>
 
 
+                            <div class="vertical-menu  col-md-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="country" type="radio" name="myRadio" id="four"  class="myradio__input" >
+                                            <label for="four" class="myradio__label">الدول</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="countryIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="city" type="radio" name="myRadio" id="five"  class="myradio__input" >
+                                            <label for="five" class="myradio__label">المدينة</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="cityIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="AstMarket" type="radio" name="myRadio" id="six"  class="myradio__input" >
+                                            <label for="six" class="myradio__label">المشرف</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="AstMarketIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="Astsupctg" type="radio" name="myRadio" id="seven"  class="myradio__input" >
+                                            <label for="seven" class="myradio__label">تصنيف العميل</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="AstsupctgIn"></div>
+                                </div>
+                            </div>
                         </div>
-                </form>
+
+                        <div class="row_input">
+
+                        </div>
+                    </div>
 
 
                 </div>
+            </form>
 
 
-         </div>
-
-
-        <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
-            <img src="{{ url('/') }}/images/ajax-loader.gif"/>
         </div>
+
+
+    </div>
+
+
+    <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
+        <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+    </div>
 
 
 
