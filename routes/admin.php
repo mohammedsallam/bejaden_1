@@ -372,6 +372,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('curencies', 'Admin\Curency\CurencyController');
 
+        //import external db
+        Route::get('import', 'Admin\import_db\ImportController@import')->name('import');
+        Route::post('import/send', 'Admin\import_db\ImportController@send')->name('send');
+
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
         Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
