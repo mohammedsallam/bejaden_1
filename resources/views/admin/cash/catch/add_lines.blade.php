@@ -691,6 +691,7 @@
                             <br>
                         </div>
                     </div>
+<<<<<<< HEAD
                     {{-- نهاية مندوب المبيعات --}}
                 </div>
                 {{-- بيانات الشيك فى سند صرف شيك --}}
@@ -732,6 +733,15 @@
                     <div class="panel-heading panel-A">
                         <div class="panel-tipanel-Htle">
                             {{trans('admin.dept_account')}}
+=======
+                    {{-- نهاية نوع الحساب --}}
+
+                    <div class="row">
+                        {{-- المبلغ مدين --}}
+                        <div class="col-md-4">
+                            <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
+                            <input style="background-color: #e9ea92;" type="text" name="Tr_Db" id="Tr_Db" class="form-control">
+>>>>>>> 7d48deaddfc2a2869856524a13848a1df15d34d4
                         </div>
                     </div>
                     <div class="panel-body">

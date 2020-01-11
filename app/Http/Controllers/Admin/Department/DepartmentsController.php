@@ -79,6 +79,11 @@ class DepartmentsController extends Controller
         }
 
     }
+    public function department_setting()
+    {
+        return view('admin.general_setting.Departments.department_setting');
+
+    }
 
     public function createNewAcc(Request $request){
         if($request->ajax()){

@@ -18,7 +18,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الاعدادات لوحة التحكم</h2>
+                        <h2 class="info-box-text">بيانات لوحة التحكم</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -78,7 +78,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="#">
+            <a href="{{route('curencies.index')}}">
                 <div class="info-box">
             <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
 

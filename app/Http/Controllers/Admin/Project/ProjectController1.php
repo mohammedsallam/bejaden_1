@@ -78,7 +78,10 @@ class ProjectController1 extends Controller
         }
 
     }
-
+    public function projects_section()
+    {
+        return view('admin.projects.pro_list');
+    }
 
     public function createNewPrj(Request $request){
         //dd($request->all());

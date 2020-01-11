@@ -12,7 +12,7 @@
     @endpush
     <div class="box">
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_data">
+            <a href="subscribers">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
 
@@ -25,7 +25,7 @@
             </a>
         </div>
 
-        <div class="col-md-3 col-sm-6 col-12">
+        <div class="col-md-3 col-sm-6 col-12" hidden>
             <a href="customer_report">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
@@ -38,8 +38,8 @@
                 <!-- /.info-box -->
             </a>
         </div>
-        <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_report">
+        <div class="col-md-3 col-sm-6 col-12" hidden>
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-exchange" aria-hidden="true"></i></span>
 

@@ -51,4 +51,6 @@ class GLJrnal extends Model
         'Dc_No',
         'status',
     ];
+
+    protected $dates = ['created_at', 'updated_at', 'Entr_Dt', 'Entr_Time', 'Month_No'];
 }
