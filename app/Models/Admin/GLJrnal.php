@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GLJrnal extends Model
 {
-    protected $table = 'GLJrnal';
+    protected $table = 'gljrnal';
     protected $primaryKey = 'ID_No';
     public $incrementing = true;
     protected $fillable = [
@@ -40,7 +40,7 @@ class GLJrnal extends Model
         'Tr_Cr',
         'Curncy_No',
         'Curncy_Rate',
-        'Taxp_Extra',   
+        'Taxp_Extra',
         'Taxv_Extra',
         'Tot_Amunt',
         'FTot_Amunt',

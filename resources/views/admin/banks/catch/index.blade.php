@@ -52,7 +52,7 @@
                     e.preventDefault();
                 })
 
-                // Modal - هل انت متأكد من الحذف؟   
+                // Modal - هل انت متأكد من الحذف؟
                 $('#myModal').on('shown.bs.modal', function () {
                     $('#myInput').trigger('focus')
                 });
@@ -101,7 +101,9 @@
             <div class="box">
                 <div class="box-header">
                     <div class="row">
+                        <div class="col-md-12">
                             <a class="btn btn-primary pull-left" href="{{route('rcatchs.create')}}"><i class="fa fa-plus"></i>{{trans('admin.create_catch_receipt')}}</a>
+                        </div>
                         <div class="col-md-12" id="rcpt_content">
                             <div id="tableFilter">
                                 <table id="example" class="table table-striped display" style="width:100%">
@@ -116,7 +118,7 @@
 
 
                                         <th>{{trans('admin.View')}}</th>
-                                        <th>{{trans('admin.print')}}</th>
+{{--                                        <th>{{trans('admin.print')}}</th>--}}
                                         <th>{{trans('admin.edit')}}</th>
                                         <th>{{trans('admin.delete')}}</th>
                                     </tr>
@@ -146,9 +148,9 @@
                                                 <td>
                                                     <a href="{{route('rcatchs.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                                                 </td>
-                                                <td>
-                                                    <a href="../../rcatchs/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
-                                                </td>
+{{--                                                <td>--}}
+{{--                                                    <a href="../../rcatchs/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>--}}
+{{--                                                </td>--}}
                                                 <td>
                                                     <a href="{{route('rcatchs.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>

@@ -15,7 +15,10 @@ use App\Models\Admin\AstCurncy;
 use App\Models\Admin\AstSalesman;
 use App\Models\Admin\GLaccBnk;
 use App\Models\Admin\GLJrnal;
+use App\Models\Admin\GLjrnTrs;
+use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsCostcntr;
 use App\operation;
 use App\pjitmmsfl;
@@ -29,6 +32,7 @@ class LimitationsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param limitationsDataTable $limitations
      * @return Response
      */
@@ -44,47 +48,48 @@ class LimitationsController extends Controller
      */
     public function create()
     {
-        DB::table('limitations_type')->where('status',0)->delete();
-        DB::table('limitations')->where('status',0)->delete();
-        DB::table('limitations_datas')->where('limitations_id',null)->delete();
+//        DB::table('limitations_type')->where('status',0)->delete();
+//        DB::table('limitations')->where('status',0)->delete();
+//        DB::table('limitations_datas')->where('limitations_id',null)->delete();
 
-        $limitationReceipts = limitationReceipts::where('type',1)->pluck('name_'.session('lang'),'id');
-        $title = trans('admin.create_limitations');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
+//        $limitationReceipts = limitationReceipts::where('type',1)->pluck('name_'.session('lang'),'id');
+//        $title = trans('admin.create_limitations');
+//        $branches = Branches::pluck('name_'.session('lang'),'id');
 
 
-        $last_record = GLJrnal::latest()->get(['Tr_No'])->first();
+        $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
         if(session('Cmp_No') == -1){
-            $companies = MainCompany::all();
+            $companies = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
         }
         else{
-            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
+            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
-        $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
-        $banks = [];
+
         $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
-        foreach($flags as $flag){
-            if($flag->RcpCsh_Voucher == 1){
-                array_push($banks, $flag);
-            }
-        }
         $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
-//        $salesman = AstSalesman::where('Cmp_No', $request->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
-        $AllSalesman = AstSalesman::all();
+
+
+//        $AllSalesman = AstSalesman::all();
+//        $flags = GLaccBnk::all();
+        // مسموح بظه+ور البنوك و الصنودق فى سند القبض النقدى
+//        $banks = [];
+//        foreach($flags as $flag){
+//            if($flag->RcpCsh_Voucher == 1){
+//                array_push($banks, $flag);
+//            }
+//        }
 
 
         return view('admin.limitations.create',compact([
-            'title',
-            'branches',
-            'limitationReceipts',
+//            'title',
+//            'branches',
+//            'limitationReceipts',
             'companies',
-            'banks',
+//            'banks',
             'last_record',
             'cost_center',
             'crncy',
-            'AllSalesman',
-
+//            'AllSalesman',
         ]));
     }
 
@@ -94,30 +99,6 @@ class LimitationsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return Response
      */
-    public function store(Request $request)
-    {
-        if($request->ajax()){
-
-            dd($request->all());
-            $type = $request->type;
-            $limitations = $request->limitations;
-            $invoice = $request->invoice;
-            $operation = operation::where('id',$type)->first();
-            $data = limitationsType::where('invoice_id',$request->invoice)->get();
-                    if ($type == 4){
-                        $tree = Department::where('levelType','=',1)->pluck('dep_name_'.session('lang'),'id');
-                    }elseif ($type == 1){
-                            $tree = $operation->suppliers->pluck('name_'.session('lang'),'id');
-                    }elseif ($type == 2){
-                            $tree = $operation->subscribers->pluck('name_'.session('lang'),'id');
-                    }elseif ($type == 5){
-                        $tree = $operation->drivers->pluck('name_'.session('lang'),'id');
-                    }
-            $contents = view('admin.limitations.detailsselect', ['data'=>$data,'invoice'=>$invoice,'limitations'=>$limitations,'type'=>$type,'operation'=>$operation,'tree'=>$tree])->render();
-            return $contents;
-            }
-
-    }
 
     /**
      * Display the specified resource.
@@ -125,42 +106,61 @@ class LimitationsController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id,Request $request)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        if($request->ajax()){
-            $branches_id = $request->branches;
-            $date = $request->date;
-            $invoice = $request->invoice;
-            $limitations_id = $request->limitations;
-            if($branches_id != null && $date != null && $limitations_id != null){
-                $limitationsId = limitationReceipts::where('id',$request->limitations)->first()->limitationReceiptsId;
-                $branches = Branches::where('id',$branches_id)->first();
-                $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');
-                DB::table('limitations_type')->where('status', 0)->delete();
-                $contents = view('admin.limitations.show', ['limitationsId'=>$limitationsId,'invoice'=>$invoice, 'branches' => $branches, 'date' => $date, 'limitations_id' => $limitations_id, 'operations' => $operations])->render();
-                return $contents;
-            }
-        }
+        $gl = GLJrnal::find($id);
+        $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
+        $debt_acc_no = GLjrnTrs::where('Sysub_Account', 0)
+            ->where('Tr_No', $gl->Tr_No)
+            ->where('Ln_No', 1)
+            ->pluck('Acc_No')->first();
+        $debt = MtsChartAc::where('Acc_No', $debt_acc_no)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
+        $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['License_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
+        $brn = MainBranch::where('Cmp_No', $gl->Cmp_No)->get(['Brn_Nm'.ucfirst(session('lang'))])->first();
+        return view('admin.limitations.catch.show', ['gl' => $gl, 'gltrns' => $gltrns, 'cmp' => $cmp, 'brn' => $brn, 'debt' => $debt]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        DB::table('limitations_type')->where('status',0)->delete();
-        DB::table('limitations')->where('status',0)->delete();
-        DB::table('limitations_datas')->where('limitations_id',null)->delete();
+        $gl = GLJrnal::where('Tr_No', $id)->first();
+        $gltrns  = GLjrnTrs::where('Tr_No', $id)->get();
 
-        $limitations = limitations::findOrFail($id);
-        $title = trans('admin.edit_limitations');
-        $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');
-        $data = limitationsType::where('limitations_id',$limitations->id)->get();
-        $limitationsData = limitationsData::where('limitations_id',$limitations->id)->first();
-        return view('admin.limitations.edit.show',compact('limitations','operations','title','data','limitationsData'));
+        $last_record = GLJrnal::latest()->get(['Tr_No', 'Cmp_No', 'Brn_No'])->first();
+        if(session('Cmp_No') == -1){
+            $companies = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
+        }
+        else{
+            $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+        }
+
+        $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+
+        $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
+        $salesman = AstSalesman::where('Cmp_No', $gl->Cmp_No)->get(['Slm_No', 'Slm_Nm'.ucfirst(session('lang'))]);
+
+        return view('admin.limitations.catch.edit', compact([
+            'companies',
+            'last_record',
+            'cost_center',
+            'crncy',
+            'gl',
+            'gltrns',
+        ]));
+
     }
 
     /**
@@ -234,52 +234,20 @@ class LimitationsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $limitations = limitations::findOrFail($id);
-        $operations = limitationsType::where('invoice_id',$limitations->invoice_id)->pluck('operation_id');
-        DB::beginTransaction();
-        try{
-            //                for receiptsType departement
-            $tree_id = limitationsType::where('invoice_id',$limitations->invoice_id)->whereIn('operation_id',$operations)->pluck('tree_id');
-            $limitationsTypetree = limitationsType::where('invoice_id',$limitations->invoice_id)->whereIn('tree_id',$tree_id)->get();
-            foreach ($limitationsTypetree as $type){
-//                $minusdep = DB::table('departments')->where('id',$type->tree_id)->update(['debtor' => DB::raw('debtor - '.$type->debtor),'creditor' => DB::raw('creditor - '.$type->creditor)]);
-                pjitmmsfl::where('tree_id',$type->tree_id)->where('month',date('n',strtotime($type->limitations->created_at)))->where('year',date('Y',strtotime($type->limitations->created_at)))->update(['debtor' => DB::raw('debtor - '.$type->debtor),'creditor' => DB::raw('creditor - '.$type->creditor)]);
-                $minusgetSitioPadre = getSitioPadre($type->tree_id,-$type->debtor,-$type->creditor,$type->limitations->created_at);
+        //حذف كل سطور السند
+        $gl = GLJrnal::where('ID_No', $id)->get(['Tr_No'])->first();
+        $trns = GLjrnTrs::where('Tr_No', $gl->Tr_No)->get();
+        if($trns && count($trns) > 0){
+            foreach($trns as $trn){
+                $trn->delete();
             }
-//                for receiptsType glcc
-            $cc_id = limitationsType::where('invoice_id',$limitations->invoice_id)->whereIn('operation_id',$operations)->pluck('cc_id');
-            $limitationsTypecc = limitationsType::where('invoice_id', $limitations->invoice_id)->whereIn('cc_id',$cc_id)->get();
-            foreach ($limitationsTypecc as $type){
-                $minuscc = DB::table('glccs')->where('id',$type->cc_id)->update(['debtor' => DB::raw('debtor - '.$type->debtor),'creditor' => DB::raw('creditor - '.$type->creditor)]);
-                pjitmmsfl::where('cc_id',$type->cc_id)->where('month',date('n',strtotime($type->limitations->created_at)))->where('year',date('Y',strtotime($type->limitations->created_at)))->update(['debtor' => DB::raw('debtor - '.$type->debtor),'creditor' => DB::raw('creditor - '.$type->creditor)]);
-                $minusgetSitiocc = getSitiocc($type->cc_id,-$type->debtor,-$type->creditor,$type->limitations->created_at);
-            }
-            if ($limitations->status == 0){
-                $delete = $limitations->delete();
-            }else{
-                $limitationType = limitationsType::where('limitations_id',$id)->get();
-                $limitationsData = limitationsData::where('limitations_id',$id)->first();
-                $limitationsData->limitationsType()->detach($limitationType);
-                $limitationsDatadel = $limitationsData->delete();
-                $limitationsTypedel = limitationsType::where('limitations_id',$id)->delete();
-                $delete = $limitations->delete();
-            }
-            DB::commit();
-        }catch (Exception $e){
-            return $e;
-            DB::rollBack();
         }
-        $minusgetSitioPadre;
-        $minusgetSitiocc;
-        $delete;
-        $limitationsDatadel;
-        $limitationsTypedel;
-
-        return redirect()->route('limitations.index');
+        GLJrnal::where('ID_No', $id)->first()->update(['status' => 1]);
+        return redirect(aurl('rcatchs'))->with(session()->flash('message',trans('admin.success_deleted')));
     }
 
     //Edit by: Norhan Hesham Foda

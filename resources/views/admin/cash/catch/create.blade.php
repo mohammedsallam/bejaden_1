@@ -618,14 +618,12 @@
     <div class="hidden" id="alert"></div>
     <form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-danger panel-A" style="float:left;" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
-
+        <div style="display:flex; justify-content: flex-end; margin-bottom: 10px">
+            <div>
+                <button type="submit" class="btn btn-danger panel-A" id="save" data-toggle="modal" data-target="#saveChangesModal"><i class="fa fa-floppy-o"></i></button>
+            </div>
         </div>
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
-        <br>
-        <br>
-        <br>
         <div class="panel panel-primary panel-H">
             <div class="panel-heading panel-A">
                 <div class="panel-title">
@@ -814,7 +812,7 @@
                         {{-- نوع الحساب --}}
                         <div class="row">
                             {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
                                 <select name="Ac_Ty" id="Ac_Ty" class="form-control">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -824,7 +822,7 @@
                                 </select>
                             </div>
                             {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
-                            <div style="margin-top: 7px" class="col-md-7">
+                            <div style="margin-top: 7px" class="col-md-6">
                                 <label for="Acc_No_Select"></label>
                                 <select  name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
                                     <option class="form-control" value="{{null}}">{{trans('admin.select')}}</option>

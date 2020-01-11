@@ -119,7 +119,7 @@
 {{--                                        <th>العملة الأجنبية مدين </th>--}}
 {{--                                        <th>العملة الأجنبيه دائن </th>--}}
                                         <th>{{trans('admin.View')}}</th>
-                                        <th>{{trans('admin.print')}}</th>
+{{--                                        <th>{{trans('admin.print')}}</th>--}}
                                         <th>{{trans('admin.edit')}}</th>
                                         <th>{{trans('admin.delete')}}</th>
                                     </tr>
@@ -153,9 +153,9 @@
                                                 <td>
                                                     <a href="{{route('receiptCash.show', $gl->Tr_No)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                                                 </td>
-                                                <td>
-                                                    <a href="../../receiptCash/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>
-                                                </td>
+{{--                                                <td>--}}
+{{--                                                    <a href="../../receiptCash/print/{{$gl->Tr_No}}" class="btn btn-info"><i class="fa fa-print"></i></a>--}}
+{{--                                                </td>--}}
                                                 <td>
                                                     <a href="{{route('receiptCash.edit', $gl->Tr_No)}}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                                                 </td>

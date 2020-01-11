@@ -72,7 +72,8 @@
                             },
                             success: function(data){
                                 $('#Tr_No').val(data.last_no);
-                                $('#Tr_No1').val(data.activity+''+data.company+''+data.branch);
+                                $('#Tr_No1').val(data.activity+data.company+data.branch);
+                                $('.Tr_No3').val(parseInt(data.activity+data.company+data.branch+data.last_no))
                             }
                         });
                     }
@@ -147,8 +148,8 @@
                                 },
                                 success: function(data){
                                     $('#Tr_No').val(data.last_no);
-                                    $('#Tr_No1').val(data.activity+''+data.company+''+data.branch);
-                                    $('.Tr_No3').val(data.activity+''+data.company+''+data.branch+''+data.last_no);
+                                    $('#Tr_No1').val(data.activity+data.company+data.branch);
+                                    $('.Tr_No3').val(parseInt(data.activity+data.company+data.branch+data.last_no));
 
                                 }
                             });
@@ -373,7 +374,7 @@
                 $('#Sysub_Account').change(function () {
                     let SysubAccount = $(this).val(),
                         selectHtml = $('#Acc_No_Select option[value="'+SysubAccount+'"]'),
-                        optionSelected = $('<option value="'+SysubAccount+'" selected>'+selectHtml.html()+'</option>');
+                        optionSelected = '<option value="'+SysubAccount+'" selected>'+selectHtml.html()+'</option>';
                         $('#Acc_No_Select option:not([value="'+SysubAccount+'"])').removeAttr('selected');
                     $('#Acc_No_Select').prepend(optionSelected);
                     if (selectHtml.length === 1){
@@ -436,7 +437,7 @@
                     $.ajax({
                         url: "{{route('limitationValidate')}}",
                         type: "post",
-                        dataType: 'html',
+                        dataType: 'json',
                         data: {
                             "_token": "{{ csrf_token() }}",
                             Cmp_No: $('#Cmp_No').val(),
@@ -469,8 +470,7 @@
                         },
 
                         success: function(data){
-                            var response = JSON.parse(data);
-                            if(response.success == true){
+                            if(data.success == true){
                                 let Tr_Db = $('#Tr_Db').val(),Tr_Cr = $('#Tr_Cr').val();
                                 if(Tr_Db === ''){$('#Tr_Db').val(0.0)}
                                 if(Tr_Cr === ''){$('#Tr_Cr').val(0.0)}
@@ -569,10 +569,7 @@
                             else{
                                 $('#alert').removeClass('hidden');
                                 $('#alert').html(``);
-                                var errors = Object.values(response.data);
-                                for(var i = 0; i < errors.length; i++){
-                                    $('#alert').append(`<div class='alert alert-danger'>`+errors[i]+`</div>`);
-                                }
+                                $('#alert').append(`<div class='alert alert-danger'>`+data.message+`</div>`);
                             }
                         }
                     });
@@ -748,7 +745,7 @@
         {{ csrf_field() }}
         <input type="hidden" name="Ln_No" id="Ln_No" value="{{-1}}" >
         <input hidden type="text" name="last_record" id="last_record" value='{{$last_record ? $last_record->Tr_No : null}}'>
-        {{-- بيانات اساسيه سند قبض --}}
+        {{-- بداية القيود اليومية --}}
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -788,8 +785,8 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="Jr_Ty">{{trans('admin.Jr_Ty')}}</label>
-                            <input type="text" id="Jr_Ty" class="form-control Jr_Ty" value="{{\App\Models\Admin\GLAstJrntyp::where('Jr_Ty','6')->first()->{'Jrty_Nm'.ucfirst(session('lang'))} }}" readonly>
-                            <input type="hidden" name="Jr_Ty" value="{{\App\Models\Admin\GLAstJrntyp::where('Jr_Ty','6')->first()->Jr_Ty}}">
+                            <input type="text"  class="form-control" value="{{\App\Models\Admin\GLAstJrntyp::where('Jr_Ty','6')->first()->{'Jrty_Nm'.ucfirst(session('lang'))} }}" readonly>
+                            <input type="hidden" id="Jr_Ty" name="Jr_Ty" class="Jr_Ty" value="{{\App\Models\Admin\GLAstJrntyp::where('Jr_Ty','6')->first()->Jr_Ty}}">
                         </div>
                     </div>
                     {{-- نهاية نوع القيد --}}
@@ -1041,7 +1038,7 @@
                 </div>
             </div>
         </div>
-        {{-- نهاية بيانات اساسيه سند قبض --}}
+        {{-- نهاية القيود اليومية --}}
 
         <div class="row">
             <div class="col-md-12" id="table_view">
