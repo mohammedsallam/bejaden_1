@@ -11,6 +11,7 @@ return [
     'AstSalesman' => 'مندوبين',
     'ActivityTypes' => 'انواع الانشطة',
     'Astsupctg' => 'تصنيف العملاء',
+    'Astsupctgg' => 'تصنيف الموردين',
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
@@ -1151,7 +1152,7 @@ return [
     'currency_debt' => 'العمله الاجنبيه مدين',
     'currency_credit' => 'العمله الاجنبيه دائن',
     'currency_cost' => 'سعر العمله',
-    '' => '',
+    'currency'      => 'العمله',
     '' => '',
     '' => '',
     'Sal_Flg' => 'مبيعات',
@@ -1472,6 +1473,7 @@ return [
     'noti_date'          =>'تاريخ الاشعار',
     'notics'             =>'الاشعارات',
     'data_notics'        =>'بيانات الاشعارات',
+    'report_supplier'    =>'تقارير البيانات الاساسية للموردين',
     'Tr_No_short' => 'رقم/قيد',
     'exchange_rate_short' => 'صرف',
     'slm_no_short' => 'ر/م',
@@ -1493,6 +1495,7 @@ return [
     'Alw_slmacc' => 'محاسبة المندوبين',
     'add_noti'           =>'اضافـة اشعار',
     'edit_noti'          =>'تعديل الاشعارات',
+    'report_stuff'       =>'تقارير البيانات الاساسية للموظفين'
 
 
 

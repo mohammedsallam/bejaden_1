@@ -371,7 +371,13 @@ class SubscribeController extends Controller
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('country','myradio','MainBranch','mainCompany'))->render();
 
 
-            }elseif ( $myradio == 'city')
+            }elseif ( $myradio == 'bransh')
+            {
+                $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('myradio','MainBranch','mainCompany'))->render();
+
+            }
+            elseif ( $myradio == 'city')
             {
                 $city = city::get();
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('city','myradio','MainBranch','mainCompany'))->render();
@@ -383,10 +389,12 @@ class SubscribeController extends Controller
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstSalesman','myradio','MainBranch','mainCompany'))->render();
 
 
+
             }else if($myradio == 'AstMarket')
             {
                 $AstMarket = AstMarket::get();
                 return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstMarket','myradio','MainBranch','mainCompany'))->render();
+
 
 
             }else if($myradio == 'ActivityTypes')

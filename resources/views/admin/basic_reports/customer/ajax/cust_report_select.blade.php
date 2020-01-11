@@ -28,88 +28,83 @@
                 $('.div_print').html('');
             }
 
-
         });
     });
 </script>
 @if($mainCompany != null)
+
 @if($myradio == 'country')
-
 <div class="row">
-
-    {{ Form::label('country',trans('admin.country'), ['class' => 'col-md-2']) }}
-    <select class="col-md-9 selecd_input" >
+    <select class="col-md-9 form-control selecd_input" >
             <option>{{trans('admin.select')}}</option>
             <option class="" value="-1">{{trans('admin.public')}}</option>
         @foreach($country as $one)
 
             <option  value="{{$one->id}}">{{$one->{'country_name_'. session('lang')}   }}</option>
         @endforeach
+    </select>
+</div>
 
+
+@elseif($myradio == 'bransh')
+<div class="row">
+    {<select class="form-control e2 MainBranch col-md-9">
+        <option  value="-1"> {{trans('admin.select')}}</option>
+        @foreach($MainBranch as $one)
+            <option value="{{$one->Brn_No}}">{{$one->{'Brn_Nm'.ucfirst(session('lang'))} }}
+            </option>
+        @endforeach
     </select>
 </div>
 
 
 @elseif($myradio == 'city')
     <div class="row">
-    {{ Form::label('city',trans('admin.city'), ['class' => 'col-md-2']) }}
-    <select class="col-md-9 selecd_input">
+    <select class="col-md-9 form-control selecd_input">
         <option value="-1">{{trans('admin.select')}}</option>
         @foreach($city as $one)
             <option value="{{$one->id}}">{{$one->{'city_name_'.session('lang')} }}</option>
         @endforeach
-
     </select>
     </div>
+
 @elseif($myradio == 'AstSalesman')
     <div class="row">
-
-            {{ Form::label('AstSalesman',trans('admin.AstSalesman'), ['class' => 'col-md-2']) }}
-            <select class="col-md-9 selecd_input">
+            <select class="col-md-9 form-control selecd_input">
                 <option value="-1">{{trans('admin.select')}}</option>
                 @foreach($AstSalesman as $one)
                     <option value="{{$one->Slm_No}}">{{$one->{'Slm_Nm'.ucfirst(session('lang'))} }}</option>
                     @endforeach
-
             </select>
     </div>
 
 @elseif($myradio == 'AstMarket')
     <div class="row">
-
-        {{ Form::label('AstMarket',trans('admin.AstMarket'), ['class' => 'col-md-2']) }}
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($AstMarket as $one)
                 <option value="{{$one->ID_No}}">{{$one->{'Mrkt_Nm'.ucfirst(session('lang'))} }}</option>
             @endforeach
-
         </select>
     </div>
 
 @elseif($myradio == 'ActivityTypes')
     <div class="row">
-
-        {{ Form::label('ActivityTypes',trans('admin.ActivityTypes'), ['class' => 'col-md-2']) }}
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($ActivityTypes as $one)
                 <option value="{{$one->Actvty_No}}">{{$one->{'Name_'.ucfirst(session('lang'))} }}</option>
             @endforeach
-
         </select>
     </div>
+
 @elseif($myradio == 'Astsupctg')
-
     <div class="row">
-
-        {{ Form::label('Astsupctg',trans('admin.Astsupctg'), ['class' => 'col-md-2']) }}
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($Astsupctg as $one)
                 <option value="{{$one->Supctg_No}}">{{$one->{'Supctg_Nm'.ucfirst(session('lang'))} }}</option>
             @endforeach
-
         </select>
     </div>
 

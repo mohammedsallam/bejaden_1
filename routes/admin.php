@@ -162,12 +162,20 @@ Route::group(['prefix'=>'admin'],function (){
 //        employees
         Route::resource('employees','Admin\employees\EmployeeController');
 
+        Route::get('stuff_data','Admin\employees\EmployeeController@stuff_data')->name('stuff_data');
+        Route::get('employees_report','Admin\employees\EmployeeController@employees_report')->name('employees_report');
+        Route::get('get_Branches','Admin\employees\EmployeeController@get_Branches')->name('get_BranchesR');
+        Route::get('get_data_redio','Admin\employees\EmployeeController@get_data_redio')->name('get_data_redio');
+
+
 
 //        supplier
         Route::resource('suppliers','Admin\supplier\MtsSuplirController');
         Route::get('supplier_report','Admin\supplier\MtsSuplirController@supplier_report')->name('supplier_report');
-        Route::get('supp_report_form','Admin\supplier\MtsSuplirController@supp_report_form')->name('supp_report_form');
-        Route::get('supp_report_select','Admin\supplier\MtsSuplirController@supp_report_select')->name('supp_report_select');
+        //Route::get('get_mainbranches','Admin\supplier\MtsSuplirController@get_mainbranches')->name('get_mainbranches');
+        Route::get('sup_report_select','Admin\supplier\MtsSuplirController@sup_report_select')->name('sup_report_select');
+        Route::get('sup_report_print','Admin\supplier\MtsSuplirController@sup_report_print')->name('sup_report_print');
+        Route::post('sup_report_pdf','Admin\supplier\MtsSuplirController@sup_report_pdf')->name('sup_report_pdf');
         Route::post('createSupNo','Admin\supplier\MtsSuplirController@createSupNo')->name('createSupNo');
 
 
@@ -233,10 +241,14 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_data.cc.cc_data');
         });
 
-            Route::get('stuff_data', function () {
-            return view('admin.basic_data.stuff.stuff_data');
-        });
-            Route::get('Fixed_assets', function () {
+//            Route::get('stuff_data', function () {
+//            return view('admin.basic_data.stuff.stuff_data');
+//        });
+
+
+
+
+        Route::get('Fixed_assets', function () {
             return view('admin.basic_data.Fixed_assets.Fixed_assets');
         });
             Route::get('cars_data', function () {
