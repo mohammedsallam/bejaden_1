@@ -452,12 +452,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
-<<<<<<< HEAD
 //        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
-=======
-        Route::get('get_limitions','Admin\limitations\LimitationsController@get_limitions');
-        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
->>>>>>> 7d48deaddfc2a2869856524a13848a1df15d34d4
         Route::post('limitationsData/create','Admin\limitations\limitationsData@create');
         Route::post('limitationsData/editdatatable','Admin\limitations\limitationsData@editdatatable');
         Route::post('limitationsData','Admin\limitations\limitationsData@store')->name('limitations.store');
