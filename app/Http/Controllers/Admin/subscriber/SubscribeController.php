@@ -11,6 +11,7 @@ use App\DataTables\subcriberDataTable;
 use App\Department;
 use App\employee;
 use App\Http\Controllers\Admin\Country\CountryController;
+use App\Models\Admin\AstNutrbusn;
 use App\Models\Admin\Astsupctg;
 use App\Models\Admin\AstSalesman;
 use App\Models\Admin\MtsChartAc;
@@ -357,53 +358,54 @@ class SubscribeController extends Controller
 
     public function cust_report_select(Request $request)
     {
-
         if($request->ajax())
 
         {
             $mainCompany = $request->mainCompany;
             $MainBranch = $request->MainBranch;
+            $active = $request->active;
+            $notactive = $request->notactive;
             $myradio = $request->value;
             if($myradio =='country')
             {
                 $country = country::get();
 
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('country','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','country','myradio','MainBranch','mainCompany'))->render();
 
 
             }elseif ( $myradio == 'bransh')
             {
                 $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','myradio','MainBranch','mainCompany'))->render();
 
             }
             elseif ( $myradio == 'city')
             {
                 $city = city::get();
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('city','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','city','myradio','MainBranch','mainCompany'))->render();
 
 
             }else if($myradio == 'AstSalesman')
             {
                 $AstSalesman = AstSalesman::get();
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstSalesman','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstSalesman','myradio','MainBranch','mainCompany'))->render();
 
 
             }else if($myradio == 'AstMarket')
             {
                 $AstMarket = AstMarket::get();
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('AstMarket','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstMarket','myradio','MainBranch','mainCompany'))->render();
 
 
             }else if($myradio == 'ActivityTypes')
             {
-                $ActivityTypes = ActivityTypes::get();
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('ActivityTypes','myradio','MainBranch','mainCompany'))->render();
+                $ActivityTypes = AstNutrbusn::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','ActivityTypes','myradio','MainBranch','mainCompany'))->render();
 
             }else if($myradio == 'Astsupctg')
             {
                 $Astsupctg = Astsupctg::get();
-                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('Astsupctg','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','Astsupctg','myradio','MainBranch','mainCompany'))->render();
 
             }
 
@@ -417,16 +419,16 @@ class SubscribeController extends Controller
 
     public function cust_report_print(Request $request)
     {
-
         if($request->ajax())
 
         {
+            $active = $request->active;
+            $notactive = $request->notactive;
             $mainCompany = $request->mainCompany;
-            $MainBranch = $request->MainBranch;
             $myradio = $request->myradio;
             $selecd_input = $request->selecd_input;
 
-                return $data=  view('admin.basic_reports.customer.ajax.cust_report_print',compact('selecd_input','myradio','MainBranch','mainCompany'))->render();
+                return $data=  view('admin.basic_reports.customer.ajax.cust_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
 
         }
     }
@@ -434,8 +436,6 @@ class SubscribeController extends Controller
     {
 
 
-
-         @dd($request->all());
             if($name == 'company')
             {
 

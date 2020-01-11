@@ -192,6 +192,9 @@ Route::group(['prefix'=>'admin'],function (){
 //        activities
         Route::resource('activities','Admin\activities\ActivitiesController');
 
+//        AstNutrbusn
+        Route::resource('AstNutrbusn','Admin\AstNutrbusn\AstNutrbusnController');
+
         Route::resource('subscribers','Admin\subscriber\SubscribeController');
         Route::put('subscribers/status/{id}','Admin\subscriber\SubStatusController@status')->name('subscribers.status');
 

@@ -8,8 +8,9 @@
 
             var selecd_input = $(this).val();
             var mainCompany = '{{$mainCompany}}';
-            var MainBranch = '{{$MainBranch}}';
             var myradio = '{{$myradio}}';
+            var active = '{{$active}}';
+            var notactive = '{{$notactive}}';
 
             $("#loadingmessage").css("display","block");
             if (this){
@@ -17,7 +18,7 @@
                     url: '{{route('cust_report_print')}}',
                     type:'get',
                     dataType:'html',
-                    data:{selecd_input : selecd_input,mainCompany:mainCompany,MainBranch:MainBranch,myradio:myradio},
+                    data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio,active:active,notactive:notactive},
                     success: function (data) {
                         $("#loadingmessage").css("display","none");
                         $('.div_print').css("display","block").html(data);
@@ -48,7 +49,7 @@
 
 @elseif($myradio == 'bransh')
 <div class="row">
-    {<select class="form-control e2 MainBranch col-md-9">
+    <select class="form-control e2 MainBranch selecd_input col-md-9">
         <option  value="-1"> {{trans('admin.select')}}</option>
         @foreach($MainBranch as $one)
             <option value="{{$one->Brn_No}}">{{$one->{'Brn_Nm'.ucfirst(session('lang'))} }}
@@ -93,7 +94,7 @@
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($ActivityTypes as $one)
-                <option value="{{$one->Actvty_No}}">{{$one->{'Name_'.ucfirst(session('lang'))} }}</option>
+                <option value="{{$one->ID_No}}">{{$one->{'Name_'.ucfirst(session('lang'))} }}</option>
             @endforeach
         </select>
     </div>
