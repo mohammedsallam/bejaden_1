@@ -362,7 +362,7 @@ class LimitationsOperationsController extends Controller
                 ->where('Ln_No', $request->Ln_No)
                 ->first();
 
-            return response()->json(['trans' => $trans]);
+            return response()->json($trans);
 
 
 //            $new_request = new Request;
