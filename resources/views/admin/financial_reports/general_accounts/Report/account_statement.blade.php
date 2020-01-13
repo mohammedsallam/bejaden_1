@@ -32,56 +32,28 @@
                 var mainCompany = $(this).val();
 
                 $("#loadingmessage-2").css("display","block");
-                $(".column-account-date").css("display","none");
+                $(".column_account").css("display","none");
                 if (this){
                     $.ajax({
-                        url: '{{route('branch')}}',
+                        url: '{{route('acc_state')}}',
                         type:'get',
                         dataType:'html',
                         data:{mainCompany: mainCompany},
                         success: function (data) {
                             $("#loadingmessage-2").css("display","none");
-                            $('.column-account-date').css("display","block").html(data);
+                            $('.column_account').css("display","block").html(data);
 
                         }
                     });
                 }else{
-                    $('.column-account-date').html('');
+                    $('.column_account').html('');
                 }
             });
 
 
         });
     </script>
-    <script>
 
-            $('.MainBranch').on('change',function(){
-                // $("#loadingmessage").css("display","block");
-                // $(".branch_data").css("display","none");
-                //
-                // var MainBranch = $('.MainBranch').val();
-
-                alert(15);
-                if (this){
-                    $.ajax({
-                        url: '{{route('acc_state')}}',
-                        type:'get',
-                        dataType:'html',
-                        data:{mainCompany : mainCompany,MainBranch : MainBranch},
-                        success: function (data) {
-                            $("#loadingmessage").css("display","none");
-                            $('.branch_data').css("display","block").html(data);
-
-                        }
-                    });
-                }else{
-                    $('.branch_data').html('');
-                }
-
-
-            });
-
-    </script>
     <script>
         $(document).ready(function(){
             var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
@@ -127,7 +99,7 @@
     <div id='loadingmessage-2' style='display:none; margin-top: 20px' class="text-center">
         <img src="{{ url('/') }}/images/ajax-loader.gif"/>
     </div>
-    <div class="column-account-date row">
+    <div class="column_account row">
 
     </div>
 

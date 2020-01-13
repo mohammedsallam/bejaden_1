@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\admin\financial_reports;
 
 use App\Branches;
+use App\limitations;
+use App\limitationsType;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\MainBranch;
+use App\Models\Admin\MtsChartAc;
 use App\operation;
+use App\receipts;
+use App\receiptsType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -36,22 +41,45 @@ class general_accountsController extends Controller
         return view('admin.financial_reports.general_accounts.report.account_statement',compact('MainCompany'));
 
     }
-    public function branch( Request $request)
-    {
-        if($request->ajax())
-        {
-            $MainBranch = MainBranch::where('Cmp_No',$request->mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
-            return view('admin.financial_reports.general_accounts.ajax.getbranche',compact('MainBranch'));
-        }
-    }
+
     public function acc_state(Request $request)
     {
-
         if($request->ajax())
         {
-            $MainBranch = MainBranch::where('Cmp_No',$request->mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
-            return view('admin.financial_reports.general_accounts.ajax.getbranche',compact('MainBranch'));
+            $mainCompany = $request->mainCompany;
+            $mtschartac = MtsChartAc::where('Cmp_No',$mainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+            return view('admin.financial_reports.general_accounts.ajax.account_statement',compact('MainBranch','mainCompany','mtschartac'));
         }
+    }
+    public function details(Request $request)
+    {
+
+$maincompany = $request->maincompany;
+$fromtree = $request->fromtree;
+$totree = $request->totree;
+$from = $request->from;
+$to = $request->to;
+if($request->ajax())
+{
+    $depart = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('ID_No')->toArray();
+    @dd($depart);
+
+    $receipts_id = receipts::where('branche_id',$branches)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)
+        ->whereHas('receipts_type',function ($query) use ($operations,$depart,$fromtree,$totree){
+            $query->where('tree_id', '>=', $fromtree)->where('tree_id', '<=', $totree);
+        })
+        ->pluck('id');
+    $limitations_id = limitations::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)
+        ->whereHas('limitations_type',function ($query) use ($operations,$depart,$fromtree,$totree){
+            $query->where('tree_id', '>=', $fromtree)->where('tree_id', '<=', $totree);
+        })
+        ->pluck('id');
+    $hasTask = receiptsType::where('operation_id',$operations)->whereIn('tree_id',$depart)->whereIn('receipts_id',$receipts_id)->exists();
+    $hasTask2 = limitationsType::whereIn('tree_id',$depart)->whereIn('limitations_id',$limitations_id)->exists();
+
+
+}
+
     }
     public function trial_balance()
     {
