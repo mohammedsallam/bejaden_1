@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MtsChartAc extends Model
 {
-    protected $table = 'MtsChartAc';
+    protected $table = 'mtschartac';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Cmp_No',

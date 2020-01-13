@@ -27,7 +27,7 @@
             {{-- نوع الحساب --}}
             <div class="row">
                 {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
                     <select name="Ac_Ty" id="Ac_Ty" class="form-control">
                         <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
-                <div class="col-md-7">
+                <div class="col-md-6">
                     <label for="Acc_No_Select"></label>
                     <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
                         <option value="{{null}}">{{trans('admin.select')}}</option>

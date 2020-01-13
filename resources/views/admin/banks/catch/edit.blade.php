@@ -495,15 +495,13 @@
     {{ csrf_field() }}
     {{ method_field('PUT') }}
 
-    <div class="col-md-12">
-        <button type="submit" class="btn btn-danger" id="delete_button" style="float:left;"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-        <button type="submit" class="btn btn-primary" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
+    <div style="display:flex; justify-content: flex-end; margin-bottom: 10px">
+        <div>
+            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <button type="submit" class="btn btn-primary"  id="save"><i class="fa fa-floppy-o"></i></button>
+        </div>
     </div>
     <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
-    <br>
-    <br>
-    <br>
-
     {{-- header start --}}
     {{--  بيانات اساسيه سند قبض --}}
     <div class="panel panel-primary">
@@ -704,7 +702,7 @@
                         {{-- نوع الحساب --}}
                         <div class="row">
                             {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
                                 <select name="Ac_Ty" id="Ac_Ty" class="form-control">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -714,7 +712,7 @@
                                 </select>
                             </div>
                             {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
-                            <div class="col-md-7">
+                            <div class="col-md-6">
                                 <label for="Acc_No_Select"></label>
                                 <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -882,17 +880,21 @@
                                 <td>{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
-                                    @if($trns->Ac_Ty == 1)
+                                    @if($trns->Ac_Ty == 1 && $trns->Sysub_Account == 0)
                                         {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
-                                    @endif
-                                    @if($trns->Ac_Ty == 2)
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
-                                    @endif
-                                    @if($trns->Ac_Ty == 3)
-                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
-                                    @endif
-                                    @if($trns->Ac_Ty == 4)
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                    @else
+                                        @if($trns->Ac_Ty == 1)
+                                            {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                        @endif
+                                        @if($trns->Ac_Ty == 2)
+                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                        @endif
+                                        @if($trns->Ac_Ty == 3)
+                                            {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                        @endif
+                                        @if($trns->Ac_Ty == 4)
+                                            {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                        @endif
                                     @endif
                                 </td>
                                 <td>{{$trns->Tr_Db}}</td>

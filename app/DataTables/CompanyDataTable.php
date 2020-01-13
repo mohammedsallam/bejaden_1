@@ -126,6 +126,7 @@ class CompanyDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            ['name'=>'ID_No','data'=>'ID_No','title'=>trans('admin.number')],
             ['name'=>'Cmp_Nm'.ucfirst(session('lang')),'data'=>'Cmp_Nm'.ucfirst(session('lang')),'title'=>trans('admin.name')],
 //            ['name'=>'mini_charge','data'=>'mini_charge','title'=>trans('admin.mini_charge')],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],

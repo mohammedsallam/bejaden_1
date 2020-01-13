@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin\limitations;
 
+use App\DataTables\limitationsDataTable;
 use App\Models\Admin\AstSalesman;
 use App\Models\Admin\GLJrnal;
+use App\Models\Admin\GLjrnTrs;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\MtsChartAc;
+use App\Models\Admin\MtsCostcntr;
 use App\Models\Admin\MTsCustomer;
 use App\Models\Admin\MtsSuplir;
 use Carbon\Carbon;
@@ -16,6 +19,89 @@ use Illuminate\Support\Facades\Validator;
 
 class LimitationsOperationsController extends Controller
 {
+
+    public function store(Request $request)
+    {
+        if ($request->ajax()){
+            $catch_data = $request->catch_data;
+            //Create heade
+            if($catch_data != null && count($catch_data) > 0){
+                $header = GLJrnal::create([
+                    'Cmp_No' => $request->Cmp_No,
+                    'Brn_No' => $request->Brn_No,
+                    'Jr_Ty' => $request->Jr_Ty,
+                    'Tr_No' => $request->Tr_No,
+                    'Month_No' => Carbon::now()->month,
+//                'Month_Jvno' => $catch_data[$last_index]->Month_Jvno,
+                    'Tr_Dt' => $catch_data[0]['Tr_Dt'],
+                    'Tr_DtAr' => $catch_data[0]['Tr_DtAr'],
+                    'Acc_No' => $catch_data[0]['Acc_No'],
+                    'User_ID' => auth()->user()->id,
+                    'Ac_Ty' => $catch_data[0]['Ac_Ty'],
+                    'Curncy_No' => $catch_data[0]['Curncy_No'],
+                    'Curncy_Rate' => $catch_data[0]['Curncy_Rate'],
+//                'Tot_Amunt' => $catch_data[0]->Tr_Db_Db,
+                    'Tr_Ds' => $catch_data[0]['Tr_Ds'],
+                    'Tr_Ds1' => $catch_data[0]['Tr_Ds1'],
+                    'Dc_No' => $catch_data[0]['Dc_No'],
+                    'Tr_Db' => $request->debit_sum,
+                    'Tr_Cr' => $request->credit_sum,
+                    'Slm_No' => $catch_data[0]['Slm_No'],
+                ]);
+
+//            foreach($catch_data as $data){
+//                $header->FTot_Amunt += $data->FTot_Amunt;
+//            }
+                $header->Entr_Dt = $header->created_at->format('Y-m-d');
+                $header->Entr_Time = $header->created_at->format('H:i:s');
+                if($catch_data[0]['Ac_Ty'] == 1){$header->Chrt_No = $catch_data[0]['Sysub_Account'];}
+                if($catch_data[0]['Ac_Ty'] == 2){$header->Cstm_No = $catch_data[0]['Sysub_Account'];}
+                if($catch_data[0]['Ac_Ty'] == 3){$header->Sup_No = $catch_data[0]['Sysub_Account'];}
+                if($catch_data[0]['Ac_Ty'] == 4){$header->Emp_No = $catch_data[0]['Sysub_Account'];}
+                $header->save();
+
+
+//            $tot_rcpt_val = 0;
+//            foreach($catch_data as $data){
+//                $tot_rcpt_val += $data->Tot_Amunt;
+//            }
+
+                foreach($catch_data as $data){
+
+                    //Create transaction credit
+                    $trans_cr = GLjrnTrs::create([
+                        'Cmp_No' => $data['Cmp_No'],
+                        'Brn_No' => $data['Brn_No'],
+                        'Jr_Ty' => $request->Jr_Ty,
+                        'Tr_No' => $request->Tr_No,
+                        'Month_No' => Carbon::now()->month,
+                        'Month_Jvno' => $data['Tr_No'],
+                        'Tr_Dt' => $data['Tr_Dt'],
+                        'Tr_DtAr' => $data['Tr_DtAr'],
+                        'Ac_Ty' => $data['Ac_Ty'],
+                        'Sysub_Account' => $data['Sysub_Account'],
+                        'Acc_No' => $data['Acc_No'],
+                        'Tr_Db' => $data['Tr_Db'],
+                        'Tr_Cr' => $data['Tr_Cr'],
+                        'FTr_Db' => $data['Tr_Cr'] == '0' ? $data['FTot_Amunt']:0,
+                        'FTr_Cr' => $data['Tr_Db'] == '0' ? $data['FTot_Amunt']:0,
+                        'Dc_No' => $data['Dc_No'],
+                        'Tr_Ds' => $data['Tr_Ds'],
+                        'Tr_Ds1' => $data['Tr_Ds1'],
+                        'User_ID' => auth()->user()->id,
+                        'Rcpt_Value' => $data['Tot_Amunt'],
+                        'FTot_Amunt' => $data['FTot_Amunt'],
+                        'Ln_No' => $data['Ln_No'],
+                    ]);
+                    $trans_cr->Entr_Dt = $trans_cr->created_at->format('Y-m-d');
+                    $trans_cr->Entr_Time = $trans_cr->created_at->format('H:i:s');
+                    $trans_cr->save();
+
+                }
+            }
+        }
+    }
+
     public function branchForEdit(Request $request){
         if($request->ajax()){
             if($request->id){
@@ -56,11 +142,8 @@ class LimitationsOperationsController extends Controller
 
     public function createTrNo(Request $request){
 
-
         if ($request->ajax() && ($request->Cmp_No || $request->Brn_No)){
-
             $flag = MainCompany::where('Cmp_No', $request->Cmp_No)->first();
-            $last_no = 0;
             if($flag->JvAuto_Mnth == 1){
                 return response()->json([
                     'last_no' => $this->createMonthAccNo(Carbon::now()->month, $request->Brn_No),
@@ -230,7 +313,7 @@ class LimitationsOperationsController extends Controller
                 'Sysub_Account' => 'required',
                 'Tr_Cr' => 'sometimes',
                 'Tr_Db' => 'sometimes',
-                'Tr_Ds' => 'sometimes',
+                'Tr_Ds' => 'required',
                 'Tr_Ds1' => 'sometimes',
                 'Dc_No' => 'required',
                 'Costcntr_No' => 'sometimes',
@@ -258,16 +341,39 @@ class LimitationsOperationsController extends Controller
             ]);
 
             if ($validator->fails()) {
+
                 return response([
                     'success' => false,
-                    'data' => $validator->messages(),
+                    'message' => $validator->messages()->first(),
                 ]);
             } else {
                 return response([
                     'success' => true,
-                    'data' => $validator->messages(),
+                    'message' => $validator->messages()->first(),
                 ]);
             }
+        }
+    }
+
+    public function getRcptDetails(Request $request){
+        if($request->ajax()){
+
+            $trans = GLjrnTrs::where('Tr_No', $request->Tr_No)
+                ->where('Ln_No', $request->Ln_No)
+                ->first();
+
+            return response()->json(['trans' => $trans]);
+
+
+//            $new_request = new Request;
+//            $new_request->Acc_Ty = $trans->Ac_Ty;
+//            $new_request->Cmp_No = $trans->Cmp_No;
+//            $new_request->Brn_No = $trans->Brn_No;
+//            $subAccs = $this->getSubAcc($new_request);
+
+//            $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
+//            dd($cost_center);
+//            return view('admin.limitations.catch.credit_data', compact('trans', 'subAccs', 'cost_center'));
         }
     }
 

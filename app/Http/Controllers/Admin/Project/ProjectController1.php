@@ -143,6 +143,8 @@ class ProjectController1 extends Controller
 
     public function store(Request $request)
     {
+
+
         if($request->Level_Status == 0){
             //dd('dd');
             $data = $this->validate($request,[
@@ -764,9 +766,10 @@ class ProjectController1 extends Controller
 
     public function createAccNo($Parnt_Acc){
 
+
         $parent = MtsCostcntr::where('Costcntr_No', $Parnt_Acc)->first();
 //        dd($parent);
-        if(count($parent->children) > 0){
+        if($parent->children && count($parent->children) > 0){
             $max = MtsCostcntr::where('Parnt_Acc', $parent->Costcntr_No)
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->orderBy('Costcntr_No', 'desc')->get(['Costcntr_No'])->first();

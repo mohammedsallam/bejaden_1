@@ -1,6 +1,3 @@
-
-
-
 <script>
     $(document).ready(function(){
 
@@ -8,16 +5,17 @@
 
             var selecd_input = $(this).val();
             var mainCompany = '{{$mainCompany}}';
-            var MainBranch = '{{$MainBranch}}';
+            var active = '{{$active}}';
+            var notactive = '{{$notactive}}';
             var myradio = '{{$myradio}}';
 
             $("#loadingmessage").css("display","block");
             if (this){
                 $.ajax({
-                    url: '{{route('cust_report_print')}}',
+                    url: '{{route('sup_report_print')}}',
                     type:'get',
                     dataType:'html',
-                    data:{selecd_input : selecd_input,mainCompany:mainCompany,MainBranch:MainBranch,myradio:myradio},
+                    data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio, active:active, notactive:notactive},
                     success: function (data) {
                         $("#loadingmessage").css("display","none");
                         $('.div_print').css("display","block").html(data);
@@ -29,6 +27,8 @@
             }
 
         });
+
+
     });
 </script>
 @if($mainCompany != null)
@@ -48,7 +48,7 @@
 
 @elseif($myradio == 'bransh')
 <div class="row">
-    {<select class="form-control e2 MainBranch col-md-9">
+    <select class="form-control e2 selecd_input col-md-9">
         <option  value="-1"> {{trans('admin.select')}}</option>
         @foreach($MainBranch as $one)
             <option value="{{$one->Brn_No}}">{{$one->{'Brn_Nm'.ucfirst(session('lang'))} }}
@@ -57,16 +57,17 @@
     </select>
 </div>
 
-
-@elseif($myradio == 'city')
+@elseif($myradio == 'Currency')
     <div class="row">
     <select class="col-md-9 form-control selecd_input">
         <option value="-1">{{trans('admin.select')}}</option>
-        @foreach($city as $one)
-            <option value="{{$one->id}}">{{$one->{'city_name_'.session('lang')} }}</option>
+        @foreach($currency as $one)
+            <option value="{{$one->Curncy_No}}">{{$one->{'Curncy_Nm'.ucfirst(session('lang'))} }}</option>
         @endforeach
     </select>
     </div>
+
+
 
 @elseif($myradio == 'AstSalesman')
     <div class="row">
@@ -76,16 +77,6 @@
                     <option value="{{$one->Slm_No}}">{{$one->{'Slm_Nm'.ucfirst(session('lang'))} }}</option>
                     @endforeach
             </select>
-    </div>
-
-@elseif($myradio == 'AstMarket')
-    <div class="row">
-        <select class="col-md-9 selecd_input">
-            <option value="-1">{{trans('admin.select')}}</option>
-            @foreach($AstMarket as $one)
-                <option value="{{$one->ID_No}}">{{$one->{'Mrkt_Nm'.ucfirst(session('lang'))} }}</option>
-            @endforeach
-        </select>
     </div>
 
 @elseif($myradio == 'ActivityTypes')
@@ -103,11 +94,10 @@
         <select class="col-md-9 selecd_input">
             <option value="-1">{{trans('admin.select')}}</option>
             @foreach($Astsupctg as $one)
-                <option value="{{$one->Supctg_No}}">{{$one->{'Supctg_Nm'.ucfirst(session('lang'))} }}</option>
+                <option value="{{$one->Supctg_No}}">{{$one->{'Supctg_Nm'.session('lang')} }}</option>
             @endforeach
         </select>
     </div>
-
 @endif
 @endif
 

@@ -32,4 +32,5 @@ class MainCompany extends Model
     public function branches(){
         return $this->hasMany(MainBranch::class, 'Cmp_No', 'Cmp_No');
     }
+
 }

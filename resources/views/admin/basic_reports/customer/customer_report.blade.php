@@ -4,7 +4,6 @@
     @push('css')
         <style>
 
-
             .vertical-menu{
                 padding-top: 46px;
 
@@ -100,7 +99,7 @@
                 padding-left: 230px;
             }
         </style>
-        @endpush
+    @endpush
     <?php $to_glcc_select = null;?>
     @push('js')
         <script>
@@ -118,7 +117,7 @@
 
     @push('js')
 
-            <script>
+        <script>
             $(document).ready(function(){
 
                 $('.mainCompany').on('change',function(){
@@ -144,22 +143,100 @@
                     }
 
 
-                      });
-                 });
+                });
+            });
             $('.myradio__input').on('click',function () {
                 var value = $(this).val();
                 var mainCompany =$('.mainCompany').val();
-                var MainBranch =$('.MainBranch').val();
-                console.log(mainCompany,MainBranch,value);
+                // var MainBranch =$('.MainBranch').val();
+                //console.log(mainCompany,MainBranch,value);
                 if(this){
                     $.ajax({
                         dataType: 'html',
-                        data:{value:value,mainCompany:mainCompany,MainBranch:MainBranch},
+                        data:{value:value,mainCompany:mainCompany},
                         type:'get',
                         url:'{{route('cust_report_select')}}',
                         success:function (data) {
                             $("#loadingmessage").css("display","none");
-                            $('.row_input').css("display","block").html(data);
+                            if (value == 'bransh'){
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').removeClass('hidden');
+                                $('#branshIn').html(data);
+
+                            }else if(value == 'AstSalesman'){
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#AstSalesmanIn').removeClass('hidden');
+                                $('#AstSalesmanIn').html(data);
+
+                            }else if(value == 'ActivityTypes'){
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#ActivityTypesIn').removeClass('hidden');
+                                $('#ActivityTypesIn').html(data);
+
+                            }else if(value == 'country'){
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#countryIn').removeClass('hidden');
+                                $('#countryIn').html(data);
+
+                            }else if(value == 'city'){
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#cityIn').removeClass('hidden');
+                                $('#cityIn').html(data);
+                            }
+                            else if(value == 'AstMarket'){
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstsupctgIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#AstMarketIn').removeClass('hidden');
+                                $('#AstMarketIn').html(data);
+                            }
+
+                            else if(value == 'Astsupctg'){
+                                $('#ActivityTypes').addClass('hidden');
+                                $('#ActivityTypesIn').addClass('hidden');
+                                $('#AstSalesmanIn').addClass('hidden');
+                                $('#countryIn').addClass('hidden');
+                                $('#cityIn').addClass('hidden');
+                                $('#AstMarketIn').addClass('hidden');
+                                $('#branshIn').addClass('hidden');
+                                $('#AstsupctgIn').removeClass('hidden');
+                                $('#AstsupctgIn').html(data);
+                            }
+                            // $('.row_input').css("display","block").html(data);
                         }
 
                     })
@@ -172,7 +249,7 @@
 
             })
 
-            </script>
+        </script>
 
 
 
@@ -185,93 +262,124 @@
 
         <div class="box-body">
 
-                <form action="{{route('cust_report_pdf')}}" method="POST">
-                    {{ csrf_field() }}
-                    <div class="panel panel-primary" style="width:100%; margin:auto auto;">
-                        <div class="panel-heading">
-                            <div class="panel-title">
-                                {{trans('admin.report_client')}}
+            <form action="{{route('cust_report_pdf')}}" method="POST">
+                {{ csrf_field() }}
+                <div class="panel panel-primary" style="width:100%; margin:auto auto;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            {{trans('admin.report_client')}}
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
+                                {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
                             </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="row">
 
+                        <div class="row">
 
-                                    {{ Form::label('mainCompany','الشركة', ['class' => 'col-md-2']) }}
-                                    {{ Form::select('mainCompany',$mainCompany,null, array_merge(['class' => 'form-control  mainCompany col-md-9','placeholder'=> trans('admin.select') ])) }}
+                            <div class="vertical-menu  col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input  value="bransh" type="radio" name="myRadio" id="one"  class="myradio__input" >
+                                            <label  for="one" class="myradio__label">الفرع</label>
+                                        </div>
+                                    </div>
 
-
-                            </div>
+                                    <div class="col-md-8" id="branshIn"></div>
+                                </div>
 
 
                                 <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="AstSalesman" type="radio" name="myRadio" id="two"  class="myradio__input" >
+                                            <label  for="two" class="myradio__label">المندوب</label>
+                                        </div>
+                                    </div>
 
-                                    <br>
-                                    <label  class="col-md-2" for="MainBranch">الفرع</label>
-                                    <div class="column_data">
-                                    <select class="form-control e2 MainBranch col-md-9">
-                                        <option  value="-1"> {{trans('admin.select')}}</option>
+                                    <div class="col-md-8" id="AstSalesmanIn"></div>
+                                </div>
 
-
-                                    </select>
-
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="ActivityTypes" type="radio" name="myRadio" id="three"  class="myradio__input" >
+                                            <label  for="three" class="myradio__label"> النشاط</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="ActivityTypesIn"></div>
 
                                 </div>
-                                    <div class="row">
 
-                                        <div class="vertical-menu right col-md-6">
-
-                                            <div class="custom_radio">
-                                                <input   value="country" type="radio" name="myRadio" id="one"  class="myradio__input" >
-                                                <label  for="one" class="myradio__label">الدول</label>
-                                            </div>
-                                            <div class="custom_radio">
-                                                <input   value="city" type="radio" name="myRadio" id="two"  class="myradio__input" >
-                                                <label  for="two" class="myradio__label">المدينة</label>
-                                            </div>
-                                            <div class="custom_radio">
-                                                <input   value="AstSalesman" type="radio" name="myRadio" id="three"  class="myradio__input" >
-                                                <label  for="three" class="myradio__label">المندوب</label>
-                                            </div>
-
-                                        </div>
-                                        <div class="vertical-menu  col-md-6">
-
-                                            <div class="custom_radio">
-                                                <input   value="AstMarket" type="radio" name="myRadio" id="four"  class="myradio__input" >
-                                                <label  for="four" class="myradio__label">المشرف</label>
-                                            </div>
-                                            <div class="custom_radio">
-                                                <input   value="ActivityTypes" type="radio" name="myRadio" id="five"  class="myradio__input" >
-                                                <label  for="five" class="myradio__label">رقم النشاط</label>
-                                            </div>
-                                            <div class="custom_radio">
-                                                <input   value="Astsupctg" type="radio" name="myRadio" id="six"  class="myradio__input" >
-                                                <label  for="six" class="myradio__label">تصنيف العميل</label>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="row_input">
-
-                                    </div>
                             </div>
 
 
+                            <div class="vertical-menu  col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="country" type="radio" name="myRadio" id="four"  class="myradio__input" >
+                                            <label for="four" class="myradio__label">الدول</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="countryIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="city" type="radio" name="myRadio" id="five"  class="myradio__input" >
+                                            <label for="five" class="myradio__label">المدينة</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="cityIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="AstMarket" type="radio" name="myRadio" id="six"  class="myradio__input" >
+                                            <label for="six" class="myradio__label">المشرف</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="AstMarketIn"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom_radio">
+                                            <input value="Astsupctg" type="radio" name="myRadio" id="seven"  class="myradio__input" >
+                                            <label for="seven" class="myradio__label">تصنيف العميل</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" id="AstsupctgIn"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row_input">
+
                         </div>
                     </div>
-                </form>
 
 
                 </div>
+            </form>
 
 
-         </div>
-
-
-        <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
-            <img src="{{ url('/') }}/images/ajax-loader.gif"/>
         </div>
+
+
+    </div>
+
+
+    <div id='loadingmessage' style='display:none; margin-top: 20px' class="text-center">
+        <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+    </div>
 
 
 

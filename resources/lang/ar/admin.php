@@ -12,6 +12,7 @@ return [
     'AstSalesman' => 'مندوبين',
     'ActivityTypes' => 'انواع الانشطة',
     'Astsupctg' => 'تصنيف العملاء',
+    'Astsupctgg' => 'تصنيف الموردين',
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
@@ -54,6 +55,8 @@ return [
     'id' => 'م',
     'name' => 'الاسم',
     'email' => 'الايميل',
+    'transfere' => 'ترحيل',
+    'data_transfere' => 'ترحيل البيانات القديمه',
     'password' => 'كلمه المرور',
     'password_Confirmation' => 'تأكيد كلمه المرور',
     'image' => 'الصورة',
@@ -625,7 +628,7 @@ return [
     // supplier // edit
     'edit_suppliers' => 'تعديل المودين',
     'show_suppliers' => 'بيانات المورد ',
-
+    'public'         =>'كل الدول',
 
     // users // index
     'Data_Table' => 'جدول البيانات',
@@ -1068,6 +1071,8 @@ return [
     'JVPst_InvCost' => 'ترحيل المخازن بالتكلفه للحسابات',
     'JVPst_InvSal' => 'ترحيل المخازن بالمبيعات للحسابات',
     'Spcrpt_Rcpt' => 'نموذج خاص سندات القبض',
+    'cache_in' => 'سندات القبض',
+    'cache_out' => 'سندات الصرف',
     'Spcrpt_Pymt' => 'نموذج خاص سندات الصرف',
     'Spcrpt_Sal' => 'نموذخ خاص فاتورة المبيعات',
     'Spcrpt_Pur' => 'نموذج خاص فاتورة المشتريات',
@@ -1148,7 +1153,7 @@ return [
     'currency_debt' => 'العمله الاجنبيه مدين',
     'currency_credit' => 'العمله الاجنبيه دائن',
     'currency_cost' => 'سعر العمله',
-    '' => '',
+    'currency'      => 'العمله',
     '' => '',
     '' => '',
     'Sal_Flg' => 'مبيعات',
@@ -1469,6 +1474,7 @@ return [
     'noti_date'          =>'تاريخ الاشعار',
     'notics'             =>'الاشعارات',
     'data_notics'        =>'بيانات الاشعارات',
+    'report_supplier'    =>'تقارير البيانات الاساسية للموردين',
     'Tr_No_short' => 'رقم/قيد',
     'exchange_rate_short' => 'صرف',
     'slm_no_short' => 'ر/م',
@@ -1490,6 +1496,7 @@ return [
     'Alw_slmacc' => 'محاسبة المندوبين',
     'add_noti'           =>'اضافـة اشعار',
     'edit_noti'          =>'تعديل الاشعارات',
+    'report_stuff'       =>'تقارير البيانات الاساسية للموظفين'
 
 
 

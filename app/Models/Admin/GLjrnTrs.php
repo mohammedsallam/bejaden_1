@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GLjrnTrs extends Model
 {
-    protected $table = 'GLjrnTrs';
+    protected $table = 'gljrntrs';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Cmp_No',
@@ -44,4 +44,6 @@ class GLjrnTrs extends Model
         'FTr_Cr',
         'Curncy_No',
     ];
+
+    protected $dates = ['created_at', 'updated_at', 'Entr_Dt', 'Entr_Time', 'Month_No'];
 }

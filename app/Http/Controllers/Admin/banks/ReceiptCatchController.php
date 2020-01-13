@@ -79,7 +79,7 @@ class ReceiptCatchController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $flags = GLaccBnk::all();
-        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
+        // مسموح بظه+ور البنوك و الصنودق فى سند القبض النقدى
         $banks = [];
         $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
         foreach($flags as $flag){
@@ -87,6 +87,7 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
+
         $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
         return view('admin.banks.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
                                                 'cost_center' => $cost_center, 'crncy' => $crncy]);
