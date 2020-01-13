@@ -438,6 +438,12 @@ class DepartmentsController extends Controller
         $pdf = Pdf::loadView('admin.departments.print', compact('departments'),[], $config);
         return $pdf->stream();
     }
+    public function tree()
+    {
+        $mainCompany  = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
+        return  view('admin.basic_reports.departments.report_derpartments',compact('mainCompany'));
+
+    }
     public function details(Request $request)
     {
         if($request->ajax()){
@@ -796,5 +802,6 @@ class DepartmentsController extends Controller
             return $tree;
         }
     }
+
 }
 

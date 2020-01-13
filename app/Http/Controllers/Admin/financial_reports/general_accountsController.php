@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\admin\financial_reports;
 
+use App\Branches;
+use App\Models\Admin\MainCompany;
+use App\Models\Admin\MainBranch;
+use App\operation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +18,9 @@ class general_accountsController extends Controller
      */
     public function financial_reports()
     {
-        return view('admin.financial_reports.financial_reports');
+
+
+        return view('admin.financial_reports.financial_reports',compact(''));
 
     }
     public function general_accounts()
@@ -24,8 +30,28 @@ class general_accountsController extends Controller
     }
     public function account_statement()
     {
-        return view('admin.financial_reports.general_accounts.report.account_statement');
 
+        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
+
+        return view('admin.financial_reports.general_accounts.report.account_statement',compact('MainCompany'));
+
+    }
+    public function branch( Request $request)
+    {
+        if($request->ajax())
+        {
+            $MainBranch = MainBranch::where('Cmp_No',$request->mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
+            return view('admin.financial_reports.general_accounts.ajax.getbranche',compact('MainBranch'));
+        }
+    }
+    public function acc_state(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            $MainBranch = MainBranch::where('Cmp_No',$request->mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
+            return view('admin.financial_reports.general_accounts.ajax.getbranche',compact('MainBranch'));
+        }
     }
     public function trial_balance()
     {

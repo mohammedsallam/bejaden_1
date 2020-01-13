@@ -65,6 +65,7 @@ Route::group(['prefix'=>'admin'],function (){
 //        departments
         Route::resource('departments','Admin\Department\DepartmentsController');
         Route::get('department_setting','Admin\Department\DepartmentsController@department_setting');
+        Route::get('departments/department/tree','Admin\Department\DepartmentsController@tree');
         Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
@@ -252,6 +253,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('financial_reports','Admin\financial_reports\general_accountsController@financial_reports')->name('financial_reports');
         Route::get('general_accounts','Admin\financial_reports\general_accountsController@general_accounts')->name('general_accounts');
         Route::get('account_statement','Admin\financial_reports\general_accountsController@account_statement')->name('account_statement');
+        Route::get('branch','Admin\financial_reports\general_accountsController@branch')->name('branch');
+        Route::get('acc_state','Admin\financial_reports\general_accountsController@acc_state')->name('acc_state');
         Route::get('trial_balance','Admin\financial_reports\general_accountsController@trial_balance')->name('trial_balance');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 //       1

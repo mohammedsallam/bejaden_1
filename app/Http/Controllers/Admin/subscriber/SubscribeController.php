@@ -427,10 +427,13 @@ class SubscribeController extends Controller
     public function cust_report_pdf(Request $request)
     {
 
+        $mainCompany = $request->mainCompany;
+        $MainBranch = $request->MainBranch;
+        $myradio = $request->myradio;
+        $selecd_input = $request->selecd_input;
 
 
-         @dd($request->all());
-            if($name == 'company')
+            if($myradio == 'company')
             {
 
                 $MTsCustomer = MTsCustomer::where('Cmp_No',$value)->get();
