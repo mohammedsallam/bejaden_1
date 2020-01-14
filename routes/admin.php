@@ -345,6 +345,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('curencies', 'Admin\Curency\CurencyController');
 
+        //import external db
+        Route::get('import', 'Admin\import_db\ImportController@import')->name('import');
+        Route::post('import/send', 'Admin\import_db\ImportController@send')->name('send');
+
 
         Route::resource('receiptCash', 'Admin\Cash\receiptCashController'); // سند صرف
         Route::get('hijriC', 'Admin\Cash\receiptCashController@convertToDateToHijri')->name('hijriC');
@@ -405,10 +409,14 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('branchForEditN','Admin\Notice\NoticeController@branchForEdit')->name('branchForEditN');
         Route::post('getRcptDetailsN','Admin\Notice\NoticeController@getRcptDetails')->name('getRcptDetailsN');
 
+        Route::get('get_snadat', 'Admin\banks\ReceiptCatchController@get_snadat');
+
 
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
+        Route::get('get_limitions','Admin\limitations\LimitationsController@get_limitions');
+
 //        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
         Route::post('limitationsData/create','Admin\limitations\limitationsData@create');
         Route::post('limitationsData/editdatatable','Admin\limitations\limitationsData@editdatatable');
@@ -438,6 +446,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
         Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
         Route::post('limitationGetRcptDetails', 'Admin\limitations\LimitationsOperationsController@getRcptDetails')->name('limitationGetRcptDetails');
+        Route::post('limitationUpdateTrns', 'Admin\limitations\LimitationsOperationsController@updateTrns')->name('limitationUpdateTrns');
+        Route::post('limitationDeleteTrns', 'Admin\limitations\LimitationsOperationsController@deleteTrns')->name('limitationDeleteTrns');
 
 
 //        openingentry

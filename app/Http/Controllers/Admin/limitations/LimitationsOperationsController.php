@@ -23,6 +23,7 @@ class LimitationsOperationsController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()){
+
             $catch_data = $request->catch_data;
             //Create heade
             if($catch_data != null && count($catch_data) > 0){
@@ -363,17 +364,6 @@ class LimitationsOperationsController extends Controller
                 ->first();
 
             return response()->json($trans);
-
-
-//            $new_request = new Request;
-//            $new_request->Acc_Ty = $trans->Ac_Ty;
-//            $new_request->Cmp_No = $trans->Cmp_No;
-//            $new_request->Brn_No = $trans->Brn_No;
-//            $subAccs = $this->getSubAcc($new_request);
-
-//            $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
-//            dd($cost_center);
-//            return view('admin.limitations.catch.credit_data', compact('trans', 'subAccs', 'cost_center'));
         }
     }
 
@@ -393,6 +383,133 @@ class LimitationsOperationsController extends Controller
             }
         }
         return $Month_Jvno;
+    }
+
+    public function updateTrns(Request $request){
+
+        $updated_data = $request->catch_data;
+        $newData = [];
+
+        if ($updated_data != null){
+            foreach ($updated_data as $key => $value){
+                if ($value != null){
+                    array_push($newData, $value);
+                }
+            }
+        }
+
+        if(count($newData) > 0){
+            //update header
+            $header = GLJrnal::where('Tr_No', $request->Tr_No)->first();
+            $header->update([
+                'Cmp_No' => $request->Cmp_No,
+                'Brn_No' => $request->Brn_No,
+                'Jr_Ty' => $request->Jr_Ty,
+                'Tr_No' => $request->Tr_No,
+                'Month_No' => Carbon::now()->month,
+//                'Month_Jvno' => $catch_data[$last_index]->Month_Jvno,
+                'Tr_Dt' => $newData[0]['Tr_Dt'],
+                'Tr_DtAr' => $newData[0]['Tr_DtAr'],
+                'Acc_No' => $newData[0]['Acc_No'],
+                'User_ID' => auth()->user()->id,
+                'Ac_Ty' => $newData[0]['Ac_Ty'],
+                'Curncy_No' => $newData[0]['Curncy_No'],
+                'Curncy_Rate' => $newData[0]['Curncy_Rate'],
+//                'Tot_Amunt' => $newData[0]->Tr_Db_Db,
+                'Tr_Ds' => $newData[0]['Tr_Ds'],
+                'Tr_Ds1' => $newData[0]['Tr_Ds1'],
+                'Dc_No' => $newData[0]['Dc_No'],
+                'Tr_Db' => $request->debit_sum,
+                'Tr_Cr' => $request->credit_sum,
+                'Slm_No' => $newData[0]['Slm_No'],
+            ]);
+
+            if($newData[0]['Ac_Ty'] == 1){$header->Chrt_No = $newData[0]['Sysub_Account'];}
+            if($newData[0]['Ac_Ty'] == 2){$header->Cstm_No = $newData[0]['Sysub_Account'];}
+            if($newData[0]['Ac_Ty'] == 3){$header->Sup_No = $newData[0]['Sysub_Account'];}
+            if($newData[0]['Ac_Ty'] == 4){$header->Emp_No = $newData[0]['Sysub_Account'];}
+            $header->save();
+
+            foreach($newData as $data){
+                $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)
+                    ->where('Ln_No', $data['Ln_No'])->first();
+                //Update transaction credit
+                $trns->update([
+                    'Cmp_No' => $data['Cmp_No'],
+                    'Brn_No' => $data['Brn_No'],
+                    'Jr_Ty' => $request->Jr_Ty,
+                    'Tr_No' => $request->Tr_No,
+                    'Month_No' => Carbon::now()->month,
+                    'Month_Jvno' => $data['Tr_No'],
+                    'Tr_Dt' => $data['Tr_Dt'],
+                    'Tr_DtAr' => $data['Tr_DtAr'],
+                    'Ac_Ty' => $data['Ac_Ty'],
+                    'Sysub_Account' => $data['Sysub_Account'],
+                    'Acc_No' => $data['Acc_No'],
+                    'Tr_Db' => $data['Tr_Db'],
+                    'Tr_Cr' => $data['Tr_Cr'],
+                    'FTr_Db' => $data['Tr_Cr'] == '0' ? $data['FTot_Amunt']:0,
+                    'FTr_Cr' => $data['Tr_Db'] == '0' ? $data['FTot_Amunt']:0,
+                    'Dc_No' => $data['Dc_No'],
+                    'Tr_Ds' => $data['Tr_Ds'],
+                    'Tr_Ds1' => $data['Tr_Ds1'],
+                    'User_ID' => auth()->user()->id,
+                    'Rcpt_Value' => $data['Tot_Amunt'],
+                    'FTot_Amunt' => $data['FTot_Amunt'],
+                    'Ln_No' => $data['Ln_No'],
+                ]);
+            }
+
+            //update debt Tot_Amunt
+            //1- get all credit lines - sum credit money
+//            $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
+//                ->where('Ln_No' , '>', 1)->get();
+//            if($trnses && count($trnses)){
+//                $total = 0;
+//                $ftotal = 0;
+//                foreach($trnses as $trns){
+//                    $total += $trns->Tr_Cr;
+//                }
+//                foreach($trnses as $trns){
+//                    $ftotal += $trns->FTr_Cr;
+//                }
+//
+//                //2- get debt line - update money with new total
+//                $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
+//                    ->where('Ln_No', 1)->first();
+//                $debt->update([
+//                    'Tr_Db' => $total,
+//                    'FTr_Db' => $ftotal,
+//                    'FTot_Amunt' => $ftotal,
+//                    'Rcpt_Value' => $total,
+//                ]);
+//                $header->update(['FTot_Amunt' => $ftotal]);
+//            }
+        }
+    }
+
+    //Delete trans line from GLjrnTrs
+    public function deleteTrns(Request $request){
+        if($request->ajax()){
+            if ($request->status == 'single'){
+                $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)
+                    ->where('Ln_No', $request->Ln_No)
+                    ->first()->delete();
+            } elseif($request->status == 'multi'){
+                $trns = GLjrnTrs::where('Tr_No', $request->Tr_No)
+                    ->where('Ln_No', $request->Ln_No)->get();
+                foreach ($trns as $item) {
+                    $item->delete();
+                }
+
+            }
+
+            $gl = GLJrnal::where('Tr_No', $request->Tr_No)->first();
+            $gl->status = 1;
+            $gl->save();
+            return response()->json(['message' => trans('admin.success_deleted')]);
+        }
+
     }
 
 }

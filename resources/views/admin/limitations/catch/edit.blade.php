@@ -223,10 +223,10 @@
             }
 
             $('.debit').change(function () {
-                $('#Tr_Cr').attr('readonly', 'readonly').val('');
                 $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
+                $('#Tr_Cr').attr('readonly', 'readonly').val(0);
                 if($('.debit').prop("checked") === true){
-                    $('#Tr_Cr').attr('readonly', 'readonly').val('');
+                    $('#Tr_Cr').attr('readonly', 'readonly').val(0);
                     $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
                     debit_sum = parseFloat($('#Tot_Amunt').val());
                     $('#debit_sum').val(old_debit_sum);
@@ -235,9 +235,9 @@
 
             $('.credit').change(function () {
                 $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
-                $('#Tr_Db').attr('readonly', 'readonly').val('');
+                $('#Tr_Db').attr('readonly', 'readonly').val(0);
                 if($('.credit').prop("checked") === true){
-                    $('#Tr_Db').attr('readonly', 'readonly').val('');
+                    $('#Tr_Db').attr('readonly', 'readonly').val(0);
                     $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
                     credit_sum = parseFloat($('#Tot_Amunt').val());
                     $('#credit_sum').val(old_credit_sum);
@@ -249,17 +249,17 @@
                     $('#Tot_Amunt').val(parseFloat($('#Curncy_Rate').val()) * parseFloat($('#FTot_Amunt').val()));
 
                     if($('.debit').prop("checked") === true){
-                        $('#Tr_Cr').attr('readonly', 'readonly').val('');
+                        $('#Tr_Cr').attr('readonly', 'readonly').val(0);
                         $('#Tr_Db').removeAttr('readonly').val($('#Tot_Amunt').val());
                         debit_sum = parseFloat($('#Tot_Amunt').val());
-                        $('#debit_sum').val(old_debit_sum);
+                        // $('#debit_sum').val(old_debit_sum);
                     }
 
                     if($('.credit').prop("checked") === true){
-                        $('#Tr_Db').attr('readonly', 'readonly').val('');
+                        $('#Tr_Db').attr('readonly', 'readonly').val(0);
                         $('#Tr_Cr').removeAttr('readonly').val($('#Tot_Amunt').val());
                         credit_sum = parseFloat($('#Tot_Amunt').val());
-                        $('#credit_sum').val(old_credit_sum);
+                        // $('#credit_sum').val(old_credit_sum);
                     }
                 }
 
@@ -380,46 +380,145 @@
                 selectHtml.remove();
             });
 
-            $('#table_view tbody tr').each(function () {
-                $(this).click(function () {
-                    var lineNo = parseInt($(this).children('td:first-child').html());
-                    $(this).css({
-                        background: '#757272',
-                        color: '#fff'
-                    }).siblings().css({
-                        background: '#ecf0f5',
-                        color: '#000'
-                    })
-                })
-            });
-
             //اضافة سطر فى الجدول
             $('#add_line').click(function(e){
                 e.preventDefault();
+                $.ajax({
+                    url: "{{route('limitationValidate')}}",
+                    type: "post",
+                    dataType: 'json',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        Cmp_No: $('#Cmp_No').val(),
+                        Brn_No: $('#Dlv_Stor').val(),
+                        Jr_Ty: $('#Jr_Ty').val(),
+                        Tr_No: parseInt($('#Tr_No1').val())+''+parseInt($('#Tr_No').val()),
+                        Tr_Dt: $('#Tr_Dt').val(),
+                        Tr_DtAr: $('#Tr_DtAr').val(),
+                        Curncy_No: $('#Curncy_No').val(),
+                        FTot_Amunt: $('#FTot_Amunt').val(),
+                        Curncy_Rate: $('#Curncy_Rate').val(),
+                        Tot_Amunt: $('#Tot_Amunt').val(),
+                        Ac_Ty: $('#Ac_Ty').val(),
+                        Acc_No_Select: $('#Acc_No_Select').val(),
+                        Sysub_Account: $('#Sysub_Account').val(),
+                        Tr_Cr: $('#Tr_Cr').val(),
+                        Tr_Db: $('#Tr_Db').val(),
+                        Tr_Ds: $('#Tr_Ds').val(),
+                        Tr_Ds1: $('#Tr_Ds1').val(),
+                        Dc_No: $('#Dc_No').val(),
+                        Costcntr_No: $('#Costcntr_No').val(),
+                        Acc_No: $('#Acc_No').val(),
+                        Slm_No_Name: $('#Slm_No_Name').val(),
+                        Slm_No: $('#Slm_No').val(),
+                        last_record : $('#last_record').val(),
+                        debit_sum: $('#debit_sum').val(),
+                        credit_sum: $('#credit_sum').val(),
+                        Ln_No: parseInt($('.active_row td.line_no').html())
 
-                if($('#Ln_No').val() == -1){
-                    Ln_No = Ln_No + 1;
-                    $('#Ln_No').val(Ln_No);
-                }
+                    },
 
-                if($('#debit').prop('checked') === true){
-                    old_debit_sum += parseFloat($('#Tot_Amunt').val());
-                }
+                    success: function(data){
+                        if(data.success === true){
 
-                if($('#credit').prop('checked') === true){
-                    old_credit_sum += parseFloat($('#Tot_Amunt').val());
-                }
+                            $('.active_row').children().each(function () {
+                                $(this).index() === 1 ? $(this).html($('#Sysub_Account').val()): '';
+                                $(this).index() === 2 ? $(this).html($('#Acc_No_Select option:selected').html()): '';
+                                $(this).index() === 3 ? $(this).html(parseFloat($('#Tr_Db').val())): '';
+                                $(this).index() === 4 ? $(this).html(parseFloat($('#Tr_Cr').val())): '';
+                                $(this).index() === 5 ? $(this).html($('#Tr_Ds').val()): '';
+                                $(this).index() === 6 ? $(this).html($('#Dc_No').val()): '';
+                                $(this).index() === 7 ? $(this).html($('#Tr_Ds1').val()): '';
+                            });
 
-                $('#credit_sum').val(old_credit_sum);
-                $('#debit_sum').val(old_debit_sum);
 
-                if(old_credit_sum === old_debit_sum){
-                    $('#credit_debit_dif').val(0);
-                } else if(old_credit_sum > old_debit_sum){
-                    $('#credit_debit_dif').val(old_credit_sum - old_debit_sum)
-                } else if(old_credit_sum < old_debit_sum){
-                    $('#credit_debit_dif').val(old_debit_sum-old_credit_sum)
-                }
+                            let Tr_Db = $('#Tr_Db').val(),Tr_Cr = $('#Tr_Cr').val();
+                            if(Tr_Db === ''){$('#Tr_Db').val(0.0)}
+                            if(Tr_Cr === ''){$('#Tr_Cr').val(0.0)}
+                            // var trClass = '';
+
+                            if($('#debit').prop('checked') === true){
+                                trClass = 'debit_row';
+                            } else if($('#credit').prop('checked') === true){
+                                trClass = 'credit_row';
+                            }else {
+                                alert("{{trans('admin.credit_or_debit')}}");
+                                return false
+                            }
+
+                            // $('.active_row').css({
+                            //     background: 'none',
+                            //     color: '#000'
+                            // });
+
+                            // if ($('#add_line').hasClass('empty_table')){
+                            //     $('#table tbody').append(`
+                            //     <tr class='tr `+trClass+`'>
+                            //         <td>`+(parseInt($('#table tbody tr:last-child td:first-child').html())+parseInt('1'))+`</td>
+                            //         <td>`+$('#Sysub_Account').val()+`</td>
+                            //         <td>`+$('#Acc_No_Select option:selected').html()+`</td>
+                            //         <td class="tr_db_td">`+$('#Tr_Db').val()+`</td>
+                            //         <td class="tr_cr_td">`+$('#Tr_Cr').val()+`</td>
+                            //         <td>`+$('#Tr_Ds').val()+`</td>
+                            //         <td>`+$('#Dc_No').val()+`</td>
+                            //         <td>`+$('#Tr_Ds1').val()+`</td>
+                            //     </tr>`);
+                            //
+                            //     calcDbAndCrSumAndDif()
+                            //
+                            // }
+
+                            // $('#add_line').addClass('empty_table');
+
+                            var item = {
+                                Cmp_No: $('#Cmp_No').val(),
+                                Brn_No: $('#Dlv_Stor').val(),
+                                Jr_Ty: $('#Jr_Ty').val(),
+                                Tr_No: parseInt($('#Tr_No1').val())+''+parseInt($('#Tr_No').val()),
+                                Tr_Dt: $('#Tr_Dt').val(),
+                                Tr_DtAr: $('#Tr_DtAr').val(),
+                                Curncy_No: $('#Curncy_No').val(),
+                                FTot_Amunt: $('#FTot_Amunt').val(),
+                                Curncy_Rate: $('#Curncy_Rate').val(),
+                                Tot_Amunt: $('#Tot_Amunt').val(),
+                                Ac_Ty: $('#Ac_Ty').val(),
+                                Acc_No_Select: $('#Acc_No_Select').val(),
+                                Sysub_Account: $('#Sysub_Account').val(),
+                                Tr_Cr: $('#Tr_Cr').val(),
+                                Tr_Db: $('#Tr_Db').val(),
+                                Tr_Ds: $('#Tr_Ds').val(),
+                                Tr_Ds1: $('#Tr_Ds1').val(),
+                                Dc_No: $('#Dc_No').val(),
+                                Costcntr_No: $('#Costcntr_No').val(),
+                                Acc_No: $('#Acc_No').val(),
+                                Slm_No_Name: $('#Slm_No_Name').val(),
+                                Slm_No: $('#Slm_No').val(),
+                                last_record : $('#last_record').val(),
+                                debit_sum: $('#debit_sum').val(),
+                                credit_sum: $('#credit_sum').val(),
+                                Ln_No: parseInt($('.active_row td.line_no').html()),
+                                index:parseInt($('.active_row').index()) - 1
+                            };
+
+                            catch_data[item.index] = item;
+
+                            calcDbAndCrSumAndDif()
+
+                        }
+                        else{
+                            $('#alert').removeClass('hidden');
+                            $('#alert').html(``);
+                            $('#alert').append(`<div class='alert alert-danger'>`+data.message+`</div>`);
+                        }
+                    }
+
+                });
+
+            });
+
+            //اضافة سطر فى الجدول في حالة حذفت كل السطور
+            $('.empty_table').click(function(e){
+                e.preventDefault();
 
                 $.ajax({
                     url: "{{route('limitationValidate')}}",
@@ -452,46 +551,64 @@
                         last_record : $('#last_record').val(),
                         debit_sum: $('#debit_sum').val(),
                         credit_sum: $('#credit_sum').val(),
-                        Ln_No: $('#Ln_No').val()
+                        Ln_No: parseInt($('.active_row td.line_no').html())
 
                     },
 
                     success: function(data){
-                        if(data.success == true){
+                        if(data.success === true){
+
+                            $('.active_row').children().each(function () {
+                                $(this).index() === 1 ? $(this).html($('#Sysub_Account').val()): '';
+                                $(this).index() === 2 ? $(this).html($('#Acc_No_Select option:selected').html()): '';
+                                $(this).index() === 3 ? $(this).html(parseFloat($('#Tr_Db').val())): '';
+                                $(this).index() === 4 ? $(this).html(parseFloat($('#Tr_Cr').val())): '';
+                                $(this).index() === 5 ? $(this).html($('#Tr_Ds').val()): '';
+                                $(this).index() === 6 ? $(this).html($('#Dc_No').val()): '';
+                                $(this).index() === 7 ? $(this).html($('#Tr_Ds1').val()): '';
+                            });
+
+
                             let Tr_Db = $('#Tr_Db').val(),Tr_Cr = $('#Tr_Cr').val();
                             if(Tr_Db === ''){$('#Tr_Db').val(0.0)}
                             if(Tr_Cr === ''){$('#Tr_Cr').val(0.0)}
-
                             var trClass = '';
 
                             if($('#debit').prop('checked') === true){
                                 trClass = 'debit_row';
-                            }
-
-                            if($('#credit').prop('checked') === true){
+                            } else if($('#credit').prop('checked') === true){
                                 trClass = 'credit_row';
+                            }else {
+                                alert("{{trans('admin.credit_or_debit')}}");
+                                return false
                             }
 
-                            $('#table').append(`
+                            $('.active_row').css({
+                                background: 'none',
+                                color: '#000'
+                            });
+
+                            if ($('#add_line').hasClass('empty_table')){
+                                var lineNo = 0;
+                                if($('#table tbody tr:last-child td:first-child').html() === undefined){
+                                    lineNo = 1;
+                                } else {
+                                    lineNo = (parseInt($('#table tbody tr:last-child td:first-child').html())+parseInt('1'));
+                                }
+                                $('#table tbody').append(`
                                 <tr class='tr `+trClass+`'>
-                                    <td>`+$('#Ln_No').val()+`</td>
+                                    <td>`+lineNo+`</td>
                                     <td>`+$('#Sysub_Account').val()+`</td>
                                     <td>`+$('#Acc_No_Select option:selected').html()+`</td>
-                                    <td>`+Tr_Db+`</td>
-                                    <td>`+Tr_Cr+`</td>
+                                    <td class="tr_db_td">`+$('#Tr_Db').val()+`</td>
+                                    <td class="tr_cr_td">`+$('#Tr_Cr').val()+`</td>
                                     <td>`+$('#Tr_Ds').val()+`</td>
                                     <td>`+$('#Dc_No').val()+`</td>
                                     <td>`+$('#Tr_Ds1').val()+`</td>
                                 </tr>`);
 
-                            var rows = document.getElementById('table').rows;
-                            var debit_sum = 0;
-                            var credit_sum = 0;
-                            for (var i=1; i<rows.length; i++){
-                                if(rows[i].cells.length > 0){
-                                    debit_sum += parseFloat(rows[i].cells[3].innerHTML);
-                                    credit_sum += parseFloat(rows[i].cells[4].innerHTML);
-                                }
+                                calcDbAndCrSumAndDif()
+
                             }
 
                             var item = {
@@ -520,35 +637,24 @@
                                 last_record : $('#last_record').val(),
                                 debit_sum: $('#debit_sum').val(),
                                 credit_sum: $('#credit_sum').val(),
-                                Ln_No: $('#Ln_No').val()
+                                Ln_No: parseInt($('.active_row td.line_no').html()),
+                                index:parseInt($('.active_row').index()) - 1
                             };
 
-                            catch_data.push(item);
+                            catch_data[item.index] = item;
 
-                            // $('#FTot_Amunt').val('');
-                            // $('#Tot_Amunt').val('');
-                            // $('#Ac_Ty').val('');
-                            // $('#Acc_No_Select').val('');
-                            // $('#Sysub_Account').val('');
-                            // $('#Tr_Cr').val('');
-                            // $('#Tr_Ds').val('');
-                            // $('#Tr_Ds1').val('');
-                            // $('#Dc_No').val('');
-                            // $('#Costcntr_No').val('');
-                            // $('#Acc_No').val('');
-                            // $('#Slm_No_Name').val('');
-                            // $('#Slm_No').val('');
-                            $('#Ln_No').val(-1);
+                            calcDbAndCrSumAndDif()
 
                             // handle click table rows click
                             var table = document.getElementById("table");
                             if (table != null) {
-                                for (var i = 0; i < table.rows.length; i++) {
-                                    for (var j = 0; j < table.rows[i].cells.length; j++)
+                                for (var i = 1; i < table.rows.length; i++) {
+                                    for (var j = 0; j < table.rows[i].cells.length; j++){
                                         table.rows[i].onclick = function () {
                                             tableText(this, catch_data);
                                             this.innerHTML = '';
                                         };
+                                    }
                                 }
                             }
 
@@ -559,7 +665,9 @@
                             $('#alert').append(`<div class='alert alert-danger'>`+data.message+`</div>`);
                         }
                     }
+
                 });
+
             });
 
             //حفظ السند فى قاعدة البيانات
@@ -571,7 +679,7 @@
                 }
                 // catch_data = JSON.stringify(catch_data);
                 $.ajax({
-                    url: "{{route('limitationOperation.store')}}",
+                    url: "{{route('limitationUpdateTrns')}}",
                     type: "post",
                     dataType: 'html',
                     data: {
@@ -582,11 +690,14 @@
                         Jr_Ty: $('#Jr_Ty').val(),
                         Cmp_No: $('#Cmp_No').val(),
                         Brn_No: $('#Dlv_Stor').val(),
-                        Tr_No: $('.Tr_No3').val(),
+                        Tr_No: parseInt($('.Tr_No3').val()),
                     },
                     success: function(data){
                         $('#alert').removeClass('hidden');
                         $('#alert').html(`<div class='alert alert-info'>تمت الاضافة بنجاح</div>`);
+
+
+
                         // $('#Cmp_No').val(null);
                         // $('#Dlv_Stor').val(null);
                         {{--$('#Tr_No').val(null);--}}
@@ -627,38 +738,54 @@
                 });
             });
 
+            $('#table_view tbody tr').each(function () {
+               $(this).click(function () {
+                    $(this).addClass('active_row').siblings().removeClass('active_row');
+                    // $('#add_line').removeClass('empty_table')
+                    $(this).css({
+                        background: '#757272',
+                        color: '#fff'
+                    }).siblings().css({
+                        background: '#ecf0f5',
+                        color: '#000'
+                    });
 
-            /**
-             * finish to here
-             */
+                    tableText(this);
+                });
 
-            $('#Dc_No').change(function(){
-                $('#Dc_No_Db').val($('#Dc_No').val());
+                $(this).dblclick(function () {
+                    $('#delete_modal').modal()
+                })
             });
 
-            $('#Tr_Ds').change(function(){
-                $('#Tr_Ds_Db').val($('#Tr_Ds').val());
+
+
+            // Delete line
+            $('.delete_link').click(function(){
+                let Ln_No = $('.active_row').data('ln-no'), Tr_No = $('.hidden_tr_no').val();
+                $('#delete_modal').modal('toggle');
+                // $('#add_line').addClass('empty_table');
+
+                $.ajax({
+                    url: "{{route('limitationDeleteTrns')}}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        _token: "{{csrf_token()}}",
+                        Ln_No:Ln_No,
+                        Tr_No:Tr_No,
+                        status: 'single'
+                    },
+                    success: function(data){
+                        $('#alert').removeClass('hidden').html(data.message);
+                        $('.active_row').remove();
+                        window.location.reload()
+
+                    }
+                });
+
+
             });
-
-            //رقم حساب الصندوق الرئيسى
-            $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
-            $('#Tr_Db_Select').change(function(){
-                $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
-            });
-
-
-            var table = document.getElementById("table");
-            if (table != null) {
-                for (var i = 0; i < table.rows.length; i++) {
-                    table.rows[i].onclick = function () {
-                        // if(this.cells[0].innerHTML != 1){
-                            tableText(this);
-                            this.style.css.background = 'red';
-                        // }
-                    };
-                }
-            }
-
 
             function tableText(tableCell) {
                 var Ln_No = parseInt(tableCell.cells[0].innerHTML), Tr_No = $('.hidden_tr_no').val();
@@ -667,11 +794,26 @@
                     $('#credit').prop('checked', true);
                     $('#debit').prop('checked', false);
                     $('#Tr_Db').attr('readonly', 'readonly').val(0);
+                    $('#Tr_Cr').removeAttr('readonly');
                 } else if(tableCell.classList[0] === 'debit_row'){
                     $('#debit').prop('checked', true);
                     $('#credit').prop('checked', false);
                     $('#Tr_Cr').attr('readonly', 'readonly').val(0);
+                    $('#Tr_Db').removeAttr('readonly');
+
                 }
+
+                $('.active_row').children().each(function () {
+                    $(this).index() === 1 ? $('#Sysub_Account').val(parseInt($(this).html())): '';
+                    $(this).index() === 2 ? $('#Acc_No_Select option:selected').html($(this).html()): '';
+                    $(this).index() === 3 ? $('#Tr_Db').val(parseFloat($(this).html())): '';
+                    $(this).index() === 4 ? $('#Tr_Cr').val(parseFloat($(this).html())): '';
+                    $(this).index() === 5 ? $('#Tr_Ds').val($(this).html()): '';
+                    $(this).index() === 6 ? $('#Dc_No').val(parseInt($(this).html())): '';
+                    $(this).index() === 7 ? $('#Tr_Ds1').val($(this).html()): '';
+                });
+
+
 
                 $.ajax({
                     url: "{{route('limitationGetRcptDetails')}}",
@@ -679,21 +821,21 @@
                     dataType: 'json',
                     data: {"_token": "{{ csrf_token() }}", Tr_No: Tr_No, Ln_No: Ln_No},
                     success: function(data){
-                        console.log(data)
                         if(tableCell.classList[0] === 'credit_row'){
-                            $('#credit_sum').val(data.Tr_Cr);
+                            $('#Tot_Amunt').val(data.Tr_Cr);
+                            $('#Tr_Cr').val(data.Tr_Cr)
                         } else if(tableCell.classList[0] === 'debit_row'){
-                            $('#debit_sum').val(data.Tr_Db);
+                            $('#Tot_Amunt').val(data.Tr_Db);
+                            $('#Tr_Db').val(data.Tr_Db)
                         }
                         $('#FTot_Amunt').val(data.FTot_Amunt);
-                        $('#Tot_Amunt').val(data.Tr_Cr);
                         $('#Tr_No3').val(data.Tr_No);
-                        $('#Tr_Dt').val(data.Tr_Dt);
-                        $('#Tr_DtAr').val(data.Tr_DtAr);
-                        $('#Sysub_Account').val(data.Sysub_Account);
-                        $('#Tr_Ds').val(data.Tr_Ds);
-                        $('#Tr_Ds1').val(data.Tr_Ds1);
-                        $('#Dc_No').val(data.Dc_No);
+                        // $('#Tr_Dt').val(data.Tr_Dt);
+                        // $('#Tr_DtAr').val(data.Tr_DtAr);
+                        // $('#Sysub_Account').val(data.Sysub_Account);
+                        // $('#Tr_Ds').val(data.Tr_Ds);
+                        // $('#Tr_Ds1').val(data.Tr_Ds1);
+                        // $('#Dc_No').val(data.Dc_No);
                         $('#Costcntr_No_input').val(data.Costcntr_No);
 
                         var selectHtmlAcTy = $('#Ac_Ty option[value="'+data.Ac_Ty+'"]'),
@@ -728,18 +870,80 @@
                                 $('#Ac_Ty option:not([value="'+data.Sysub_Account+'"])').removeAttr('selected');
                                 Acc_No_Select.prepend(optionSelected);
                                 selectHtml.remove();
-
                             }
                         });
                     }
                 });
             }
 
+            function calcDbAndCrSumAndDif(){
+                var debitSum = 0, creditSum = 0;
+
+                $('html .tr_db_td').each(function () {
+                    debitSum += parseFloat($(this).html());
+                });
+
+                $('html .tr_cr_td').each(function () {
+                    creditSum += parseFloat($(this).html());
+
+                });
+
+                $('#debit_sum').val(debitSum);
+                $('#credit_sum').val(creditSum);
+
+                if(creditSum === debitSum){
+                    $('#credit_debit_dif').val(0);
+                } else if(creditSum > debitSum){
+                    $('#credit_debit_dif').val(creditSum - debitSum)
+                } else if(creditSum < debitSum){
+                    $('#credit_debit_dif').val(debitSum-creditSum)
+                }
+            }
+
+            calcDbAndCrSumAndDif()
+
+
+
+            /**
+             * finish to here
+             */
+
+            $('#Dc_No').change(function(){
+                $('#Dc_No_Db').val($('#Dc_No').val());
+            });
+
+            $('#Tr_Ds').change(function(){
+                $('#Tr_Ds_Db').val($('#Tr_Ds').val());
+            });
+
+            //رقم حساب الصندوق الرئيسى
+            $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').children('option:selected').val());
+            $('#Tr_Db_Select').change(function(){
+                $('#Tr_Db_Acc_No').val($('#Tr_Db_Select').val());
+            });
+
+
+            // var table = document.getElementById("table");
+            // if (table != null) {
+            //     for (var i = 0; i < table.rows.length; i++) {
+            //         table.rows[i].onclick = function () {
+            //             // if(this.cells[0].innerHTML != 1){
+            //                 tableText(this);
+            //
+            //             // }
+            //         };
+            //     }
+            // }
+
+
+
         });
     </script>
 @endpush
-<div class="row">
-    <div class="hidden col-md-12" id="alert"></div>
+<div class="alert row hidden" id="alert">
+    <div class="col-md-12">
+        <div class="alert-info">asdasda</div>
+    </div>
 </div>
 <form action="{{route('rcatchs.update', $gl->Tr_No)}}" method="POST" id="create_cache">
     {{ csrf_field() }}
@@ -747,12 +951,11 @@
 
     <div style="display:flex; justify-content: flex-end; margin-bottom: 10px">
         <div>
-            <button type="submit" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+{{--            <a data-toggle="modal" href="#delete_modal" class="btn btn-danger" id="delete_button"><i class="fa fa-trash-o" aria-hidden="true"></i></a>--}}
             <button type="submit" class="btn btn-primary"  id="save"><i class="fa fa-floppy-o"></i></button>
         </div>
     </div>
     <input type="text" name="id" id="id" hidden value="{{$gl->Tr_No}}">
-    <input type="hidden" name="Ln_No" id="Ln_No" value="{{-1}}" >
 
     {{-- header start --}}
     {{-- بداية القيود اليومية --}}
@@ -767,7 +970,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Cmp_No">{{trans('admin.company')}}</label>
-                    <select name="Cmp_No" id="Cmp_No" class="form-control">
+                    <select name="Cmp_No" id="Cmp_No" class="form-control" disabled>
                         @if(count($companies) > 0)
                             @foreach($companies as $cmp)
                                 <option @if($cmp->Cmp_No == $gl->Cmp_No) selected @endif value="{{$cmp->Cmp_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
@@ -783,7 +986,7 @@
                 <div class="form-group">
                     <label for="Dlv_Stor">{{trans('admin.section')}}</label>
                     <div id="Brn_No_content">
-                        <select name="Dlv_Stor" id="Dlv_Stor" class="form-control">
+                        <select name="Dlv_Stor" id="Dlv_Stor" class="form-control" disabled>
                             <option value="{{null}}">{{trans('admin.select')}}</option>
                         </select>
                     </div>
@@ -817,13 +1020,13 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Tr_Dt">{{trans('admin.receipt_date')}}</label>
-                    <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}">
+                    <input type="text" name="Tr_Dt" id="Tr_Dt" class="form-control" value="{{Carbon\Carbon::now()->format('Y-m-d')}}" readonly>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Tr_DtAr">{{trans('admin.higri_date')}}</label>
-                    <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control">
+                    <input type="text" name="Tr_DtAr" id="Tr_DtAr" class="form-control" readonly>
                 </div>
             </div>
             {{-- نهاية تاريخ القيد --}}
@@ -832,7 +1035,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="Slm_No_Name">{{trans('admin.sales_officer2')}}</label>
-                        <select name="Slm_No_Name" id="Slm_No_Name" class="form-control"></select>
+                        <select name="Slm_No_Name" id="Slm_No_Name" class="form-control" disabled></select>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -1039,7 +1242,7 @@
 
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <a style="margin-top: 19.2%" href="#" id="add_line" class="form-control btn btn-primary hidden">{{trans('admin.add_line')}}</a>
+                                    <a style="margin-top: 19.2%" href="#" id="add_line" class="form-control btn btn-primary @if($gl->status == 0){{'hidden'}}@else{{'empty_table'}}@endif">{{trans('admin.add_line')}}</a>
                                 </div>
                             </div>
                         </div>
@@ -1069,25 +1272,25 @@
                     @if(count($gltrns) > 0)
                         <input type="hidden" class="hidden_tr_no" value="{{$gltrns->first()->Tr_No}}">
                         @foreach($gltrns as $trns)
-                            <tr class="@if($trns->Tr_Db == '0.0'){{'credit_row'}}@else{{'debit_row'}}@endif">
-                                <td>{{$trns->Ln_No}}</td>
+                            <tr data-ln-no="{{$trns->Ln_No}}" class="@if($trns->Tr_Db == '0.0'){{'credit_row'}}@else{{'debit_row'}}@endif">
+                                <td class="line_no">{{$trns->Ln_No}}</td>
                                 <td>{{$trns->Sysub_Account == 0 ? $trns->Acc_No : $trns->Sysub_Account}}</td>
                                 <td>
                                     @if($trns->Ac_Ty == 1)
-                                        {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Acc_No)->pluck('Acc_Nm'.ucfirst(session('lang')))->first()}}
+                                        {{\App\Models\Admin\MtsChartAc::where('Acc_No', $trns->Sysub_Account)->first()->{'Acc_Nm'.ucfirst(session('lang'))} }}
                                     @endif
                                     @if($trns->Ac_Ty == 2)
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->first()->{'Cstm_Nm'.ucfirst(session('lang'))} }}
                                     @endif
                                     @if($trns->Ac_Ty == 3)
-                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->pluck('Sup_Nm'.ucfirst(session('lang')))->first()}}
+                                        {{\App\Models\Admin\MtsSuplir::where('Sup_No', $trns->Sysub_Account)->first()->{'Sup_Nm'.ucfirst(session('lang'))} }}
                                     @endif
                                     @if($trns->Ac_Ty == 4)
-                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->pluck('Cstm_Nm'.ucfirst(session('lang')))->first()}}
+                                        {{\App\Models\Admin\MTsCustomer::where('Cstm_No', $trns->Sysub_Account)->first()->{'Cstm_Nm'.ucfirst(session('lang'))} }}
                                     @endif
                                 </td>
-                                <td>{{$trns->Tr_Db}}</td>
-                                <td>{{$trns->Tr_Cr}}</td>
+                                <td class="tr_db_td">{{$trns->Tr_Db}}</td>
+                                <td class="tr_cr_td">{{$trns->Tr_Cr}}</td>
                                 <td>{{$trns->Tr_Ds}}</td>
                                 <td>{{$trns->Dc_No}}</td>
                                 <td>{{$trns->Tr_Ds1}}</td>
@@ -1100,4 +1303,21 @@
     </div>
     {{-- نهاية عرض السطور --}}
 </form>
+<div class="modal fade" id="delete_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{trans('admin.Delete_Record')}}</h4>
+            </div>
+            <div class="modal-body">
+                {{trans('admin.You_Want_You_Sure_Delete_This_Record')}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{trans('admin.close')}}</button>
+                <button type="button" class="btn btn-danger delete_link">{{trans('admin.delete')}}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
