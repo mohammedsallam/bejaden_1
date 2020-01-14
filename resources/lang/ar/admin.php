@@ -627,7 +627,7 @@ return [
     // supplier // edit
     'edit_suppliers' => 'تعديل المودين',
     'show_suppliers' => 'بيانات المورد ',
-
+    'public'         =>'كل الدول',
 
     // users // index
     'Data_Table' => 'جدول البيانات',
@@ -1474,6 +1474,10 @@ return [
     'notics'             =>'الاشعارات',
     'data_notics'        =>'بيانات الاشعارات',
     'report_supplier'    =>'تقارير البيانات الاساسية للموردين',
+    'report_department'  =>'تقارير دليل الحسابات',
+    'report_tree'        =>'طباعة دليل الحسابات',
+    'report_tree_cc'     =>'طباعة مراكز التكلفه',
+    'cc_reports'         =>'تقارير مراكز التكلفه',
     'Tr_No_short' => 'رقم/قيد',
     'exchange_rate_short' => 'صرف',
     'slm_no_short' => 'ر/م',

@@ -65,9 +65,14 @@ Route::group(['prefix'=>'admin'],function (){
 //        departments
         Route::resource('departments','Admin\Department\DepartmentsController');
         Route::get('department_setting','Admin\Department\DepartmentsController@department_setting');
-        Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
+        Route::get('departments/department/goTree','Admin\Department\DepartmentsController@goTree')->name('goTree');
+        Route::post('departments/department/print','Admin\Department\DepartmentsController@print')->name('printTree');
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
+        Route::get('departments/report/print','Admin\Department\DepartmentsController@DepReportPrint')->name('Dep_report_print');
+        Route::post('departments/report/pdf','Admin\Department\DepartmentsController@DepReportpdf')->name('Dep_report_pdf');
+
+        Route::get('get/department/show','Admin\Department\DepartmentsController@dep_report_select')->name('depReportSelect');
         Route::post('departments/reports/pdf','Admin\Department\DepartmentsController@pdf');
         Route::post('departments/getEditBlade','Admin\Department\DepartmentsController@getEditBlade')->name('getEditBlade');
         Route::post('departments/createNewAcc','Admin\Department\DepartmentsController@createNewAcc')->name('createNewAcc');
@@ -82,10 +87,18 @@ Route::group(['prefix'=>'admin'],function (){
 //        cc
 
         Route::resource('cc','Admin\Cc\CcController');
-        Route::get('cc/department/print','Admin\Cc\CcController@print');
+        //Route::get('cc/department/print','Admin\Cc\CcController@print');
         Route::get('cc/reports/report','Admin\Cc\CcController@reports')->name('cc.reports');
+        Route::get('cc/reports/getTreeCC','Admin\Cc\CcController@getTree')->name('goTreeCC');
+        Route::post('cc/reports/print','Admin\Cc\CcController@print')->name('printTreeCC');
+        Route::get('cc/reports/printCC','Admin\Cc\CcController@CcReportPrint')->name('cc_report_print');
+        Route::post('cc/report/pdf','Admin\Cc\CcController@CcReportpdf')->name('cc_report_pdf');
+       // Route::post('cc/reports/pdf','Admin\Cc\CcController@pdf');
+
+
+        Route::get('cc/reports/show','Admin\Cc\CcController@cc_report_select')->name('ccReportSelect');
+
         Route::get('cc/reports/details','Admin\Cc\CcController@details')->name('cc.details');
-        Route::post('cc/reports/pdf','Admin\Cc\CcController@pdf');
         Route::post('cc/getEditBlade','Admin\Cc\CcController@getEditBlade')->name('getCcEditBlade');
         Route::post('cc/getCc','Admin\Cc\CcController@getCc')->name('getCc');
 

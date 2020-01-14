@@ -4,6 +4,14 @@ namespace App\Http\Controllers\Admin\Department;
 
 
 use App\Branches;
+use App\city;
+use App\country;
+use App\Models\Admin\AstMarket;
+use App\Models\Admin\AstNutrbusn;
+use App\Models\Admin\AstSalesman;
+use App\Models\Admin\Astsupctg;
+use App\Models\Admin\MainBranch;
+use App\Models\Admin\MTsCustomer;
 use App\Project;
 use App\Contractors;
 
@@ -419,14 +427,25 @@ class DepartmentsController extends Controller
 
     public function reports()
     {
-        $title = trans('admin.Departments_reports');
-        return view('admin.departments.reports.index',compact('title'));
-    }
-    public function print()
-    {
+//        $title = trans('admin.Departments_reports');
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
 
+        return view('admin.basic_reports.Departments.dep_report',compact('mainCompany'));
+    }
+
+    public function goTree(Request $request){
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return view('admin.departments.reports.gotree',compact('mainCompany'));
+    }
+
+    //print tree
+    public function print(Request $request)
+    {
+//dd($request->all());
 //        $departments = sumdepartment(15);
-        $departments = Department::orderBy('code')->get();
+        //$departments = MtsChartAc::orderBy('code')->get();
+        $departments = MtsChartAc::where('Cmp_No' , $request->mainCompany)->orderBy('Acc_No')->get();
+
 
 //        dd($departments);
         $config = ['instanceConfigurator' => function($mpdf) {
@@ -435,9 +454,260 @@ class DepartmentsController extends Controller
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = Pdf::loadView('admin.departments.print', compact('departments'),[], $config);
+        $pdf = Pdf::loadView('admin.basic_reports.departments.print', compact('departments'),[], $config);
         return $pdf->stream();
     }
+
+    public function dep_report_select(Request $request)
+    {
+        if($request->ajax())
+        {
+            $mainCompany = $request->mainCompany;
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $myradio = $request->value;
+            if($myradio =='level')
+            {
+                $levels = MtsChartAc::where('Cmp_No', $mainCompany)->groupBy('Level_No')->pluck('Level_No');
+               return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','levels','myradio','mainCompany'))->render();
+
+            }elseif ( $myradio == 'accTarseed')
+            {
+                $acc_tarseed = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
+                return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','myradio','acc_tarseed','mainCompany'))->render();
+            }
+            elseif ( $myradio == 'debit')
+            {
+                return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+            else if($myradio == 'parent')
+            {
+                return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }else if($myradio == 'chiled')
+            {
+                return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+            else if($myradio == 'credit')
+            {
+                return $data = view('admin.basic_reports.Departments.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+
+//
+        }
+    }
+
+
+    public function DepReportPrint(Request $request){
+        if($request->ajax())
+
+        {
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $mainCompany = $request->mainCompany;
+            $myradio = $request->myradio;
+            $selecd_input = $request->selecd_input;
+
+            return $data=  view('admin.basic_reports.Departments.ajax.DP_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
+
+        }
+    }
+    public function DepReportpdf(Request $request){
+        $mainCompany = $request->mainCompany;
+        $myradio = $request->myradio;
+        $value = $request->selecd_input;
+        if($myradio == 'level') {
+            $products = [];
+            $products = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_No',$value)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+
+//            while(count($departments) > 0){
+//                $nextCategories = [];
+//                foreach ($departments as $category) {
+//                    $products = array_merge($products, $category->children->all());
+//                    $nextCategories = array_merge($nextCategories, $category->children->all());
+//                }
+//                $departments = $nextCategories;
+//            }
+//@dd($products);
+        }
+        if($myradio == 'accTarseed') {
+            $products = [];
+            $departments = MtsChartAc::where('Cmp_No',$mainCompany)->where('ID_No',$value)->get();
+            while(count($departments) > 0){
+                $nextCategories = [];
+                foreach ($departments as $category) {
+                    $products = array_merge($products, $category->children->all());
+                    $nextCategories = array_merge($nextCategories, $category->children->all());
+                }
+                $departments = $nextCategories;
+            }
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report2', compact('products'), [], $config);
+            return $pdf->stream();
+
+        }
+        if($value == 'debit') {
+            $products = [];
+            $products = MtsChartAc::where('Cmp_No',$mainCompany)->whereRaw('Fbal_DB > Fbal_CR')->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'parent') {
+            $products = [];
+            $products = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'chiled') {
+            $products = [];
+            $products = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_Status',1)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'credit') {
+            $products = [];
+            $products = MtsChartAc::where('Cmp_No',$mainCompany)->whereRaw('Fbal_DB < Fbal_CR')->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+
+
+    }
+
+//    public function DepReportpdf(Request $request)
+//    {
+////        dd($request->all());
+//        $mainCompany = $request->mainCompany;
+//        $myradio = $request->value;
+//        $value = $request->selecd_input;
+//        if($myradio == 'bransh')
+//        {
+//
+//            if ($request->active == 1 && $request->notactive == null){
+//                $MtsChartAc = MtsChartAc::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//            }elseif ($request->active == null && $request->notactive == 0){
+//                $MtsChartAc = MtsChartAc::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//            }elseif ($request->active == 1 && $request->notactive == 0){
+//                $MtsChartAc = MtsChartAc::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//            }
+//
+//        }if($myradio == 'accTarseed')
+//    {
+//
+//        $parent = MtsChartAc::where('Acc_No', $Parnt_Acc)
+//            ->where('Cmp_No', session('Chart_Cmp_No'))
+//            ->first();
+//
+//    }if($myradio == 'ActivityTypes')
+//    {
+//
+//        if ($request->active == 1 && $request->notactive == null){
+//            $MtsChartAc = MtsChartAc::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//        }elseif ($request->active == null && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//        }elseif ($request->active == 1 && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//        }
+//
+//    }
+//        if($myradio == 'country')
+//        {
+//            if ($request->active == 1 && $request->notactive == null){
+//                $MtsChartAc = MtsChartAc::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//            }elseif ($request->active == null && $request->notactive == 0){
+//                $MtsChartAc = MtsChartAc::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//            }elseif ($request->active == 1 && $request->notactive == 0){
+//                $MtsChartAc = MtsChartAc::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//            }
+//
+//
+//
+//        }if($myradio == 'city')
+//    {
+//        if ($request->active == 1 && $request->notactive == null){
+//            $MtsChartAc = MtsChartAc::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//        }elseif ($request->active == null && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//        }elseif ($request->active == 1 && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//        }
+//
+//    }if($myradio == 'MtsChartAc')
+//    {
+//
+//        if ($request->active == 1 && $request->notactive == null){
+//            $MtsChartAc = MtsChartAc::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//        }elseif ($request->active == null && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//        }elseif ($request->active == 1 && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//        }
+//
+//    }if($myradio == 'AstMarket')
+//    {
+//        if ($request->active == 1 && $request->notactive == null){
+//            $MtsChartAc = MtsChartAc::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+//        }elseif ($request->active == null && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+//        }elseif ($request->active == 1 && $request->notactive == 0){
+//            $MtsChartAc = MtsChartAc::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+//        }
+//    }
+//
+//        //dd($MTsCustomer[1]->delegate());
+//
+//        $config = ['instanceConfigurator' => function($mpdf) {
+//            $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//            );
+//        }];
+//
+//        $pdf = Pdf::loadView('admin.basic_reports.customer.pdf.cust', compact('MTsCustomer'),[], $config);
+//        return $pdf->stream();
+//    }
+
     public function details(Request $request)
     {
         if($request->ajax()){
@@ -457,81 +727,81 @@ class DepartmentsController extends Controller
         }
     }
 
-    public function pdf(Request $request) {
-        $typeRange = $request->typeRange;
-        $type = $request->type;
-        $search = $request->search;
-        if ($search == 6){
-            $departments = Department::where('cc_id','!=',null)->get();
-            $config = ['instanceConfigurator' => function($mpdf) {
-                $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-                );
-            }];
-            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
-            return $pdf->stream();
-        }
-        if ($typeRange != null){
-            $departments = Department::where('level_id',$typeRange)->get();
-            $config = ['instanceConfigurator' => function($mpdf) {
-                $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-                );
-            }];
-            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
-            return $pdf->stream();
-        }
-        if ($type != null){
-                $products = [];
-                $departments = Department::where('id',$type)->get();
-                while(count($departments) > 0){
-                    $nextCategories = [];
-                    foreach ($departments as $category) {
-                        $products = array_merge($products, $category->children->all());
-                        $nextCategories = array_merge($nextCategories, $category->children->all());
-                    }
-                    $departments = $nextCategories;
-                }
-            $config = ['instanceConfigurator' => function($mpdf) {
-                $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-                );
-            }];
-            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('products'), [], $config);
-            return $pdf->stream();
-        }
-
-            if ($search == '2'){
-                $departments = Department::where('category','0')->get();
-            }elseif ($search == '3'){
-                $departments = Department::where('category','1')->get();
-            }elseif ($search == '4'){
-                $departments = Department::where('type','0')->get();
-            }elseif ($search == '5'){
-                $departments = Department::where('type','1')->get();
-            }elseif ($search == '6'){
-                $departments = glcc::where('type','1')->get();
-                $config = ['instanceConfigurator' => function($mpdf) {
-                    $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-                    );
-                }];
-                $pdf = PDF::loadView('admin.departments.reports.pdf.cc', compact('departments'), [], $config);
-                return $pdf->stream();
-            }
-            $config = ['instanceConfigurator' => function($mpdf) {
-                $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-                );
-            }];
-            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
-            return $pdf->stream();
-    }
+//    public function pdf(Request $request) {
+//        $typeRange = $request->typeRange;
+//        $type = $request->type;
+//        $search = $request->search;
+//        if ($search == 6){
+//            $departments = Department::where('cc_id','!=',null)->get();
+//            $config = ['instanceConfigurator' => function($mpdf) {
+//                $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                );
+//            }];
+//            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+//            return $pdf->stream();
+//        }
+//        if ($typeRange != null){
+//            $departments = Department::where('level_id',$typeRange)->get();
+//            $config = ['instanceConfigurator' => function($mpdf) {
+//                $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                );
+//            }];
+//            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+//            return $pdf->stream();
+//        }
+//        if ($type != null){
+//                $products = [];
+//                $departments = Department::where('id',$type)->get();
+//                while(count($departments) > 0){
+//                    $nextCategories = [];
+//                    foreach ($departments as $category) {
+//                        $products = array_merge($products, $category->children->all());
+//                        $nextCategories = array_merge($nextCategories, $category->children->all());
+//                    }
+//                    $departments = $nextCategories;
+//                }
+//            $config = ['instanceConfigurator' => function($mpdf) {
+//                $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                );
+//            }];
+//            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('products'), [], $config);
+//            return $pdf->stream();
+//        }
+//
+//            if ($search == '2'){
+//                $departments = Department::where('category','0')->get();
+//            }elseif ($search == '3'){
+//                $departments = Department::where('category','1')->get();
+//            }elseif ($search == '4'){
+//                $departments = Department::where('type','0')->get();
+//            }elseif ($search == '5'){
+//                $departments = Department::where('type','1')->get();
+//            }elseif ($search == '6'){
+//                $departments = glcc::where('type','1')->get();
+//                $config = ['instanceConfigurator' => function($mpdf) {
+//                    $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                    );
+//                }];
+//                $pdf = PDF::loadView('admin.departments.reports.pdf.cc', compact('departments'), [], $config);
+//                return $pdf->stream();
+//            }
+//            $config = ['instanceConfigurator' => function($mpdf) {
+//                $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                );
+//            }];
+//            $pdf = PDF::loadView('admin.departments.reports.pdf.report', compact('departments'), [], $config);
+//            return $pdf->stream();
+//    }
   public function Review( )
     {
 //        $operations = operation::whereIn('receipt',[1,2])->pluck('name_'.session('lang'),'id');

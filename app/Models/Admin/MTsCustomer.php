@@ -137,7 +137,7 @@ class MTsCustomer extends Model
 
     public  function  activity()
     {
-        return $this->belongsTo('App\Models\Admin\ActivityTypes', 'Nutr_No', 'ID_No');
+        return $this->belongsTo('App\Models\Admin\AstNutrbusn', 'Nutr_No', 'ID_No');
     }
 
     public  function  cstmCatg()

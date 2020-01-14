@@ -9,6 +9,7 @@ use App\DataTables\supplierDataTable;
 use App\Department;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\ActivityTypes;
+use App\Models\Admin\AstNutrbusn;
 use App\Models\Admin\AstMarket;
 use App\Models\Admin\AstSalesman;
 use App\Models\Admin\Astsupctg;
@@ -40,20 +41,21 @@ class MtsSuplirController extends Controller
      */
     public function create()
     {
-//        $user = user()->branch_id;
+//        $user = auth()->user()->branches_id;
 //        dd($user);
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
         $company = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
         $departments = Department::where('operation_id',1)->where('type','1')->pluck('dep_name_'.session('lang'),'id');
+        $currency = AstCurncy::pluck('Curncy_Nm'.ucfirst(session('lang')),'ID_No');
         $Sup_No = MtsSuplir::orderByRaw('updated_at - created_at DESC')->pluck('Sup_No')->first();
         if ($Sup_No < 0 || $Sup_No == null){
             $suplir = 1;
         }else{
             $suplir = $Sup_No + 1;
         }
-        return view('admin.supplier.create',['title'=> trans('admin.create_new_suppliers'),'suplir' => $suplir,'astsupctg' => $astsupctg,'company' => $company,'countries' => $countries,'departments' => $departments,'branches' => $branches]);
+        return view('admin.supplier.create',['title'=> trans('admin.create_new_suppliers'),'suplir' => $suplir,'currency' => $currency,'astsupctg' => $astsupctg,'company' => $company,'countries' => $countries,'departments' => $departments,'branches' => $branches]);
     }
 
     /**
@@ -64,11 +66,11 @@ class MtsSuplirController extends Controller
      */
     public function store(Request $request,MtsSuplir $supplier)
     {
-
+//dd($request->all());
         $data = $this->validate($request,[
             'Cmp_No' => 'required',
             'Brn_No' => 'required',
-            'Sup_No' => 'required',
+            'Sup_No' => 'sometimes',
             'Cstm_POBox' => 'sometimes',
             'Cstm_ZipCode' => 'sometimes',
             'Sup_Refno' => 'sometimes',
@@ -185,8 +187,6 @@ class MtsSuplirController extends Controller
     {
         $supplier = MtsSuplir::where('ID_No',$id)->first();
         return view('admin.supplier.show',['title'=> trans('admin.show_suppliers')  ,'supplier'=>$supplier,]);
-
-
     }
 
     /**
@@ -380,55 +380,56 @@ class MtsSuplirController extends Controller
 
     public function sup_report_select(Request $request)
     {
-
+//        dd($request->all());
         if($request->ajax())
 
         {
             $mainCompany = $request->mainCompany;
-            $MainBranch = $request->MainBranch;
             $myradio = $request->value;
+            $active = $request->active;
+            $notactive = $request->notactive;
             if($myradio =='country')
             {
                 $country = country::get();
 
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('country','myradio','MainBranch','mainCompany'))->render();
-
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','country','myradio','mainCompany'))->render();
 
             }elseif ( $myradio == 'bransh')
             {
                 $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','myradio','MainBranch','mainCompany'))->render();
 
             }
-            elseif ( $myradio == 'currency')
+            elseif ( $myradio == 'Currency')
             {
+
                 $currency = AstCurncy::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('currency','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','currency','myradio','mainCompany'))->render();
 
 
             }else if($myradio == 'AstSalesman')
             {
                 $AstSalesman = AstSalesman::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('AstSalesman','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','AstSalesman','myradio','MainBranch','mainCompany'))->render();
 
 
 
             }else if($myradio == 'AstMarket')
             {
                 $AstMarket = AstMarket::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('AstMarket','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','AstMarket','myradio','MainBranch','mainCompany'))->render();
 
 
 
             }else if($myradio == 'ActivityTypes')
             {
-                $ActivityTypes = ActivityTypes::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('ActivityTypes','myradio','MainBranch','mainCompany'))->render();
+                $ActivityTypes = AstNutrbusn::get();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','ActivityTypes','myradio','mainCompany'))->render();
 
             }else if($myradio == 'Astsupctg')
             {
                 $Astsupctg = Astsupctg::get();
-                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('Astsupctg','myradio','MainBranch','mainCompany'))->render();
+                return $data = view('admin.basic_reports.supplier.ajax.sup_report_select',compact('active','notactive','Astsupctg','myradio','mainCompany'))->render();
 
             }
 
@@ -442,78 +443,134 @@ class MtsSuplirController extends Controller
 
     public function sup_report_print(Request $request)
     {
-
+//        dd($request->all());
+//        dd($request->all());
         if($request->ajax())
-
         {
             $mainCompany = $request->mainCompany;
-            $MainBranch = $request->MainBranch;
             $myradio = $request->myradio;
             $selecd_input = $request->selecd_input;
-
-            return $data=  view('admin.basic_reports.supplier.ajax.sup_report_print',compact('selecd_input','myradio','MainBranch','mainCompany'))->render();
+            $active = $request->active;
+            $notactive = $request->notactive;
+            return $data=  view('admin.basic_reports.supplier.ajax.sup_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
 
         }
     }
     public function sup_report_pdf(Request $request)
     {
+//        dd($request->all());
+//        dd('hkh');
+//dd($request->myradio);
+//dd($request->selecd_input);
+            $name = $request->myradio;
+            $value = $request->selecd_input;
+
+            if ($name == 'bransh') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+    //
+            }
+            if ($name == 'AstSalesman') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
 
 
+            }
+            if ($name == 'ActivityTypes') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+            }
 
-        //dd($request->all());
-        if($name == 'company')
-        {
+            if ($name == 'ActivityTypes') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Cstm_Ctg',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Cstm_Ctg',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Cstm_Ctg',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+            }
 
-            $MTsCustomer = MTsCustomer::where('Cmp_No',$value)->get();
+            if ($name == 'country') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+            }
 
-        } if($name == 'MainBranch')
-    {
+            if ($name == 'city') {
 
-        $MTsCustomer = MTsCustomer::where('Brn_No',$value)->get();//
-//
-    }if($name == 'AstSalesman')
-    {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
 
-        $MTsCustomer = MTsCustomer::where('Slm_No',$value)->get();
+            }
+
+            if ($name == 'Currency') {
+
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Curncy_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Curncy_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Curncy_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+            }
+
+            if ($name == 'MtsChartAc') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+
+            }
+
+            if ($name == 'AstMarket') {
+                if ($request->active == 1 && $request->notactive == null){
+                    $MtsSuplir = MtsSuplir::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->active)->get();
+                }elseif ($request->active == null && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Sup_Active',$request->notactive)->get();
+                }elseif ($request->active == 1 && $request->notactive == 0){
+                    $MtsSuplir = MtsSuplir::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+                }
+            }
 
 
-    }if($name == 'ActivityTypes')
-    {
-        $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->get();
-    }if($name == 'ActivityTypes')
-    {
-        $MTsCustomer = MTsCustomer::where('Cstm_Ctg',$value)->get();
+            $config = ['instanceConfigurator' => function ($mpdf) {
+                $mpdf->SetHTMLFooter('
+                        <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                        <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = Pdf::loadView('admin.basic_reports.supplier.pdf.sup', compact('MtsSuplir'), [], $config);
+            return $pdf->stream();
 
 
-    }if($name == 'country')
-    {
-        $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->get();
-
-
-    }if($name == 'city')
-    {
-        $MTsCustomer = MTsCustomer::where('City_No',$value)->get();
-
-    }if($name == 'MtsChartAc')
-    {
-
-        $MTsCustomer = MTsCustomer::where('Acc_No',$value)->get();
-
-
-    }if($name == 'AstMarket')
-    {
-        $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->get();
-    }
-
-
-        $config = ['instanceConfigurator' => function($mpdf) {
-            $mpdf->SetHTMLFooter('
-                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
-                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
-            );
-        }];
-        $pdf = Pdf::loadView('admin.basic_reports.supplier.pdf.sup', compact('MTsCustomer'),[], $config);
-        return $pdf->stream();
     }
 
 

@@ -231,7 +231,12 @@
                 <div class="row col-md-4">
                     <div class="col-md-12">
                         {!! Form::label('Cstm_Active', trans('admin.active')) !!}
-                        {!! Form::checkbox('Cstm_Active') !!}
+                        @if($subscriber->Cstm_Active == 1)
+                            {!! Form::checkbox('Cstm_Active', true) !!}
+                        @else
+                            {!! Form::checkbox('Cstm_Active', false) !!}
+                        @endif
+
                     </div>
                     <div class="col-md-12">
                         {!! Form::label('Internal_Invoice', trans('admin.Internal_Invoice')) !!}
