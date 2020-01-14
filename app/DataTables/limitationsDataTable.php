@@ -7,6 +7,8 @@ use App\Department;
 use App\Enums\dataLinks\LimitationsType;
 use App\limitationReceipts;
 use App\limitations;
+use App\Models\Admin\GLJrnal;
+use App\Models\Admin\GLjrnTrs;
 use App\User;
 use Yajra\DataTables\Services\DataTable;
 
@@ -22,29 +24,27 @@ class limitationsDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('show', function ($query) {
-                if (limitationReceipts::where('id',$query->limitationsType_id)->first()->type == 2){
-                    return '<a href="openingentrydata/show/'.$query->id.'" class="btn btn-info">' . trans('admin.show') . '</a>';
-                }else{
-                    return '<a href="limitations/show/'.$query->id.'" class="btn btn-info">' . trans('admin.show') . '</a>';
-                }
+                return '<a href="'.route('limitations.show', $query->ID_No).'" class="btn btn-info"><i class="fa fa-eye"></i></a>';
             })
-            ->addColumn('limitations', function ($query) {
-                return session_lang(limitationReceipts::where('id',$query->limitationsType_id)->first()->name_en,limitationReceipts::where('id',$query->limitationsType_id)->first()->name_ar);
-            })
-            ->addColumn('edit', function ($query) {
-                if (limitationReceipts::where('id',$query->limitationsType_id)->first()->type == 2) {
-                    return '<a href="openingentry/'.$query->id.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' .trans('admin.edit').'</a>';
-                }else{
-                    return '<a href="limitations/'.$query->id.'/edit" class="btn btn-success edit"><i class="fa fa-edit"></i> ' .trans('admin.edit').'</a>';
-                }
 
+            ->addColumn('edit', function ($query) {
+                return '<a href="'.route('limitations.edit', $query->Tr_No).'" class="btn btn-success"><i class="fa fa-edit"></i></a>';
             })
+
+            ->addColumn('status', function ($query) {
+                if ($query->status == 0){
+                    return '<span class="label label-success">'.trans('admin.active').'</span>';
+                } else {
+                    return '<span class="label label-danger">'.trans('admin.deactive').'</span>';
+                }
+            })
+
             ->addColumn('delete', 'admin.limitations.btn.delete')
             ->rawColumns([
                 'show',
-                'limitations',
                 'edit',
                 'delete',
+                'status',
             ]);
     }
 
@@ -56,31 +56,9 @@ class limitationsDataTable extends DataTable
      */
     public function query()
     {
-        return limitations::query()->orderByDesc('limitationId')->whereIn('status',[1,2]);
+        return GLJrnal::where('Jr_Ty', 6)->orderByDesc('ID_NO');
     }
-    public static function lang(){
-        $langJson = [
-            "sProcessing"=> trans('admin.sProcessing'),
-            "sZeroRecords"=> trans('admin.sZeroRecords'),
-            "sEmptyTable"=> trans('admin.sEmptyTable'),
-            "sInfoFiltered"=> trans('admin.sInfoFiltered'),
-            "sSearch"=> trans('admin.sSearch'),
-            "sUrl"=> trans('admin.sUrl'),
-            "sInfoThousands"=> trans('admin.sInfoThousands'),
-            "sLoadingRecords"=> trans('admin.sLoadingRecords'),
-            "oPaginate"=> [
-                "sFirst"=> trans('admin.sFirst'),
-                "sLast"=> trans('admin.sLast'),
-                "sNext"=> trans('admin.sNext'),
-                "sPrevious"=> trans('admin.sPrevious')
-            ],
-            "oAria"=> [
-                "sSortAscending"=> trans('admin.sSortAscending'),
-                "sSortDescending"=> trans('admin.sSortDescending')
-            ]
-        ];
-        return $langJson;
-    }
+
 
     /**
      * Optional method if you want to use html builder.
@@ -101,14 +79,14 @@ class limitationsDataTable extends DataTable
                     [
                         'text' => '<i class="fa fa-plus"></i> ' .trans('admin.create_limitations'),
                         'className' => 'btn btn-primary create',
-                        'action' => 'function( e, dt, button, config){ 
+                        'action' => 'function( e, dt, button, config){
                                      window.location = "limitations/create";
                                  }',
                     ],
                     [
                         'text' => '<i class="fa fa-plus"></i> ' .trans('admin.create_opening_entry'),
                         'className' => 'btn btn-primary create',
-                        'action' => 'function( e, dt, button, config){ 
+                        'action' => 'function( e, dt, button, config){
                                      window.location = "openingentry/create";
                                  }',
                     ],
@@ -128,8 +106,6 @@ class limitationsDataTable extends DataTable
                                 });
                             });
                             }",
-                "language" =>  self::lang(),
-
             ]);
     }
 
@@ -142,10 +118,11 @@ class limitationsDataTable extends DataTable
     {
         return [
 
-            ['name'=>'limitationId','data'=>'limitationId','title'=>trans('admin.id')],
-            ['name'=>'limitations','data'=>'limitations','title'=>trans('admin.limitations')],
+            ['name'=>'Tr_No','data'=>'Tr_No','title'=>trans('admin.number')],
+            ['name'=>'Tr_Ds','data'=>'Tr_Ds','title'=>trans('admin.note_for')],
             ['name'=>'created_at','data'=>'created_at','title'=>trans('admin.limitation_date')],
-            ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+            ['name'=>'status','data'=>'status','title'=>trans('admin.status'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
+//            ['name'=>'show','data'=>'show','title'=>trans('admin.show'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
         ];

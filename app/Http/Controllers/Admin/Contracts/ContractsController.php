@@ -35,7 +35,7 @@ class ContractsController extends Controller
         $project = Project::all()->pluck('name_'.session('lang'), 'id');
         $contractors = Contractors::all()->pluck('name_'.session('lang'), 'id');
         $subscription = subscription::all()->pluck('name_'.session('lang'), 'id');
-        return view('admin.Contracts.create',compact('branches','project','contractors','subscription'));
+        return view('admin.contracts.create',compact('branches','project','contractors','subscription'));
     }
 
     /**

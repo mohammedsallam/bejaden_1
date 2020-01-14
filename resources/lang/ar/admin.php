@@ -8,6 +8,7 @@ return [
     'all_record' => 'كل التسجيلات',
 
     'report_client' => 'تقاريرالبيانات الاساسية للعملاء',
+    'report_department' => 'تقاريرالبيانات الاساسية للحسابات',
     'AstSalesman' => 'مندوبين',
     'ActivityTypes' => 'انواع الانشطة',
     'Astsupctg' => 'تصنيف العملاء',

@@ -50,7 +50,7 @@ class SubscribeController extends Controller
 
     public function create()
     {
-      //  $countries = country::pluck('country_name_'.session('lang'),'id');
+        //  $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
         $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
@@ -348,7 +348,7 @@ class SubscribeController extends Controller
 
         if($request->ajax())
         {
-           $mainCompany =  $request->mainCompany;
+            $mainCompany =  $request->mainCompany;
             $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
             return $data =  view('admin.basic_reports.customer.ajax.get_mainbranches',compact('mainCompany','MainBranch'))->render();
 
@@ -451,29 +451,29 @@ class SubscribeController extends Controller
             }
 
         }if($name == 'AstSalesman')
-        {
+    {
 
-            if ($request->active == 1 && $request->notactive == null){
-                $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
-            }elseif ($request->active == null && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
-            }elseif ($request->active == 1 && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
-            }
-
-        }if($name == 'ActivityTypes')
-        {
-
-            if ($request->active == 1 && $request->notactive == null){
-                $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
-            }elseif ($request->active == null && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
-            }elseif ($request->active == 1 && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
-            }
-
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
         }
-       if($name == 'country')
+
+    }if($name == 'ActivityTypes')
+    {
+
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }
+        if($name == 'country')
         {
             if ($request->active == 1 && $request->notactive == null){
                 $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
@@ -486,38 +486,38 @@ class SubscribeController extends Controller
 
 
         }if($name == 'city')
-        {
-            if ($request->active == 1 && $request->notactive == null){
-                $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
-            }elseif ($request->active == null && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
-            }elseif ($request->active == 1 && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
-            }
-
-        }if($name == 'MtsChartAc')
-        {
-
-            if ($request->active == 1 && $request->notactive == null){
-                $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
-            }elseif ($request->active == null && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
-            }elseif ($request->active == 1 && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
-            }
-
-        }if($name == 'AstMarket')
-        {
-            if ($request->active == 1 && $request->notactive == null){
-                $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
-            }elseif ($request->active == null && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
-            }elseif ($request->active == 1 && $request->notactive == 0){
-                $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
-            }
+    {
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
         }
 
-       //dd($MTsCustomer[1]->delegate());
+    }if($name == 'MtsChartAc')
+    {
+
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }if($name == 'AstMarket')
+    {
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+    }
+
+        //dd($MTsCustomer[1]->delegate());
 
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('

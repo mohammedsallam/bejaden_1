@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GLjrnTrs extends Model
 {
-    protected $table = 'GLjrnTrs';
+    protected $table = 'gljrntrs';
     protected $primaryKey = 'ID_No';
     protected $fillable = [
         'Cmp_No',

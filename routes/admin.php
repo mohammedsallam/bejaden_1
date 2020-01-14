@@ -65,8 +65,13 @@ Route::group(['prefix'=>'admin'],function (){
 //        departments
         Route::resource('departments','Admin\Department\DepartmentsController');
         Route::get('department_setting','Admin\Department\DepartmentsController@department_setting');
+
         Route::get('departments/department/goTree','Admin\Department\DepartmentsController@goTree')->name('goTree');
         Route::post('departments/department/print','Admin\Department\DepartmentsController@print')->name('printTree');
+
+        Route::get('departments/department/tree','Admin\Department\DepartmentsController@tree');
+        Route::get('departments/department/print','Admin\Department\DepartmentsController@print');
+
         Route::get('departments/reports/report','Admin\Department\DepartmentsController@reports')->name('departments.reports');
         Route::get('departments/reports/details','Admin\Department\DepartmentsController@details')->name('departments.details');
         Route::get('departments/report/print','Admin\Department\DepartmentsController@DepReportPrint')->name('Dep_report_print');
@@ -280,6 +285,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('financial_reports','Admin\financial_reports\general_accountsController@financial_reports')->name('financial_reports');
         Route::get('general_accounts','Admin\financial_reports\general_accountsController@general_accounts')->name('general_accounts');
         Route::get('account_statement','Admin\financial_reports\general_accountsController@account_statement')->name('account_statement');
+        Route::get('acc_state','Admin\financial_reports\general_accountsController@acc_state')->name('acc_state');
+        Route::get('account_statement/details','Admin\financial_reports\general_accountsController@details')->name('accountStatement.details');
         Route::get('trial_balance','Admin\financial_reports\general_accountsController@trial_balance')->name('trial_balance');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 //       1
@@ -433,20 +440,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('banks/Receipt/receipts/caching/all','Admin\banks\ReceiptController@caching')->name('receipts.caching');
 
 
-        /**
-         * Limitation routes
-         */
-        Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
-        Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
-        Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
-        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
-        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
-        Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
-        Route::post('checkSetting', 'Admin\limitations\LimitationsOperationsController@checkSetting')->name('checkSetting');
-        Route::post('limitationGetMainAccNoN', 'Admin\limitations\LimitationsOperationsController@getMainAccNo')->name('limitationGetMainAccNoN');
-        Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
-        Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
-        Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
+
 
 
         Route::resource('accbanks', 'Admin\setting\GLaccBnkCintroller');
@@ -481,8 +475,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
-        Route::get('get_limitions','Admin\limitations\LimitationsController@get_limitions');
-        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
+//        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
         Route::post('limitationsData/create','Admin\limitations\limitationsData@create');
         Route::post('limitationsData/editdatatable','Admin\limitations\limitationsData@editdatatable');
         Route::post('limitationsData','Admin\limitations\limitationsData@store')->name('limitations.store');
@@ -494,6 +487,24 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('limitationsData/select','Admin\limitations\limitationsData@select');
         Route::post('limitationsData/delete','Admin\limitations\limitationsData@destroy');
         Route::post('limitationsData/softdelete','Admin\limitations\limitationsData@softdelete');
+
+        /**
+         * Limitation routes
+         */
+        Route::get('limitations/notice/noticedebt','Admin\limitations\LimitationsController@noticedebt');
+        Route::get('limitations/dept/create','Admin\limitations\LimitationsController@debt');
+        Route::resource('limitationType', 'Admin\limitations\LimitationTypeController');
+        Route::resource('limitationOperation', 'Admin\limitations\LimitationsOperationsController');
+        Route::post('limitationBranchForEdit','Admin\limitations\LimitationsOperationsController@branchForEdit')->name('limitationBranchForEdit');
+        Route::post('limitationGetCmpSalesMen','Admin\limitations\LimitationsOperationsController@getCmpSalesMen')->name('limitationGetCmpSalesMen');
+        Route::post('limitationCreateTrNoN', 'Admin\limitations\LimitationsOperationsController@createTrNo')->name('limitationCreateTrNoN');
+        Route::post('checkSetting', 'Admin\limitations\LimitationsOperationsController@checkSetting')->name('checkSetting');
+        Route::post('limitationGetMainAccNoN', 'Admin\limitations\LimitationsOperationsController@getMainAccNo')->name('limitationGetMainAccNoN');
+        Route::post('limitationGetSubAccN', 'Admin\limitations\LimitationsOperationsController@getSubAcc')->name('limitationGetSubAccN');
+        Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
+        Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
+        Route::post('limitationGetRcptDetails', 'Admin\limitations\LimitationsOperationsController@getRcptDetails')->name('limitationGetRcptDetails');
+
 
 //        openingentry
         Route::resource('openingentry','Admin\limitations\OpeningEntryController');
