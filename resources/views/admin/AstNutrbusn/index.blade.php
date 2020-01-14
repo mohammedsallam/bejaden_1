@@ -1,9 +1,9 @@
 @extends('admin.index')
-@section('title',trans('admin.supervisors_datatable'))
+@section('title','الأنشطه التجاريه للعملاء')
 @section('content')
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">{{trans('admin.supervisors_datatable')}} </h3>
+            <h3 class="box-title">الأنشطه التجاريه للعملاء</h3>
         </div>
     @include('admin.layouts.message')
         <!-- /.box-header -->

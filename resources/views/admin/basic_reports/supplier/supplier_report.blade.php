@@ -318,19 +318,17 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="container">فعال
-                                    <input type="checkbox" checked="checked">
+                                    <input class="active" name="active" value="1"  type="checkbox" checked="checked">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
                             <div class="col-md-2">
                                 <label class="container">غير فعال
-                                    <input type="checkbox">
+                                    <input class="notactive" name="notactive" value="0" type="checkbox">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <div class="col-md-2">
-                                <a href="sup_report_print" id="#print" class="btn btn-primary">طباعه</a>
-                            </div>
+
                         </div>
 
                         <div class="row">

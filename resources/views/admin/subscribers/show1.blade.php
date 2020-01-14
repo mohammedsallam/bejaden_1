@@ -6,7 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\ActivityTypes')
+{{--@inject('activities', 'App\Models\Admin\AstNutrbusn')--}}
 @inject('countries', 'App\country')
 @inject('cities', 'App\city')
 @section('title',trans('admin.show_profile_to') .session_lang($subscriber->Cstm_NmEr,$subscriber->Cstm_NmAr))

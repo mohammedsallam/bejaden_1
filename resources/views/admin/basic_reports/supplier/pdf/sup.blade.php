@@ -9,24 +9,33 @@
 </head>
 <style>
     body {
-        font-family: 'dejavu sans', sans-serif;
+        font-family: Droid Arabic Kufi;
+
+        /*font-family: 'dejavu sans', sans-serif;*/
         direction:rtl;
         text-align:right;
         padding:0;
         margin: 0;
+        border: 15px solid #000;
     }
     .el-date{
         float: right;
-        width: 40%
+        width: 80%;
+        padding-top: -18px;
+        margin-right: 350px;
     }
     .el-date p{
         font-size: 12px;
-        margin: 0 20px -25px;
-        padding: 15px 0;
+        margin: 0 260px -20px;
+        /*padding: 15px 0;*/
+        float: left;
+    }
+    .active p{
+        width: 50px;
+        margin-top: -20px;
     }
     .el-no3{
         width:100%;
-        display:block;
         margin:0 auto;
         text-align:center;
     }
@@ -89,14 +98,16 @@
 <div class="table-responsive">
     <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th colspan="2">بيانات المورد</th>
-            <th colspan="3">وسائل الاتصال</th>
+            <th style="border: none;background-color: #fff" colspan="4"> </th>
+            <th style="border: none;background-color: #fff" colspan="3"> </th>
             <th colspan="2">حد الائتمان</th>
             <th colspan="2">اول المدة</th>
         </tr>
         <tr>
+            <th>م </th>
             <th>رقم المورد</th>
             <th>اسم المورد</th>
+            <th>العمله</th>
             <th>رقم التلفون</th>
             <th>رقم موبايل</th>
             <th>العنوان</th>
@@ -109,14 +120,22 @@
 
         @foreach ($MtsSuplir as $merged){
         <tr>
+            <td>{{$merged->ID_No}}</td>
             <td>{{$merged->Sup_No}}</td>
             <td>{{session_lang($merged->Sup_NmEn,$merged->Sup_NmAr)}}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+
+            <td>
+                @if($merged->currency)
+                    {{$merged->currency->{'Curncy_Nm'.ucfirst(session('lang'))} }}
+                @endif
+            </td>
+            <td>{{$merged->Sup_Tel1}}</td>
+            <td>{{$merged->Mobile}}</td>
+            <td>{{$merged->Sup_Adr}}</td>
+            <td>{{$merged->Credit_Days}}</td>
+            <td>{{$merged->Credit_Value}}</td>
+            <td>{{$merged->Fbal_Db}}</td>
+            <td>{{$merged->Fbal_CR}}</td>
         </tr>
         @endforeach
 

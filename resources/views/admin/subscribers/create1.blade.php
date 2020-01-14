@@ -6,7 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\ActivityTypes')
+@inject('activities', 'App\Models\Admin\AstNutrbusn')
 @inject('cities', 'App\city')
 
 @section('title',trans('admin.Create_New_Subscriber'))
@@ -153,6 +153,7 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-2">{!!Form::label('Cmp_No', trans('admin.company'))!!}</div>
+
                         @if(auth()->user()->company_id == '1')
                         <div class="col-md-10">{!!Form::select('Cmp_No', $companies->pluck('Cmp_NmAr', 'ID_NO')->toArray(),null,[
                                 'class'=>'form-control','id'=>'companies', 'placeholder'=>trans('admin.select')

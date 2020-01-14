@@ -220,7 +220,7 @@ if (!function_exists('getContact')){
 }
 if (!function_exists('getdepartemnt')){
     function getdepartemnt($id = null) {
-        return \App\Department::where('id',$id)->first();
+        return \App\Models\Admin\MtsChartAc::where('id',$id)->first();
     }
 }
 if (!function_exists('getpjitmmsfl')){
@@ -235,10 +235,10 @@ if (!function_exists('getpjitmmsflcc')){
 }
 if (!function_exists('expulsion_transaction')){
     function expulsion_transaction($id = null,$debtor = null,$creditor = null,$from = null,$to = null) {
-        $department = \App\Department::where('id',$id)->first();
+        $department = \App\Models\Admin\MtsChartAc::where('id',$id)->first();
         $depbala = \App\pjitmmsfl::where('type','1')->where('tree_id',$department->id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->first();
         if($department->parent_id != null){
-            $parent = \App\Department::where('id',$department->parent_id)->first();
+            $parent = \App\Models\Admin\MtsChartAc::where('id',$department->parent_id)->first();
             $depbalaexist = \App\pjitmmsfl::where('type','1')->where('tree_id',$department->parent_id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->exists();
             if($depbalaexist){
                 $depbala2 = \App\pjitmmsfl::where('type','1')->where('tree_id',$department->parent_id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->first();
@@ -257,7 +257,7 @@ if (!function_exists('expulsion_cc_transaction')){
         $glcc = \App\glcc::where('id',$id)->first();
         $depbala = \App\pjitmmsfl::where('type','2')->where('cc_id',$glcc->id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->first();
         if($glcc->parent_id != null){
-            $parent = \App\Department::where('id',$glcc->parent_id)->first();
+            $parent = \App\Models\Admin\MtsChartAc::where('id',$glcc->parent_id)->first();
             $depbalaexist = \App\pjitmmsfl::where('type','2')->where('cc_id',$glcc->parent_id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->exists();
             if($depbalaexist){
                 $depbala2 = \App\pjitmmsfl::where('type','2')->where('cc_id',$glcc->parent_id)->where('month','>=',date('n',strtotime($from)))->where('month','<=',date('n',strtotime($to)))->where('year',date('Y',strtotime($from)))->where('year',date('Y',strtotime($to)))->first();
@@ -273,16 +273,16 @@ if (!function_exists('expulsion_cc_transaction')){
 }
 if (!function_exists('getSitioPadre')){
     function getSitioPadre($id = null,$debtor = null,$creditor = null,$date = null) {
-        $department = \App\Department::where('id',$id)->first();
+        $department = \App\Models\Admin\MtsChartAc::where('id',$id)->first();
         $pjitmmsflexists = \App\pjitmmsfl::where('tree_id',$id)->where('month',date('n',strtotime($date)))->where('year',date('Y',strtotime($date)))->exists();
         $depbala = \App\pjitmmsfl::where('tree_id',$id)->where('month',date('n',strtotime($date)))->where('year',date('Y',strtotime($date)))->first();
-//        \App\Department::where('id',$department->id)->update(['estimite' => $department->creditor - $department->debtor]);
+//        \App\Models\Admin\MtsChartAc::where('id',$department->id)->update(['estimite' => $department->creditor - $department->debtor]);
         if($pjitmmsflexists){
             \App\pjitmmsfl::where('tree_id',$id)->where('month',date('n',strtotime($date)))->where('year',date('Y',strtotime($date)))->update(['current_balance' => $depbala->creditor - $depbala->debtor]);
         }
         if($department->parent_id !=  null){
-            $parent = \App\Department::where('id',$department->parent_id)->first();
-//            \App\Department::where('id',$department->parent_id)->update(['estimite' => $parent->creditor - $parent->debtor]);
+            $parent = \App\Models\Admin\MtsChartAc::where('id',$department->parent_id)->first();
+//            \App\Models\Admin\MtsChartAc::where('id',$department->parent_id)->update(['estimite' => $parent->creditor - $parent->debtor]);
             $parentexists = \App\pjitmmsfl::where('tree_id',$department->parent_id)->exists();
             if($parentexists){
                 $depbala2 = \App\pjitmmsfl::where('tree_id',$department->parent_id)->first();
@@ -293,7 +293,7 @@ if (!function_exists('getSitioPadre')){
                 \App\pjitmmsfl::where('tree_id',$department->parent_id)->update(['current_balance' => $depbala2->creditor - $depbala2->debtor]);
             }
             if ($parent->debtor != null){
-//                \App\Department::where('id',$department->parent_id)->update(['debtor'=> \Illuminate\Support\Facades\DB::raw('debtor + '.$debtor)]);
+//                \App\Models\Admin\MtsChartAc::where('id',$department->parent_id)->update(['debtor'=> \Illuminate\Support\Facades\DB::raw('debtor + '.$debtor)]);
                 if($parentexists){
                     \App\pjitmmsfl::where('tree_id',$department->parent_id)->update(['debtor'=> \Illuminate\Support\Facades\DB::raw('debtor + '.$debtor)]);
                 }
@@ -306,7 +306,7 @@ if (!function_exists('getSitioPadre')){
                 if($parentexists){
                     \App\pjitmmsfl::where('tree_id',$department->parent_id)->update(['creditor'=> \Illuminate\Support\Facades\DB::raw('creditor + '.$creditor)]);
                 }
-//                \App\Department::where('id',$department->parent_id)->update(['creditor'=> \Illuminate\Support\Facades\DB::raw('creditor + '.$creditor)]);
+//                \App\Models\Admin\MtsChartAc::where('id',$department->parent_id)->update(['creditor'=> \Illuminate\Support\Facades\DB::raw('creditor + '.$creditor)]);
             }else{
                 \App\pjitmmsfl::where('tree_id',$department->parent_id)->update(['creditor'=> $creditor]);
                 $parent->creditor = $creditor;
@@ -937,7 +937,7 @@ if(!function_exists('departmentsum')) {
     function departmentsum($id = null,$from = null,$to = null,$sum = null,$sign = null)
     {
         $value = [];
-        $departments = \App\Department::findOrFail($id);
+        $departments = \App\Models\Admin\MtsChartAc::findOrFail($id);
         $pros = [];
         $products = [];
         $categories = $departments->children;
@@ -954,7 +954,7 @@ if(!function_exists('departmentsum')) {
         $plucks = $pro->pluck('id');
         $values = $pros->concat($plucks);
 
-        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
+        $depart = \App\Models\Admin\MtsChartAc::where('type','1')->whereIn('id',$values)->pluck('id');
 //        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
         $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
             $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
@@ -975,7 +975,7 @@ if(!function_exists('departmentsum2')) {
     function departmentsum2($id = null,$from = null,$to = null,$sum = null,$sign = null)
     {
         $value = [];
-        $departments = \App\Department::findOrFail($id);
+        $departments = \App\Models\Admin\MtsChartAc::findOrFail($id);
         $pros = [];
         $products = [];
         $categories = $departments->children;
@@ -992,7 +992,7 @@ if(!function_exists('departmentsum2')) {
         $plucks = $pro->pluck('id');
         $values = $pros->concat($plucks);
 
-        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
+        $depart = \App\Models\Admin\MtsChartAc::where('type','1')->whereIn('id',$values)->pluck('id');
 //        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
         $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
             $query->whereDate('created_at', $sign, $from);
@@ -1048,7 +1048,7 @@ if(!function_exists('totaldepartment')) {
     {
         $value = [];
 
-        $departments = \App\Department::findOrFail($id);
+        $departments = \App\Models\Admin\MtsChartAc::findOrFail($id);
 
         $pros = [];
         $products = [];
@@ -1070,7 +1070,7 @@ if(!function_exists('totaldepartment')) {
 
 
 
-        $value1 = \App\Department::where('type','1')->whereIn('id',$pros)->sum($sum);
+        $value1 = \App\Models\Admin\MtsChartAc::where('type','1')->whereIn('id',$pros)->sum($sum);
 
 
 
@@ -1085,7 +1085,7 @@ if(!function_exists('departmentsum3')) {
     {
 
 
-        $departments = \App\Department::where('type','1')->where('id',$id)->pluck('id');
+        $departments = \App\Models\Admin\MtsChartAc::where('type','1')->where('id',$id)->pluck('id');
 
 
 
@@ -1112,3 +1112,7 @@ if(!function_exists('departmentsum3')) {
 
     }
 }
+
+
+
+

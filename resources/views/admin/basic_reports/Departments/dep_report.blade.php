@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.cc_reports'))
+@section('title',trans('admin.report_department'))
 @section('content')
     @push('css')
         <style>
@@ -176,7 +176,7 @@
                     $("#loadingmessage").css("display","block");
                     if (this){
                         $.ajax({
-                            url: '{{route('cc_report_print')}}',
+                            url: '{{route('Dep_report_print')}}',
                             type:'get',
                             dataType:'html',
                             data:{selecd_input : selecd_input,mainCompany:mainCompany},
@@ -238,7 +238,7 @@
                         dataType: 'html',
                         data:{value:value,mainCompany:mainCompany,active:active,notactive:notactive},
                         type:'get',
-                        url: '{{route('ccReportSelect')}}',
+                        url: '{{route('depReportSelect')}}',
 
                         success:function (data) {
                             $("#loadingmessage").css("display","none");
@@ -328,12 +328,12 @@
 
         <div class="box-body">
 
-            <form target = '_blank' action="{{route('cc_report_pdf')}}" method="POST">
+            <form target = '_blank' action="{{route('Dep_report_pdf')}}" method="POST">
                 {{ csrf_field() }}
                 <div class="panel panel-primary" style="width:100%; margin:auto auto;">
                     <div class="panel-heading">
                         <div class="panel-title">
-                            {{trans('admin.cc_reports')}}
+                            {{trans('admin.report_department')}}
                         </div>
                     </div>
                     <div class="panel-body">

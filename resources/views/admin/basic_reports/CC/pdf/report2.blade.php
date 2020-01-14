@@ -72,94 +72,51 @@
     }
 </style>
 <body>
-<div style="display: none">
-    {{$allCredit = 0}}
-    {{$allDebtor = 0}}</div>
 <div>
     <div style="float:right;font-weight:bold;width:50%">{{setting()->sitename_ar}}</div>
     <div style="float:left;font-weight:bold;width:50%;text-align:left">{{setting()->sitename_en}}</div>
 </div>
+
+
 <div style="text-align:center">
-    <img src="{{asset('storage/'. setting()->icon)}}" style="max-width:70px;margin:15px 0">
+    <img src="{{asset('storage/'. setting()->icon)}}" style="max-width:100px;margin:15px 0">
 </div>
 
 <div class="el-no3">
-    <span>تقارير العملاء</span>
+    {{trans('admin.Departments_reports')}}
 </div>
-
-<div class="clearfix"></div>
-<div class="el-date">
-{{--    <p>من تاريخ : {{}}</p>--}}
-{{--    <p>الى تاريخ : {{}}</p>--}}
-</div>
-
 
 <div class="clearfix"></div>
 <div class="table-responsive">
-    <table style="border: none" class="table table-bordered table-striped table-hover text-center">
+    <table class="table table-striped table-hover">
         <tr>
-            <th style="border: none;background-color: #fff" colspan="4"> </th>
-            <th style="border: none;background-color: #fff" colspan="3"> </th>
-            <th colspan="2">حد الائتمان</th>
-            <th colspan="2">اول المدة</th>
+            <th>{{trans('admin.account_number')}}</th>
+            <th>{{trans('admin.account_name')}}</th>
+            <th>{{trans('admin.first_date_debtor')}}</th>
+            <th>{{trans('admin.first_date_creditor')}}</th>
         </tr>
-        <tr>
-            <th>م </th>
-            <th>رقم العميل</th>
-            <th>اسم العميل</th>
-            <th>المندوب</th>
-            <th>رقم التلفون</th>
-            <th>رقم موبايل</th>
-            <th>العنوان</th>
-            <th>مدة</th>
-            <th>مبلغ</th>
-            <th>مدين</th>
-            <th>دائن</th>
+{{--by personal and branches--}}
+@if(!empty($products))
+            @foreach($products as $merged)
+                <tr>
+                    <td>
+                        {{$merged->Costcntr_No}}
+                    </td>
+                    <td style="text-align:center">
+                        {{session_lang($merged->Costcntr_Nmen,$merged->Costcntr_Nmar)}}
+                    </td>
+                    <td style="text-align:center">
+                        {{$merged->Fbal_DB}}
 
-        </tr>
-{{--@dd($MTsCustomer)--}}
-        @foreach ($MTsCustomer as $merged){
-        <tr>
-            <td>{{$merged->ID_No}}</td>
-            <td>
-                {{$merged->Cstm_No}}
-            </td>
-            <td>
-                {{session_lang($merged->Cstm_NmEn,$merged->Cstm_NmAr)}}
-            </td>
-            <td>
-                @if($merged->delegate)
-                    {{$merged->delegate->Slm_NmAr}}
-
-                @endif
-
-            </td>
-            <td>
-                {{$merged->Cstm_Tel}}
-            </td>
-            <td>
-                {{$merged->Tel2}}
-            </td>
-            <td>
-                {{$merged->Cstm_Adr}}
-            </td>
-            <td>
-                {{$merged->Credit_Days}}
-            </td>
-            <td>
-                {{$merged->Credit_Value}}
-            </td>
-            <td>
-                {{$merged->Fbal_Db}}
-            </td>
-            <td>
-                {{$merged->Fbal_CR}}
-            </td>
-        </tr>
-        @endforeach
-
-
+                    </td>
+                    <td style="text-align:center">
+                        {{$merged->Fbal_CR}}
+                    </td>
+                </tr>
+            @endforeach
+@endif
     </table>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
