@@ -40,9 +40,11 @@ class LimitationsController extends Controller
     {
         return $limitations->render('admin.limitations.invoice.index',['title'=>trans('admin.limitations')]);
     }
-    public function get_limitions (){
-        return view('admin.limitations.get_limitions');
+
+    public function get_limitions(){
+        return view('admin.limitations.get_limitions ');
     }
+
     /**
      * Show the form for creating a new resource.
      *

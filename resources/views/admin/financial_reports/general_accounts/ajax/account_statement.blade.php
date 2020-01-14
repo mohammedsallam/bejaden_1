@@ -5,10 +5,11 @@
         $(".from,.to,.fromtree,.totree").on("change",function(){
 
             var maincompany = '{{$mainCompany}}';
-
-            var fromtree = $('.fromtree').val();
+            var MainBranch = '{{$MainBranch}}';
 
             var totree = $('.totree').val();
+
+            var fromtree = $('.ee').val();
 
             var from = $('.from').val();
 
@@ -23,7 +24,7 @@
                     url: '{{route('accountStatement.details')}}',
                     type:'get',
                     dataType:'html',
-                    data:{maincompany: maincompany,fromtree: fromtree,totree: totree,from: from,to : to},
+                    data:{maincompany: maincompany,MainBranch: MainBranch,totree: totree,from: from,to : to,fromtree:fromtree},
                     success: function (data) {
                         $("#loadingmessage_3").css("display","none");
                         $('.button_print').css("display","block").html(data);
@@ -77,10 +78,11 @@
 </style>
 
 
-<div class="form-group">
+<div class="row">
+
     <div class="col-md-3">
         {{ Form::label('tree','fromtree', ['class' => 'control-label']) }}
-        {{ Form::select('fromtree',$mtschartac,null, array_merge(['class' => 'form-control e2 fromtree','placeholder'=> trans('admin.select') ])) }}
+        {{ Form::select('fromtree',$mtschartac,null, array_merge(['class' => 'form-control  e2 ee fromtree','placeholder'=> trans('admin.select') ])) }}
     </div>
     <div class="col-md-3">
         {{ Form::label('tree','totree', ['class' => 'control-label']) }}
@@ -94,13 +96,12 @@
         {{ Form::label('receipts', trans('admin.To'), ['class' => 'control-label']) }}
         {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'form-control to date','required'=>'required','autocomplete'=>'off'])) }}
     </div>
+
 </div>
+
 {{--loader spinner--}}
 <div id='loadingmessage_3' style='display:none; margin-top: 20px' class="text-center">
     <img src="{{ url('/') }}/images/ajax-loader.gif"/>
 </div>
 
 <br>
-<div class="button_print">
-
-</div>
