@@ -1,27 +1,27 @@
 
-<script>
-    $(document).ready(function(){
-        // For A Delete Record Popup
-        $('.remove-record').click(function() {
-            var id = $(this).attr('data-id');
-            var url = $(this).attr('data-url');
-            var token = '{{csrf_token()}}';
-            $(".remove-record-model").attr("action",url);
-            $('body').find('.remove-record-model').append('<input name="_token" type="hidden" value="'+ token +'">');
-            $('body').find('.remove-record-model').append('<input name="_method" type="hidden" value="DELETE">');
-            $('body').find('.remove-record-model').append('<input name="id" type="hidden" value="'+ ID_No +'">');
-        });
+    <script>
+        $(document).ready(function(){
+            // For A Delete Record Popup
+            $('.remove-record').click(function() {
+                var id = $(this).attr('data-id');
+                var url = $(this).attr('data-url');
+                var token = '{{csrf_token()}}';
+                $(".remove-record-model").attr("action",url);
+                $('body').find('.remove-record-model').append('<input name="_token" type="hidden" value="'+ token +'">');
+                $('body').find('.remove-record-model').append('<input name="_method" type="hidden" value="DELETE">');
+                $('body').find('.remove-record-model').append('<input name="id" type="hidden" value="'+ id +'">');
+            });
 
-        $('.remove-data-from-delete-form').click(function() {
-            $('body').find('.remove-record-model').find( "input" ).remove();
+            $('.remove-data-from-delete-form').click(function() {
+                $('body').find('.remove-record-model').find( "input" ).remove();
+            });
+            $('.modal').click(function() {
+                // $('body').find('.remove-record-model').find( "input" ).remove();
+            });
         });
-        $('.modal').click(function() {
-            // $('body').find('.remove-record-model').find( "input" ).remove();
-        });
-    });
-</script>
+    </script>
 
-<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('AstNutrbusn.destroy', $ID_No) }}" data-id="{{$ID_No}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i></a>
+<a class="btn btn-danger waves-effect waves-light remove-record" data-toggle="modal" data-url="{{ \Illuminate\Support\Facades\URL::route('supervisors.destroy', $ID_No) }}" data-id="{{$ID_No}}" data-target="#custom-width-modal"><i class="fa fa-trash"></i> {{trans('admin.delete')}}</a>
 
 <form action="" method="POST" class="remove-record-model">
     <div id="custom-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel" aria-hidden="true" style="display: none;">
@@ -32,7 +32,7 @@
                     <h4 class="modal-title" id="custom-width-modalLabel">{{trans('admin.Delete_Record')}}</h4>
                 </div>
                 <div class="modal-body">
-                    <h4>{{trans('admin.You_Want_You_Sure_Delete_This_Record')}}</h4>
+                    <h4>{{trans('admin.You_Want_You_Sure_Delete_This_Record')}}/h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">{{trans('admin.close')}}</button>

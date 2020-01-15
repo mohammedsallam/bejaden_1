@@ -36,7 +36,7 @@
             $("#loadingmessage").css("display","block");
             if (this){
                 $.ajax({
-                    url: '{{route('cc_report_print')}}',
+                    url: '{{route('Dep_report_print')}}',
                     type:'get',
                     dataType:'html',
                     data:{selecd_input : selecd_input,mainCompany:mainCompany,myradio:myradio,active:active,notactive:notactive},
@@ -75,7 +75,7 @@
     <select class="form-control selecd_input">
         <option value="">اختر ..</option>
         @foreach($acc_tarseed as $acc)
-            <option value="{{$acc->ID_No}}">{{$acc->Costcntr_Nmar}}</option>
+            <option value="{{$acc->ID_No}}">{{$acc->Acc_NmAr}}</option>
         @endforeach
     </select>
         </div>

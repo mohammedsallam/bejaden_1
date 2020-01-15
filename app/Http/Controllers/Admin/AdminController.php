@@ -36,10 +36,6 @@ class AdminController extends Controller
         $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
         return view('admin.admins.create',['title'=>trans('admin.create_admin'),'roles' => $roles, 'permissions' => $permissions,'branches'=>$branches]);
     }
-    public function admin_setting()
-    {
-        return view('admin.admins.create');
-    }
 
     /**
      * Store a newly created resource in storage.

@@ -95,7 +95,6 @@
             <th>{{trans('admin.first_date_debtor')}}</th>
             <th>{{trans('admin.first_date_creditor')}}</th>
         </tr>
-{{--by personal and branches--}}
 @if(!empty($products))
             @foreach($products as $merged)
                 <tr>

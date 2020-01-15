@@ -20,15 +20,11 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-     public function index(ProjectDataTable $project)
+    public function index(ProjectDataTable $project)
     {
         return $project->render('admin.projects.index');
     }
-    public function projects_section()
-    {
-        return view('admin.projects.pro_list');
-    }
+
     /**
      * Show the form for creating a new resource.
      *

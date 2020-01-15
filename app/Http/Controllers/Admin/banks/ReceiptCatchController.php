@@ -79,7 +79,7 @@ class ReceiptCatchController extends Controller
             $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
         }
         $flags = GLaccBnk::all();
-        // مسموح بظه+ور البنوك و الصنودق فى سند القبض النقدى
+        // مسموح بظهور البنوك و الصنودق فى سند القبض النقدى
         $banks = [];
         $cost_center = MtsCostcntr::where('Level_Status', 0)->get(['Costcntr_No', 'Costcntr_Nm'.session('lang')]);
         foreach($flags as $flag){
@@ -87,10 +87,9 @@ class ReceiptCatchController extends Controller
                 array_push($banks, $flag);
             }
         }
-
         $crncy = AstCurncy::get(['Curncy_No', 'Curncy_Nm'.ucfirst(session('lang'))]);
         return view('admin.banks.catch.create', ['companies' => $cmps, 'banks' => $banks, 'last_record' => $last_record,
-                                                'cost_center' => $cost_center, 'crncy' => $crncy]);
+            'cost_center' => $cost_center, 'crncy' => $crncy]);
     }
 
     /**
@@ -101,6 +100,7 @@ class ReceiptCatchController extends Controller
      */
     public function store(Request $request)
     {
+        @dd($request->all());
         $catch_data = json_decode($request->catch_data);
         //Create header
         if(count($catch_data) > 0){
@@ -156,7 +156,7 @@ class ReceiptCatchController extends Controller
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                                ->where('Ln_No', 1)->first();
+                    ->where('Ln_No', 1)->first();
                 if(!$debt){
                     // Create transaction debt
                     $trans_db = GLjrnTrs::create([
@@ -224,7 +224,7 @@ class ReceiptCatchController extends Controller
                 //update debt Tot_Amunt
                 //1- get all credit lines - sum credit money
                 $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                ->where('Ln_No' , '>', 1)->get();
+                    ->where('Ln_No' , '>', 1)->get();
                 if($trnses && count($trnses)){
                     $total = 0;
                     $ftotal = 0;
@@ -237,7 +237,7 @@ class ReceiptCatchController extends Controller
 
                     //2- get debt line - update money with new total
                     $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                ->where('Ln_No', 1)->first();
+                        ->where('Ln_No', 1)->first();
                     $debt->update([
                         'Tr_Db' => $total,
                         'FTr_Db' => $ftotal,
@@ -304,7 +304,7 @@ class ReceiptCatchController extends Controller
             foreach($catch_data as $data){
 
                 $debt = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                                ->where('Ln_No', 1)->first();
+                    ->where('Ln_No', 1)->first();
                 if(!$debt){
                     // Create transaction debt
                     $trans_db = GLjrnTrs::create([
@@ -372,7 +372,7 @@ class ReceiptCatchController extends Controller
                 //update debt Tot_Amunt
                 //1- get all credit lines - sum credit money
                 $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                    ->where('Ln_No' , '>', 1)->get();
+                    ->where('Ln_No' , '>', 1)->get();
                 if($trnses && count($trnses)){
                     $total = 0;
                     $ftotal = 0;
@@ -385,7 +385,7 @@ class ReceiptCatchController extends Controller
 
                     //2- get debt line - update money with new total
                     $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                ->where('Ln_No', 1)->first();
+                        ->where('Ln_No', 1)->first();
                     $debt->update([
                         'Tr_Db' => $total,
                         'FTr_Db' => $ftotal,
@@ -412,9 +412,9 @@ class ReceiptCatchController extends Controller
         $gl = GLJrnal::where('Tr_No', $id)->first();
         $gltrns = GLjrnTrs::where('Tr_No', $id)->get();
         $debt_acc_no = GLjrnTrs::where('Sysub_Account', 0)
-                                ->where('Tr_No', $gl->Tr_No)
-                                ->where('Ln_No', 1)
-                                ->pluck('Acc_No')->first();
+            ->where('Tr_No', $gl->Tr_No)
+            ->where('Ln_No', 1)
+            ->pluck('Acc_No')->first();
         $debt = MtsChartAc::where('Acc_No', $debt_acc_no)->pluck('Acc_Nm'.ucfirst(session('lang')))->first();
         $cmp = MainCompany::where('Cmp_No', $gl->Cmp_No)->get(['License_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
         $brn = MainBranch::where('Cmp_No', $gl->Cmp_No)->get(['Brn_Nm'.ucfirst(session('lang'))])->first();
@@ -532,7 +532,7 @@ class ReceiptCatchController extends Controller
 
             foreach($updated_data as $data){
                 $trns = GLjrnTrs::where('Tr_No', $data->Tr_No)
-                                ->where('Ln_No', $data->Ln_No)->first();
+                    ->where('Ln_No', $data->Ln_No)->first();
                 //Update transaction credit
                 $trns->update([
                     'Cmp_No' => $data->Cmp_No,
@@ -560,7 +560,7 @@ class ReceiptCatchController extends Controller
             //update debt Tot_Amunt
             //1- get all credit lines - sum credit money
             $trnses = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                ->where('Ln_No' , '>', 1)->get();
+                ->where('Ln_No' , '>', 1)->get();
             if($trnses && count($trnses)){
                 $total = 0;
                 $ftotal = 0;
@@ -573,13 +573,13 @@ class ReceiptCatchController extends Controller
 
                 //2- get debt line - update money with new total
                 $debt = GLjrnTrs::where('Tr_No', $header->Tr_No)
-                                ->where('Ln_No', 1)->first();
+                    ->where('Ln_No', 1)->first();
                 $debt->update([
-                        'Tr_Db' => $total,
-                        'FTr_Db' => $ftotal,
-                        'FTot_Amunt' => $ftotal,
-                        'Rcpt_Value' => $total,
-                    ]);
+                    'Tr_Db' => $total,
+                    'FTr_Db' => $ftotal,
+                    'FTot_Amunt' => $ftotal,
+                    'Rcpt_Value' => $total,
+                ]);
                 $header->update(['FTot_Amunt' => $ftotal]);
             }
         }
@@ -613,7 +613,7 @@ class ReceiptCatchController extends Controller
             if($trns && count($trns) > 2){
                 if($request->Ln_No != -1){
                     GLjrnTrs::where('Tr_No', $request->Tr_No)
-                            ->where('Ln_No', $request->Ln_No)->first()->delete();
+                        ->where('Ln_No', $request->Ln_No)->first()->delete();
                 }
             }
             //حذف كل تفاصيل السند اذا كان عدد السطور  سطرين فاقل
@@ -671,24 +671,24 @@ class ReceiptCatchController extends Controller
             //حسابات
             if($request->Acc_Ty == 1){
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
-                                    ->where('Level_Status', 1)
-                                    ->where('Acc_Typ', 1)
-                                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Level_Status', 1)
+                    ->where('Acc_Typ', 1)
+                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.banks.catch.SubAcc', ['subAccs' => $charts]);
             }
             // عملاء
             else if($request->Acc_Ty == 2){
                 $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.banks.catch.SubAcc', ['subAccs' => $customers]);
 
             }
             // موردين
             else if($request->Acc_Ty == 3){
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.banks.catch.SubAcc', ['subAccs' => $suppliers]);
             }
             // موظفين
@@ -698,24 +698,24 @@ class ReceiptCatchController extends Controller
         else{
             if($request->Acc_Ty == 1){
                 $charts = MtsChartAc::where('Cmp_No', $request->Cmp_No)
-                                    ->where('Level_Status', 1)
-                                    ->where('Acc_Typ', 1)
-                                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Level_Status', 1)
+                    ->where('Acc_Typ', 1)
+                    ->get(['Acc_No as no', 'Acc_Nm'.ucfirst(session('lang')).' as name']);
                 return $charts;
             }
             // عملاء
             else if($request->Acc_Ty == 2){
                 $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
                 return $customers;
 
             }
             // موردين
             else if($request->Acc_Ty == 3){
                 $suppliers = MtsSuplir::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Brn_No', $request->Brn_No)
-                                        ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
+                    ->where('Brn_No', $request->Brn_No)
+                    ->get(['Sup_No as no', 'Sup_Nm'.ucfirst(session('lang')).' as name']);
                 return $suppliers;
             }
             // موظفين
@@ -729,12 +729,12 @@ class ReceiptCatchController extends Controller
             // حسابات
             if($request->Acc_Ty == 1){
                 $AccNm = MtsChartAc::where('Cmp_No', $request->Cmp_No)
-                                        ->where('Acc_No', $request->Acc_No)
-                                        ->get(['Parnt_Acc', 'CostCntr_Flag as cc_flag', 'Costcntr_No as cc_no'])->first();
+                    ->where('Acc_No', $request->Acc_No)
+                    ->get(['Parnt_Acc', 'CostCntr_Flag as cc_flag', 'Costcntr_No as cc_no'])->first();
                 $mainAccNm = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
-                                        ->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                    ->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
                 $mainAccNo = MtsChartAc::where('Acc_No', $AccNm->Parnt_Acc)
-                                        ->get(['Acc_No as acc_no'])->first();
+                    ->get(['Acc_No as acc_no'])->first();
                 return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm, 'AccNm' => $AccNm] );
             }
             // عملاء
@@ -762,8 +762,8 @@ class ReceiptCatchController extends Controller
         }
         else{
             $gls = GLJrnal::where('Month_No', $month)
-                            ->where('Brn_No', $Brn_No)
-                            ->orderBy('Month_Jvno', 'desc')->get(['Month_Jvno'])->first();
+                ->where('Brn_No', $Brn_No)
+                ->orderBy('Month_Jvno', 'desc')->get(['Month_Jvno'])->first();
             if($gls){
                 $Month_Jvno = $gls->Month_Jvno + 1;
             }
@@ -838,7 +838,7 @@ class ReceiptCatchController extends Controller
                 ]);
             }
             else{
-                    return response([
+                return response([
                     'success' => true,
                     'data' => $validator->messages(),
                 ]);
@@ -872,8 +872,8 @@ class ReceiptCatchController extends Controller
     public function getRcptDetails(Request $request){
         if($request->ajax()){
             $trns = GLjrnTrs::where('Ln_No', $request->Ln_No)
-                            ->where('Tr_No', $request->Tr_No)
-                            ->first();
+                ->where('Tr_No', $request->Tr_No)
+                ->first();
 
             $new_request = new Request;
             $new_request->Acc_Ty = $trns->Ac_Ty;

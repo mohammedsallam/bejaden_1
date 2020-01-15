@@ -553,12 +553,11 @@
     <div class="hidden" id="alert"></div>
     <form action="{{route('receiptCash.store')}}" method="POST" id="create_cache">
         {{ csrf_field() }}
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary panel-A" style="float:left;" id="save"><i class="fa fa-floppy-o"></i></button>
+        <div style="display:flex; justify-content: flex-end; margin-bottom: 10px">
+            <div>
+                <button type="submit" class="btn btn-primary panel-A" id="save"><i class="fa fa-floppy-o"></i></button>
+            </div>
         </div>
-        <br>
-        <br>
-        <br>
         {{-- بيانات اساسيه سند صرف --}}
         <div class="panel panel-primary panel-H">
             <div class="panel-heading panel-A">
@@ -752,7 +751,7 @@
                         {{-- نوع الحساب --}}
                         <div class="row">
                             {{-- نوع الحساب عملاء - موردين - موظفين - .... --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="Ac_Ty">{{trans('admin.account_type')}}</label>
                                 <select name="Ac_Ty" id="Ac_Ty" class="form-control">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -763,7 +762,7 @@
                             </div>
                             {{-- رقم حساب العملاء - رقم حساب الموظفين - رقم حساب الموردين - .... --}}
                             {{-- <input type="text" id="Acc_No_Name" hidden> --}}
-                            <div class="col-md-7">
+                            <div class="col-md-6">
                                 <label for="Acc_No_Select"></label>
                                 <select name="Acc_No_Select" id="Acc_No_Select" class="form-control select2">
                                     <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -781,7 +780,7 @@
                             {{-- المبلغ مدين --}}
                             <div class="col-md-4">
                                 <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
-                                <input style="background-color: #e9ea92;" type="text" name="Tr_Db" id="Tr_Db" class="form-control">
+                                <input type="text" name="Tr_Db" id="Tr_Db" class="form-control">
                             </div>
                             {{-- نهاية المبلغ مدين --}}
                             {{-- رقم المستند --}}

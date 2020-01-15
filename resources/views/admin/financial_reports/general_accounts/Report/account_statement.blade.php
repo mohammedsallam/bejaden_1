@@ -30,17 +30,18 @@
 
             $(".MainCompany").on("change",function(){
                 var mainCompany = $(this).val();
+                var mainCompany = $(this).val();
 
-                $("#loadingmessage-2").css("display","block");
+                $("#loadingmessage-1").css("display","block");
                 $(".column_account").css("display","none");
                 if (this){
                     $.ajax({
-                        url: '{{route('acc_state')}}',
+                        url: '{{route('branche')}}',
                         type:'get',
                         dataType:'html',
                         data:{mainCompany: mainCompany},
                         success: function (data) {
-                            $("#loadingmessage-2").css("display","none");
+                            $("#loadingmessage-1").css("display","none");
                             $('.column_account').css("display","block").html(data);
 
                         }
@@ -86,28 +87,48 @@
     </div>
     <div class="box-body">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 {{ Form::label('maincompany','الشركات', ['class' => 'control-label']) }}
                 {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control MainCompany e2 fromtree','placeholder'=> trans('admin.select') ])) }}
             </div>
+            <div class="column_account col-md-6">
+
+                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}
+                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2','placeholder'=> trans('admin.select') ])) }}
+
+            </div>
+
+
         </div>
+        <br>
+        <br>
+        <br>
+        <div class="row details_row">
+
+        </div>
+
        <br>
 
 
 
     {{--loader spinner--}}
-    <div id='loadingmessage-2' style='display:none; margin-top: 20px' class="text-center">
+    <div id='loadingmessage-1' style='display:none; margin-top: 20px' class="text-center">
         <img src="{{ url('/') }}/images/ajax-loader.gif"/>
-    </div>
-    <div class="column_account row">
-
     </div>
 
     <br>
 
+        <div class="row">
+            <div class="button_print" style="position: absolute; right: 60px;">
 
+            </div>
+            <div class="back">
+                <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
 
-            <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
+            </div>
+
+        </div>
+
 
 </div>
 </div>

@@ -166,29 +166,7 @@
                     $('#print').html(data);
                 });
 
-                {{--$('.mainCompany').on('change',function(){--}}
-                {{--    $("#loadingmessage").css("display","block");--}}
-                {{--    $(".column_data").css("display","none");--}}
-                {{--    var mainCompany = $('.mainCompany').val();--}}
-
-                {{--    if (this){--}}
-                {{--        $.ajax({--}}
-                {{--            url: '{{route('get_mainbranches')}}',--}}
-                {{--            type:'get',--}}
-                {{--            dataType:'html',--}}
-                {{--            data:{mainCompany : mainCompany},--}}
-                {{--            success: function (data) {--}}
-                {{--                $("#loadingmessage").css("display","none");--}}
-                {{--                $('.column_data').css("display","block").html(data);--}}
-
-                {{--            }--}}
-                {{--        });--}}
-                {{--    }else{--}}
-                {{--        $('.column_data').html('');--}}
-                {{--    }--}}
-
-
-                {{--});--}}
+                
             });
 
 

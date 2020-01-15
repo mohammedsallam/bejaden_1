@@ -113,10 +113,6 @@ class MtsSuplir extends Model
     public function country(){
         return $this->belongsTo(country::class, 'Cntry_No', 'id');
     }
-    public function currency(){
-        return $this->belongsTo(AstCurncy::class, 'Curncy_No', 'ID_No');
-    }
-
     public function SupCtg(){
         return $this->belongsTo(Astsupctg::class, 'SupCtg_No', 'ID_No');
     }

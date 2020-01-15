@@ -285,8 +285,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('financial_reports','Admin\financial_reports\general_accountsController@financial_reports')->name('financial_reports');
         Route::get('general_accounts','Admin\financial_reports\general_accountsController@general_accounts')->name('general_accounts');
         Route::get('account_statement','Admin\financial_reports\general_accountsController@account_statement')->name('account_statement');
+        Route::get('branche','Admin\financial_reports\general_accountsController@branche')->name('branche');
         Route::get('acc_state','Admin\financial_reports\general_accountsController@acc_state')->name('acc_state');
         Route::get('account_statement/details','Admin\financial_reports\general_accountsController@details')->name('accountStatement.details');
+        Route::Post('account_statement/pdf','Admin\financial_reports\general_accountsController@print')->name('accountStatement.acc_pdf');
         Route::get('trial_balance','Admin\financial_reports\general_accountsController@trial_balance')->name('trial_balance');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 //       1
@@ -473,8 +475,10 @@ Route::group(['prefix'=>'admin'],function (){
 
 
 
-//        limitations
+        //        limitations
         Route::resource('limitations','Admin\limitations\LimitationsController');
+        Route::get('get_limitions','Admin\limitations\LimitationsController@get_limitions');
+
 //        Route::get('limitations/show/{id}','Admin\limitations\limitationsData@show')->name('limitations.show');
         Route::post('limitationsData/create','Admin\limitations\limitationsData@create');
         Route::post('limitationsData/editdatatable','Admin\limitations\limitationsData@editdatatable');
@@ -504,6 +508,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('limitationGetSalesMan', 'Admin\limitations\LimitationsOperationsController@getSalesMan')->name('limitationGetSalesMan');
         Route::post('limitationValidate', 'Admin\limitations\LimitationsOperationsController@validateCache')->name('limitationValidate');
         Route::post('limitationGetRcptDetails', 'Admin\limitations\LimitationsOperationsController@getRcptDetails')->name('limitationGetRcptDetails');
+        Route::post('limitationUpdateTrns', 'Admin\limitations\LimitationsOperationsController@updateTrns')->name('limitationUpdateTrns');
+        Route::post('limitationDeleteTrns', 'Admin\limitations\LimitationsOperationsController@deleteTrns')->name('limitationDeleteTrns');
+
 
 
 //        openingentry
@@ -550,9 +557,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
-//
-//        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+
+        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');

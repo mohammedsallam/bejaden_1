@@ -94,7 +94,7 @@
                                     {{ Form::label(trans('admin.Branches'), null, ['class' => 'control-label']) }}
                                 </div>
                                 <div class="col-md-9">
-                                    @if(auth()->guard('admin')->user()->branches_id == '1')
+                                    @if(auth()->guard('admin')->user()->branch_id == '-1')
                                         {{ Form::select('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','id' => 'branches','placeholder'=>trans('admin.select')])) }}
                                     @else
                                         {{ Form::text('Brn_No', $branches,null, array_merge(['class' => 'form-control branche','id' => 'branches','placeholder'=>trans('admin.select')])) }}
@@ -332,7 +332,7 @@
                                         {{ Form::label(trans('admin.currency'), null, ['class' => 'control-label']) }}
                                     </div>
                                     <div class="col-md-9">
-                                        {{ Form::select('Curncy_No', $currency,old('Curncy_No'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
+                                        {{ Form::select('Curncy_No', \App\Enums\CurrencyType::toSelectArray(),old('Curncy_No'), array_merge(['class' => 'form-control','placeholder'=>trans('admin.select')])) }}
                                     </div>
                                 </div>
                             </div>

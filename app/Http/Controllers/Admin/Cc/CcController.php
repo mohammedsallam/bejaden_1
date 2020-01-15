@@ -384,12 +384,12 @@ class CcController extends Controller
             $myradio = $request->value;
             if($myradio =='level')
             {
-                $levels = MtsCostcntr::where('Cmp_No', $mainCompany)->groupBy('Level_No')->pluck('Level_No');
+                $levels = MtsChartAc::where('Cmp_No', $mainCompany)->groupBy('Level_No')->pluck('Level_No');
                 return $data = view('admin.basic_reports.cc.show',compact('active','notactive','levels','myradio','mainCompany'))->render();
 
             }elseif ( $myradio == 'accTarseed')
             {
-                $acc_tarseed = MtsCostcntr::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
+                $acc_tarseed = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
                 return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','acc_tarseed','mainCompany'))->render();
             }
             elseif ( $myradio == 'debit')
@@ -447,7 +447,7 @@ class CcController extends Controller
                 <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                 );
             }];
-            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report2', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report2', compact('products'), [], $config);
             return $pdf->stream();
 
         }
@@ -461,7 +461,7 @@ class CcController extends Controller
                 );
             }];
 
-            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
             return $pdf->stream();
         }
         if($value == 'parent') {
@@ -474,7 +474,7 @@ class CcController extends Controller
                 );
             }];
 
-            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
             return $pdf->stream();
         }
         if($value == 'chiled') {
@@ -487,7 +487,7 @@ class CcController extends Controller
                 );
             }];
 
-            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
             return $pdf->stream();
         }
         if($value == 'credit') {
@@ -500,7 +500,7 @@ class CcController extends Controller
                 );
             }];
 
-            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report', compact('products'), [], $config);
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
             return $pdf->stream();
         }
 

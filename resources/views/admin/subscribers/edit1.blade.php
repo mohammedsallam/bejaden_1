@@ -6,7 +6,7 @@
 @inject('delegates', 'App\Models\Admin\AstSalesman')
 @inject('supervisors', 'App\Models\Admin\AstMarket')
 @inject('supctgs', 'App\Models\Admin\Astsupctg')
-@inject('activities', 'App\Models\Admin\AstNutrbusn')
+@inject('activities', 'App\Models\Admin\ActivityTypes')
 @inject('countries', 'App\country')
 @inject('cities', 'App\city')
 @section('title',trans('admin.Edit_Subscriber').' '.session_lang($subscriber->Cstm_NmEN,$subscriber->Cstm_NmAr))
@@ -240,12 +240,7 @@
                 <div class="row col-md-4">
                     <div class="col-md-12">
                         {!! Form::label('Cstm_Active', trans('admin.active')) !!}
-                        @if($subscriber->Cstm_Active == 1)
-                            {!! Form::checkbox('Cstm_Active', true) !!}
-                        @else
-                            {!! Form::checkbox('Cstm_Active', false) !!}
-                        @endif
-
+                        {!! Form::checkbox('Cstm_Active') !!}
                     </div>
                     <div class="col-md-12">
                         {!! Form::label('Internal_Invoice', trans('admin.Internal_Invoice')) !!}

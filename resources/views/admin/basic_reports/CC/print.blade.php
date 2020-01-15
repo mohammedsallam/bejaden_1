@@ -92,8 +92,8 @@
 <div class="table-responsive">
     <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th>{{trans('admin.account_number')}}</th>
-            <th >{{trans('admin.account_name')}}</th>
+            <th>{{trans('admin.cc_number')}}</th>
+            <th >{{trans('admin.cc_name')}}</th>
             <th>{{trans('admin.first_date_debtor')}}</th>
             <th>{{trans('admin.first_date_creditor')}}</th>
         </tr>

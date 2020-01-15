@@ -760,7 +760,7 @@
                             {{-- المبلغ مدين --}}
                             <div class="col-md-4">
                                 <label for="Tr_Db">{{trans('admin.amount_db')}}</label>
-                                <input style="background-color: #e9ea92;" type="text" name="Tr_Db" id="Tr_Db" class="form-control">
+                                <input type="text" name="Tr_Db" id="Tr_Db" class="form-control">
                             </div>
                             {{-- نهاية المبلغ مدين --}}
                             {{-- رقم المستند --}}

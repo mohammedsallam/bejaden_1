@@ -37,7 +37,6 @@ class LimitationController extends Controller
         $cc = glcc::where('type','1')->pluck('name_ar','id');
         return response()->json([$limitationReceipts,$branches,$operations,$cc]);
     }
-
     public function daily(){
         $limitationReceipts = limitationReceipts::where('type',1)->where('limitationReceiptsId',0)->get();
         return response()->json([$limitationReceipts]);

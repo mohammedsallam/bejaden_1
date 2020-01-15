@@ -33,68 +33,68 @@ class AdminAuth extends Controller
         }
 
         //connect to DB according to the selected company
-        // if($request->id == 1){
-        //     $envFile = app()->environmentFilePath();
-        //     $str = file_get_contents($envFile);
-        //     $str .= "\n"; // In case the searched variable is in the last line without \n
-        //     $keyPosition = strpos($str, 'DB_CONNECTION=');
-        //     $endOfLinePosition = strpos($str, "\n", $keyPosition);
-        //     $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-        //     $str = str_replace($oldLine, "DB_CONNECTION=mysql", $str);
-        //     $str = substr($str, 0, -1);
-        //     file_put_contents($envFile, $str);
-        //     $env = app()->loadEnvironmentFrom($envFile);
-        //     \Artisan::call('config:clear');
+        if($request->id == 1){
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $str .= "\n"; // In case the searched variable is in the last line without \n
+            $keyPosition = strpos($str, 'DB_CONNECTION=');
+            $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+            $str = str_replace($oldLine, "DB_CONNECTION=mysql", $str);
+            $str = substr($str, 0, -1);
+            file_put_contents($envFile, $str);
+            $env = app()->loadEnvironmentFrom($envFile);
+            \Artisan::call('config:clear');
 
-        // }else if($request->id == 2 ){
-        //     $envFile = app()->environmentFilePath();
-        //     $str = file_get_contents($envFile);
-        //     $str .= "\n"; // In case the searched variable is in the last line without \n
-        //     $keyPosition = strpos($str, 'DB_CONNECTION=');
-        //     $endOfLinePosition = strpos($str, "\n", $keyPosition);
-        //     $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-        //     $str = str_replace($oldLine, "DB_CONNECTION=mysql2", $str);
-        //     $str = substr($str, 0, -1);
-        //     file_put_contents($envFile, $str);
-        //     $env = app()->loadEnvironmentFrom($envFile);
-        //     \Artisan::call('config:clear');
-        // }else if($request->id == 3 ){
-        //     $envFile = app()->environmentFilePath();
-        //     $str = file_get_contents($envFile);
-        //     $str .= "\n"; // In case the searched variable is in the last line without \n
-        //     $keyPosition = strpos($str, 'DB_CONNECTION=');
-        //     $endOfLinePosition = strpos($str, "\n", $keyPosition);
-        //     $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-        //     $str = str_replace($oldLine, "DB_CONNECTION=mysql3", $str);
-        //     $str = substr($str, 0, -1);
-        //     file_put_contents($envFile, $str);
-        //     $env = app()->loadEnvironmentFrom($envFile);
-        //     \Artisan::call('config:clear');
-        // }else if($request->id == 4 ){
-        //     $envFile = app()->environmentFilePath();
-        //     $str = file_get_contents($envFile);
-        //     $str .= "\n"; // In case the searched variable is in the last line without \n
-        //     $keyPosition = strpos($str, 'DB_CONNECTION=');
-        //     $endOfLinePosition = strpos($str, "\n", $keyPosition);
-        //     $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-        //     $str = str_replace($oldLine, "DB_CONNECTION=mysql4", $str);
-        //     $str = substr($str, 0, -1);
-        //     file_put_contents($envFile, $str);
-        //     $env = app()->loadEnvironmentFrom($envFile);
-        //     \Artisan::call('config:clear');
-        // }else if($request->id == 5 ){
-        //     $envFile = app()->environmentFilePath();
-        //     $str = file_get_contents($envFile);
-        //     $str .= "\n"; // In case the searched variable is in the last line without \n
-        //     $keyPosition = strpos($str, 'DB_CONNECTION=');
-        //     $endOfLinePosition = strpos($str, "\n", $keyPosition);
-        //     $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-        //     $str = str_replace($oldLine, "DB_CONNECTION=mysql5", $str);
-        //     $str = substr($str, 0, -1);
-        //     file_put_contents($envFile, $str);
-        //     $env = app()->loadEnvironmentFrom($envFile);
-        //     \Artisan::call('config:clear');
-        // }
+        }else if($request->id == 2 ){
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $str .= "\n"; // In case the searched variable is in the last line without \n
+            $keyPosition = strpos($str, 'DB_CONNECTION=');
+            $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+            $str = str_replace($oldLine, "DB_CONNECTION=mysql2", $str);
+            $str = substr($str, 0, -1);
+            file_put_contents($envFile, $str);
+            $env = app()->loadEnvironmentFrom($envFile);
+            \Artisan::call('config:clear');
+        }else if($request->id == 3 ){
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $str .= "\n"; // In case the searched variable is in the last line without \n
+            $keyPosition = strpos($str, 'DB_CONNECTION=');
+            $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+            $str = str_replace($oldLine, "DB_CONNECTION=mysql3", $str);
+            $str = substr($str, 0, -1);
+            file_put_contents($envFile, $str);
+            $env = app()->loadEnvironmentFrom($envFile);
+            \Artisan::call('config:clear');
+        }else if($request->id == 4 ){
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $str .= "\n"; // In case the searched variable is in the last line without \n
+            $keyPosition = strpos($str, 'DB_CONNECTION=');
+            $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+            $str = str_replace($oldLine, "DB_CONNECTION=mysql4", $str);
+            $str = substr($str, 0, -1);
+            file_put_contents($envFile, $str);
+            $env = app()->loadEnvironmentFrom($envFile);
+            \Artisan::call('config:clear');
+        }else if($request->id == 5 ){
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $str .= "\n"; // In case the searched variable is in the last line without \n
+            $keyPosition = strpos($str, 'DB_CONNECTION=');
+            $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+            $str = str_replace($oldLine, "DB_CONNECTION=mysql5", $str);
+            $str = substr($str, 0, -1);
+            file_put_contents($envFile, $str);
+            $env = app()->loadEnvironmentFrom($envFile);
+            \Artisan::call('config:clear');
+        }
 
         //return a list of all company actitvity types to enable user to select
         $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);

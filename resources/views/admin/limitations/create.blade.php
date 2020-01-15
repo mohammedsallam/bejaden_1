@@ -556,12 +556,13 @@
                                 // handle click table rows click
                                 var table = document.getElementById("table");
                                 if (table != null) {
-                                    for (var i = 0; i < table.rows.length; i++) {
-                                        for (var j = 0; j < table.rows[i].cells.length; j++)
+                                    for (var i = 1; i < table.rows.length; i++) {
+                                        for (var j = 0; j < table.rows[i].cells.length; j++){
                                             table.rows[i].onclick = function () {
                                                 tableText(this, catch_data);
                                                 this.innerHTML = '';
                                             };
+                                        }
                                     }
                                 }
 
@@ -836,7 +837,7 @@
                 <div class="col-md-12">
                         <div class="panel panel-primary">
                             <div class="panel-body">
-                                <div class="row all_about_currency hidden">
+                                <div class="row all_about_currency">
                                     {{-- العمله --}}
                                     <div class="col-md-2">
                                         <div class="form-group">
