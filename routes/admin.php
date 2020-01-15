@@ -262,6 +262,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_data.cc.cc_data');
         });
 
+        Route::get('categroy_data', function () {
+            return view('admin.basic_data.category.category_data');
+        });
+
 //            Route::get('stuff_data', function () {
 //            return view('admin.basic_data.stuff.stuff_data');
 //        });
