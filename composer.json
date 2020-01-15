@@ -12,6 +12,7 @@
         "bensampo/laravel-enum": "^1.16",
         "darryldecode/cart": "~4.0",
         "fideloper/proxy": "^4.0",
+        "geniusts/hijri-dates": "^1.1",
         "gladcodes/keygen": "^1.1",
         "intervention/image": "^2.4",
         "khill/lavacharts": "3.0.*",
@@ -19,10 +20,10 @@
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.4.0",
+        "nesbot/carbon": "1.39.1",
         "niklasravnsborg/laravel-pdf": "^3.1",
         "spatie/laravel-permission": "^2.29",
-        "yajra/laravel-datatables": "^1.0",
-        "geniusts/hijri-dates": "^1.1"
+        "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

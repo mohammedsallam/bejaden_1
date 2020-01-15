@@ -2,127 +2,136 @@
 @section('title',trans('admin.account_statement'))
 
 @section('content')
-    @push('css')
-        <style>
-            .bg-warning {
-                background-color: #ffc107!important;
+@push('css')
+<style>
+    .bg-warning {
+        background-color: #ffc107!important;
 
-            }
-        </style>
+    }
 
-        <style>
-            .select2-container--default .select2-selection--multiple .select2-selection__choice{
-                background-color: #333;
-            }
-            @if(session('lang') == 'ar')
+</style>
+
+<style>
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        background-color: #333;
+    }
+    @if(session('lang') == 'ar')
                 .datepicker{
-                direction: rtl
-            }
-            @endif
+        direction: rtl
+    }
+    @endif
 
-        </style>
-    @endpush
-    @push('script')
-        <script>
-            $(function () {
-                'use strict'
+</style>
+@endpush
+@push('js')
+    <script>
+        $(function () {
+            'use strict'
 
-                $(".from,.to,.fromtree,.totree").on("change",function(){
-                    var from = $('.from').val();
-                    var to = $('.to').val();
-                    var fromtree = $('.fromtree').val();
-                    var totree = $('.totree').val();
-                    var operations = $('.operations option:selected').val();
-                    var branches = $('.branches option:selected').val();
-                    $("#loadingmessage-2").css("display","block");
-                    $(".column-account-date").css("display","none");
-                    if (this){
-                        $.ajax({
-                            url: '{{aurl('accountStatement/details')}}',
-                            type:'get',
-                            dataType:'html',
-                            data:{from: from,to: to,fromtree: fromtree,totree: totree,operations : operations,branches: branches},
-                            success: function (data) {
-                                $("#loadingmessage-2").css("display","none");
-                                $('.column-account-date').css("display","block").html(data);
+            $(".MainCompany").on("change",function(){
+                var mainCompany = $(this).val();
+                var mainCompany = $(this).val();
 
-                            }
-                        });
-                    }else{
-                        $('.column-account-date').html('');
-                    }
-                });
+                $("#loadingmessage-1").css("display","block");
+                $(".column_account").css("display","none");
+                if (this){
+                    $.ajax({
+                        url: '{{route('branche')}}',
+                        type:'get',
+                        dataType:'html',
+                        data:{mainCompany: mainCompany},
+                        success: function (data) {
+                            $("#loadingmessage-1").css("display","none");
+                            $('.column_account').css("display","block").html(data);
 
-
-            });
-        </script>
-        <script>
-            $(document).ready(function(){
-                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
-                console.log(minDate);
-                $('.date').datepicker({
-                    format: 'yyyy-mm-dd',
-                    rtl: true,
-                    language: '{{session('lang')}}',
-                    autoclose:true,
-                    todayBtn:true,
-                    clearBtn:true,
-                });
-            });
-        </script>
-        <script>
-            $(function () {
-                'use strict'
-                $('.e2').select2({
-                    placeholder: "{{trans('admin.select')}}",
-                    dir: '{{direction()}}'
-                });
+                        }
+                    });
+                }else{
+                    $('.column_account').html('');
+                }
             });
 
-        </script>
 
-    @endpush
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">كشف حساب للحسابات العامة</h3>
-        </div>
-        <div class="box-body">
+        });
+    </script>
 
+    <script>
+        $(document).ready(function(){
+            var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
+            console.log(minDate);
+            $('.date').datepicker({
+                format: 'yyyy-mm-dd',
+                rtl: true,
+                language: '{{session('lang')}}',
+                autoclose:true,
+                todayBtn:true,
+                clearBtn:true,
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            'use strict'
+            $('.e2').select2({
+                placeholder: "{{trans('admin.select')}}",
+                dir: '{{direction()}}'
+            });
+        });
 
-            {{--    {{ Form::label('date', trans('admin.account_statement').' '.session_lang($operation->name_en,$operation->name_ar), ['class' => 'control-label text-center']) }}--}}
-            <div class="form-group row">
-                <div class="col-md-3">
-                    {{ Form::label('tree','كشف حساب', ['class' => 'control-label']) }}
-                    {{ Form::select('fromtree',[0,1],null, array_merge(['class' => 'form-control e2 fromtree','placeholder'=> trans('admin.select') ])) }}
-                </div>
-                <div class="col-md-3">
-                    {{ Form::label('tree', 'كشف حساب', ['class' => 'control-label']) }}
-                    {{ Form::select('totree',[0,1],null, array_merge(['class' => 'form-control e2 totree','placeholder'=> trans('admin.select') ])) }}
-                </div>
-                <div class="col-md-3">
-                    {{ Form::label('receipts', trans('admin.From'), ['class' => 'control-label']) }}
-                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'form-control from date','required'=>'required','autocomplete'=>'off'])) }}
-                </div>
-                <div class="col-md-3">
-                    {{ Form::label('receipts', trans('admin.To'), ['class' => 'control-label']) }}
-                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'form-control to date','required'=>'required','autocomplete'=>'off'])) }}
-                </div>
-            </div>
-            <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
+    </script>
 
-
-            {{--loader spinner--}}
-            <div id='loadingmessage-2' style='display:none; margin-top: 20px' class="text-center">
-                <img src="{{ url('/') }}/images/ajax-loader.gif"/>
-            </div>
-            <div class="column-account-date">
-
-            </div>
-            <br>
-
-
-        </div>
+@endpush
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">كشف حساب للحسابات العامة</h3>
     </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                {{ Form::label('maincompany','الشركات', ['class' => 'control-label']) }}
+                {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control MainCompany e2 fromtree','placeholder'=> trans('admin.select') ])) }}
+            </div>
+            <div class="column_account col-md-6">
+
+                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}
+                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2','placeholder'=> trans('admin.select') ])) }}
+
+            </div>
+
+
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="row details_row">
+
+        </div>
+
+       <br>
+
+
+
+    {{--loader spinner--}}
+    <div id='loadingmessage-1' style='display:none; margin-top: 20px' class="text-center">
+        <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+    </div>
+
+    <br>
+
+        <div class="row">
+            <div class="button_print" style="position: absolute; right: 60px;">
+
+            </div>
+            <div class="back">
+                <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
+
+            </div>
+
+        </div>
+
+
+</div>
+</div>
 
 
 @endsection

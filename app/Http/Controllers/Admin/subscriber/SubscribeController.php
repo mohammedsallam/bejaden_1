@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Admin\subscriber;
 use App\activity_type;
 use App\Branches;
 use App\city;
+
 use App\country;
 use App\DataTables\subcriberDataTable;
 use App\Department;
 use App\employee;
 use App\Http\Controllers\Admin\Country\CountryController;
+use App\Models\Admin\AstNutrbusn;
 use App\Models\Admin\Astsupctg;
+use App\Models\Admin\AstSalesman;
+use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\AstMarket;
 use App\Models\Admin\MTsCustomer;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\ActivityTypes;
@@ -27,6 +32,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use Up;
 
 class SubscribeController extends Controller
@@ -44,7 +50,7 @@ class SubscribeController extends Controller
 
     public function create()
     {
-      //  $countries = country::pluck('country_name_'.session('lang'),'id');
+        //  $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
         $branches = MainBranch::pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
@@ -188,9 +194,11 @@ class SubscribeController extends Controller
         $subscriber= MTsCustomer::findOrFail($ID_No); //id
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = MainBranch::pluck('name_'.session('lang'),'id');
-        $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
+        $branches = Branches::pluck('name_'.session('lang'),'id');
+        $activities= AstNutrbusn::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
         $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
+
+//        dd($activities);
         return view('admin.subscribers.show1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
     }
 
@@ -205,11 +213,11 @@ class SubscribeController extends Controller
         $subscriber = MTsCustomer::findOrFail($ID_No);
         $countries = country::pluck('country_name_'.session('lang'),'id');
         $astsupctg = Astsupctg::pluck('Supctg_Nm'.session('lang'),'ID_No');
-        $branches = MainBranch::all();
+        $branches = Branches::pluck('name_'.session('lang'),'id');
         $activities= ActivityTypes::pluck('Name_'.ucfirst(session('lang')),'ID_No')->toArray();
         $companies = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray();
 
-        return view('admin.subscribers.edit1',compact(['subscriber', 'astsupctg','companies','countries','branches', 'activities']));
+        return view('admin.subscribers.edit1',compact('subscriber'),['astsupctg' => $astsupctg,'companies' => $companies,'countries' => $countries,'branches' => $branches, 'activities'=>$activities]);
     }
 
     /**
@@ -327,6 +335,199 @@ class SubscribeController extends Controller
     {
         $countries= DB::table("countries")->get();
         return view('index')->with('countries',$countries);
+    }
+    public function customer_report()
+    {
+        $customer = MTsCustomer::get();
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return $data =  view('admin.basic_reports.customer.customer_report',compact('mainCompany', 'customer'))->render();
+
+    }
+    public function get_mainbranches(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            $mainCompany =  $request->mainCompany;
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+            return $data =  view('admin.basic_reports.customer.ajax.get_mainbranches',compact('mainCompany','MainBranch'))->render();
+
+
+        }
+
+    }
+
+
+
+    public function cust_report_select(Request $request)
+    {
+        if($request->ajax())
+
+        {
+            $mainCompany = $request->mainCompany;
+            $MainBranch = $request->MainBranch;
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $myradio = $request->value;
+            if($myradio =='country')
+            {
+                $country = country::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','country','myradio','MainBranch','mainCompany'))->render();
+
+            }elseif ( $myradio == 'bransh')
+            {
+                $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->get(['Brn_No','Brn_Nm'.ucfirst(session('lang'))]);
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','myradio','MainBranch','mainCompany'))->render();
+            }
+            elseif ( $myradio == 'city')
+            {
+                $city = city::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','city','myradio','MainBranch','mainCompany'))->render();
+            }
+            else if($myradio == 'AstSalesman')
+            {
+                $AstSalesman = AstSalesman::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstSalesman','myradio','MainBranch','mainCompany'))->render();
+            }else if($myradio == 'AstMarket')
+            {
+                $AstMarket = AstMarket::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','AstMarket','myradio','MainBranch','mainCompany'))->render();
+            }
+            else if($myradio == 'ActivityTypes')
+            {
+                $ActivityTypes = AstNutrbusn::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','ActivityTypes','myradio','MainBranch','mainCompany'))->render();
+            }
+            else if($myradio == 'Astsupctg')
+            {
+                $Astsupctg = Astsupctg::get();
+                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','Astsupctg','myradio','MainBranch','mainCompany'))->render();
+            }
+//            else if($myradio == 'active'){
+//                $customer = MTsCustomer::where('Cstm_Active', 1)->get();
+//                return $data = view('admin.basic_reports.customer.ajax.cust_report_select',compact('active','notactive','customer','myradio','MainBranch','mainCompany'))->render();
+//
+//            }
+
+
+
+//
+
+
+
+        }
+    }
+
+
+    public function cust_report_print(Request $request)
+    {
+        if($request->ajax())
+
+        {
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $mainCompany = $request->mainCompany;
+            $myradio = $request->myradio;
+            $selecd_input = $request->selecd_input;
+
+            return $data=  view('admin.basic_reports.customer.ajax.cust_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
+
+        }
+    }
+    public function cust_report_pdf(Request $request)
+    {
+//        dd($request->all());
+        $name = $request->myradio;
+        $value = $request->selecd_input;
+        if($name == 'bransh')
+        {
+
+            if ($request->active == 1 && $request->notactive == null){
+                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+            }elseif ($request->active == null && $request->notactive == 0){
+                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+            }elseif ($request->active == 1 && $request->notactive == 0){
+                $MTsCustomer = MTsCustomer::where('Brn_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+            }
+
+        }if($name == 'AstSalesman')
+    {
+
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Slm_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }if($name == 'ActivityTypes')
+    {
+
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Nutr_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }
+        if($name == 'country')
+        {
+            if ($request->active == 1 && $request->notactive == null){
+                $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+            }elseif ($request->active == null && $request->notactive == 0){
+                $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+            }elseif ($request->active == 1 && $request->notactive == 0){
+                $MTsCustomer = MTsCustomer::where('Cntry_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+            }
+
+
+
+        }if($name == 'city')
+    {
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('City_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }if($name == 'MtsChartAc')
+    {
+
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Acc_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+
+    }if($name == 'AstMarket')
+    {
+        if ($request->active == 1 && $request->notactive == null){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->active)->get();
+        }elseif ($request->active == null && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->where('Cstm_Active',$request->notactive)->get();
+        }elseif ($request->active == 1 && $request->notactive == 0){
+            $MTsCustomer = MTsCustomer::where('Mrkt_No',$value)->where('Cmp_No' , $request->mainCompany)->get();
+        }
+    }
+
+        //dd($MTsCustomer[1]->delegate());
+
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+            );
+        }];
+
+        $pdf = Pdf::loadView('admin.basic_reports.customer.pdf.cust', compact('MTsCustomer'),[], $config);
+        return $pdf->stream();
     }
 
     //For fetching cities

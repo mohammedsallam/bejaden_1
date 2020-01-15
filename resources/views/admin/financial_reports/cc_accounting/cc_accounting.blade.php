@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title','محاسبة العملاء')
+@section('title','محاسبة مراكز التكلفة')
 
 @section('content')
     @push('css')
@@ -17,12 +17,13 @@
         <div class="box-body">
 
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cust_account_statement">
+                <a href="cc/report/checkReports">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
                         <div class="info-box-content">
-                            <h2 class="info-box-text">كشف حساب</h2>
+                            <h2 class="info-box-text">أرصدة مراكز التكلفه
+                            </h2>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -30,12 +31,12 @@
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cust_trial_balance">
+                <a href="cc/report/motioncc">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-balance-scale"></i></span>
 
                         <div class="info-box-content">
-                            <h2 class="info-box-text">ميزان مراجعة </h2>
+                            <h2 class="info-box-text">كشف بحركة مركز التكلفه</h2>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -43,12 +44,12 @@
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cust_daily_restriction">
+                <a href="cc/report/ccpublicbalance">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-500px"></i></span>
 
                         <div class="info-box-content">
-                            <h2 class="info-box-text">تقارير قيود اليومية</h2>
+                            <h2 class="info-box-text">ميزان مراجعه لمراكز التكلفة</h2>
                         </div>
                         <!-- /.info-box-content -->
                     </div>

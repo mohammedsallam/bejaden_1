@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.financial_reports'))
+@section('title','التقارير المالية')
 
 @section('content')
 @push('css')

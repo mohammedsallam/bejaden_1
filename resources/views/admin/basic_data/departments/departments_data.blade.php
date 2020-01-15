@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_report">
+            <a href="departments/reports/report">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-percent" aria-hidden="true"></i></span>
 
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="customer_report">
+            <a href="{{route('goTree')}}">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-file" aria-hidden="true"></i></span>
 

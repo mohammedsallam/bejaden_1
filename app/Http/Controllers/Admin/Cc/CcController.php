@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\cc;
 
 
 use App\Branches;
+use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsCostcntr;
 use App\Project;
 use App\Contractors;
@@ -330,23 +331,183 @@ class CcController extends Controller
 
     public function reports()
     {
-        $title = trans('admin.cc_reports');
-        return view('admin.cc.reports.index',compact('title'));
+//        $title = trans('admin.cc_reports');
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+
+        return view('admin.basic_reports.cc.cc_report',compact('mainCompany'));
     }
-    public function print()
+
+    //print tree///
+    public function getTree(Request $request){
+        $mainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No');
+        return view('admin.basic_reports.CC.gotree',compact('mainCompany'));
+    }
+    public function print(Request $request)
     {
+        $cc = MtsCostcntr::where('Cmp_No' , $request->mainCompany)->orderBy('Costcntr_No')->get();
 
-        $cc = Department::orderBy('code')->get();
 
+//        dd($cc);
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = Pdf::loadView('admin.cc.print', compact('cc'),[], $config);
+        $pdf = Pdf::loadView('admin.basic_reports.cc.print', compact('cc'),[], $config);
         return $pdf->stream();
     }
+    //////////
+    ///
+    public function CcReportPrint(Request $request){
+//        dd($request->all());
+        if($request->ajax())
+
+        {
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $mainCompany = $request->mainCompany;
+            $myradio = $request->myradio;
+            $selecd_input = $request->selecd_input;
+
+            return $data=  view('admin.basic_reports.cc.ajax.cc_report_print',compact('active','notactive','selecd_input','myradio','mainCompany'))->render();
+
+        }
+    }
+    public function cc_report_select(Request $request)
+    {
+        if($request->ajax())
+        {
+            $mainCompany = $request->mainCompany;
+            $active = $request->active;
+            $notactive = $request->notactive;
+            $myradio = $request->value;
+            if($myradio =='level')
+            {
+                $levels = MtsChartAc::where('Cmp_No', $mainCompany)->groupBy('Level_No')->pluck('Level_No');
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','levels','myradio','mainCompany'))->render();
+
+            }elseif ( $myradio == 'accTarseed')
+            {
+                $acc_tarseed = MtsChartAc::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','acc_tarseed','mainCompany'))->render();
+            }
+            elseif ( $myradio == 'debit')
+            {
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+            else if($myradio == 'parent')
+            {
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }else if($myradio == 'chiled')
+            {
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+            else if($myradio == 'credit')
+            {
+                return $data = view('admin.basic_reports.cc.show',compact('active','notactive','myradio','mainCompany'))->render();
+            }
+
+//
+        }
+    }
+
+    public function CcReportpdf(Request $request){
+        $mainCompany = $request->mainCompany;
+        $myradio = $request->myradio;
+        $value = $request->selecd_input;
+        if($myradio == 'level') {
+            $products = [];
+            $products = MtsCostcntr::where('Cmp_No',$mainCompany)->where('Level_No',$value)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.cc.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+
+        }
+        if($myradio == 'accTarseed') {
+            $products = [];
+            $departments = MtsCostcntr::where('Cmp_No',$mainCompany)->where('ID_No',$value)->get();
+            while(count($departments) > 0){
+                $nextCategories = [];
+                foreach ($departments as $category) {
+                    $products = array_merge($products, $category->children->all());
+                    $nextCategories = array_merge($nextCategories, $category->children->all());
+                }
+                $departments = $nextCategories;
+            }
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report2', compact('products'), [], $config);
+            return $pdf->stream();
+
+        }
+        if($value == 'debit') {
+            $products = [];
+            $products = MtsCostcntr::where('Cmp_No',$mainCompany)->whereRaw('Fbal_DB > Fbal_CR')->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'parent') {
+            $products = [];
+            $products = MtsCostcntr::where('Cmp_No',$mainCompany)->where('Level_Status',0)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'chiled') {
+            $products = [];
+            $products = MtsCostcntr::where('Cmp_No',$mainCompany)->where('Level_Status',1)->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+        if($value == 'credit') {
+            $products = [];
+            $products = MtsCostcntr::where('Cmp_No',$mainCompany)->whereRaw('Fbal_DB < Fbal_CR')->get();
+            $config = ['instanceConfigurator' => function($mpdf) {
+                $mpdf->SetHTMLFooter('
+            <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                );
+            }];
+
+            $pdf = PDF::loadView('admin.basic_reports.Departments.pdf.report', compact('products'), [], $config);
+            return $pdf->stream();
+        }
+
+
+    }
+
+
     public function details(Request $request)
     {
         if($request->ajax()){
