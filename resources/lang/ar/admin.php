@@ -1479,6 +1479,8 @@ return [
     'report_tree'        =>'طباعة دليل الحسابات',
     'report_tree_cc'     =>'طباعة مراكز التكلفه',
     'cc_reports'         =>'تقارير مراكز التكلفه',
+    'cc_number'         =>' رقم مركز التكلفه',
+    'cc_name'         =>' اسم مركز التكلفه',
     'Tr_No_short' => 'رقم/قيد',
     'exchange_rate_short' => 'صرف',
     'slm_no_short' => 'ر/م',
