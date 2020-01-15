@@ -837,7 +837,7 @@
                 <div class="col-md-12">
                         <div class="panel panel-primary">
                             <div class="panel-body">
-                                <div class="row all_about_currency hidden">
+                                <div class="row all_about_currency">
                                     {{-- العمله --}}
                                     <div class="col-md-2">
                                         <div class="form-group">

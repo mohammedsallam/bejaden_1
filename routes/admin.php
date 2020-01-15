@@ -199,20 +199,20 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('supplier_data', function () {
             return view('admin.basic_data.supplier.supplier_data');
         });
-            Route::get('departments_data', function () {
+        Route::get('departments_data', function () {
             return view('admin.basic_data.departments.departments_data');
         });
-            Route::get('cc_data', function () {
+        Route::get('cc_data', function () {
             return view('admin.basic_data.cc.cc_data');
         });
 
-            Route::get('stuff_data', function () {
+        Route::get('stuff_data', function () {
             return view('admin.basic_data.stuff.stuff_data');
         });
-            Route::get('Fixed_assets', function () {
+        Route::get('Fixed_assets', function () {
             return view('admin.basic_data.Fixed_assets.Fixed_assets');
         });
-            Route::get('cars_data', function () {
+        Route::get('cars_data', function () {
             return view('admin.basic_data.cars.cars_data');
         });
 
@@ -367,7 +367,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('printCatchRecptC/{id}','Admin\Cash\receiptCashController@print')->name('printCatchRecptC');
         Route::post('branchForEditC','Admin\Cash\receiptCashController@branchForEdit')->name('branchForEditC');
         Route::post('getRcptDetailsC','Admin\Cash\receiptCashController@getRcptDetails')->name('getRcptDetailsC');
-       // Route::post('getBranchesFilter', 'Admin\Cash\receiptCashController@getBranchesFilter')->name('getBranchesFilter');
+        // Route::post('getBranchesFilter', 'Admin\Cash\receiptCashController@getBranchesFilter')->name('getBranchesFilter');
 
 
 
