@@ -578,12 +578,15 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('ProjectsSites', 'Admin\ProjectsSites\ProjectsSitesController');
 
 
-        ///category
-        ///
-        Route::resource('category', 'Admin\category\CategoriesController');
-        Route::resource('type/cate', 'Admin\category\TypeCategoriesController');
-        Route::resource('units/category', 'Admin\category\unitsCategoriesController');
+        /**
+         * all about Categories
+         */
 
+        Route::resource('categories', 'Admin\categories\CategoriesController');
+        Route::resource('units', 'Admin\categories\UnitsController');
+        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
     });
+
+
 
 });
