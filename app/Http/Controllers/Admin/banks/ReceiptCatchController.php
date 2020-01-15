@@ -100,7 +100,9 @@ class ReceiptCatchController extends Controller
      */
     public function store(Request $request)
     {
+
 //        @dd($request->all());
+
         $catch_data = json_decode($request->catch_data);
         //Create header
         if(count($catch_data) > 0){

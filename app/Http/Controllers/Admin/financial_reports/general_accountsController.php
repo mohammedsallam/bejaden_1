@@ -101,12 +101,15 @@ class general_accountsController extends Controller
         $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
         $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
 
-            ->WhereIN('Sysub_Account',$Acc_No)->WhereIN('Acc_No',$Acc_No)
-            ->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
+            ->where(function ($query)use($Acc_No)
+            {
+                $query->whereIn('Acc_No',$Acc_No);
+            })->orWhere(function($query) use($Acc_No){
+                $query->whereIn('Sysub_Account',$Acc_No);
+            })
 
-        $allItems = new \Illuminate\Database\Eloquent\Collection;
-        $allItems = $GLjrnTrs->merge($Acc_No);
-        @dd($Acc_No,$GLjrnTrs,$allItems);
+            ->get();
+@dd($Acc_No,$GLjrnTrs);
 
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
