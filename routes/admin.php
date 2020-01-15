@@ -576,6 +576,17 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('contractors', 'Admin\Contractors\ContractorsController');
         Route::resource('contracts', 'Admin\Contracts\ContractsController');
         Route::resource('ProjectsSites', 'Admin\ProjectsSites\ProjectsSitesController');
+
+
+        /**
+         * all about Categories
+         */
+
+        Route::resource('categories', 'Admin\categories\CategoriesController');
+        Route::resource('units', 'Admin\categories\UnitsController');
+        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
     });
+
+
 
 });
