@@ -16,17 +16,10 @@ return [
     'financial_reports' => 'التقارير المحاسبية',
     'general_accounts' => 'التقارير الحسابات العامة',
     'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
-
-
-    'financial_reports' => 'التقارير المحاسبية',
     'report_supplier' => 'تقارير الموردين',
     'AstCurncy' => 'العملات',
     'MtsChartAc' => 'تصنيف الحسابات',
     'MtsChartAc_sup' => 'تصنيف الموراد',
-    'general_accounts' => 'التقارير الحسابات العامة',
-    'trial_balance_cc' => 'تقارير ميزان المرجعة العام',
-
-
     'allactivities' => 'كل الأنشطه',
     'sProcessing' => 'جاري التحميل',
     'sLengthMenu' => 'sLengthMenu',
@@ -164,14 +157,6 @@ return [
     'reference_number' => 'رقم مرجع المورد',
     'SupCtg_No' => 'تصنيف المورد',
 
-
-
-
-
-
-
-
-
     // accountingReports / details.blade
     'Print_PDF' => 'عرض',
     // admins / create
@@ -191,7 +176,6 @@ return [
     // admins/permissions / create
     'Create_New_Permission' => 'انشاء صلاحيه جديد',
     // admins/permissions // edit
-    'Edit_Permission' => 'تعديل الصلاحيه',
     // admins/permissions / index
     'Permissions_datatable' => 'جدول الصلاحيات',
     'Permissions' => 'الصلاحيات',
@@ -217,13 +201,6 @@ return [
     'edit_blog' => 'تعديل الخبر',
     // blog // index
     'Blogs' => 'الاخبار',
-
-
-
-
-
-
-
     // book/btn // delete
     'are_you_sour_schedules' => 'هل متاكد من حذف الرحله',
     // book // create
@@ -256,7 +233,6 @@ return [
     // bus // edit
     'edit_bus_type' => 'تعديل الباص',
     // bus // index
-    'bus_style' => 'موديل الباص',
     'car_style' => 'موديل السيارة',
     // bus/btn // delete
     'Close' => 'اغلاق',
@@ -293,15 +269,6 @@ return [
     'Print_Invoice' => 'طباعة الفاتورة',
     'Reactive_Subscriber' => 'اعادة تفعيل العميل',
     'Submit_Payment' => 'إرسال الدفع',
-
-
-
-
-
-
-
-
-
     // cites // create
     'create_new_city' => 'اضافه مدينه جديدة',
     'country' => 'الدوله',
@@ -314,11 +281,7 @@ return [
     'arabic_name' => 'الاسم العربى',
     'english_name' => 'الاسم الانجليزى',
     'Create_New_cc' => 'اضافة مركز تكلفة جديد',
-
     'mob' => 'رقم الموبايل',
-    'arabic_name' => 'الاسم AR',
-    'english_name' => 'الاسم EN',
-    'mob' => ' الموبايل',
     'code' => 'الكود',
     'logo' => 'علم الدوله',
     'edit_country' => 'تعديل الدولة',
@@ -349,8 +312,6 @@ return [
     'license_num' => 'رقم الرخصه',
     'license_type' => 'نوع الرخصه',
     'place_issuance' => 'مكان استخراجها',
-    'date_issuance' => 'تاريخ استخراجها',
-    'expired_date' => 'تاريخ الانتهاء',
     'status' => 'الحاله',
     'experiance' => 'الخبرات',
     'salary' => 'المرتب',
@@ -1153,9 +1114,6 @@ return [
     'currency_debt' => 'العمله الاجنبيه مدين',
     'currency_credit' => 'العمله الاجنبيه دائن',
     'currency_cost' => 'سعر العمله',
-    'currency'      => 'العمله',
-    '' => '',
-    '' => '',
     'Sal_Flg' => 'مبيعات',
     'companybanks_id' => 'بنك الشركه',
     'Cmp_Number' => ' رقم الشركه',
@@ -1173,7 +1131,6 @@ return [
     'activity_type' => 'نوع النشاط',
     'types_of_activities' => 'أنواع الأنشطه',
     'save_print' => 'حفظ وعرض',
-    'credit_limit' => 'الحد الأئتماني',
     'repayment_period' => 'مدة السداد',
     'discount' => 'الخصم',
     'date_hijri' => 'التاريخ الهجري',
@@ -1502,7 +1459,11 @@ return [
     'Alw_slmacc' => 'محاسبة المندوبين',
     'add_noti'           =>'اضافـة اشعار',
     'edit_noti'          =>'تعديل الاشعارات',
-    'report_stuff'       =>'تقارير البيانات الاساسية للموظفين'
+    'report_stuff'       =>'تقارير البيانات الاساسية للموظفين',
+    'units'       => 'الوحدات للأصناف',
+    'create_unit'       => 'إضافة وحدة',
+    'unit_no'       => 'رقم الوحدة',
+    'edit_unit'       => 'تعديل الوحدة',
 
 
 
