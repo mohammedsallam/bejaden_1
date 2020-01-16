@@ -109,7 +109,7 @@ class general_accountsController extends Controller
             })
 
             ->get();
-@dd($Acc_No,$GLjrnTrs);
+@dd($maincompany,$MainBranch,$Acc_No,$GLjrnTrs);
 
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
