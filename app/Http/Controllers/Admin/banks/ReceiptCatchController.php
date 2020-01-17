@@ -31,6 +31,7 @@ class ReceiptCatchController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->Cmp_No == null && $request->pranch == null){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
@@ -101,13 +102,14 @@ class ReceiptCatchController extends Controller
     public function store(Request $request)
     {
 
-//        @dd($request->all());
+
 
         $catch_data = json_decode($request->catch_data);
         //Create header
         if(count($catch_data) > 0){
             $last_index = count($catch_data) - 1;
             // dd($catch_data[$last_index]);
+
             $header = GLJrnal::create([
                 'Cmp_No' => $catch_data[$last_index]->Cmp_No,
                 'Brn_No' => $catch_data[$last_index]->Brn_No,

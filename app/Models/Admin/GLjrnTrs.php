@@ -44,4 +44,11 @@ class GLjrnTrs extends Model
         'FTr_Cr',
         'Curncy_No',
     ];
+    public function MtsChartAc(){
+        return $this->hasone('App\\Models\Admin\MtsChartAc','Acc_No','Acc_No');
+    }
+    public function GLJrnal(){
+        return $this->hasone('App\\Models\Admin\GLJrnal','Acc_No','Acc_No');
+    }
+
 }
