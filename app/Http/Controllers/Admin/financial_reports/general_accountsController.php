@@ -39,7 +39,7 @@ class general_accountsController extends Controller
     public function account_statement()
     {
 
-        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No');
+        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
 
         return view('admin.financial_reports.general_accounts.accountStatement.account_statement',compact('MainCompany'));
 
@@ -50,7 +50,7 @@ class general_accountsController extends Controller
         if($request->ajax())
         {
             $mainCompany = $request->mainCompany;
-            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
             return $data = view('admin.financial_reports.general_accounts.accountStatement.ajax.get_branche',compact('MainBranch','mainCompany'))->render();
         }
     }
@@ -108,14 +108,7 @@ class general_accountsController extends Controller
             ->where(function ($q) use($Acc_No) {
                 $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
             })
-
-
             ->get();
-
-
-        //sort);
-
-
         $GLjrnTrs = $GLjrnTrs->map(function ($data)use($maincompany,$Acc_No){
             $data->Acc_NmAr = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->Acc_NmAr;
             $data->Acc_NmEn = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->Acc_NmEn;;
@@ -125,19 +118,58 @@ class general_accountsController extends Controller
 
             return $data;
         });
+        //sort;
         $GLjrnTrs = $GLjrnTrs->sortBy(function($post) {
             return $post->Tr_Dt;
 
         });
         $data = $GLjrnTrs->groupBy(function($date) {
 
-                return session_lang($date->Acc_NmEn,$date->Acc_NmAr);
+            return session_lang($date->Acc_NmEn,$date->Acc_NmAr);
 
 
         });
+$Empty_GLjrnTrs = [];
+        $GLjrnTrs_name = [];
+if($data->isEmpty())
+{    $Empty_GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+    ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+
+    ->where(function ($q) use($Acc_No) {
+        $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+    })
+    ->get();
+    $Empty_GLjrnTrs = $Empty_GLjrnTrs->map(function ($data)use($maincompany,$Acc_No){
+        $data->Acc_NmAr = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->Acc_NmAr;
+        $data->Acc_NmEn = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->Acc_NmEn;;
+        $data->ID_No_MtsChartAc = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->ID_No;;
+        $data->acc_no_chart = $data->MtsChartAc->where('Cmp_No',$maincompany)->whereIn('Acc_No',$Acc_No)->first()->Acc_No;;
 
 
-//        @dd($data);
+        return $data;
+    });
+
+//    //sort;
+    $Empty_GLjrnTrs = $Empty_GLjrnTrs->sortBy(function($post) {
+    return $post->Tr_Dt;
+
+});
+    $GLjrnTrs_name = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)
+        ->get(['Acc_No','Acc_NmAr'])->first();
+
+//    $Empty_GLjrnTrs = $Empty_GLjrnTrs->groupBy(function($date) {
+//
+//        return session_lang($date->Acc_NmEn,$date->Acc_NmAr);
+//
+//
+//    });
+
+
+}
+
+
+
+
 
 
         $config = ['instanceConfigurator' => function($mpdf) {
@@ -146,7 +178,7 @@ class general_accountsController extends Controller
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = PDF::loadView('admin.financial_reports.general_accounts.accountStatement.pdf.report', ['data'=>$data,'maincompany'=>$maincompany,'MainBranch'=>$MainBranch,'fromtree' => $fromtree,'totree' => $totree,'from' => $from,'to' => $to],[],$config);
+        $pdf = PDF::loadView('admin.financial_reports.general_accounts.accountStatement.pdf.report', ['GLjrnTrs_name'=>$GLjrnTrs_name,'Empty_GLjrnTrs'=>$Empty_GLjrnTrs,'data'=>$data,'maincompany'=>$maincompany,'MainBranch'=>$MainBranch,'fromtree' => $fromtree,'totree' => $totree,'from' => $from,'to' => $to],[],$config);
         return $pdf->stream();
 
     }
