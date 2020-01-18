@@ -155,28 +155,28 @@
         <div class="box-body">
 
             <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     {{ Form::label('MainCompany','الشركات', ['class' => 'control-label']) }}
                     {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control e2 ee  MainCompany','placeholder'=> trans('admin.select') ])) }}
                 </div>
-                <div class="col-md-6 div_branch">
+{{--                <div class="col-md-6 div_branch">--}}
 
-                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}
-                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2 eeerr' ,'placeholder'=> trans('admin.select') ])) }}
+{{--                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}--}}
+{{--                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2 eeerr' ,'placeholder'=> trans('admin.select') ])) }}--}}
 
-                </div>
-            </div>
+{{--                </div>--}}
 
-                <div class="form-group row">
-                <div class="col-md-4">
+
+                <div class="div_details">
+                <div class="col-md-3">
                     {{ Form::label('reporttype',trans('admin.report_type'), ['class' => 'control-label']) }}
                     {{ Form::select('reporttype',\App\Enums\dataLinks\BalanceReviewType::toSelectArray(),null, array_merge(['class' => 'form-control e3 reporttype','placeholder'=> trans('admin.select') , 'id' => 'seeAnotherField' ])) }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     {{ Form::label('kind',trans('admin.type'), ['class' => 'control-label']) }}
                     {{ Form::select('kind',\App\Enums\dataLinks\AccountTypeType::toSelectArray(),0, array_merge(['class' => 'form-control kind','placeholder'=> trans('admin.select') ])) }}
                 </div>
-                <div class="col-md-4" id="otherFieldDiv">
+                <div class="col-md-3" id="otherFieldDiv">
                     {{ Form::label('level',trans('admin.level'), ['class' => 'control-label']) }}
                     {{ Form::selectRange('level',1,7,1, array_merge(['class' => 'form-control level', 'id' => 'otherField'])) }}
                 </div>

@@ -90,6 +90,7 @@
     <span>{{trans('admin.account_statement')}}</span>
     <span>{{trans('admin.general')}}</span>
 </div>
+
 @if(count($Empty_GLjrnTrs) > 0 && count($data) == 0)
 
     @foreach($Empty_GLjrnTrs as $key => $one)
