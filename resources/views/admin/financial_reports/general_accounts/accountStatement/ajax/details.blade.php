@@ -12,7 +12,7 @@
 {{Form::hidden('to',$to)}}
 
 
-{{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin-right: 10px;')) }}
+{{ Form::submit(trans('admin.Print_PDF'), array('class' => 'btn btn-primary', 'style' => 'margin: 19px 81px -32px 0px')) }}
 
 {!! Form::close() !!}
 

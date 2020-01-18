@@ -2,6 +2,13 @@
     $(function () {
         'use strict'
 
+        $(function(){
+            $('.select').change(function(){ // when one changes
+                var selected = $('.select').children('option:selected').text();
+
+                $('.totree').val(selected); // they all change
+            });
+        })
         $(".from,.to,.fromtree,.totree,.acc_fromtree,.acc_totree").on("change",function(){
 
             var maincompany = '{{$mainCompany}}';
@@ -37,6 +44,8 @@
                 $('.button_print').html('');
             }
         });
+
+
 
 
     });
@@ -79,47 +88,27 @@
 
 </style>
 
-<div class="col-md-2">
-    {{ Form::label('tree','من حساب', ['class' => 'control-label']) }}
-    {{ Form::select('fromtree',$mtschartac,null, array_merge(['class' => 'form-control  e2 ee fromtree','placeholder'=> trans('admin.select') ])) }}
+
+<div class="row">
+    <div class="col-md-10">
+        {{ Form::label('tree','من حساب', ['class' => 'col-md-3']) }}
+        {{ Form::select('fromtree',$mtschartac,null, array_merge(['class' => 'col-md-8  form-control select e2  ee','placeholder'=> trans('admin.select') ])) }}
+    </div>
+
+    <div class="col-md-2">
+        {{ Form::select('fromtree_Acc_No',$mtschartac_Acc_No,null, array_merge(['class' => 'form-control e2 acc_fromtree','placeholder'=> trans('admin.select') ])) }}
+
+    </div>
 </div>
-<div class="col-md-2">
-    {{ Form::label('tree','من', ['class' => 'control-label']) }}
-    {{ Form::select('fromtree',$mtschartac_Acc_No,null, array_merge(['class' => 'form-control  e2 ee acc_fromtree','placeholder'=> trans('admin.select') ])) }}
+<br>
+<div class="row">
+    <div class="col-md-10">
+        {{ Form::label('tree','الى حساب', ['class' => 'col-md-3']) }}
+        {{ Form::select('totree',$mtschartac,null, array_merge(['class' => 'col-md-8  form-control  e2 select totree','placeholder'=> trans('admin.select') ])) }}
+    </div>
+
+    <div class="col-md-2">
+        {{ Form::select('totree_Acc_No',$mtschartac_Acc_No,null, array_merge(['class' => 'form-control e2 acc_totree','placeholder'=> trans('admin.select') ])) }}
+
+    </div>
 </div>
-<div class="col-md-2">
-    {{ Form::label('tree','الي حساب', ['class' => 'control-label']) }}
-    {{ Form::select('totree',$mtschartac,null, array_merge(['class' => 'form-control e2 totree','placeholder'=> trans('admin.select') ])) }}
-</div>
-<div class="col-md-2">
-    {{ Form::label('tree','الي', ['class' => 'control-label']) }}
-    {{ Form::select('totree',$mtschartac_Acc_No,null, array_merge(['class' => 'form-control e2 acc_totree','placeholder'=> trans('admin.select') ])) }}
-</div>
-{{--<div class="row">--}}
-
-{{--    <div class="col-md-3">--}}
-{{--        {{ Form::label('tree','fromtree', ['class' => 'control-label']) }}--}}
-{{--        {{ Form::select('fromtree',$mtschartac,null, array_merge(['class' => 'form-control  e2 ee fromtree','placeholder'=> trans('admin.select') ])) }}--}}
-{{--    </div>--}}
-
-{{--    <div class="col-md-3">--}}
-{{--        {{ Form::label('tree','totree', ['class' => 'control-label']) }}--}}
-{{--        {{ Form::select('totree',$mtschartac,null, array_merge(['class' => 'form-control e2 totree','placeholder'=> trans('admin.select') ])) }}--}}
-{{--    </div>--}}
-{{--    <div class="col-md-3">--}}
-{{--        {{ Form::label('receipts', trans('admin.From'), ['class' => 'control-label']) }}--}}
-{{--        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'form-control from date','required'=>'required','autocomplete'=>'off'])) }}--}}
-{{--    </div>--}}
-{{--    <div class="col-md-3">--}}
-{{--        {{ Form::label('receipts', trans('admin.To'), ['class' => 'control-label']) }}--}}
-{{--        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'form-control to date','required'=>'required','autocomplete'=>'off'])) }}--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-
-{{--loader spinner--}}
-{{--<div id='loadingmessage_1' style='display:none; margin-top: 20px' class="text-center">--}}
-{{--    <img src="{{ url('/') }}/images/ajax-loader.gif"/>--}}
-{{--</div>--}}
-
-{{--<br>--}}
