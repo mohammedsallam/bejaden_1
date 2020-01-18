@@ -17,7 +17,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-window-restore" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text"> بيانات الاساسية للااصناف</h2>
+                        <h2 class="info-box-text">{{trans('admin.basic_information')}}</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -26,12 +26,12 @@
         </div>
 
             <div class="col-md-4 col-sm-6 col-12">
-                <a href="#">
+                <a href="{{route('mainCategories.index')}}">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-barcode" aria-hidden="true"></i></span>
 
                         <div class="info-box-content">
-                            <h2 class="info-box-text"> الأنواع الرئيسية للأصناف</h2>
+                            <h2 class="info-box-text">{{trans('admin.basic_types')}}</h2>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
