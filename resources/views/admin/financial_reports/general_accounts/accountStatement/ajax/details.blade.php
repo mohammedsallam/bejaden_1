@@ -1,10 +1,13 @@
 
 {!! Form::open(array('route' => 'accountStatement.acc_pdf', 'method' => 'POST', 'target' => '_blank')) !!}
 {{Form::hidden('maincompany',$maincompany)}}
-{{Form::hidden('MainBranch',$MainBranch)}}
+@if($fromtree != null && $totree != null )
 {{Form::hidden('fromtree',$fromtree)}}
 {{Form::hidden('totree',$totree)}}
-
+@else
+    {{Form::hidden('fromtree',$acc_fromtree)}}
+    {{Form::hidden('totree',$acc_totree)}}
+    @endif
 {{Form::hidden('from',$from)}}
 {{Form::hidden('to',$to)}}
 

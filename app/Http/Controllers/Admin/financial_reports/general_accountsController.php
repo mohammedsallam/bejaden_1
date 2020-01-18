@@ -45,23 +45,25 @@ class general_accountsController extends Controller
 
     }
 
-    public function branche(Request $request)
-    {
-        if($request->ajax())
-        {
-            $mainCompany = $request->mainCompany;
-            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
-            return $data = view('admin.financial_reports.general_accounts.accountStatement.ajax.get_branche',compact('MainBranch','mainCompany'))->render();
-        }
-    }
+//    public function branche(Request $request)
+////    {
+////        if($request->ajax())
+////        {
+////            $mainCompany = $request->mainCompany;
+////            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
+////            return $data = view('admin.financial_reports.general_accounts.accountStatement.ajax.get_branche',compact('MainBranch','mainCompany'))->render();
+////        }
+////    }
     public function acc_state(Request $request)
     {
+        $mainCompany = $request->mainCompany;
         if($request->ajax())
         {
-            $mainCompany = $request->mainCompany;
-            $MainBranch = $request->MainBranch;
+
+
             $mtschartac = MtsChartAc::where('Cmp_No',$mainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-            return view('admin.financial_reports.general_accounts.accountStatement.ajax.account_statement',compact('MainBranch','mainCompany','mtschartac'));
+            $mtschartac_Acc_No = MtsChartAc::where('Cmp_No',$mainCompany)->where('Acc_Typ',1)->pluck('Acc_No','ID_No');
+            return view('admin.financial_reports.general_accounts.accountStatement.ajax.account_statement',compact('mtschartac_Acc_No','mainCompany','mtschartac'));
         }
     }
     public function details(Request $request)
@@ -69,17 +71,28 @@ class general_accountsController extends Controller
 
         $maincompany = $request->maincompany;
 
-        $MainBranch = $request->MainBranch;
         $fromtree = $request->fromtree;
         $totree = $request->totree;
+        $acc_fromtree = $request->acc_fromtree;
+        $acc_totree = $request->acc_totree;
         $from = $request->from;
         $to = $request->to;
         if($request->ajax())
         {
-            $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
+            if($fromtree != null  && $totree != null )
+            {
+                $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
 
-            $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)->whereIN('Acc_No',$Acc_No)->orWhereIN('Sysub_Account',$Acc_No)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
-            return $date = view('admin.financial_reports.general_accounts.accountStatement.ajax.details',compact('maincompany','MainBranch','fromtree','totree','from','to'))->render();
+                $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)->whereIN('Acc_No',$Acc_No)->orWhereIN('Sysub_Account',$Acc_No)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
+                return $date = view('admin.financial_reports.general_accounts.accountStatement.ajax.details',compact('maincompany','MainBranch','fromtree','totree','from','to'))->render();
+
+            }else{
+                $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $acc_fromtree)->where('ID_No', '<=', $acc_totree)->pluck('Acc_No')->toArray();
+
+                $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)->whereIN('Acc_No',$Acc_No)->orWhereIN('Sysub_Account',$Acc_No)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
+                return $date = view('admin.financial_reports.general_accounts.accountStatement.ajax.details',compact('maincompany','MainBranch','fromtree','totree','from','to','acc_fromtree','acc_totree'))->render();
+
+            }
 
         }
 
@@ -91,7 +104,7 @@ class general_accountsController extends Controller
 
         $maincompany = $request->maincompany;
 
-        $MainBranch = $request->MainBranch;
+
         $fromtree = $request->fromtree;
         $totree = $request->totree;
         $from = $request->from;
@@ -101,7 +114,7 @@ class general_accountsController extends Controller
 
 
 //
-        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)
             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
             ->where(function ($q) use($Acc_No) {
@@ -131,7 +144,7 @@ class general_accountsController extends Controller
 $Empty_GLjrnTrs = [];
         $GLjrnTrs_name = [];
 if($data->isEmpty())
-{    $Empty_GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+{    $Empty_GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)
     ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
 
     ->where(function ($q) use($Acc_No) {
@@ -155,7 +168,7 @@ if($data->isEmpty())
 });
     $GLjrnTrs_name = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)
         ->get(['Acc_No','Acc_NmAr'])->first();
-
+//@dd($GLjrnTrs_name,$maincompany,$fromtree,$totree);
 //    $Empty_GLjrnTrs = $Empty_GLjrnTrs->groupBy(function($date) {
 //
 //        return session_lang($date->Acc_NmEn,$date->Acc_NmAr);
@@ -177,7 +190,7 @@ if($data->isEmpty())
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
             );
         }];
-        $pdf = PDF::loadView('admin.financial_reports.general_accounts.accountStatement.pdf.report', ['GLjrnTrs_name'=>$GLjrnTrs_name,'Empty_GLjrnTrs'=>$Empty_GLjrnTrs,'data'=>$data,'maincompany'=>$maincompany,'MainBranch'=>$MainBranch,'fromtree' => $fromtree,'totree' => $totree,'from' => $from,'to' => $to],[],$config);
+        $pdf = PDF::loadView('admin.financial_reports.general_accounts.accountStatement.pdf.report', ['GLjrnTrs_name'=>$GLjrnTrs_name,'Empty_GLjrnTrs'=>$Empty_GLjrnTrs,'data'=>$data,'maincompany'=>$maincompany,'fromtree' => $fromtree,'totree' => $totree,'from' => $from,'to' => $to],[],$config);
         return $pdf->stream();
 
     }
@@ -201,7 +214,7 @@ if($data->isEmpty())
     {
     //        @dd($request->all());
 $MainCompany = $request->MainCompany;
-$MainBranch = $request->MainBranch;
+
 $reporttype = $request->reporttype;
 $kind = $request->kind;
 $level       = $request->level;
@@ -209,7 +222,7 @@ $level       = $request->level;
         if($request->ajax())
         {
 
-            if($MainCompany != null && $MainBranch != null && $reporttype != null && $kind != null && ($level != null || $level == null)){
+            if($MainCompany != null &&  $reporttype != null && $kind != null && ($level != null || $level == null)){
 
                 switch ($reporttype){
                     case '0';
@@ -220,7 +233,7 @@ $level       = $request->level;
                                 $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
                                 $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('ID_No');
 
-                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MainBranch'=>$MainBranch,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
+                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
                                 return $contents;
                         }
                         break;
@@ -228,10 +241,15 @@ $level       = $request->level;
                         switch ($kind){
                             default;
 
-                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->orwhere('Acc_Typ',null)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->orwhere('Acc_Typ',null)->where('Level_No',$level)->pluck('ID_No');
+                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
+                                    ->where(function ($q)  {
+                                        $q->Where('Acc_No', 1)->orWhere('Acc_No',null);
+                                    })
 
-                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MainBranch'=>$MainBranch,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
+                                    ->where('Acc_Typ',1)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('ID_No');
+
+                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
                                 return $contents;
 
                         }
