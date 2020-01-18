@@ -201,9 +201,17 @@ if (!function_exists('firstdatelaccount')){
     }
 }
 if (!function_exists('firstdateraccount')){
-    function firstdateraccount($from = null,$relation = null,$operations = null) {
-        $receipts = \App\receipts::whereDate('created_at','<',$from)->pluck('id')->toArray();
-        return \App\receiptsType::whereIn('receipts_id',$receipts)->where('relation_id',$relation)->where('operation_id',$operations);
+    function firstdateraccount($maincompany= null,$MainBranch= null,$operations = null,$Acc_No= null,$from = null) {
+
+//        @dd($maincompany,$MainBranch,$operations,$Acc_No,$from);
+        return \App\Models\Admin\GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',$operations)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where(function ($q) use($Acc_No) {
+                $q->Where('Acc_No', $Acc_No)->orWhere('Sysub_Account',$Acc_No);
+            });
+
+
+
     }
 }
 if (!function_exists('getlang')){

@@ -26,6 +26,7 @@
         @if(count($gls) > 0)
             @foreach($gls as $gl)
                 <tr>
+                    @dd($gl->Doc_Type);
                     <td>{{$loop->iteration}}</td>
 
 

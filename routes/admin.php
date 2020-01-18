@@ -294,6 +294,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('account_statement/details','Admin\financial_reports\general_accountsController@details')->name('accountStatement.details');
         Route::Post('account_statement/pdf','Admin\financial_reports\general_accountsController@print')->name('accountStatement.acc_pdf');
         Route::get('trial_balance','Admin\financial_reports\general_accountsController@trial_balance')->name('trial_balance');
+        Route::get('branche_trial_balance','Admin\financial_reports\general_accountsController@branche_trial_balance')->name('branche_trial_balance');
+        Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
+        Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 //       1
 //        0
