@@ -291,6 +291,35 @@
     <!-- /.box-header -->
         <div class="box-body table-responsive" id="create_chart">
 
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" style="display: flex">
+                        <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
+                        <select name="Cmp_No" id="Select_Cmp_No" class="form-control">
+                            <option value="">{{trans('admin.select')}}</option>
+                            @if(count($cmps) > 0)
+                                @foreach($cmps as $cmp)
+                                    <option value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" style="display: flex">
+                        <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
+                        <select name="Actvty_No" id="Actvty_No" class="form-control">
+                            <option value="">{{trans('admin.select')}}</option>
+                            @if(count($activity) > 0)
+                                @foreach($activity as $active)
+                                    <option value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             {{-- start Ul taps--}}
             <ul class="nav nav-tabs nav-justified" id="myTab1" role="tablist">
                 <li class="nav-item active">
