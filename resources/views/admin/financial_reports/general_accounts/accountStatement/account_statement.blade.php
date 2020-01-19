@@ -125,7 +125,9 @@
               </div>
 
               <div class="col-md-2">
-                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 fromtree'])) }}
+                  <input type="text" name="fromtree" id="fromtree" class="form-control  fromtree">
+
+                  {{--                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 fromtree'])) }}--}}
 
               </div>
           </div>

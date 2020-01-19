@@ -285,6 +285,19 @@ $level       = $request->level;
         return view('admin.financial_reports.general_accounts.report.daily_restriction');
 
     }
+
+    public  function fromtreeToSelect(Request $request)
+    {
+//        dd($request->all());
+        if($request->ajax()){
+            $formTree = $request->formTree;
+            $MtsChartAc = MtsChartAc::where('ID_No',$formTree)->first();
+//            dd($MtsChartAc->Acc_No);
+
+            return  view('admin.financial_reports.general_accounts.accountStatement.ajax.formtree', compact('MtsChartAc'));
+        }
+    }
+
     public function index()
     {
         //

@@ -298,7 +298,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
-//       1
+        Route::get('fromtree_to_select','Admin\financial_reports\general_accountsController@fromtreeToSelect')->name('fromtreeToSelect');
+
+        //       1
 //        0
         Route::get('customer_accounting','Admin\financial_reports\customer_accountingcontroller@customer_accounting')->name('customer_accounting');
         Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');

@@ -49,7 +49,7 @@
 
 
     });
-</script>
+
 {{--<script>--}}
 {{--    $(document).ready(function(){--}}
 {{--        var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';--}}
@@ -64,7 +64,7 @@
 {{--        });--}}
 {{--    });--}}
 {{--</script>--}}
-<script>
+
     $(function () {
         'use strict'
         $('.e2').select2({
@@ -73,15 +73,16 @@
         });
     });
 
-</script>
-<script>
+
     $('.fromtreee').change(function () {
         var fromtreee = $(this).val(),
 
             selectHtml = $('.fromtreee option[value="'+fromtreee+'"]'),
             selectHtml2 = $('#totree option[value="'+fromtreee+'"]'),
 
+
             optionSelected = '<option value="'+fromtreee+'" selected>'+selectHtml.html()+'</option>';
+
         $('.totree option:not([value="'+fromtreee+'"])').removeAttr('selected');
         $('.fromtreee').prepend(optionSelected);
         $('#totree').prepend(optionSelected);
@@ -98,6 +99,21 @@
         }
         selectHtml.remove();
         selectHtml2.remove();
+    });
+
+    $('.fromtreee'). change(function () {
+        var formTree = $(this).val();
+        var formTreeText = $(this).attr('name');
+        // alert(formTreeText);
+        $.ajax({
+            url: "{{route('fromtreeToSelect')}}",
+            type: "get",
+            dataType: 'html',
+            data: {"_token": "{{ csrf_token() }}", formTree:formTree, formTreeText:formTreeText},
+            success: function(data){
+                $('#fromtree_Acc_No').html(data);
+            }
+        });
     });
 </script>
 
@@ -124,12 +140,12 @@
         </select>
     </div>
 
-
-        <select name="fromtree_Acc_No" id="fromtree" class="col-md-2 form-control e2 acc_fromtree">
-            @foreach($mtschartac_Acc_No as $mts)
-                <option value="{{$mts->ID_No}}">{{$mts->Acc_No}}</option>
-            @endforeach
-        </select>
+        <input type="text" name="fromtree_Acc_No" id="fromtree_Acc_No" class="col-md-2 form-control  acc_fromtree">
+{{--        <select name="fromtree_Acc_No" id="fromtree" class="col-md-2 form-control e2 acc_fromtree">--}}
+{{--            @foreach($mtschartac_Acc_No as $mts)--}}
+{{--                <option value="{{$mts->ID_No}}">{{$mts->Acc_No}}</option>--}}
+{{--            @endforeach--}}
+{{--        </select>--}}
 
 
 </div>
