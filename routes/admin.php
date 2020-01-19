@@ -131,6 +131,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('projects','Admin\Project\ProjectController1');
+
         Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
 
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
@@ -564,9 +565,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
-        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        //Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');
