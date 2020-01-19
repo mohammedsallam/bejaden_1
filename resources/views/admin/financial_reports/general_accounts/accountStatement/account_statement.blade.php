@@ -45,7 +45,7 @@
         $(function () {
             'use strict'
             $('.e2').select2({
-                placeholder: "{{trans('admin.select')}}",
+{{--                placeholder: "{{trans('admin.select')}}",--}}
                 dir: '{{direction()}}'
             });
         });
@@ -108,26 +108,24 @@
         <h3 class="box-title">كشف حساب للحسابات العامة</h3>
     </div>
     <div class="box-body row">
-      <div class="col-md-6">
-          <div class="row">
-              <div class="col-md-12">
+      <div class="col-md-7">
+
                   {{ Form::label('maincompany','الشركات', ['class' => 'col-md-2']) }}
-                  {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 form-control MainCompany e2 fromtree','placeholder'=> trans('admin.select') ])) }}
+                  {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 form-control MainCompany e2'])) }}
 
 
-              </div>
 
-          </div>
+          <br>
           <br>
             <div class="details_row">
           <div class="row">
               <div class="col-md-10">
                   {{ Form::label('tree','من حساب', ['class' => 'col-md-3']) }}
-                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'col-md-8  form-control  e2 ee fromtree','placeholder'=> trans('admin.select') ])) }}
+                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'col-md-8  form-control  e2 ee fromtree' ])) }}
               </div>
 
               <div class="col-md-2">
-                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 fromtree','placeholder'=> trans('admin.select') ])) }}
+                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 fromtree'])) }}
 
               </div>
           </div>
@@ -135,11 +133,11 @@
           <div class="row">
               <div class="col-md-10">
                   {{ Form::label('tree','الى حساب', ['class' => 'col-md-3']) }}
-                  {{ Form::select('totree',[],null, array_merge(['class' => 'col-md-8  form-control  e2 ee totree','placeholder'=> trans('admin.select') ])) }}
+                  {{ Form::select('totree',[],null, array_merge(['class' => 'col-md-8  form-control  e2 ee totree'])) }}
               </div>
 
               <div class="col-md-2">
-                  {{ Form::select('totree',[],null, array_merge(['class' => 'form-control e2 totree','placeholder'=> trans('admin.select') ])) }}
+                  {{ Form::select('totree',[],null, array_merge(['class' => 'form-control e2 totree'])) }}
 
               </div>
           </div>
@@ -149,37 +147,18 @@
 
 
       </div>
-    <div class="col-md-6">
-
-{{--        <div class="row">--}}
-{{--            <div class="col-md-6">--}}
-{{--                <label class="radio-inline" ><input type="radio" name="date" checked>التاريخ الميلادي</label>--}}
+    <div class="col-md-5">
 
 
-{{--            </div>--}}
-{{--            <div class="col-md-6">--}}
-
-{{--                <label class="radio-inline" ><input class="" type="radio" name="date" >التاريخ الهجري</label>--}}
-
-{{--            </div>--}}
-{{--        </div>--}}
-        <br>
-
-
-
-        <div class="row">
-            <div class="col-md-12">
                 {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2']) }}
-                {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-8 form-control from hijri-date-input','required'=>'required','autocomplete'=>'off'])) }}
-            </div>
-        </div>
-        <br>
-        <div class="row">
-                <div class="col-md-12">
+                {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 form-control from hijri-date-input','required'=>'required','autocomplete'=>'off'])) }}
+
+            <br>
+            <br>
+
                     {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2']) }}
-                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-8 form-control to hijri-date-input date','required'=>'required'])) }}
-                </div>
-        </div>
+                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 form-control to hijri-date-input date','required'=>'required'])) }}
+
 
 
 
@@ -194,7 +173,7 @@
         <div class="button_print">
 
         </div>
-        <div>
+            <div>
             <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
 
         </div>
