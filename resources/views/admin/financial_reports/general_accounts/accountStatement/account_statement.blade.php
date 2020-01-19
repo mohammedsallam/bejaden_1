@@ -30,55 +30,205 @@
     <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
     <script>
+        //data maincompany
+        $(document).on('change','.fromtreee',function () {
+            var fromtreee = $(this).val(),
 
+                selectHtml = $('.fromtreee option[value="'+fromtreee+'"]'),
+                selectHtml2 = $('#totree option[value="'+fromtreee+'"]'),
 
+                optionSelected = '<option value="'+fromtreee+'" selected>'+selectHtml.html()+'</option>';
+            $('#totree option:not([value="'+fromtreee+'"])').removeAttr('selected');
+            $('.fromtreee').prepend(optionSelected);
 
+            $('.acc_fromtree').val(fromtreee);
+            $('.acc_totree').val(fromtreee);
+            $('#totree').val(fromtreee);
 
+            $('#totree').prepend(optionSelected);
 
+            if (selectHtml.length === 1){
+                $('#totree ul.select2-results__options').prepend(`
+            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+        `);
 
+                $('.fromtreee ul.select2-results__options').prepend(`
+            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+        `);
 
+            }
+            selectHtml.remove();
+            selectHtml2.remove();
+        });
+        $(document).on('change','#totree',function () {
+            var totree = $(this).val();
 
+            var  selectHtml = $('.fromtreee option[value="'+totree+'"]');
+            var selectHtml2 = $('#totree option[value="'+totree+'"]');
 
+            var  optionSelected = '<option value="'+totree+'" selected>'+selectHtml.html()+'</option>';
 
+            $('#totree option:not([value="'+totree+'"])').removeAttr('selected');
+            $('.fromtreee').prepend(optionSelected);
 
+            $('.acc_fromtree').val(totree);
+            $('.acc_totree').val(totree);
+            $('#fromtree').val(totree);
 
-        $(function () {
-            'use strict'
-            $('.e2').select2({
-{{--                placeholder: "{{trans('admin.select')}}",--}}
-                dir: '{{direction()}}'
-            });
+            $('#totree').prepend(optionSelected);
+
+            if (selectHtml.length === 1){
+                $('#totree ul.select2-results__options').prepend(`
+            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+        `);
+
+                $('.fromtreee ul.select2-results__options').prepend(`
+            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+        `);
+
+            }
+            selectHtml.remove();
+            selectHtml2.remove();
         });
 
-        $(function () {
-            'use strict'
+        $(document).on('change','.acc_fromtree',function(){
+            var acc_fromtree = $(this).val(),
+                selectHtml = $('.fromtreee option[value="'+acc_fromtree+'"]'),
+                selectHtml2 = $('#totree option[value="'+acc_fromtree+'"]'),
 
-            $(".MainCompany").on("change",function(){
-                var mainCompany = $(this).val();
+                optionSelected = '<option value="'+acc_fromtree+'" selected>'+selectHtml.html()+'</option>';
 
+            $('.acc_fromtree').val(acc_fromtree);
+            $('.acc_totree').val(acc_fromtree);
 
-                $("#loadingmessage-1").css("display","block");
-                $(".details_row").css("display","none");
-                if (this){
-                    $.ajax({
-                        url: '{{route('acc_state')}}',
-                        type:'get',
-                        dataType:'html',
-                        data:{mainCompany: mainCompany},
-                        success: function (data) {
-                            $("#loadingmessage-1").css("display","none");
-                            $('.details_row').css("display","block").html(data);
+            $('#fromtree option:not([value="'+acc_fromtree+'"])').removeAttr('selected');
+            $('#totree option:not([value="'+acc_fromtree+'"])').removeAttr('selected');
+            $('#totree').prepend(optionSelected);
+            $('#fromtree').prepend(optionSelected);
+            if (selectHtml.length === 1){
 
-                        }
-                    });
-                }else{
-                    $('.column_account').html('');
-                }
-            });
+                $('#fromtree ul.select2-results__options').prepend(`
+                            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+                        `);
+                $('#totree ul.select2-results__options').prepend(`
+                            <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+                        `);
+            }
 
+            selectHtml.remove();
+            selectHtml2.remove();
 
         });
 
+//data backer
+
+        $(document).on("blur","#fromDate ,#toDate",function(){
+
+            var maincompany = $('.MainCompany').val();
+
+            var fromtree = $('#fromtree').val();
+
+            var totree = $('#totree').val();
+            var acc_fromtree = $('.acc_fromtree').val();
+            var acc_totree = $('.acc_totree').val();
+
+            var from = $('#fromDate').val();
+
+            var to = $('#toDate').val();
+
+
+            $("#loadingmessage_1").css("display","block");
+            $(".button_print").css("display","none");
+            if (this){
+                $.ajax({
+                    url: '{{route('accountStatement.details')}}',
+                    type:'get',
+                    dataType:'html',
+                    data:{maincompany: maincompany,totree: totree,from: from,to : to,fromtree:fromtree,acc_fromtree:acc_fromtree,acc_totree:acc_totree},
+                    success: function (data) {
+                        $("#loadingmessage_1").css("display","none");
+                        $('.button_print').css("display","block").html(data);
+
+                    }
+                });
+            }else{
+                $('.button_print').html('');
+            }
+        });
+
+        //from departments
+        $(document).on("change","#fromtree, #totree,.acc_fromtree,.acc_totree",function(){
+
+            var maincompany = $('.MainCompany').val();
+
+            var fromtree = $('#fromtree').val();
+
+            var totree = $('#totree').val();
+            var acc_fromtree = $('.acc_fromtree').val();
+            var acc_totree = $('.acc_totree').val();
+
+            var from = $('#fromDate').val();
+
+            var to = $('#toDate').val();
+
+
+            console.log(maincompany,fromtree,totree);
+
+            $("#loadingmessage_1").css("display","block");
+            $(".button_print").css("display","none");
+            if (this){
+                $.ajax({
+                    url: '{{route('accountStatement.details')}}',
+                    type:'get',
+                    dataType:'html',
+                    data:{maincompany: maincompany,totree: totree,from: from,to : to,fromtree:fromtree,acc_fromtree:acc_fromtree,acc_totree:acc_totree},
+                    success: function (data) {
+                        $("#loadingmessage_1").css("display","none");
+                        $('.button_print').css("display","block").html(data);
+
+                    }
+                });
+            }else{
+                $('.button_print').html('');
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $(document).on('change','.MainCompany',function(){
+            var mainCompany = $(this).val();
+
+
+            $("#loadingmessage-1").css("display","block");
+            $(".details_row").css("display","none");
+            if (this){
+                $.ajax({
+                    url: '{{route('acc_state')}}',
+                    type:'get',
+                    dataType:'html',
+                    data:{mainCompany: mainCompany},
+                    success: function (data) {
+                        $("#loadingmessage-1").css("display","none");
+                        $('.details_row').css("display","block").html(data);
+
+                    }
+                });
+            }else{
+                $('.column_account').html('');
+            }
+        });
         $(".hijri-date-input").hijriDatePicker(
             {
                 hijri : false,
@@ -87,18 +237,7 @@
                 showTodayButton:true,
             });
 
-        {{--$(document).ready(function(){--}}
-        {{--    var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';--}}
-        {{--    console.log(minDate);--}}
-        {{--    $('.date').datepicker({--}}
-        {{--        format: 'yyyy-mm-dd',--}}
-        {{--        rtl: true,--}}
-        {{--        language: '{{session('lang')}}',--}}
-        {{--        autoclose:true,--}}
-        {{--        todayBtn:true,--}}
-        {{--        clearBtn:true,--}}
-        {{--    });--}}
-        {{--});--}}
+
 </script>
 
 
@@ -125,7 +264,7 @@
               </div>
 
               <div class="col-md-2">
-                  {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 fromtree'])) }}
+                  {{ Form::text('fromtree',null, array_merge(['class' => 'form-control e2 fromtree'])) }}
 
               </div>
           </div>
@@ -137,7 +276,7 @@
               </div>
 
               <div class="col-md-2">
-                  {{ Form::select('totree',[],null, array_merge(['class' => 'form-control e2 totree'])) }}
+                  {{ Form::text('totree',null, array_merge(['class' => 'form-control e2 totree'])) }}
 
               </div>
           </div>
@@ -151,13 +290,13 @@
 
 
                 {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2']) }}
-                {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 form-control from hijri-date-input','required'=>'required','autocomplete'=>'off'])) }}
+                {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 form-control  hijri-date-input','id'=>'fromDate','autocomplete'=>'off'])) }}
 
             <br>
             <br>
 
                     {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2']) }}
-                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 form-control to hijri-date-input date','required'=>'required'])) }}
+                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 form-control  hijri-date-input date','id'=>'toDate'])) }}
 
 
 
