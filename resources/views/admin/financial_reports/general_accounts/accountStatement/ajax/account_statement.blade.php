@@ -6,7 +6,7 @@
             $('.select').change(function(){ // when one changes
                 var selected = $('.select').children('option:selected').text();
 
-                $('.totree').val(selected); // they all change
+                $('.totree').val($('.select').val()); // they all change
             });
         })
         $(".from,.to,.fromtree,.totree,.acc_fromtree,.acc_totree").on("change",function(){
