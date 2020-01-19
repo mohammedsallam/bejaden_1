@@ -18,7 +18,7 @@ class MtsItmOthr extends Migration
             $table->integer('Actvty_No')->nullable();
             $table->smallInteger('Cmp_No')->nullable();
             $table->bigInteger('Itm_No')->nullable();
-            $table->bigInteger('Parent_Itm')->nullable();
+           // $table->bigInteger('Parent_Itm')->nullable();
             $table->string('Itm_LengthSteel', 20)->nullable();
             $table->string('Itm_WidthٍSteel', 20)->nullable();
             $table->string('Itm_HeightSteel', 20)->nullable();

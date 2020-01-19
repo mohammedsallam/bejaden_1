@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\categories;
 
 use App\DataTables\UnitsDataTable;
+use App\Models\Admin\ActivityTypes;
+use App\Models\Admin\MainCompany;
 use App\Models\Admin\Units;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +30,9 @@ class UnitsController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.units.create');
+        $companies = MainCompany::all();
+        $activity = ActivityTypes::all();
+        return view('admin.categories.units.create', compact(['companies', 'activity']));
     }
 
     /**
@@ -43,11 +47,15 @@ class UnitsController extends Controller
             'Unit_No' => 'required',
             'Unit_NmAr' => 'required',
             'Unit_NmEn' => 'required',
+            'Cmp_No' => 'required',
+            'Actvty_No' => 'required',
         ], [], [
 
             'Unit_No' => trans('admin.unit_no'),
             'Unit_NmAr' => trans('admin.name_ar'),
             'Unit_NmEn' => trans('admin.name_en'),
+            'Cmp_No' => trans('admin.na_Comp'),
+            'Actvty_No' => trans('admin.activity_type'),
         ]);
 
         Units::create($data);
@@ -75,7 +83,9 @@ class UnitsController extends Controller
     public function edit($id)
     {
         $unit = Units::find($id);
-        return view('admin.categories.units.edit', compact(['unit']));
+        $companies = MainCompany::all();
+        $activity = ActivityTypes::all();
+        return view('admin.categories.units.edit', compact(['unit', 'companies', 'activity']));
     }
 
     /**
@@ -91,11 +101,15 @@ class UnitsController extends Controller
             'Unit_No' => 'required',
             'Unit_NmAr' => 'required',
             'Unit_NmEn' => 'required',
+            'Cmp_No' => 'required',
+            'Actvty_No' => 'required',
         ], [], [
 
             'Unit_No' => trans('admin.unit_no'),
             'Unit_NmAr' => trans('admin.name_ar'),
             'Unit_NmEn' => trans('admin.name_en'),
+            'Cmp_No' => trans('admin.na_Comp'),
+            'Actvty_No' => trans('admin.activity_type'),
         ]);
 
         Units::find($id)->update($data);

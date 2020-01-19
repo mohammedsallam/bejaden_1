@@ -25,7 +25,7 @@ class MtsItmfsunit extends Migration
             $table->float('Unit_Pur')->nullable();
             $table->float('Unit_Cost')->nullable();
             $table->float('Unit_Sal1')->nullable();
-            $table->float('Unit_Sal12')->nullable();
+            $table->float('Unit_Sal2')->nullable();
             $table->float('Unit_Sal3')->nullable();
             $table->float('Unit_Sal4')->nullable();
             $table->float('Unit_Discval')->nullable();
