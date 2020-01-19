@@ -69,6 +69,13 @@ $.widget.bridge('uibutton', $.ui.button);
 <script src="{{url('/')}}/js/select2.full.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{url('/')}}/adminlte/dist/js/pages/dashboard.js"></script>
+{{--Date Hijri--}}
+
+
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>--}}
+
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>--}}
+
 <!-- AdminLTE for demo purposes -->
 <script src="{{url('/')}}/adminlte/dist/js/demo.js"></script>
 <script src="{{url('/')}}/vendor/datatables/buttons.server-side.js"></script>
