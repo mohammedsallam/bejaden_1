@@ -87,10 +87,11 @@
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.cust_account_statement')}}</span>
+    <span>{{trans('admin.sup_account_statement')}}</span>
 </div>
 
 @if(count($Empty_GLjrnTrs) > 0 && count($data) == 0)
+
     @foreach($Empty_GLjrnTrs as $key => $one)
 
 
@@ -197,6 +198,7 @@
     @endforeach
 
 @elseif(count($Empty_GLjrnTrs) == 0 && count($data) == 0)
+
     <div class="el-account">
 
         <p>رقم الحساب :{{$GLjrnTrs_name->Acc_No}}</p>
@@ -291,6 +293,7 @@
     </div>
 
 @else
+
     @foreach ($data as $day => $Gljrntrs)
 
 
