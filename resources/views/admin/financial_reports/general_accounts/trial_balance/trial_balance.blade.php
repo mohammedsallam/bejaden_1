@@ -203,8 +203,8 @@
                 </div>
                 <div class="checkonly col-xs-6">
                     <div class="col-xs-6">
-                        {{ Form::label('level','المستوى', ['class' => 'col-xs-3 control-label']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-9', 'id'=>'level_num'])) }}
+                        {{ Form::label('level','المستوى', ['class' => 'col-xs-2 control-label']) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-10', 'id'=>'level_num'])) }}
                     </div>
                     <div class="col-xs-6">
                         <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
