@@ -1,5 +1,5 @@
 
-{!! Form::open(array('route' => 'accountStatementCust.acc_pdf', 'method' => 'POST', 'target' => '_blank')) !!}
+{!! Form::open(array('route' => 'accountStatementSup.acc_pdf', 'method' => 'POST', 'target' => '_blank')) !!}
 {{Form::hidden('maincompany',$maincompany)}}
 @if($fromtree != null && $totree != null )
 {{Form::hidden('fromtree',$fromtree)}}
