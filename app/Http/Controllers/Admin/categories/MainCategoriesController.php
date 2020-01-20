@@ -9,6 +9,7 @@ use App\Models\Admin\MtsItmmfs;
 use App\Models\Admin\MtsSuplir;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class MainCategoriesController extends Controller
 {
@@ -17,63 +18,32 @@ class MainCategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $item = MtsItmCatgry::get(['Itm_Nm'.ucfirst(session('lang')), 'Itm_No']);
-        if(count($item) > 0){
-            if(session('Cmp_No') == -1){
-                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            }
-            else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-            }
-
-            $nump = MtsItmCatgry::get()->order->Itm_No;
-
-            $activity = ActivityTypes::all();
-            $suplirs = MtsSuplir::all();
-            return view('admin.categories.MainCategories.index', ['title' => trans('admin.basic_types'),
-                'cmps' => $cmps,'activity' => $activity,'suplirs' => $suplirs]);
+        $item = MtsItmmfs::get(['Itm_Nm' . ucfirst(session('lang')), 'Itm_No']);
+        if (session('Cmp_No') == -1) {
+            $cmps = MainCompany::get();
+        } else {
+            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
         }
-        else{
 
-            if(session('Cmp_No') == -1){
-                $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-            }
-            else{
-                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
+        $activity = ActivityTypes::all();
+        $suplirs = MtsSuplir::all();
+        $itemToEdit = null;
 
-            }
-            $Itm_No = $this->createAccNo(0);
-            $activity = ActivityTypes::all();
-            $suplirs = MtsSuplir::all();
-            return view('admin.categories.MainCategories.index', ['title' => trans('admin.basic_types'),
-                'cmps' => $cmps,'activity' => $activity,'suplirs' => $suplirs]);
-            return view('admin.categories.MainCategories.init_chart', ['title' => trans('admin.basic_types')
-                , 'cmps' => $cmps, 'Itm_No' => $Itm_No,'activity' => $activity,'suplirs' => $suplirs]);
+        if ($request->ajax() && $request->Itm_No){
+            $itemToEdit = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+            return view('admin.categories.MainCategories.edit.index', ['title' => trans('admin.basic_types'),
+                'cmps' => $cmps, 'activity' => $activity, 'suplirs' => $suplirs, 'itemToEdit' => $itemToEdit]);
         }
 
 
-        }
+        return view('admin.categories.MainCategories.index', ['title' => trans('admin.basic_types'),
+            'cmps' => $cmps, 'activity' => $activity, 'suplirs' => $suplirs, 'itemToEdit' => $itemToEdit]);
 
 
-
-    public function createNewAcc(Request $request){
-        if($request->ajax()){
-            if($request->parent){
-                $parent = MtsCostcntr::where('Itm_No', $request->parent)->get(['Itm_No', 'Cmp_No', 'Level_No'])->first();
-                $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
-                $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Itm_No']);
-                $Itm_No = $this->createAccNo($parent->Itm_No);
-                return view('admin.cc.create', ['title' => trans('admin.cc'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Itm_No' =>  $Itm_No,
-                ]);
-            }
-
-        }
     }
-
 
 
     /**
@@ -94,7 +64,35 @@ class MainCategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = Validator::make($request->all(), [
+            'Cmp_No' => 'required',
+            'Actvty_No' => 'required',
+            'Itm_No' => 'required',
+            'Level_No' => 'required',
+            'Level_Status' => 'required',
+            'Sup_No' => 'required',
+            'Itm_NmAr' => 'required',
+            'Itm_NmEn' => 'sometimes',
+        ],[], [
+            'Cmp_No' => trans('admin.na_Comp'),
+            'Actvty_No' => trans('admin.activity'),
+            'Itm_No' => trans('admin.item_no'),
+            'Level_No' => trans('admin.level_no'),
+            'Level_Status' => trans('admin.level_number'),
+            'Sup_No' => trans('admin.Suppliers'),
+            'Itm_NmAr' => trans('admin.name_ar'),
+            'Itm_NmEn' => trans('admin.name_en'),
+        ]);
+
+        if ($validation->fails()){
+            return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
+        }
+
+        $item = MtsItmmfs::create($request->all());
+        $item->update(['Level_Status' => 0, 'Level_No' => 1]);
+
+        return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
+
     }
 
     /**
@@ -128,7 +126,7 @@ class MainCategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
@@ -142,36 +140,81 @@ class MainCategoriesController extends Controller
         //
     }
 
+    public function updateRootOrChild(Request $request){
 
-    public function createAccNo($Parent_Itm){
-        if($Parent_Itm == 0){
-            $chart = MtsItmCatgry::where('Parent_Itm', 0)->orderBy('Itm_No', 'desc')->get(['Itm_No'])->first();
-            if($chart){
-                $Itm_No = $chart->Itm_No + 1;
-                return $Itm_No;
-            }
-            else{
-                $Itm_No = 1;
-                return $Itm_No;
-            }
+        $validation = Validator::make($request->all(), [
+            'Cmp_No' => 'required',
+            'Actvty_No' => 'required',
+            'Itm_No' => 'required',
+            'Level_No' => 'required',
+            'Level_Status' => 'required',
+            'Sup_No' => 'required',
+            'Itm_NmAr' => 'required',
+            'Itm_NmEn' => 'sometimes',
+        ],[], [
+            'Cmp_No' => trans('admin.na_Comp'),
+            'Actvty_No' => trans('admin.activity'),
+            'Itm_No' => trans('admin.item_no'),
+            'Level_No' => trans('admin.level_no'),
+            'Level_Status' => trans('admin.level_number'),
+            'Sup_No' => trans('admin.Suppliers'),
+            'Itm_NmAr' => trans('admin.name_ar'),
+            'Itm_NmEn' => trans('admin.name_en'),
+        ]);
+
+        if ($validation->fails()){
+            return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
-        else{
-            $parent = MtsItmCatgry::where('Itm_No', $Parent_Itm)->first();
-            if(count($parent->children) > 0){
-                $max = MtsItmCatgry::where('Parent_Itm', $parent->Itm_No)
-                    ->where('Cmp_No', session('Chart_Cmp_No'))
-                    ->orderBy('Itm_No', 'desc')->get(['Itm_No'])->first();
-                return $max->Itm_No + 1;
-            }
-            else{
-                $Itm_No = (int)$Parent_Itm.'01';
-                return $Itm_No;
+        $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+        $item->update($request->all());
+        return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
+
+    }
+
+    public function deleteRootOrChild(Request $request){
+
+        $validation = Validator::make($request->all(), [
+            'Itm_No' => 'required',
+        ],[], [
+            'Itm_No' => trans('admin.item_no'),
+        ]);
+
+        if ($validation->fails()){
+            return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
+        }
+        $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+        if($item){
+            $item->delete();
+            return response()->json(['status' => 1, 'message' => trans('admin.success_deleted')]);
+        } else {
+            return response()->json(['status' => 0, 'message' => trans('admin.not_found_data')]);
+        }
+
+
+    }
+
+    public function getItems(Request $request){
+        if($request->ajax()){
+            session(['company_number' => $request->Cmp_No]);
+            $tree = load_item('Itm_Parnt', null, $request->Cmp_No, $request->Actvty_No);
+            return $tree;
+        }
+    }
+
+    public function createNewAcc(Request $request){
+        if($request->ajax()){
+            if($request->parent){
+                $parent = MtsCostcntr::where('Itm_No', $request->parent)->get(['Itm_No', 'Cmp_No', 'Level_No'])->first();
+                $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
+                $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Itm_No']);
+                $Itm_No = $this->createAccNo($parent->Itm_No);
+                return view('admin.cc.create', ['title' => trans('admin.cc'),
+                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Itm_No' =>  $Itm_No,
+                ]);
             }
 
         }
     }
-
-
 
     public function getItem(Request $request){
         if($request->ajax()){

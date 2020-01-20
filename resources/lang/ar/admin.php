@@ -1504,6 +1504,7 @@ return [
     'additional_tax'       => 'الضريبة المضافة%',
     'request_limit'       => 'حد الطلب',
     'max_sells_quantity'       => 'أكبر كمية بالمبيعات',
+    'not_found_data'       => 'البيانات غير موجودة',
 
 
 

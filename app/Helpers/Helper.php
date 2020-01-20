@@ -1123,7 +1123,7 @@ if(!function_exists('departmentsum3')) {
     if (!function_exists('load_item')){
         function load_item($select = null , $item_hide = null, $Cmp_No ,$Actvty_No){
 
-            $items = \App\Models\Admin\MtsItmCatgry::where('Cmp_No', $Cmp_No)->where('Actvty_No' , $Actvty_No)->get(['Itm_Nm'.ucfirst(session('lang')), 'Parent_Itm', 'Itm_No', 'ID_No']);
+            $items = \App\Models\Admin\MtsItmmfs::where('Cmp_No', $Cmp_No)->where('Actvty_No' , $Actvty_No)->get(['Itm_Nm'.ucfirst(session('lang')), 'Itm_Parnt', 'Itm_No', 'ID_No']);
 
             $item_arr = [];
             foreach($items as $item){
@@ -1132,14 +1132,14 @@ if(!function_exists('departmentsum3')) {
                 $list_arr['li_attr'] = '';
                 $list_arr['a_attr'] = '';
                 $list_arr['children'] = [];
-                if ($select !== null and $select == $item->Parent_Itm){
+                if ($select !== null and $select == $item->Itm_Parnt){
                     $list_arr['state'] = [
                         'opened'=>true,
                         'selected'=>true,
                         'disabled'=>false
                     ];
                 }
-                if ($item_hide !== null and $item_hide == $item->Acc_No){
+                if ($item_hide !== null and $item_hide == $item->Itm_No){
                     $list_arr['state'] = [
                         'opened'=>false,
                         'selected'=>false,
@@ -1147,17 +1147,18 @@ if(!function_exists('departmentsum3')) {
                     ];
                 }
 
-                $levelType = \App\Models\Admin\MtsItmCatgry::where('Itm_No',$item->Itm_No)->first()->Level_No;
-                $code = \App\Models\Admin\MtsItmCatgry::where('Itm_No',$item->Itm_No)->first()->Itm_No;
+                $itemGet = \App\Models\Admin\MtsItmmfs::where('Itm_No',$item->Itm_No)->first();
+                $levelType = $itemGet->Level_No;
+                $code = $itemGet->Itm_No;
                 $list_arr['id'] = $item->Itm_No;
 
                 if( $item->Parent_Itm !== null){
-                    if($item->Parent_Itm == 0){
+                    if($item->Itm_Parnt == 0){
                         $item->Parent_Itm = '#';
-                        $list_arr['parent'] = $item->Parent_Itm;
+                        $list_arr['parent'] = $item->Itm_Parnt;
                     }
                     else{
-                        $list_arr['parent'] = $item->Parent_Itm;
+                        $list_arr['parent'] = $item->Itm_Parnt;
                     }
                 }
 
