@@ -2,14 +2,14 @@
     <div class="col-md-8" id="chart_form">
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="" style="display: flex">
+                <div style="display: flex">
                     @php
                         $lastItem = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
                     @endphp
 
                     <div style="display: flex">
                         <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
-                        <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="@if($itemToEdit){{$itemToEdit->Itm_No}}@elseif($lastItem){{$lastItem->Itm_No+1}} @else{{1}}@endif" class="Itm_No form-control" readonly>
+                        <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="@if($itemToEdit){{$itemToEdit->Itm_No}}@elseif(session()->has('ItemNoGenerated')){{session('ItemNoGenerated')}}@elseif($lastItem){{$lastItem->Itm_No+1}} @else{{1}}@endif" class="Itm_No form-control" readonly>
 
                         <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
                         <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="@if($itemToEdit){{$itemToEdit->Level_No}}@elseif($lastItem){{$lastItem->Level_No}} @else{{1}}@endif" class="Level_No form-control" readonly>

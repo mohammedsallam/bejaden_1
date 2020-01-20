@@ -33,6 +33,7 @@
                 });
 
                 $('.addRootOrChild').click(function () {
+                    var Itm_No = $('.Itm_No').val();
                    $.ajax({
                        url: "{{route('mainCategories.store')}}",
                        type: "post",
@@ -41,7 +42,7 @@
                            _token: "{{csrf_token()}}",
                            Cmp_No: $('.Cmp_No').val(),
                            Actvty_No: $('.Actvty_No').val(),
-                           Itm_No: $('.Itm_No').val(),
+                           Itm_No: Itm_No,
                            Level_No: $('.Level_No').val(),
                            Level_Status: $('input[type=radio].Level_Status:checked').val(),
                            Itm_NmAr: $('.Itm_NmAr').val(),
@@ -55,8 +56,7 @@
                                $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
                                $('.success_message').removeClass('hidden').html(data.message);
                                $('.error_message').addClass('hidden');
-
-
+                               window.location.reload();
                            }
                        }
                    })
@@ -65,6 +65,7 @@
 
                 var lastItemNo = $('.Itm_No ').val();
                 $('.editRootOrChildLink').click(function () {
+                    var Itm_No = $('.Itm_No').val();
                     $.ajax({
                         url: "{{route('updateRootOrChild')}}",
                         type: "post",
@@ -73,7 +74,7 @@
                             _token: "{{csrf_token()}}",
                             Cmp_No: $('.Cmp_No').val(),
                             Actvty_No: $('.Actvty_No').val(),
-                            Itm_No: $('.Itm_No').val(),
+                            Itm_No: Itm_No,
                             Level_No: $('.Level_No').val(),
                             Level_Status: $('input[type=radio].Level_Status:checked').val(),
                             Itm_NmAr: $('.Itm_NmAr').val(),
@@ -92,10 +93,7 @@
                                     $('.Level_No').val(1);
                                     $('.Itm_NmAr').val('');
                                     $('.Itm_NmEn').val('');
-
-
-
-
+                                    window.location.reload();
                             }
                         }
                     });
@@ -125,19 +123,11 @@
                                 $('.Itm_NmEn').val('');
                                 $('.jstree-clicked').parent('li').remove();
                                 $('#parent_name').html('')
-
-
-
-
                             }
                         }
                     });
 
                 });
-
-
-
-
 
                 $(document).on('change', '.Cmp_No , .Actvty_No', function(){
                     $('#jstree').jstree('destroy');
@@ -228,24 +218,96 @@
                     }
                 });
 
+                // Build tree when load page
+                (function autoLoadTree() {
+                    $('#jstree').jstree('destroy');
+                    var tree = [];
+                    var Cmp_No = "{{session('updatedComNo')}}";
+                    var Actvty_No = "{{session('updatedActiveNo')}}";
+
+                    if(Cmp_No !== null){
+                        $.ajax({
+                            url: "{{route('getCategoryItems')}}",
+                            type: "post",
+                            dataType: 'html',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                Cmp_No: Cmp_No,
+                                Actvty_No: Actvty_No
+                            },
+                            success: function(data){
+
+                                dataParse = JSON.parse(data);
+
+                                for(var i = 0; i < dataParse.length; i++){
+                                    tree.push(dataParse[i])
+                                }
+
+                                $('#jstree').jstree({
+                                    "core" : {
+                                        {{--'data' : "{{load_item('parent_id', '', '')}}",--}}
+                                        'data' : tree,
+                                        "themes" : {
+                                            "variant" : "large"
+                                        },
+                                        "multiple" : false,
+                                        "animation" : 300
+                                    },
+                                    "checkbox" : {
+                                        "keep_selected_style" : false
+                                    },
+                                    "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                                });
+
+                                //close or open all nodes on jstree load -opened by default-
+                                $('#jstree').on('loaded.jstree', function() {
+                                    $('#jstree').jstree('open_all');
+                                });
+                                $('#jstree').on("changed.jstree", function (e, data) {
+                                    var i, j, r = [];
+                                    var name = [];
+                                    for (i=0,j=data.selected.length;i < j;i++){
+                                        r.push(data.instance.get_node(data.selected[i]).id);
+                                        name.push(data.instance.get_node(data.selected[i]).text);
+                                    }
+                                    $('#parent_name').text(name);
+
+                                    //get all direct and undirect children of selected node
+                                    var currentNode = data.node;
+                                    var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                                    // var result = [currentNode.id];
+                                    var result = [];
+                                    allChildren.find('li').addBack().each(function(index, element) {
+                                        if ($(this).jstree(true).is_leaf(element)) {
+                                            // result.push(element.textContent);
+                                            result.push(parseInt(element.id));
+                                        } else {
+                                            var nod = $(this).jstree(true).get_node(element);
+                                            // result.push(nod.text);
+                                            result.push(parseInt(nod.id));
+                                        }
+                                    });
+
+                                    //handle click event
+                                    // timer = setTimeout(function() {
+                                    // if (!prevent) {
+                                    handle_click(r[0], result);
+                                    // }
+                                    // prevent = false;
+                                    // }, delay);
+                                });
 
 
-
-
-                {{--$('#jstree').jstree({--}}
-                {{--    "core" : {--}}
-                {{--        'data' : "{{load_item('Itm_Parnt')}}",--}}
-                {{--        "themes" : {--}}
-                {{--            "variant" : "large"--}}
-                {{--        },--}}
-                {{--        "multiple" : false,--}}
-                {{--        "animation" : 300--}}
-                {{--    },--}}
-                {{--    "checkbox" : {--}}
-                {{--        "keep_selected_style" : false--}}
-                {{--    },--}}
-                {{--    "plugins" : [ "themes","html_data","dnd","ui","types" ]--}}
-                {{--});--}}
+                                //handle tree double click event
+                                $('#jstree').on("dblclick.jstree", function (e){
+                                    clearTimeout(timer);
+                                    prevent = true;
+                                    handle_dbclick(e);
+                                });
+                            }
+                        });
+                    }
+                })();
 
                 $('#jstree').on('loaded.jstree', function() {
                     $('#jsTree').jstree('open_all');
@@ -294,6 +356,8 @@
                         },
                         success: function(data){
                             $('#myTabContent1').html(data);
+                            $('.editRootOrChildLink ').removeClass('hidden');
+                            $('.deleteRootOrChildLink  ').removeClass('hidden');
                         }
                     });
                 }
@@ -303,72 +367,46 @@
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('createCcNewAcc')}}",
-                        type: "POST",
+                        url: "{{route('generateChildNo')}}",
+                        type: "post",
                         dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", parent: parent },
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            parent: parent
+                        },
                         success: function(data){
-                            $('#myTabContent1').html(data);
+                            $('.Itm_No').val(data);
                         }
                     });
+                    {{--$.ajax({--}}
+                    {{--    url: "{{route('createChild')}}",--}}
+                    {{--    type: "post",--}}
+                    {{--    dataType: 'html',--}}
+                    {{--    data: {--}}
+                    {{--        _token: "{{ csrf_token() }}",--}}
+                    {{--        parent: parent--}}
+                    {{--    },--}}
+                    {{--    success: function(data){--}}
+                    {{--        $('#myTabContent1').html(data);--}}
+                    {{--    }--}}
+                    {{--});--}}
                 }
 
-                {{--$('#Level_Status').on('change', function(){--}}
-                {{--    if($(this).val() == 1){--}}
-                {{--        $('#main_chart').removeClass('hidden');--}}
-                {{--    }--}}
-                {{--    else{--}}
-                {{--        $('#main_chart').addClass('hidden');--}}
-                {{--        $('#main_chart').val(null);--}}
-                {{--    }--}}
-                {{--});--}}
 
-                {{--$('#delete_button').click(function(e){--}}
-                {{--    e.preventDefault();--}}
-                {{--    $('#delete_form').submit()--}}
-                {{--});--}}
-
-                {{--$('#initChartAcc').on('click', function(){--}}
-                {{--    $.ajax({--}}
-                {{--        url: "{{route('initCcChartAcc')}}",--}}
-                {{--        type: "POST",--}}
-                {{--        dataType: 'html',--}}
-                {{--        data: {"_token": "{{ csrf_token() }}"},--}}
-                {{--        success: function(data){--}}
-                {{--            $('#chart_form').html(data);--}}
-                {{--        }--}}
-                {{--    });--}}
-                {{--});--}}
-
-
-                {{--$(document).on('change', '#cc_type_Check', function(){--}}
-                {{--    if($(this).is(':checked')){--}}
-                {{--        $('#cc_type').removeClass('hidden');--}}
-                {{--    }--}}
-                {{--    else{--}}
-                {{--        $('#cc_type').addClass('hidden');--}}
-                {{--        $('#cc_type').val(null);--}}
-                {{--    }--}}
-                {{--});--}}
-
-                {{--$(document).on('change', '#edit_form :radio[id=Level_Status]', function(){--}}
-                {{--    if($(this).is(':checked')){--}}
-                {{--        if($(this).val() == 1){--}}
-                {{--            $('.branch').removeClass('hidden');--}}
-                {{--        }--}}
-                {{--        else{--}}
-                {{--            $('.branch').addClass('hidden');--}}
-                {{--            $('#Acc_Ntr').val(null);--}}
-                {{--            $('#Fbal_DB').val(0);--}}
-                {{--            $('#Fbal_CR').val(0);--}}
-                {{--            $('#Cr_Blnc').val(0);--}}
-                {{--            $('#Acc_Typ').val(null);--}}
-                {{--            // $('#ClsItm_No1').val(null);--}}
-                {{--            $('#ClsItm_No2').val(null);--}}
-                {{--            $('#cc_type').val(null);--}}
-                {{--        }--}}
-                {{--    }--}}
-                {{--});--}}
+                <!--$('#jstree').jstree({-->
+                <!--    "core" : {-->
+                <!--        'data' : "{{load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo'))}}",-->
+                <!--        "themes" : {-->
+                <!--            "variant" : "large"-->
+                <!--        },-->
+                <!--        "multiple" : false,-->
+                <!--        "animation" : 300-->
+                <!--    },-->
+                <!--    "checkbox" : {-->
+                <!--        "keep_selected_style" : false-->
+                <!--    },-->
+                <!--    "plugins" : [ "themes","html_data","dnd","ui","types" ]-->
+                <!--});-->
 
             });
 
@@ -406,6 +444,7 @@
 
     @include('admin.layouts.message')
 
+
     <!-- /.box-header -->
         <div class="box-body table-responsive" id="create_chart">
             <div class="row">
@@ -418,8 +457,8 @@
             </div>
             <div class="row text-left" style="margin-bottom: 5px">
                 <div class="col-md-4 pull-left">
-                    <a class="btn btn-info editRootOrChildLink" href="#"><i class="fa fa-floppy-o"></i></a>
-                    <a class="btn btn-danger deleteRootOrChildLink" href="#"><i class="fa fa-trash"></i></a>
+                    <a class="btn btn-info editRootOrChildLink hidden" href="#"><i class="fa fa-floppy-o"></i></a>
+                    <a class="btn btn-danger deleteRootOrChildLink hidden" href="#"><i class="fa fa-trash"></i></a>
                 </div>
             </div>
             <div class="row">
@@ -468,7 +507,8 @@
             </ul>
             {{-- End Ul taps--}}
 
-            <div class="panel panel-default col-md-4">
+
+            <div class="panel panel-default col-md-4" style="margin-top:1%">
                 <div class="panel-body">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -479,15 +519,15 @@
                     </div>
                 </div>
             </div>
-
             {{----}}
             <div class="tab-content" id="myTabContent1" style="margin-top:1%">
+
                 {{--First tap--}}
-                @include('admin.categories.MainCategories.create.cat_data', ['itemToEdit' => $itemToEdit])
+                @include('admin.categories.MainCategories.create.cat_data')
                 {{--Second tap--}}
-                @include('admin.categories.MainCategories.create.weight_measure', ['itemToEdit' => $itemToEdit])
+                @include('admin.categories.MainCategories.create.weight_measure')
                 {{--third tap--}}
-                @include('admin.categories.MainCategories.create.purchases', ['itemToEdit' => $itemToEdit])
+                @include('admin.categories.MainCategories.create.purchases')
             </div>
         </div>
     </div>

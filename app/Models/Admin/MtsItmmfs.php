@@ -62,10 +62,10 @@ class MtsItmmfs extends Model
     ];
 
     public function parent(){
-        return $this->hasOne(MtsItmmfs::class, 'Item_No','Itm_Parnt');
+        return $this->belongsTo(MtsItmmfs::class, 'Itm_No','Itm_Parnt');
     }
 
     public function children(){
-        return $this->hasMany(MtsItmmfs::class, 'Itm_Parnt', 'Item_No');
+        return $this->hasMany(MtsItmmfs::class, 'Itm_Parnt','Itm_No');
     }
 }

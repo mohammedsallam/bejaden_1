@@ -590,8 +590,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
         Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
+        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
 
-        Route::post('getCategoryItems','Admin\categories\MainCategoriesController@getItems')->name('getCategoryItems');
+        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getItem')->name('getCategoryItems');
 
     });
 

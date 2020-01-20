@@ -18,8 +18,7 @@ class MainCategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request){
 
         $item = MtsItmmfs::get(['Itm_Nm' . ucfirst(session('lang')), 'Itm_No']);
         if (session('Cmp_No') == -1) {
@@ -88,9 +87,15 @@ class MainCategoriesController extends Controller
             return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
 
+        $itemIfExist = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+
+        if ($itemIfExist){
+            return response()->json(['status' => 0, 'message' => trans('admin.found_data')]);
+        }
+
         $item = MtsItmmfs::create($request->all());
         $item->update(['Level_Status' => 0, 'Level_No' => 1]);
-
+        session(['updatedComNo', $request->Cmp_No,'updatedActiveNo', $request->Actvty_No]);
         return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
 
     }
@@ -140,6 +145,7 @@ class MainCategoriesController extends Controller
         //
     }
 
+    // Update child or root
     public function updateRootOrChild(Request $request){
 
         $validation = Validator::make($request->all(), [
@@ -166,11 +172,16 @@ class MainCategoriesController extends Controller
             return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
         $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+        if (!$item){
+            return response()->json(['status' => 0, 'message' => trans('admin.not_found_data')]);
+        }
         $item->update($request->all());
+        session(['updatedComNo', $request->Cmp_No,'updatedActiveNo', $request->Actvty_No]);
         return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
 
     }
 
+    // Delete child or root
     public function deleteRootOrChild(Request $request){
 
         $validation = Validator::make($request->all(), [
@@ -193,34 +204,37 @@ class MainCategoriesController extends Controller
 
     }
 
-    public function getItems(Request $request){
-        if($request->ajax()){
-            session(['company_number' => $request->Cmp_No]);
-            $tree = load_item('Itm_Parnt', null, $request->Cmp_No, $request->Actvty_No);
-            return $tree;
-        }
-    }
-
-    public function createNewAcc(Request $request){
-        if($request->ajax()){
-            if($request->parent){
-                $parent = MtsCostcntr::where('Itm_No', $request->parent)->get(['Itm_No', 'Cmp_No', 'Level_No'])->first();
-                $cmps = MainCompany::where('Cmp_No', $parent->Cmp_No)->get(['Cmp_No', 'Cmp_Nm'.ucfirst(session('lang'))])->first();
-                $chart = MtsCostcntr::get(['Costcntr_Nm'.ucfirst(session('lang')), 'Itm_No']);
-                $Itm_No = $this->createAccNo($parent->Itm_No);
-                return view('admin.cc.create', ['title' => trans('admin.cc'),
-                    'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Itm_No' =>  $Itm_No,
-                ]);
-            }
-
-        }
-    }
-
+    // Fire when change company number or activity number
     public function getItem(Request $request){
         if($request->ajax()){
-            session(['Chart_Cmp_No' => $request->Cmp_No , 'Actvty_No' => $request->Actvty_No]);
+            session(['updatedComNo' => $request->Cmp_No , 'updatedActiveNo' => $request->Actvty_No]);
             $tree = load_item('Parent_Itm', null, $request->Cmp_No, $request->Actvty_No);
             return $tree;
+        }
+    }
+
+    // Create child
+    public function createChild(Request $request)
+    {
+
+    }
+
+    // Generate Child number depend on parent number
+    public function generateChildNo(Request $request){
+        $parentId = $request->parent;
+        $parent = MtsItmmfs::where('Itm_No', $parentId)->first();
+        if($parent){
+
+            if (count($parent->children) > 0){
+                // last + 1 if has children
+                $index = count($parent->children)-1;
+                session(['ItemNoGenerated' => $parent->children[$index]->Itm_No+1]);
+                return $parent->children[$index]->Itm_No+1;
+            } else {
+                return (int)$parentId.'001';
+            }
+
+
         }
     }
 }
