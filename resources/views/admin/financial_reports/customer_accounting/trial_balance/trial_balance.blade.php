@@ -203,12 +203,12 @@
                 </div>
                 <div class="checkonly col-xs-6">
                     <div class="col-xs-6">
-                        {{ Form::label('level','المستوى', ['class' => 'col-xs-3 control-label']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-9', 'id'=>'level_num'])) }}
+                        <input type="checkbox">
+                        <label>كل المندوبين</label>
                     </div>
                     <div class="col-xs-6">
-                        <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
-                        <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
+                        <input type="checkbox">
+                        <label>كل العملاء</label>
                     </div>
                 </div>
             </div>
@@ -216,7 +216,29 @@
             <div class="details_row col-xs-6">
                 <div class="row">
                     <div class="col-xs-9">
-                        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
+                        <input type="checkbox" class="col-xs-1">
+                        {{ Form::label('sales_select','المندوب ', ['class' => 'col-xs-2 control-label']) }}
+                        {{ Form::select('sales_select',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee', 'disabled'])) }}
+                    </div>
+                    <div class="col-xs-3">
+                        {{ Form::text('sales_select_no',null, array_merge(['class' => 'form-control'])) }}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-9">
+                        <input type="checkbox" class="col-xs-1">
+                        {{ Form::label('state','المنطقه', ['class' => 'col-xs-2 control-label']) }}
+                        {{ Form::select('state',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee', 'disabled'])) }}
+                    </div>
+                    <div class="col-xs-3">
+                        {{ Form::text('state_no',null, array_merge(['class' => 'form-control'])) }}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-9">
+                        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3 control-label']) }}
                         {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee'])) }}
                     </div>
                     <div class="col-xs-3">
@@ -236,7 +258,7 @@
 
             </div>
             <div class="col-xs-6 well well-sm">
-                <div class="col-xs-5">
+                <div class="col-xs-4">
                     {{ Form::label('From', trans('admin.From'), ['class' => 'col-xs-2']) }}
                     {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-xs-10 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
                     <br>
@@ -246,7 +268,7 @@
                     {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-xs-10 form-control  hijri-date-input date','id'=>'toDate'])) }}
 
                 </div>
-                <div class="col-xs-7 well">
+                <div class="col-xs-8 well" style="background-color: #d3d3d3;">
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
@@ -258,6 +280,20 @@
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
                             <label for="levelBalance">  حسابات بارصدة </label>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="col-xs-12 custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                            <label for="levelBalance">  حسابات محذوفه من اعمار الديون </label>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="col-xs-12 custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                            <label for="levelBalance">  حسابات تم ايقافها </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
@@ -272,6 +308,20 @@
                             <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
                             <label for="levelBalance">  حسابات دائنه </label>
                         </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="col-xs-12 custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                            <label for="levelBalance">  حسابات عليها حركه </label>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="col-xs-12 custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                            <label for="levelBalance">  حسابات لايوجد عليها حركه </label>
+                        </div>
                     </div>
                 </div>
 
@@ -279,7 +329,7 @@
 
         </div>
 
-    </div>
+
 
 
     <br>
@@ -293,7 +343,7 @@
         </div>
     </div>
     <br>
-
+    </div>
 
 
 @endsection
