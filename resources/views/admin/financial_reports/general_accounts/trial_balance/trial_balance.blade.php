@@ -194,51 +194,51 @@
         <div class="box-body">
 
             <div style="display: flex;justify-content: left">
-                    {{ Form::label('MainCompany','الشركات', ['class' => 'col-xs-2 control-label']) }}
+                    {{ Form::label('MainCompany','الشركات', ['class' => 'control-label','style'=>'width:10%']) }}
                     {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-xs-6 form-control  e2  MainCompany','placeholder'=> trans('admin.select') ])) }}
                     {{ Form::text('MainCompany',null, array_merge(['style' => 'width:4%','class'=>'col-xs-1 number_company'])) }}
 
             </div>
            <br>
 
-{{--                <div class="div_details col-xs-6" style="display: flex; justify-content: space-between">--}}
-{{--                    <div class="checkonly" style="display: flex; flex-direction: column">--}}
-{{--                        <div class="col-xs-12">--}}
-{{--                            <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">--}}
-{{--                            <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>--}}
-{{--                        </div>--}}
-{{--                        <div class="col-xs-12">--}}
-{{--                            <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">--}}
-{{--                            <label for="levelBalance">  ميزان المراجعة حسب المستوي </label>--}}
+                <div class="div_detail"  style="display: flex; flex-direction: row">
+                    <div class="checkonly" style="display: flex; flex-direction: column">
+                        <div class="col-xs-12 " style="display: flex; justify-content: right">
+                            <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
+                            <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
+                        </div>
+                        <div class="col-xs-12">
+                            <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">
+                            <label for="levelBalance">  ميزان المراجعة حسب المستوي </label>
 
-{{--                        </div>--}}
+                        </div>
 
 
-{{--                       </div>--}}
-{{--                        <div class="" style="display: flex ; flex-direction: column;">--}}
+                       </div>
+                        <div class="" style="display: flex ; flex-direction: column;">
 
-{{--                                <div class="col-xs-12">--}}
-{{--                                   <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">--}}
-{{--                                    <label for="reviewBalance">جميع الحسابات </label>--}}
-{{--                              </div>--}}
-{{--                                 <div class="col-xs-12">--}}
-{{--                                    <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">--}}
-{{--                                    <label for="levelBalance">  حسابات بارصدة </label>--}}
+                                <div class="col-xs-12">
+                                   <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
+                                    <label for="reviewBalance">جميع الحسابات </label>
+                              </div>
+                                 <div class="col-xs-12">
+                                    <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">
+                                    <label for="levelBalance">  حسابات بارصدة </label>
 
-{{--                                    </div>--}}
-{{--                         </div>--}}
+                                    </div>
+                         </div>
 
-{{--                </div>--}}
+                </div>
 
                 <div class="details_row">
-
+                    <div class="col-xs-6">
                         <div  style="display: flex;justify-content: right">
                             {{ Form::label('tree','من حساب', ['class' => 'col-xs-2 control-label']) }}
                             {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-8','placeholder'=>trans('admin.select') ])) }}
                             {{ Form::text('fromtree',null, array_merge(['style' => 'width:4%','class' => 'form-control  col-xs-1'])) }}
 
 
-                        <div class="col-xs-2">
+
                         </div>
                     </div>
 

@@ -124,16 +124,7 @@
             </li>
             @endhasanyrole
 
-            {{-- ترحيل البيانات القديمه الى النظام الجديد --}}
-            @hasanyrole('writer|admin')
-            <li  class="">
-                <a href="{{route('import')}}">
-                    <i class="fa fa-money"></i> <span>{{trans('admin.data_transfere')}}</span>
-                    <span class="pull-right-container"></span>
-                </a>
-            </li>
-            @endhasanyrole
-            {{-- نهاية ترحل البيانات القديمه الى النظام الجديد --}}
+
             {{-- data --}}
 {{--            <li class="treeview {{ active_menu('main_data')[0]  }} {{ active_menu('setting')[0]  }} {{ active_menu('branches')[0]  }}">--}}
 {{--                <a href="#">--}}
@@ -376,21 +367,21 @@
 
 {{--            </li>--}}
 {{--            @endhasanyrole--}}
-            @hasanyrole('writer|admin')
-            <li class="treeview {{ active_menu('dailyReport')[0]  }} {{ active_menu('accountStatement')[0]  }} {{ active_menu('trialbalance')[0]  }}">
-                <a href="#">
-                    <i class="fa fa-credit-card"></i> <span>{{trans('admin.accounting_reports')}}</span>
-                    <span class="pull-right-container"></span>
-                </a>
-                <ul class="treeview-menu" style="{{ active_menu('dailyReport')[1]  }} {{ active_menu('accountStatement')[1]  }} {{ active_menu('trialbalance')[1]  }}">
-                    <li><a href="{{url('/admin/dailyReport')}}"><i class="fa fa-circle-o"></i>{{trans('admin.daily_report')}} </a></li>
-                    <li><a href="{{url('/admin/accountStatement')}}"><i class="fa fa-circle-o"></i>{{trans('admin.account_statement')}} </a></li>
-                    <li><a href="{{url('/admin/trialbalance')}}"><i class="fa fa-circle-o"></i>{{trans('admin.trial_balance')}} </a></li>
-                    <li><a href="{{url('/admin/publicbalance')}}"><i class="fa fa-circle-o"></i>{{trans('admin.public_balance')}} </a></li>
-                    <li><a href="{{url('/admin/departments/department/Review')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Departments_Review')}} </a></li>
-                </ul>
-            </li>
-            @endhasanyrole
+{{--            @hasanyrole('writer|admin')--}}
+{{--            <li class="treeview {{ active_menu('dailyReport')[0]  }} {{ active_menu('accountStatement')[0]  }} {{ active_menu('trialbalance')[0]  }}">--}}
+{{--                <a href="#">--}}
+{{--                    <i class="fa fa-credit-card"></i> <span>{{trans('admin.accounting_reports')}}</span>--}}
+{{--                    <span class="pull-right-container"></span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu" style="{{ active_menu('dailyReport')[1]  }} {{ active_menu('accountStatement')[1]  }} {{ active_menu('trialbalance')[1]  }}">--}}
+{{--                    <li><a href="{{url('/admin/dailyReport')}}"><i class="fa fa-circle-o"></i>{{trans('admin.daily_report')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/accountStatement')}}"><i class="fa fa-circle-o"></i>{{trans('admin.account_statement')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/trialbalance')}}"><i class="fa fa-circle-o"></i>{{trans('admin.trial_balance')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/publicbalance')}}"><i class="fa fa-circle-o"></i>{{trans('admin.public_balance')}} </a></li>--}}
+{{--                    <li><a href="{{url('/admin/departments/department/Review')}}"><i class="fa fa-circle-o"></i>{{trans('admin.Departments_Review')}} </a></li>--}}
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--            @endhasanyrole--}}
 
 
 
