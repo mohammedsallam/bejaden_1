@@ -1441,6 +1441,7 @@ return [
     'cc_name'            =>'اسم مراكز التكلفه',
     'cust_account_statement'=>'كشف حساب العملاء',
     'sup_account_statement' =>'كشف حساب الموردين',
+    'trial_balance_cust'    =>'ميزان مراجعة العملاء',
     'Tr_No_short' => 'رقم/قيد',
     'exchange_rate_short' => 'صرف',
     'slm_no_short' => 'ر/م',
