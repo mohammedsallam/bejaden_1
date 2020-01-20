@@ -219,7 +219,7 @@ if($from > 1600 )
     public function trial_balance()
     {
 
-        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+        $MainCompany = MainCompany::orderBy('Cmp_No', 'ASC')->pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
         return view('admin.financial_reports.general_accounts.trial_balance.trial_balance',compact('MainCompany'));
 
     }

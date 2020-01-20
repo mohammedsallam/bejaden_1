@@ -6,7 +6,13 @@
             .select2-container--default .select2-selection--multiple .select2-selection__choice{
                 background-color: #333;
             }
+
+            .toggleClick{
+                color: red;
+            }
         </style>
+
+
 
     @endpush
     @push('js')
@@ -121,7 +127,7 @@
     $(function () {
         'use strict'
         $('.e2').select2({
-            placeholder: "{{trans('admin.select')}}",
+{{--            placeholder: "{{trans('admin.select')}}",--}}
             dir: '{{direction()}}'
         });
     });
@@ -143,6 +149,39 @@
 
     });
 
+// number maincompany
+    $(document).on('change','.MainCompany',function () {
+        var value = $(this).val();
+
+        $('.number_company').val(value);
+    });
+
+    $(document).ready(function(){
+        $('#reviewBalance').click(function() {
+            if($('#levelBalance').prop('checked') === true){
+                $(this).prop('checked', false).siblings('label').addClass('toggleClick');
+                $('#levelBalance').prop('checked', true).siblings('label').removeClass('toggleClick')
+            } else if ($(this).prop('checked') === true) {
+                $('#levelBalance').prop('checked', false).siblings('label').addClass('toggleClick')
+            }else if ($(this).prop('checked') === false) {
+                $('#levelBalance').siblings('label').removeClass('toggleClick')
+            }
+        });
+
+        $('#levelBalance').click(function() {
+            if($('#reviewBalance').prop('checked') === true){
+                $(this).prop('checked', false).siblings('label').addClass('toggleClick')
+            } else if ($(this).prop('checked') === true) {
+                $('#reviewBalance').prop('checked', false).siblings('label').addClass('toggleClick')
+            }else if ($(this).prop('checked') === false) {
+                $('#reviewBalance').siblings('label').removeClass('toggleClick')
+            }
+
+        });
+
+    });
+
+
 </script>
 
     @endpush
@@ -154,33 +193,82 @@
         @include('admin.layouts.message')
         <div class="box-body">
 
-            <div class="form-group row">
-                <div class="col-md-3">
-                    {{ Form::label('MainCompany','الشركات', ['class' => 'control-label']) }}
-                    {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control e2 ee  MainCompany','placeholder'=> trans('admin.select') ])) }}
-                </div>
-{{--                <div class="col-md-6 div_branch">--}}
+            <div style="display: flex;justify-content: left">
+                    {{ Form::label('MainCompany','الشركات', ['class' => 'col-xs-2 control-label']) }}
+                    {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-xs-6 form-control  e2  MainCompany','placeholder'=> trans('admin.select') ])) }}
+                    {{ Form::text('MainCompany',null, array_merge(['style' => 'width:4%','class'=>'col-xs-1 number_company'])) }}
 
-{{--                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}--}}
-{{--                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2 eeerr' ,'placeholder'=> trans('admin.select') ])) }}--}}
+            </div>
+           <br>
+
+{{--                <div class="div_details col-xs-6" style="display: flex; justify-content: space-between">--}}
+{{--                    <div class="checkonly" style="display: flex; flex-direction: column">--}}
+{{--                        <div class="col-xs-12">--}}
+{{--                            <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">--}}
+{{--                            <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-xs-12">--}}
+{{--                            <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">--}}
+{{--                            <label for="levelBalance">  ميزان المراجعة حسب المستوي </label>--}}
+
+{{--                        </div>--}}
+
+
+{{--                       </div>--}}
+{{--                        <div class="" style="display: flex ; flex-direction: column;">--}}
+
+{{--                                <div class="col-xs-12">--}}
+{{--                                   <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">--}}
+{{--                                    <label for="reviewBalance">جميع الحسابات </label>--}}
+{{--                              </div>--}}
+{{--                                 <div class="col-xs-12">--}}
+{{--                                    <input class="trialBalance_2" type="checkbox" id="levelBalance" name="reviewBalance" value="1">--}}
+{{--                                    <label for="levelBalance">  حسابات بارصدة </label>--}}
+
+{{--                                    </div>--}}
+{{--                         </div>--}}
 
 {{--                </div>--}}
 
+                <div class="details_row">
 
-                <div class="div_details">
-                <div class="col-md-3">
-                    {{ Form::label('reporttype',trans('admin.report_type'), ['class' => 'control-label']) }}
-                    {{ Form::select('reporttype',\App\Enums\dataLinks\BalanceReviewType::toSelectArray(),null, array_merge(['class' => 'form-control e3 reporttype','placeholder'=> trans('admin.select') , 'id' => 'seeAnotherField' ])) }}
+                        <div  style="display: flex;justify-content: right">
+                            {{ Form::label('tree','من حساب', ['class' => 'col-xs-2 control-label']) }}
+                            {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-8','placeholder'=>trans('admin.select') ])) }}
+                            {{ Form::text('fromtree',null, array_merge(['style' => 'width:4%','class' => 'form-control  col-xs-1'])) }}
+
+
+                        <div class="col-xs-2">
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-10">--}}
+{{--                            {{ Form::label('tree','الى حساب', ['class' => 'col-md-3']) }}--}}
+{{--                            {{ Form::select('totree',[],null, array_merge(['class' => 'col-md-8  form-control  e2 ee totree'])) }}--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-md-2">--}}
+{{--                            {{ Form::text('totree',null, array_merge(['class' => 'form-control e2 totree'])) }}--}}
+
+{{--                        </div>--}}
+{{--                    </div>--}}
                 </div>
-                <div class="col-md-3">
-                    {{ Form::label('kind',trans('admin.type'), ['class' => 'control-label']) }}
-                    {{ Form::select('kind',\App\Enums\dataLinks\AccountTypeType::toSelectArray(),0, array_merge(['class' => 'form-control kind','placeholder'=> trans('admin.select') ])) }}
-                </div>
-                <div class="col-md-3" id="otherFieldDiv">
-                    {{ Form::label('level',trans('admin.level'), ['class' => 'control-label']) }}
-                    {{ Form::selectRange('level',1,7,1, array_merge(['class' => 'form-control level', 'id' => 'otherField'])) }}
-                </div>
-            </div>
+
+
+                   </div>
+    </div>
+
             <br>
             {{--loader spinner--}}
             <div id='loadingmessage_1' style='display:none; margin-top: 20px' class="text-center">
@@ -194,8 +282,5 @@
             <br>
 
 
-        </div>
-    </div>
-    {{--<button class="btn btn-default" onclick="printPageArea()" id="primaryButton"><i class="fa fa-print"></i> {{trans('admin.print')}} </button>--}}
 
 @endsection
