@@ -129,9 +129,9 @@ if (!function_exists('makeNumber2Text')){
                     }
                     break;
                 default:
-                    {
-                        $textResult = 'هذا رقم كبير .. ';
-                    }
+                {
+                    $textResult = 'هذا رقم كبير .. ';
+                }
             }
 
         }
@@ -715,6 +715,7 @@ if (!function_exists('load_cc')){
         return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
     }
 }
+
 if (!function_exists('lang')){
     function lang(){
         if (session()->has('lang')){
@@ -750,7 +751,6 @@ if (!function_exists('session_lang')){
         }
     }
 }
-
 
 if(!function_exists('validate_image')) {
     function validate_image($ext = null)
@@ -792,15 +792,15 @@ if(!function_exists('sumallcc')) {
         $depart = \App\glcc::where('type','1')->whereIn('id',$values)->pluck('id');
 
 
-                $value1 = \App\limitationsType::whereIn('cc_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-            })->sum($sum);
+        $value1 = \App\limitationsType::whereIn('cc_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
 
-            $value2 = \App\receiptsType::whereIn('cc_id',$depart)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-            })->sum($sum);
+        $value2 = \App\receiptsType::whereIn('cc_id',$depart)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
 
-            return $value1 + $value2;
+        return $value1 + $value2;
     }
 }
 if(!function_exists('sumallcc2')) {
@@ -825,37 +825,37 @@ if(!function_exists('sumallcc2')) {
         $values = $pros->concat($plucks);
 
         $depart = \App\glcc::where('type','1')->whereIn('id',$values)->pluck('id');
-            $value1 = \App\limitationsType::whereIn('cc_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from);
-            })->sum($sum);
-            $value2 = \App\receiptsType::whereIn('cc_id',$depart)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from);
-            })->sum($sum);
-            return $value1 + $value2;
+        $value1 = \App\limitationsType::whereIn('cc_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from);
+        })->sum($sum);
+        $value2 = \App\receiptsType::whereIn('cc_id',$depart)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from);
+        })->sum($sum);
+        return $value1 + $value2;
     }
 }
 if(!function_exists('allcc')) {
     function allcc($id = null,$from = null,$to = null,$sum = null,$sign = null,$sign2 = null)
     {
-            $value1 = \App\limitationsType::where('cc_id',$id)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-            })->sum($sum);
-            $value2 = \App\receiptsType::where('cc_id',$id)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-            })->sum($sum);
-            return $value1 + $value2;
+        $value1 = \App\limitationsType::where('cc_id',$id)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
+        $value2 = \App\receiptsType::where('cc_id',$id)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
+        return $value1 + $value2;
     }
 }
 if(!function_exists('allcc2')) {
     function allcc2($id = null,$from = null,$to = null,$sum = null,$sign = null,$sign2 = null)
     {
-            $value1 = \App\limitationsType::where('cc_id',$id)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from);
-            })->sum($sum);
-            $value2 = \App\receiptsType::where('cc_id',$id)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
-                $query->whereDate('created_at', $sign, $from);
-            })->sum($sum);
-            return $value1 + $value2;
+        $value1 = \App\limitationsType::where('cc_id',$id)->whereHas('limitations', function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from);
+        })->sum($sum);
+        $value2 = \App\receiptsType::where('cc_id',$id)->whereHas('receipts' , function($query) use ($from,$to,$sign,$sign2){
+            $query->whereDate('created_at', $sign, $from);
+        })->sum($sum);
+        return $value1 + $value2;
     }
 }
 if(!function_exists('sumall')) {
@@ -1037,7 +1037,7 @@ if(!function_exists('alldepartment')) {
 
 
 if(!function_exists('sumdepartment')) {
-        function sumdepartment($id = null,$operations = null)
+    function sumdepartment($id = null,$operations = null)
     {
         if ($operations != null){
             $value1 = \App\limitationsType::where('id',$id)->get();
@@ -1118,5 +1118,54 @@ if(!function_exists('departmentsum3')) {
         return $value1 + $value2 + $value3 ;
 
 
+    }
+
+    if (!function_exists('load_item')){
+        function load_item($select = null , $item_hide = null, $Cmp_No ,$Actvty_No){
+
+            $items = \App\Models\Admin\MtsItmCatgry::where('Cmp_No', $Cmp_No)->where('Actvty_No' , $Actvty_No)->get(['Itm_Nm'.ucfirst(session('lang')), 'Parent_Itm', 'Itm_No', 'ID_No']);
+
+            $item_arr = [];
+            foreach($items as $item){
+                $list_arr = [];
+                $list_arr['icon'] = '';
+                $list_arr['li_attr'] = '';
+                $list_arr['a_attr'] = '';
+                $list_arr['children'] = [];
+                if ($select !== null and $select == $item->Parent_Itm){
+                    $list_arr['state'] = [
+                        'opened'=>true,
+                        'selected'=>true,
+                        'disabled'=>false
+                    ];
+                }
+                if ($item_hide !== null and $item_hide == $item->Acc_No){
+                    $list_arr['state'] = [
+                        'opened'=>false,
+                        'selected'=>false,
+                        'disabled'=>true
+                    ];
+                }
+
+                $levelType = \App\Models\Admin\MtsItmCatgry::where('Itm_No',$item->Itm_No)->first()->Level_No;
+                $code = \App\Models\Admin\MtsItmCatgry::where('Itm_No',$item->Itm_No)->first()->Itm_No;
+                $list_arr['id'] = $item->Itm_No;
+
+                if( $item->Parent_Itm !== null){
+                    if($item->Parent_Itm == 0){
+                        $item->Parent_Itm = '#';
+                        $list_arr['parent'] = $item->Parent_Itm;
+                    }
+                    else{
+                        $list_arr['parent'] = $item->Parent_Itm;
+                    }
+                }
+
+                $list_arr['text'] = $item->{'Itm_Nm'.ucfirst(session('lang'))}.' '.'( '.$code.' )'.' '.$levelType;
+                array_push($item_arr,$list_arr);
+
+            }
+            return json_encode($item_arr,JSON_UNESCAPED_UNICODE);
+        }
     }
 }

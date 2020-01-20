@@ -267,6 +267,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_data.category.category_data');
         });
 
+        Route::get('project_data', function () {
+            return view('admin.basic_data.project.projact_data');
+        });
+
 //            Route::get('stuff_data', function () {
 //            return view('admin.basic_data.stuff.stuff_data');
 //        });
@@ -588,6 +592,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
+
+        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getItem')->name('getCategoryItem');
+
     });
 
 

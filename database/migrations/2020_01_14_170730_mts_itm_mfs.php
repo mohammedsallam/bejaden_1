@@ -18,9 +18,9 @@ class MtsItmMfs extends Migration
             $table->smallInteger('Actvty_No')->nullable();
             $table->smallInteger('Cmp_No')->nullable();
             $table->bigInteger('Itm_No')->nullable();
-            $table->bigInteger('Parent_Itm')->nullable();
-            $table->smallInteger('Level_No')->nullable();
+            $table->bigInteger('Itm_Parnt')->nullable();
             $table->smallInteger('Level_Status')->nullable();
+            $table->smallInteger('Level_No')->nullable();
             $table->integer('Measure_Grp')->nullable();
             $table->smallInteger('Itm_Active')->nullable();
             $table->smallInteger('Sale_Active')->nullable();
@@ -29,8 +29,6 @@ class MtsItmMfs extends Migration
             $table->smallInteger('Itm_Relation')->nullable();
             $table->bigInteger('Itm_No_Main')->nullable();
             $table->string('Ref_No', 20)->nullable();
-            $table->bigInteger('Catg_No')->nullable();
-            $table->integer('Kind_No')->nullable();
             $table->string('Itm_NmAr', 20)->nullable();
             $table->string('Itm_NmEn', 20)->nullable();
             $table->bigInteger('Sup_No')->nullable();
@@ -64,8 +62,8 @@ class MtsItmMfs extends Migration
             $table->smallInteger('Label_No')->nullable();
             $table->string('Opn_Date', 10)->nullable();
             $table->string('Opn_Time', 10)->nullable();
-            $table->string('Updt_Date', 10)->nullable();
             $table->integer('User_ID')->nullable();
+            $table->string('Updt_Date', 10)->nullable();
             $table->timestamps();
         });
     }

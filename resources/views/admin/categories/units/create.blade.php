@@ -24,19 +24,35 @@
                 <input type="text" value="{{$lastUnit != null ? $lastUnit->Unit_No+1 : 1}}" name="Unit_No" class="form-control" readonly>
             </div>
         </div>
-{{--        <div class="col-md-2">--}}
-{{--            <div class="form-group">--}}
-{{--                {{ Form::label(trans('admin.activity_type'), null, ['class' => 'control-label']) }}--}}
-{{--                {{ Form::text('Actvty_No', old('Actvty_No'), array_merge(['class' => 'form-control'])) }}--}}
-{{--            </div>--}}
-{{--        </div>--}}
         <div class="col-md-5">
+            <div class="form-group">
+                {{ Form::label(trans('admin.activity_type'), null, ['class' => 'control-label']) }}
+                <select name="Actvty_No" id="Actvty_No" class="form-control">
+                    <option value="">{{trans('admin.select')}}</option>
+                    @foreach($activity as $activ)
+                        <option value="{{$activ->ID_No}}">{{$activ->{'Name_'.ucfirst(session('lang'))} }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                {{ Form::label(trans('admin.na_Comp'), null, ['class' => 'control-label']) }}
+                <select name="Cmp_No" id="Cmp_No" class="form-control">
+                    <option value="">{{trans('admin.select')}}</option>
+                    @foreach($companies as $company)
+                        <option value="{{$company->ID_No}}">{{$company->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
             <div class="form-group">
                 {{ Form::label(trans('admin.name_ar'), null, ['class' => 'control-label']) }}
                 {{ Form::text('Unit_NmAr', old('Unit_NmAr'), array_merge(['class' => 'form-control'])) }}
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="form-group">
                 {{ Form::label(trans('admin.name_en'), null, ['class' => 'control-label']) }}
                 {{ Form::text('Unit_NmEn', old('Unit_NmEn'), array_merge(['class' => 'form-control'])) }}
