@@ -311,8 +311,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('account_statement_cust/details','Admin\financial_reports\customer_accountingcontroller@details')->name('accountStatementCust.details');
         Route::get('acc_state_cust','Admin\financial_reports\customer_accountingcontroller@acc_state')->name('acc_state_cust');
         Route::Post('cust_account_statement/pdf','Admin\financial_reports\customer_accountingcontroller@print')->name('accountStatementCust.acc_pdf');
-        Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
-        Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
+        Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@trial_balance')->name('cust_trial_balance');
+        Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
 
 //        1
 //        0
