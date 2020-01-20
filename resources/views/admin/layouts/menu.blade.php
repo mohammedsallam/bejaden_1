@@ -57,7 +57,7 @@
             @hasanyrole('writer|admin')
             <li  class="">
 
-                <a href="{{url('/admin/projects_section')}}">
+                <a href="{{url('/admin/project_data')}}">
                     <i class="fa fa-user"></i> <span>{{trans('admin.contract_and_projects')}}</span>
                     <span class="pull-right-container"></span>
                 </a>

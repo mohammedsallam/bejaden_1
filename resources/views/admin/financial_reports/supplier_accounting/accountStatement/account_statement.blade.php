@@ -177,7 +177,7 @@
             $(".button_print").css("display","none");
             if (this){
                 $.ajax({
-                    url: '{{route('accountStatement.details')}}',
+                    url: '{{route('accountStatementSup.details')}}',
                     type:'get',
                     dataType:'html',
                     data:{maincompany: maincompany,totree: totree,from: from,to : to,fromtree:fromtree,acc_fromtree:acc_fromtree,acc_totree:acc_totree},
@@ -214,7 +214,7 @@
             $(".details_row").css("display","none");
             if (this){
                 $.ajax({
-                    url: '{{route('acc_state')}}',
+                    url: '{{route('acc_state_sup')}}',
                     type:'get',
                     dataType:'html',
                     data:{mainCompany: mainCompany},
@@ -243,7 +243,7 @@
 @endpush
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">كشف حساب للحسابات العامة</h3>
+        <h3 class="box-title">كشف حساب لحسابات الموردين</h3>
     </div>
     <div class="box-body row">
         <div class="col-xs-7">

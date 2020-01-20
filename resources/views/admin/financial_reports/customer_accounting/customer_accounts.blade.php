@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.general_accounts'))
+@section('title',trans('admin.customer_accounts'))
 
 @section('content')
     @push('css')
@@ -17,7 +17,7 @@
     <div class="box-body">
 
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="account_statement">
+            <a href="cust_account_statement">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 

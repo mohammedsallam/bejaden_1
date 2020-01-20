@@ -307,6 +307,8 @@ $level       = $request->level;
         return view('admin.financial_reports.general_accounts.report.daily_restriction');
 
     }
+
+
     public function index()
     {
         //
