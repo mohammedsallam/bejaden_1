@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.general_accounts'))
+@section('title',trans('admin.supplier_accounts'))
 
 @section('content')
     @push('css')
@@ -30,7 +30,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="trial_balance">
+            <a href="supp_trial_balance">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-balance-scale"></i></span>
 

@@ -12,6 +12,7 @@ use App\employee;
 use App\Models\Admin\MTsCustomer;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\AstSalesman;
+use App\Models\Admin\AstMarket;
 use App\Enums\TypeType;
 use App\glcc;
 use App\Http\Controllers\Controller;
@@ -63,7 +64,9 @@ class DelegatesController extends Controller
         //dd($request->all());
         $data = $this->validate($request, [
             'Slm_No'    => 'sometimes',
+            'Cmp_No'    => 'sometimes',
             'Brn_No'    => 'sometimes',
+            'Mark_No'   => 'sometimes',
             'StoreNo'   => 'sometimes',
             'Slm_NmEn'  => 'required',
             'Slm_NmAr'  => 'required',
@@ -77,7 +80,9 @@ class DelegatesController extends Controller
 
         ],[
             'Slm_No'  => trans('admin.Slm_No'),
+            'Cmp_No'  => trans('admin.Cmp_No'),
             'Brn_No'  => trans('admin.Brn_No'),
+            'Mark_No' => trans('admin.Mark_No'),
             'StoreNo' => trans('admin.StoreNo'),
             'Slm_NmEn'=> trans('admin.Slm_NmEn'),
             'Slm_NmAr'=> trans('admin.Slm_NmAr'),
@@ -108,18 +113,20 @@ class DelegatesController extends Controller
 
 
         $delegate = AstSalesman::where('ID_No',$id)->first();
-
-
-        return view('admin.delegates.edit',compact('delegate'));
+        $markets  = AstMarket::get();
+        return view('admin.delegates.edit',compact('delegate', 'markets'));
     }
 
     public function update(Request $request, $ID_No)
     {
-//        dd($request->all());
+
+        dd($request->all());
 
         $data = $this->validate($request, [
             'Slm_No'    => 'sometimes',
             'Brn_No'    => 'sometimes',
+            'Cmp_No'    => 'sometimes',
+            'Mark_No'   => 'sometimes',
             'StoreNo'   => 'sometimes',
             'Slm_NmEn'  => 'required',
             'Slm_NmAr'  => 'required',
@@ -134,6 +141,8 @@ class DelegatesController extends Controller
         ],[
             'Slm_No'  => trans('admin.Slm_No'),
             'Brn_No'  => trans('admin.Brn_No'),
+            'Cmp_No'  => trans('admin.Cmp_No'),
+            'Mark_No'  => trans('admin.Mark_No'),
             'StoreNo' => trans('admin.StoreNo'),
             'Slm_NmEn'=> trans('admin.Slm_NmEn'),
             'Slm_NmAr'=> trans('admin.Slm_NmAr'),

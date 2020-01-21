@@ -240,6 +240,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('general_setting', function () {
             return view('admin.general_setting.general_setting');
         });
+
 // 1_1 Dashboard_setting
 // 0_0 Dashboard_setting
         Route::get('Dashboard_setting', function () {
@@ -275,7 +276,9 @@ Route::group(['prefix'=>'admin'],function (){
 //            return view('admin.basic_data.stuff.stuff_data');
 //        });
 
-
+        Route::get('sales_setting', function () {
+            return view('admin.general_setting.sales_setting');
+        });
 
 
         Route::get('Fixed_assets', function () {
@@ -325,7 +328,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('account_statement_sup/details','Admin\financial_reports\supplier_accountingController@details')->name('accountStatementSup.details');
         Route::get('acc_state_sup','Admin\financial_reports\supplier_accountingController@acc_state')->name('acc_state_sup');
         Route::Post('sup_account_statement/pdf','Admin\financial_reports\supplier_accountingController@print')->name('accountStatementSup.acc_pdf');
-        Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@supp_trial_balance')->name('supp_trial_balance');
+        Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@trial_balance')->name('supp_trial_balance');
         Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
 
 
@@ -603,8 +606,27 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
+        Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
+        Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
+        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
 
-        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getItem')->name('getCategoryItem');
+        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
+
+        /**
+         * All about bills and sales
+         */
+
+        Route::get('getSalesInvoicesGeneralView',function (){
+            return view('admin.sales_invoices.general_screen');
+        })->name('getSalesInvoicesGeneralView');
+
+        Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
+
+
+
+
+
 
     });
 

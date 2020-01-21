@@ -208,7 +208,7 @@ class supplier_accountingController extends Controller
     {
 
         $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
-        return view('admin.financial_reports.general_accounts.trial_balance.trial_balance',compact('MainCompany'));
+        return view('admin.financial_reports.supplier_accounting.trial_balance.trial_balance',compact('MainCompany'));
 
     }
     public function branche_trial_balance(Request $request)
