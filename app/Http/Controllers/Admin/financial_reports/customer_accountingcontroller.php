@@ -220,53 +220,60 @@ class customer_accountingcontroller extends Controller
             return $data = view('admin.financial_reports.customer_accounting.trial_balance.ajax.get_branche',compact('MainBranch','MainCompany'))->render();
         }
     }
-    public function trialbalance_show(Request $request)
+    public function details_trial_balance(Request $request)
     {
-        //        @dd($request->all());
+                @dd($request->all());
         $MainCompany = $request->MainCompany;
-
-        $reporttype = $request->reporttype;
-        $kind = $request->kind;
-        $level       = $request->level;
-
         if($request->ajax())
+
         {
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',2)->get();
+            return      $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.details', ['MainCompany'=>$MainCompany])->render();
 
-            if($MainCompany != null &&  $reporttype != null && $kind != null && ($level != null || $level == null)){
-
-                switch ($reporttype){
-                    case '0';
-                        switch ($kind){
-                            default;
-                                $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->max('Level_No');
-
-                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
-
-                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-                                return $contents;
-                        }
-                        break;
-                    case '1';
-                        switch ($kind){
-                            default;
-
-                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
-                                    ->where(function ($q)  {
-                                        $q->Where('Acc_No', 1)->orWhere('Acc_No',null);
-                                    })
-
-                                    ->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
-
-                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-                                return $contents;
-
-                        }
-                        break;
-                }
-            }
         }
+
+//        $reporttype = $request->reporttype;
+//        $kind = $request->kind;
+//        $level       = $request->level;
+
+//        if($request->ajax())
+//        {
+//
+//            if($MainCompany != null &&  $reporttype != null && $kind != null && ($level != null || $level == null)){
+//
+//                switch ($reporttype){
+//                    case '0';
+//                        switch ($kind){
+//                            default;
+//                                $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->max('Level_No');
+//
+//                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+//                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
+//
+//                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
+//                                return $contents;
+//                        }
+//                        break;
+//                    case '1';
+//                        switch ($kind){
+//                            default;
+//
+//                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
+//                                    ->where(function ($q)  {
+//                                        $q->Where('Acc_No', 1)->orWhere('Acc_No',null);
+//                                    })
+//
+//                                    ->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+//                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
+//
+//                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
+//                                return $contents;
+//
+//                        }
+//                        break;
+//                }
+//            }
+//        }
     }
 
     public function trialbalance_details(Request $request)

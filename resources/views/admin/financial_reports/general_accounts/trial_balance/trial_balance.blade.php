@@ -222,10 +222,17 @@
                         {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'e2 form-control MainCompany','placeholder'=> trans('admin.select')])) }}
                     </div>
                 </div>
-                <div class="col-md-3" >
-                    <div style="display: flex" >
-                        {{ Form::label('level','المستوى', ['style' => 'width: 30%']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control', 'id'=>'level_num'])) }}
+{{--<<<<<<< HEAD--}}
+{{--                <div class="col-md-3" >--}}
+{{--                    <div style="display: flex" >--}}
+{{--                        {{ Form::label('level','المستوى', ['style' => 'width: 30%']) }}--}}
+{{--                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control', 'id'=>'level_num'])) }}--}}
+{{--=======--}}
+                <div class="checkonly col-xs-6">
+                    <div class="col-xs-6">
+                        {{ Form::label('level','المستوى', ['class' => 'col-xs-2 control-label']) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-10', 'id'=>'level_num'])) }}
+
                     </div>
                 </div>
                 <div class="col-md-3">
