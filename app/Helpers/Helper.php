@@ -910,22 +910,48 @@ if(!function_exists('sumall2')) {
 }
 
 if(!function_exists('alldepartmenttrial')) {
-    function alldepartmenttrial($id = null,$from = null,$to = null,$sum = null,$sign = null)
+    function alldepartmenttrial($Cmp_No = null,$from = null,$to = null,$sum = null,$sign = null)
     {
-        $value1 = \App\limitationsType::where('tree_id',$id)->whereHas('limitations',function ($query) use ($from,$to,$sign){
-            $query->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to);
-        })->sum($sum);
 
-        $value2 = \App\receiptsType::where('tree_id',$id)->whereHas('receipts',function ($query) use ($from,$to,$sign){
-            $query->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to);
-        })->sum($sum);
-        $value3 = \App\receiptsData::where('tree_id',$id)->whereHas('receipts',function ($query) use ($from,$to,$sign){
-            $query->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to);
-        })->sum($sum);
-        return $value1 + $value2 + $value3;
+        $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
+
+            ->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to)->sum($sum);
+
+
+        return $value1 ;
+    }
+}
+if(!function_exists('balancefirstperiod')) {
+    function balancefirstperiod($Cmp_No = null,$Sysub_Account= Null,$From = null,$to = null,$sum = null,$sign = null)
+    {
+
+        $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
+            ->where('Sysub_Account',$Sysub_Account)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($From)))
+
+
+            ->sum($sum);
+
+        return $value1 ;
+
+
+
     }
 }
 
+if(!function_exists('balance')) {
+    function balance($Cmp_No = null,$Sysub_Account= Null,$From = null,$to = null,$sum = null,$sign = null)
+    {
+        $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
+           ->where('Sysub_Account',$Sysub_Account)
+            ->where('Tr_Dt',$sign, date('Y-m-d 00:00:00',strtotime($From)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+
+            ->sum($sum);
+
+        return $value1 ;
+    }
+}
 if(!function_exists('alldepartmenttrial2')) {
     function alldepartmenttrial2($id = null,$from = null,$to = null,$sum = null,$sign = null)
     {
@@ -941,184 +967,53 @@ if(!function_exists('alldepartmenttrial2')) {
         return $value1 + $value2 + $value3;
     }
 }
+if(!function_exists('alldepartmenttrial2')) {
+    function alldepartmenttrial2($id = null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
+//        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
+        $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
+        $value2 = \App\receiptsType::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
+        $value3 = \App\receiptsData::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
+            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+        })->sum($sum);
+
+        return $value1 + $value2 + $value3;
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
 if(!function_exists('departmentsum')) {
-    function departmentsum($id = null,$from = null,$to = null,$sum = null,$sign = null)
+    function balanceDepartment($id = null,$from = null,$to = null,$sum = null,$sign = null)
     {
-        $value = [];
-        $departments = \App\Department::findOrFail($id);
-        $pros = [];
-        $products = [];
-        $categories = $departments->children;
-        while(count($categories) > 0){
-            $nextCategories = [];
-            foreach ($categories as $category) {
-                $products = array_merge($products, $category->children->all());
-                $nextCategories = array_merge($nextCategories, $category->children->all());
-            }
-            $categories = $nextCategories;
-        }
-        $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
-        $pros = $departments->children->pluck('id');
-        $plucks = $pro->pluck('id');
-        $values = $pros->concat($plucks);
-
-        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
-//        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
-        $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-        })->sum($sum);
-        $value2 = \App\receiptsType::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-        })->sum($sum);
-        $value3 = \App\receiptsData::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
-        })->sum($sum);
-
-        return $value1 + $value2 + $value3;
 
 
-    }
-}
-if(!function_exists('departmentsum2')) {
-    function departmentsum2($id = null,$from = null,$to = null,$sum = null,$sign = null)
-    {
-        $value = [];
-        $departments = \App\Department::findOrFail($id);
-        $pros = [];
-        $products = [];
-        $categories = $departments->children;
-        while(count($categories) > 0){
-            $nextCategories = [];
-            foreach ($categories as $category) {
-                $products = array_merge($products, $category->children->all());
-                $nextCategories = array_merge($nextCategories, $category->children->all());
-            }
-            $categories = $nextCategories;
-        }
-        $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
-        $pros = $departments->children->pluck('id');
-        $plucks = $pro->pluck('id');
-        $values = $pros->concat($plucks);
-
-        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
-//        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
-        $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
+        $value1 = \App\limitationsType::whereIn('tree_id',$departments)->whereHas('limitations', function($query) use ($from,$to,$sign){
+            $query->whereDate('created_at', '<=', $to);
             $query->whereDate('created_at', $sign, $from);
         })->sum($sum);
-        $value2 = \App\receiptsType::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', $sign, $from);
-        })->sum($sum);
-        $value3 = \App\receiptsData::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', $sign, $from);
-        })->sum($sum);
-
-        return $value1 + $value2 + $value3;
-
-
-    }
-}
-if(!function_exists('sumccall')) {
-    function sumccall($id = null,$from = null,$to = null,$sum = null,$sign = null)
-    {
-        $value1 = \App\pjitmmsfl::where('cc_id',$id)->where('month', $sign, date('n', strtotime($from)))->where('month', '<=', date('n', strtotime($to)))->where('year', '=', date('Y', strtotime($from)))->where('year', '=', date('Y', strtotime($to)))->where('type','2')->sum($sum);
-        return $value1;
-    }
-}
-if(!function_exists('alldepartment')) {
-    function alldepartment($id = null,$sum = null)
-    {
-        $value1 = \App\limitationsType::where('tree_id',$id)->whereHas('limitations')->sum($sum);
-        $value2 = \App\receiptsType::where('tree_id',$id)->whereHas('receipts')->sum($sum);
-        $value3 = \App\receiptsData::where('tree_id',$id)->whereHas('receipts')->sum($sum);
-        return $value1 + $value2 + $value3;
-    }
-}
-
-
-
-if(!function_exists('sumdepartment')) {
-    function sumdepartment($id = null,$operations = null)
-    {
-        if ($operations != null){
-            $value1 = \App\limitationsType::where('id',$id)->get();
-            $value2 = \App\receiptsType::where('id',$id)->get();
-        }else{
-            $value1 = \App\limitationsType::where('id',$id)->get();
-            $value2 = \App\receiptsType::where('id',$id)->get();
-        }
-        return $value1 + $value2;
-    }
-}
-
-
-if(!function_exists('totaldepartment')) {
-    function totaldepartment($id = null,$sum = null,$sign = null)
-    {
-        $value = [];
-
-        $departments = \App\Department::findOrFail($id);
-
-        $pros = [];
-        $products = [];
-        $categories = $departments->children;
-
-        while(count($categories) > 0){
-            $nextCategories = [];
-            foreach ($categories as $category) {
-                $products = array_merge($products, $category->children->all());
-                $nextCategories = array_merge($nextCategories, $category->children->all());
-            }
-            $categories = $nextCategories;
-        }
-        $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
-
-
-        $pros = $departments->children->pluck('id');
-
-
-
-
-        $value1 = \App\Department::where('type','1')->whereIn('id',$pros)->sum($sum);
-
 
 
         return $value1 ;
 
 
     }
+
 }
 
-if(!function_exists('departmentsum3')) {
-    function departmentsum3($id = null,$from = null,$to = null,$sum = null,$sign = null)
-    {
-
-
-        $departments = \App\Department::where('type','1')->where('id',$id)->pluck('id');
-
-
-
-
-
-//        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
-        $value1 = \App\limitationsType::whereIn('tree_id',$departments)->whereHas('limitations', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', '<=', $to);
-            $query->whereDate('created_at', $sign, $from);
-        })->sum($sum);
-
-        $value2 = \App\receiptsType::whereIn('tree_id',$departments)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', '<=', $to);
-            $query->whereDate('created_at', $sign, $from);
-        })->sum($sum);
-
-        $value3 = \App\receiptsData::whereIn('tree_id',$departments)->whereHas('receipts', function($query) use ($from,$to,$sign){
-            $query->whereDate('created_at', '<=', $to);
-            $query->whereDate('created_at', $sign, $from);
-        })->sum($sum);
-
-        return $value1 + $value2 + $value3 ;
-
-
-    }
 
     if (!function_exists('load_item')){
         function load_item($select = null , $item_hide = null, $Cmp_No ,$Actvty_No){
@@ -1167,5 +1062,5 @@ if(!function_exists('departmentsum3')) {
             }
             return json_encode($item_arr,JSON_UNESCAPED_UNICODE);
         }
-    }
+
 }

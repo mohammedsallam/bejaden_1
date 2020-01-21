@@ -313,7 +313,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::Post('cust_account_statement/pdf','Admin\financial_reports\customer_accountingcontroller@print')->name('accountStatementCust.acc_pdf');
 
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@trial_balance')->name('cust_trial_balance');
+        Route::get('show_trial_balance','Admin\financial_reports\customer_accountingcontroller@show_trial_balance')->name('show_trial_balance');
         Route::get('details_trial_balance','Admin\financial_reports\customer_accountingcontroller@details_trial_balance')->name('details_trial_balance');
+        Route::Post('print_trial_balance','Admin\financial_reports\customer_accountingcontroller@print_trial_balance')->name('print_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
 
 //        1
