@@ -205,10 +205,10 @@ class MainCategoriesController extends Controller
     }
 
     // Fire when change company number or activity number
-    public function getItem(Request $request){
+    public function getCategoryItem(Request $request){
         if($request->ajax()){
             session(['updatedComNo' => $request->Cmp_No , 'updatedActiveNo' => $request->Actvty_No]);
-            $tree = load_item('Parent_Itm', null, $request->Cmp_No, $request->Actvty_No);
+            $tree = load_item('Itm_Parnt', null, $request->Cmp_No, $request->Actvty_No);
             return $tree;
         }
     }

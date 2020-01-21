@@ -593,7 +593,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
 
-        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getItem')->name('getCategoryItems');
+        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
 
     });
 

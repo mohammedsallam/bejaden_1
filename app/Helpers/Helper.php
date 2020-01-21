@@ -1154,7 +1154,7 @@ if(!function_exists('departmentsum3')) {
 
                 if( $item->Parent_Itm !== null){
                     if($item->Itm_Parnt == 0){
-                        $item->Parent_Itm = '#';
+                        $item->Itm_Parnt = '#';
                         $list_arr['parent'] = $item->Itm_Parnt;
                     }
                     else{

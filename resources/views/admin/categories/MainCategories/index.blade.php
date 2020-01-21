@@ -136,7 +136,7 @@
                     var Actvty_No = $('.Actvty_No').val();
                     if(Cmp_No != null){
                         $.ajax({
-                            url: "{{route('getCategoryItems')}}",
+                            url: "{{route('getCategoryItem')}}",
                             type: "post",
                             dataType: 'html',
                             data: {
@@ -145,7 +145,6 @@
                                 Actvty_No: Actvty_No
                             },
                             success: function(data){
-
                                 dataParse = JSON.parse(data);
 
                                 for(var i = 0; i < dataParse.length; i++){
@@ -218,6 +217,21 @@
                     }
                 });
 
+                $('#jstree').jstree({
+                    "core" : {
+                        'data' : {!!  load_item('Itm_No', '', session('updatedComNo'), session('updatedActiveNo')) !!},
+                        "themes" : {
+                            "variant" : "large"
+                        },
+                        "multiple" : false,
+                        "animation" : 300
+                    },
+                    "checkbox" : {
+                        "keep_selected_style" : false
+                    },
+                    "plugins" : [ "themes","html_data","dnd","ui","types" ]
+                });
+
                 // Build tree when load page
                 (function autoLoadTree() {
                     $('#jstree').jstree('destroy');
@@ -227,7 +241,7 @@
 
                     if(Cmp_No !== null){
                         $.ajax({
-                            url: "{{route('getCategoryItems')}}",
+                            url: "{{route('getCategoryItem')}}",
                             type: "post",
                             dataType: 'html',
                             data: {
@@ -237,7 +251,7 @@
                             },
                             success: function(data){
 
-                                dataParse = JSON.parse(data);
+                                let dataParse = JSON.parse(data);
 
                                 for(var i = 0; i < dataParse.length; i++){
                                     tree.push(dataParse[i])
@@ -245,8 +259,7 @@
 
                                 $('#jstree').jstree({
                                     "core" : {
-                                        {{--'data' : "{{load_item('parent_id', '', '')}}",--}}
-                                        'data' : tree,
+                                        'data' : {!!  load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo')) !!},
                                         "themes" : {
                                             "variant" : "large"
                                         },
@@ -258,6 +271,7 @@
                                     },
                                     "plugins" : [ "themes","html_data","dnd","ui","types" ]
                                 });
+
 
                                 //close or open all nodes on jstree load -opened by default-
                                 $('#jstree').on('loaded.jstree', function() {
@@ -289,7 +303,7 @@
                                     });
 
                                     //handle click event
-                                    // timer = setTimeout(function() {
+                                    //  timer = setTimeout(function() {
                                     // if (!prevent) {
                                     handle_click(r[0], result);
                                     // }
@@ -340,6 +354,7 @@
                     handle_dbclick(e);
                 });
 
+                // handle click event
 
                 function handle_click(Itm_No, children){
                     // var node = $(e.target).closest("li");
@@ -391,22 +406,6 @@
                     {{--    }--}}
                     {{--});--}}
                 }
-
-
-                <!--$('#jstree').jstree({-->
-                <!--    "core" : {-->
-                <!--        'data' : "{{load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo'))}}",-->
-                <!--        "themes" : {-->
-                <!--            "variant" : "large"-->
-                <!--        },-->
-                <!--        "multiple" : false,-->
-                <!--        "animation" : 300-->
-                <!--    },-->
-                <!--    "checkbox" : {-->
-                <!--        "keep_selected_style" : false-->
-                <!--    },-->
-                <!--    "plugins" : [ "themes","html_data","dnd","ui","types" ]-->
-                <!--});-->
 
             });
 
