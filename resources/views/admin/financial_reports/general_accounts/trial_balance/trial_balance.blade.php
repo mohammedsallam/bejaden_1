@@ -10,12 +10,14 @@
             .toggleClick{
                 color: red;
             }
+
         </style>
-
-
+        {{--    Date Hijri--}}
+        <link rel="stylesheet" href="{{url('/')}}/adminlte/dateHijri/dist/css/bootstrap-datetimepicker.min.css">
 
     @endpush
     @push('js')
+        <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
         <script>
             $(function () {
@@ -92,20 +94,6 @@
 
             });
         </script>
-        {{--<script>--}}
-
-        {{--        $(function () {--}}
-        {{--            'use strict'--}}
-        {{--            if ($( ".MainCompany option:selected" ).val() && $( ".MainCompany option:selected" ).val() &&--}}
-        {{--                $( ".MainCompany option:selected" ).val() && $( ".MainCompany option:selected" ).val()--}}
-
-        {{--            )--}}
-
-
-
-        {{--        });--}}
-        {{--    </script>--}}
-
 
 
         <script>
@@ -156,34 +144,21 @@
                 $('.number_company').val(value);
             });
 
-            $('#reviewBalance').click(function () {
-                $('#level_num').attr("disabled", true);
+            $('#select_check :checkbox[id=but_level_check]').change(function(){
+                if($(this).is(':checked')){
+                    $('#level_check').attr('disabled', 'disabled');
+                }
+                else{
+                    $('#level_check').removeAttr('disabled');
+                }
             });
-            // $(document).ready(function(){
-            //     $('#reviewBalance').click(function() {
-            //         if($('#levelBalance').prop('checked') === true){
-            //             $(this).prop('checked', false).siblings('label').addClass('toggleClick');
-            //             $('#levelBalance').prop('checked', true).siblings('label').removeClass('toggleClick')
-            //         } else if ($(this).prop('checked') === true) {
-            //             $('#levelBalance').prop('checked', false).siblings('label').addClass('toggleClick')
-            //         }else if ($(this).prop('checked') === false) {
-            //             $('#levelBalance').siblings('label').removeClass('toggleClick')
-            //         }
-            //     });
-            //
-            //     $('#levelBalance').click(function() {
-            //         if($('#reviewBalance').prop('checked') === true){
-            //             $(this).prop('checked', false).siblings('label').addClass('toggleClick')
-            //         } else if ($(this).prop('checked') === true) {
-            //             $('#reviewBalance').prop('checked', false).siblings('label').addClass('toggleClick')
-            //         }else if ($(this).prop('checked') === false) {
-            //             $('#reviewBalance').siblings('label').removeClass('toggleClick')
-            //         }
-            //
-            //     });
-            //
-            // });
 
+            $(".hijri-date-input").hijriDatePicker({
+                    hijri : false,
+                    format: "YYYY-MM-DD",
+                    hijriFormat: 'iYYYY-iMM-iDD',
+                    showTodayButton:true,
+            });
 
         </script>
 
@@ -200,13 +175,13 @@
                     {{ Form::label('MainCompany','الشركه', ['class' => 'col-md-2 col-xs-4']) }}
                     {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 col-xs-8 form-control  e2  MainCompany','placeholder'=> trans('admin.select')])) }}
                 </div>
-                <div class="checkonly col-md-6 col-xs-12">
+                <div class="checkonly col-md-6 col-xs-12" id="select_check">
                     <div class="col-md-6 col-xs-12">
                         {{ Form::label('level','المستوى', ['class' => 'col-xs-4 control-label']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_num'])) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_check'])) }}
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
+                        <input  class="trialBalance_1"  type="checkbox" id="but_level_check" name="reviewBalance" value="1">
                         <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
                     </div>
                 </div>
@@ -238,7 +213,7 @@
                 <div class="col-xs-12">
                     <div class="col-xs-6">
                         {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2 col-xs-3']) }}
-                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input date','id'=>'toDate','autocomplete'=>'off'])) }}
                     </div>
                     <div class="col-xs-6">
                         {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2 col-xs-3']) }}

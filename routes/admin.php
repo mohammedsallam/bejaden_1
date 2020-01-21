@@ -326,7 +326,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('account_statement_sup/details','Admin\financial_reports\supplier_accountingController@details')->name('accountStatementSup.details');
         Route::get('acc_state_sup','Admin\financial_reports\supplier_accountingController@acc_state')->name('acc_state_sup');
         Route::Post('sup_account_statement/pdf','Admin\financial_reports\supplier_accountingController@print')->name('accountStatementSup.acc_pdf');
-        Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@supp_trial_balance')->name('supp_trial_balance');
+        Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@trial_balance')->name('supp_trial_balance');
         Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
 
 
