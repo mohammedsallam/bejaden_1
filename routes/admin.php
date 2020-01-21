@@ -608,6 +608,21 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
 
+        /**
+         * All about bills and sales
+         */
+
+        Route::get('getSalesInvoicesGeneralView',function (){
+            return view('admin.sales_invoices.general_screen');
+        })->name('getSalesInvoicesGeneralView');
+
+        Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
+
+
+
+
+
+
     });
 
 

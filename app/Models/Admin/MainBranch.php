@@ -2,9 +2,9 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Admin\MainCompany;
 use Illuminate\Database\Eloquent\Model;
 use App\Admin;
-use App\Models\Admin\MainCompany;
 
 class MainBranch extends Model
 {
@@ -67,5 +67,9 @@ class MainBranch extends Model
 
     public function company(){
         return $this->belongsTo(MainCompany::class, 'Cmp_No', 'Cmp_No');
+    }
+
+    public function stores(){
+        return $this->hasMany(PjbranchDlv::class, 'Brn_No', 'ID_No');
     }
 }

@@ -116,7 +116,7 @@
             @hasanyrole('writer|admin')
             <li  class="">
 
-                <a href="#">
+                <a href="{{route('getSalesInvoicesGeneralView')}}">
                     <i class="fa fa-money"></i> <span>{{trans('admin.sells')}}</span>
                     <span class="pull-right-container"></span>
                 </a>
