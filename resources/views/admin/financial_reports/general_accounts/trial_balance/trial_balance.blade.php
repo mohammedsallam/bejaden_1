@@ -195,7 +195,6 @@
         </div>
         @include('admin.layouts.message')
         <div class="box-body">
-
             <div class="row">
                 <div class="col-md-6 col-xs-12">
                     {{ Form::label('MainCompany','الشركه', ['class' => 'col-md-2 col-xs-4']) }}
