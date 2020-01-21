@@ -203,8 +203,8 @@
                 </div>
                 <div class="checkonly col-xs-6">
                     <div class="col-xs-6">
-                        {{ Form::label('level','المستوى', ['class' => 'col-xs-2 control-label']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-10', 'id'=>'level_num'])) }}
+                        {{ Form::label('level','المستوى', ['class' => 'col-xs-4 control-label']) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_num'])) }}
                     </div>
                     <div class="col-xs-6">
                         <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
@@ -237,13 +237,13 @@
             </div>
             <div class="col-xs-6 well well-sm">
                 <div class="col-xs-5">
-                    {{ Form::label('From', trans('admin.From'), ['class' => 'col-xs-2']) }}
-                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-xs-10 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                    {{ Form::label('From', trans('admin.From'), ['class' => 'col-xs-3']) }}
+                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
                     <br>
                     <br>
                     <br>
-                    {{ Form::label('To', trans('admin.To'), ['class' => 'col-xs-2']) }}
-                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-xs-10 form-control  hijri-date-input date','id'=>'toDate'])) }}
+                    {{ Form::label('To', trans('admin.To'), ['class' => 'col-xs-3']) }}
+                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}
 
                 </div>
                 <div class="col-xs-7">
