@@ -12,10 +12,10 @@
             }
 
             @media (min-width: 576px) {
-                 .well{
-                     margin-top: 0;
-                     padding-top: 0;
-                 }
+                .well{
+                    margin-top: 0;
+                    padding-top: 0;
+                }
             }
 
 
@@ -143,15 +143,15 @@
             });
 
         </script>
-{{--        <script>--}}
-{{--            $(function () {--}}
-{{--                'use strict'--}}
-{{--                $('.e2').select2({--}}
-{{--                    --}}{{--            placeholder: "{{trans('admin.select')}}",--}}
-{{--                    dir: '{{direction()}}'--}}
-{{--                });--}}
-{{--            });--}}
-{{--        </script>--}}
+        <script>
+            $(function () {
+                'use strict'
+                $('.e2').select2({
+                    {{--            placeholder: "{{trans('admin.select')}}",--}}
+                    dir: '{{direction()}}'
+                });
+            });
+        </script>
 
         <script>
             $("#seeAnotherField").change(function() {
@@ -215,74 +215,115 @@
         </div>
         @include('admin.layouts.message')
         <div class="box-body">
+
             <div class="row">
-                <div class="col-md-6" >
-                    <div style="display: flex">
-                        {{ Form::label('MainCompany','الشركه', ['style' => 'width: 10%']) }}
-                        {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'e2 form-control MainCompany','placeholder'=> trans('admin.select')])) }}
-                    </div>
+                <div class="col-md-6 col-xs-12" >
+                    {{ Form::label('MainCompany','الشركه', ['class' => 'col-md-2 col-xs-4']) }}
+                    {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 col-xs-8 form-control    MainCompany','placeholder'=> trans('admin.select')])) }}
                 </div>
-                <div class="col-md-3" >
-                    <div style="display: flex" >
-                        {{ Form::label('level','المستوى', ['style' => 'width: 30%']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control', 'id'=>'level_num'])) }}
+                <div class="checkonly col-md-6 col-xs-12" >
+                    <div class="col-md-6 col-xs-12" >
+                        {{ Form::label('level','المستوى', ['class' => 'col-xs-4 control-label']) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_num'])) }}
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div style="display: flex">
+                    <div class="col-md-6 col-xs-12" >
                         <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
                         <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div style="display: flex">
-                        {{ Form::label('tree','من ', ['style' => 'width:9%']) }}
-                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 ee', 'style' => 'width:71%'])) }}
-                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control NumberTree', 'style' => 'width: 20%'])) }}
+            <br>
+            <div class="details_row col-xs-6">
+                <div class="row">
+                    <div class="col-xs-9">
+                        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
+                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee'])) }}
+                    </div>
+                    <div class="col-xs-3">
+                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control NumberTree'])) }}
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div style="display: flex">
-                        {{ Form::label('From', trans('admin.From'), ['style' => 'width: 32%']) }}
-                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                <br>
+                <div class="row">
+                    <div class="col-xs-9">
+                        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
+                        {{ Form::select('totree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee totree'])) }}
+                    </div>
+                    <div class="col-xs-3">
+                        {{ Form::text('totree',null, array_merge(['class' => 'form-control NumberTree'])) }}
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div style="display: flex">
-                        <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                        <label class="custom-control-label" for="defaultChecked">حسابات مدينه </label>
-                        <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                        <label class="custom-control-input" for="defaultChecked"> حسابات بارصدة </label>
-                    </div>
-                </div>
+
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div style="display: flex">
-                        {{ Form::label('tree','الي ', ['style' => 'width:9%']) }}
-                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control e2 ee', 'style' => 'width:71%'])) }}
-                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control NumberTree', 'style' => 'width:20%'])) }}
-                    </div>
+            <div class="col-xs-6">
+                <div class="" style="display: flex; flex-direction: row">
+                    {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-4']) }}
+
+                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-8 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                    <input type="radio" class=" col-md-2 custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                    <label class="col-md-11 col-sm-9 custom-control-label" for="defaultChecked">جميع الحسابات </label>
+                    <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
+                    <label class="custom-control-label" for="defaultChecked">حسابات مدينه </label>
+
                 </div>
-                <div class="col-md-3">
-                    <div style="display: flex">
-                        {{ Form::label('To', trans('admin.To'), ['style' => 'width: 32%']) }}
-                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div style="display: flex">
-                        <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                        <label class="custom-control-input" for="defaultChecked">جميع الحسابات </label>
-                        <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                        <label class="custom-control-label" for="defaultChecked">حسابات دائنة </label>
-                    </div>
-                </div>
+                {{--                end--}}
+                {{--                <div class="col-md-6 col-sm-12">--}}
+                {{--                    {{ Form::label('From', trans('admin.From'), ['class' => 'col-xs-3']) }}--}}
+                {{--                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}--}}
+                {{--                    <br>--}}
+                {{--                    <br>--}}
+                {{--                    <br>--}}
+                {{--                    {{ Form::label('To', trans('admin.To'), ['class' => 'col-xs-3']) }}--}}
+                {{--                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}--}}
+
+                {{--                </div>--}}
+                {{--                <div class="col-md-6 col-sm-12">--}}
+                {{--                    <div class="col-md-6 col-sm-12">--}}
+                {{--                        <div class="col-xs-12 custom-control custom-radio">--}}
+                {{--                            <input type="radio" class=" col-md-2 custom-control-input" id="defaultChecked" name="defaultExampleRadios">--}}
+                {{--                            <label class="col-md-11 col-sm-9 custom-control-label" for="defaultChecked">جميع الحسابات </label>--}}
+                {{--                        </div>--}}
+                {{--                        <br>--}}
+                {{--                        <br>--}}
+                {{--                        <br>--}}
+                {{--                        <div class="col-xs-12 custom-control custom-radio">--}}
+                {{--                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">--}}
+                {{--                            <label for="levelBalance">  حسابات بارصدة </label>--}}
+                {{--                        </div>--}}
+                {{--                    </div>--}}
+                {{--                    <div class="col-xs-6">--}}
+                {{--                        <div class="col-xs-12 custom-control custom-radio">--}}
+                {{--                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">--}}
+                {{--                            <label class="custom-control-label" for="defaultChecked">حسابات مدينه </label>--}}
+                {{--                        </div>--}}
+                {{--                        <br>--}}
+                {{--                        <br>--}}
+                {{--                        <br>--}}
+                {{--                        <div class="col-xs-12 custom-control custom-radio">--}}
+                {{--                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">--}}
+                {{--                            <label for="levelBalance">  حسابات دائنه </label>--}}
+                {{--                        </div>--}}
+                {{--                    </div>--}}
+                {{--                </div>--}}
+
             </div>
+
         </div>
 
+
+
+
+        <br>
+        {{--loader spinner--}}
+        <div id='loadingmessage_1' style='display:none; margin-top: 20px' class="text-center">
+            <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+        </div>
+        <div id="report">
+            <div class="column-form">
+
+            </div>
+        </div>
+        <br>
     </div>
 
 
