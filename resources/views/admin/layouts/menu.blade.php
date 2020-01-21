@@ -116,6 +116,38 @@
             @hasanyrole('writer|admin')
             <li  class="">
 
+                <a href="#">
+                    <i class="fa fa-money"></i> <span>{{trans('admin.sells')}}</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+           @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="#">
+                    <i class="fa fa-money"></i> <span>{{trans('admin.purchases')}}</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+
+            @hasanyrole('writer|admin')
+            <li  class="">
+
+                <a href="#">
+                    <i class="fa fa-money"></i> <span>{{trans('admin.stores')}}</span>
+                    <span class="pull-right-container"></span>
+                </a>
+
+            </li>
+            @endhasanyrole
+
+         @hasanyrole('writer|admin')
+            <li  class="">
+
                 <a href="{{url('/admin/basic_data')}}">
                     <i class="fa fa-money"></i> <span>{{trans('admin.main_data')}}</span>
                     <span class="pull-right-container"></span>
