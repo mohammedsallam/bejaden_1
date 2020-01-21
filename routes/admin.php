@@ -131,6 +131,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         Route::resource('projects','Admin\Project\ProjectController1');
+
         Route::get('projects_section','Admin\Project\ProjectController1@projects_section')->name('projects.projects_section');
 
         Route::get('projects/department/print','Admin\Project\ProjectController1@print');
@@ -266,6 +267,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.basic_data.category.category_data');
         });
 
+        Route::get('project_data', function () {
+            return view('admin.basic_data.project.projact_data');
+        });
+
 //            Route::get('stuff_data', function () {
 //            return view('admin.basic_data.stuff.stuff_data');
 //        });
@@ -298,17 +303,24 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
-//       1
+
+        //       1
 //        0
         Route::get('customer_accounting','Admin\financial_reports\customer_accountingcontroller@customer_accounting')->name('customer_accounting');
         Route::get('cust_account_statement','Admin\financial_reports\customer_accountingcontroller@cust_account_statement')->name('cust_account_statement');
-        Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@cust_trial_balance')->name('cust_trial_balance');
-        Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction')->name('cust_daily_restriction');
+        Route::get('account_statement_cust/details','Admin\financial_reports\customer_accountingcontroller@details')->name('accountStatementCust.details');
+        Route::get('acc_state_cust','Admin\financial_reports\customer_accountingcontroller@acc_state')->name('acc_state_cust');
+        Route::Post('cust_account_statement/pdf','Admin\financial_reports\customer_accountingcontroller@print')->name('accountStatementCust.acc_pdf');
+        Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@trial_balance')->name('cust_trial_balance');
+        Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
 
 //        1
 //        0
         Route::get('supplier_accounting','Admin\financial_reports\supplier_accountingController@supplier_accounting')->name('supplier_accounting');
         Route::get('supp_account_statement','Admin\financial_reports\supplier_accountingController@supp_account_statement')->name('supp_account_statement');
+        Route::get('account_statement_sup/details','Admin\financial_reports\supplier_accountingController@details')->name('accountStatementSup.details');
+        Route::get('acc_state_sup','Admin\financial_reports\supplier_accountingController@acc_state')->name('acc_state_sup');
+        Route::Post('sup_account_statement/pdf','Admin\financial_reports\supplier_accountingController@print')->name('accountStatementSup.acc_pdf');
         Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@supp_trial_balance')->name('supp_trial_balance');
         Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
 
@@ -564,9 +576,8 @@ Route::group(['prefix'=>'admin'],function (){
 
 
         // Projects data for projects
-        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
-        Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
+        //Route::resource('project_contract', 'Admin\Project_contract\projectcontractcontroller');
 
         route::get('/admin/contracttype','Admin\Contract\ContractController@contracttype')->name('contract.type');
         route::post('/admin/contracttype','Admin\Contract\ContractController@contracttypeadd')->name('contract.add');
