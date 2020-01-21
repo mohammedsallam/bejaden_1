@@ -240,6 +240,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('general_setting', function () {
             return view('admin.general_setting.general_setting');
         });
+
 // 1_1 Dashboard_setting
 // 0_0 Dashboard_setting
         Route::get('Dashboard_setting', function () {
@@ -275,7 +276,9 @@ Route::group(['prefix'=>'admin'],function (){
 //            return view('admin.basic_data.stuff.stuff_data');
 //        });
 
-
+        Route::get('sales_setting', function () {
+            return view('admin.general_setting.sales_setting');
+        });
 
 
         Route::get('Fixed_assets', function () {

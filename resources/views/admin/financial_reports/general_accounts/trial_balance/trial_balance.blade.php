@@ -197,23 +197,23 @@
         <div class="box-body">
 
             <div class="row">
-                <div class="col-xs-6">
-                    {{ Form::label('MainCompany','الشركه', ['class' => 'col-xs-2']) }}
-                    {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-xs-10 form-control  e2  MainCompany','placeholder'=> trans('admin.select')])) }}
+                <div class="col-md-6 col-xs-12">
+                    {{ Form::label('MainCompany','الشركه', ['class' => 'col-md-2 col-xs-4']) }}
+                    {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 col-xs-8 form-control  e2  MainCompany','placeholder'=> trans('admin.select')])) }}
                 </div>
-                <div class="checkonly col-xs-6">
-                    <div class="col-xs-6">
+                <div class="checkonly col-md-6 col-xs-12">
+                    <div class="col-md-6 col-xs-12">
                         {{ Form::label('level','المستوى', ['class' => 'col-xs-4 control-label']) }}
                         {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_num'])) }}
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-md-6 col-xs-12">
                         <input  class="trialBalance_1"  type="checkbox" id="reviewBalance" name="reviewBalance" value="1">
                         <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
                     </div>
                 </div>
             </div>
             <br>
-            <div class="details_row col-xs-6">
+            <div class="details_row col-md-6 col-xs-12">
                 <div class="row">
                     <div class="col-xs-9">
                         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
@@ -235,19 +235,23 @@
                 </div>
 
             </div>
-            <div class="col-xs-6 well well-sm">
-                <div class="col-xs-5">
-                    {{ Form::label('From', trans('admin.From'), ['class' => 'col-xs-3']) }}
-                    {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
-                    <br>
-                    <br>
-                    <br>
-                    {{ Form::label('To', trans('admin.To'), ['class' => 'col-xs-3']) }}
-                    {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}
-
-                </div>
-                <div class="col-xs-7">
+            <div class="col-md-6 col-xs-12 well well-sm">
+                <div class="col-xs-12">
                     <div class="col-xs-6">
+                        {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2 col-xs-3']) }}
+                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                    </div>
+                    <div class="col-xs-6">
+                        {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2 col-xs-3']) }}
+                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}
+
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+                <div class="col-md-12 col-xs-12">
+                    <div class="col-md-6 col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
                             <label class="custom-control-label" for="defaultChecked">جميع الحسابات </label>
