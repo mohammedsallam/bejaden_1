@@ -25,21 +25,21 @@
                     var mainCompany = $(this).val();
                     $('.column-form').html('');
                     $("#loadingmessage-1").css("display","block");
-                    $(".div_branch").css("display","none");
+                    $(".details_row").css("display","none");
                     if (this){
                         $.ajax({
-                            url: '{{route('details_trial_balance')}}',
+                            url: '{{route('show_trial_balance')}}',
                             type:'get',
                             dataType:'html',
                             data:{mainCompany: mainCompany},
                             success: function (data) {
                                 $("#loadingmessage-1").css("display","none");
-                                $('.div_branch').css("display","block").html(data);
+                                $('.details_row').css("display","block").html(data);
 
                             }
                         });
                     }else{
-                        $('.div_branch').html('');
+                        $('.details_row').html('');
                     }
                 });
 
@@ -48,48 +48,11 @@
             });
         </script>
         <script>
+            $(document).ready(function(){
+                $('input[type="checkbox"]').click(function(){
+                    $(this).prop("checked",true);
 
-            $(function () {
-                'use strict';
-
-                $('.reporttype,.kind,.level').on('change',function () {
-
-                    var MainCompany = $( ".MainCompany option:selected" ).val();
-                    var MainBranch = $( ".MainBranch option:selected" ).val();
-                    var reporttype = $( ".reporttype option:selected" ).val();
-                    var kind = $( ".kind option:selected" ).val();
-                    var level = $( ".level option:selected" ).val();
-
-
-
-                    if (this){
-                        $("#loadingmessage").css("display","block");
-                        $(".column-form").css("display","none");
-                        $.ajax({
-                            url: '{{route('trialbalance.show')}}',
-                            type:'get',
-                            dataType:'html',
-                            data:{MainCompany:MainCompany,MainBranch:MainBranch,reporttype:reporttype,kind:kind,level:level},
-                            success: function (data) {
-                                $("#loadingmessage").css("display","none");
-                                $('.column-form').css("display","block").html(data);
-                                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
-                                $('.datepicker').datepicker({
-                                    format: 'yyyy-mm-dd',
-                                    rtl: true,
-                                    language: '{{session('lang')}}',
-                                    autoclose:true,
-                                    todayBtn:true,
-                                    clearBtn:true,
-                                });
-                            }
-                        });
-                    }else{
-                        $('.column-form').html('');
-                    }
                 });
-
-
             });
         </script>
         {{--<script>--}}
@@ -183,8 +146,8 @@
             //     });
             //
             // });
+            $(document).on('change','#select_check :checkbox[id=but_sales_check]',function () {
 
-        $('#select_check :checkbox[id=but_sales_check]').change(function(){
             if($(this).is(':checked')){
                 $('#sales_check').removeAttr('disabled');
                 calcTax();
@@ -193,6 +156,7 @@
                 $('#sales_check').attr('disabled','disabled');
 
             }
+
         });
 
         $('#select_check :checkbox[id=but_state_check]').change(function(){
@@ -224,11 +188,11 @@
                 </div>
                 <div class="checkonly col-md-6 col-xs-12">
                     <div class="col-md-6 col-xs-6">
-                        <input class="col-xs-2" type="checkbox">
+                        <input class="col-xs-2 delegates" name="delegates" type="checkbox" value="1"  >
                         <label>كل المندوبين</label>
                     </div>
                     <div class="col-md-6 col-xs-6">
-                        <input class="col-xs-2" type="checkbox">
+                        <input class="col-xs-2 mtscustomer" name="mtscustomer" type="checkbox"  value="1" >
                         <label>كل العملاء</label>
                     </div>
                 </div>
@@ -261,10 +225,10 @@
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         {{ Form::label('tree','الى حساب', ['class' => 'col-md-3 col-xs-4']) }}
-                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-md-9 col-xs-8 e2 ee'])) }}
+                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-md-9 col-xs-8 e2 fromtree ee'])) }}
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control'])) }}
+                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control numberfromtree'])) }}
                     </div>
                 </div>
                 <br>
@@ -274,7 +238,7 @@
                         {{ Form::select('totree',[],null, array_merge(['class' => 'form-control col-md-9 col-xs-8 e2 ee totree'])) }}
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        {{ Form::text('totree',null, array_merge(['class' => 'form-control totree'])) }}
+                        {{ Form::text('totree',null, array_merge(['class' => 'form-control numbertotree'])) }}
                     </div>
                 </div>
 
@@ -297,15 +261,15 @@
                 <div class="col-md-12 col-xs-12 well" style="background-color: #d3d3d3;">
                     <div class="col-md-6 col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label class="custom-control-label" for="defaultChecked">جميع الحسابات </label>
+                            <input type="radio" class="department" id="total_department" name="department" value="1" checked>
+                            <label class="custom-control-label" for="total_department" >جميع الحسابات </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label for="levelBalance">  حسابات بارصدة </label>
+                            <input type="radio" class="department" id="money_department" name="department" value="2">
+                            <label for="money_department">  حسابات بارصدة </label>
                         </div>
                         <br>
                         <br>
@@ -316,15 +280,15 @@
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label class="custom-control-label" for="defaultChecked">حسابات مدينه </label>
+                            <input type="radio" class="department" id="debt_department" name="department" value="3">
+                            <label class="custom-control-label" for="debt_department">حسابات مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label for="levelBalance">  حسابات دائنه </label>
+                            <input type="radio" class="department" id="credit_department" name="department" value="4">
+                            <label for="credit_department">  حسابات دائنه </label>
                         </div>
                         <br>
                         <br>
@@ -347,7 +311,7 @@
         <img src="{{ url('/') }}/images/ajax-loader.gif"/>
     </div>
     <div id="report">
-        <div class="column-form">
+        <div class="column_form">
 
         </div>
     </div>

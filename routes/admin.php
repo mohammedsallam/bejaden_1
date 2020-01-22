@@ -305,6 +305,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('branche_trial_balance','Admin\financial_reports\general_accountsController@branche_trial_balance')->name('branche_trial_balance');
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
+        Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 
         //       1
@@ -316,7 +317,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::Post('cust_account_statement/pdf','Admin\financial_reports\customer_accountingcontroller@print')->name('accountStatementCust.acc_pdf');
 
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@trial_balance')->name('cust_trial_balance');
+        Route::get('show_trial_balance','Admin\financial_reports\customer_accountingcontroller@show_trial_balance')->name('show_trial_balance');
         Route::get('details_trial_balance','Admin\financial_reports\customer_accountingcontroller@details_trial_balance')->name('details_trial_balance');
+        Route::Post('print_trial_balance','Admin\financial_reports\customer_accountingcontroller@print_trial_balance')->name('print_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
 
 //        1
@@ -604,8 +607,27 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
+        Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
+        Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
+        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
 
-        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getItem')->name('getCategoryItem');
+        Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
+
+        /**
+         * All about bills and sales
+         */
+
+        Route::get('getSalesInvoicesGeneralView',function (){
+            return view('admin.sales_invoices.general_screen');
+        })->name('getSalesInvoicesGeneralView');
+
+        Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
+
+
+
+
+
 
     });
 

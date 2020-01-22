@@ -59,6 +59,13 @@ class MtsItmmfs extends Model
         'Opn_Time',
         'User_ID',
         'Updt_Date',
-
     ];
+
+    public function parent(){
+        return $this->belongsTo(MtsItmmfs::class, 'Itm_No','Itm_Parnt');
+    }
+
+    public function children(){
+        return $this->hasMany(MtsItmmfs::class, 'Itm_Parnt','Itm_No');
+    }
 }

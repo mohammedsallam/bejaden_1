@@ -692,7 +692,7 @@ class receiptCashController extends Controller
             // عملاء
             else if($request->Acc_Ty == 2){
                 $customers = MTsCustomer::where('Cmp_No', $request->Cmp_No)
-                    ->where('Brn_No', $request->Brn_No)
+//                    ->where('Brn_No', $request->Brn_No)
                     ->get(['Cstm_No as no', 'Cstm_Nm'.ucfirst(session('lang')).' as name']);
                 return view('admin.cash.catch.SubAcc', ['subAccs' => $customers]);
 
@@ -753,7 +753,9 @@ class receiptCashController extends Controller
             // عملاء
             else if($request->Acc_Ty == 2){
                 $mainAccNo = MainBranch::where('Brn_No', $request->Brn_No)->get(['Acc_Customer as acc_no'])->first();
-                $mainAccNm = MtsChartAc::where('Acc_No', $mainAccNo->acc_no)->get(['Acc_Nm'.ucfirst(session('lang')).' as acc_name'])->first();
+                $mainAccNm = MtsChartAc::where('Cmp_No', $request->Cmp_No)
+                    ->where('Acc_No', $mainAccNo->acc_no)->get(['Acc_NmAr as acc_name'])->first();
+
                 return response()->json(['mainAccNo' => $mainAccNo, 'mainAccNm' => $mainAccNm]);
             }
             // موردين
