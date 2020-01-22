@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title', trans('admin.sales_invoices'))
+@section('title', 'فاتورة المشتريات')
 
 @section('content')
     @push('css')
@@ -14,11 +14,11 @@
         <div class="panel-body bg-gray">
             <div class="row">
                 <div class="col-md-3 col-sm-6 col-12">
-                    <a href="{{route('salesInvoices.index')}}">
+                    <a href="#">
                         <div class="info-box">
                             <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
                             <div class="info-box-content">
-                                <h2 class="info-box-text">{{trans('admin.sales_invoices')}}</h2>
+                                <h2 class="info-box-text">فاتورة المشتريات</h2>
                             </div>
                         </div>
                     </a>
@@ -28,7 +28,7 @@
                         <div class="info-box">
                             <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
                             <div class="info-box-content">
-                                <h2 class="info-box-text">مرتجع المبيعات </h2>
+                                <h2 class="info-box-text">مرتجع المشتريات </h2>
                             </div>
                         </div>
                     </a>
@@ -39,7 +39,7 @@
                         <div class="info-box">
                             <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
                             <div class="info-box-content">
-                                <h2 class="info-box-text">عروض الاسعار للعملاء</h2>
+                                <h2 class="info-box-text">أمر شراء من الموردين</h2>
                             </div>
                         </div>
                     </a>
@@ -49,27 +49,18 @@
                         <div class="info-box">
                             <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
                             <div class="info-box-content">
-                                <h2 class="info-box-text">طلبية العملاء</h2>
+                                <h2 class="info-box-text">تقارير يومية المشتريات</h2>
                             </div>
                         </div>
                     </a>
                 </div>
+
                 <div class="col-md-3 col-sm-6 col-12">
                     <a href="#">
                         <div class="info-box">
                             <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
                             <div class="info-box-content">
-                                <h2 class="info-box-text">يومية المبيعات بالفروع</h2>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-6 col-12">
-                    <a href="#">
-                        <div class="info-box">
-                            <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
-                            <div class="info-box-content">
-                                <h2 class="info-box-text">حركة المبيعات بالاصناف</h2>
+                                <h2 class="info-box-text">حركة المشتريات بالاصناف</h2>
                             </div>
                         </div>
                     </a>

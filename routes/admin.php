@@ -628,6 +628,12 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('getSalesInvoicesGeneralView',function (){
             return view('admin.sales_invoices.general_screen');
         })->name('getSalesInvoicesGeneralView');
+             Route::get('purchases',function (){
+            return view('admin.purchases_invoices.general_screen');
+        })->name('getpurchasesInvoicesGeneralView');
+             Route::get('stores',function (){
+            return view('admin.stores_invoices.general_screen');
+        })->name('getstoresInvoicesGeneralView');
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
 

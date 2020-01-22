@@ -49,7 +49,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-file" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">طباعه المشاريع</h2>
+                        <h2 class="info-box-text">تقارير المشاريع</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
