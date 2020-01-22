@@ -617,7 +617,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
-        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
+        Route::resource('mainCategories', 'Admin\categories\getSalesInvoicesGeneralView');
         Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
