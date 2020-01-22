@@ -172,6 +172,9 @@
                 format: "YYYY-MM-DD",
                 hijriFormat: 'iYYYY-iMM-iDD',
                 showTodayButton:true,
+                viewDate: string
+
+
             });
 
         </script>
