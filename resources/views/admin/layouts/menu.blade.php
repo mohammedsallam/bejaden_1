@@ -126,7 +126,7 @@
            @hasanyrole('writer|admin')
             <li  class="">
 
-                <a href="#">
+                <a href="{{url('/admin/purchases')}}">
                     <i class="fa fa-money"></i> <span>{{trans('admin.purchases')}}</span>
                     <span class="pull-right-container"></span>
                 </a>
@@ -137,7 +137,7 @@
             @hasanyrole('writer|admin')
             <li  class="">
 
-                <a href="#">
+                <a href="{{url('/admin/stores')}}">
                     <i class="fa fa-money"></i> <span>{{trans('admin.stores')}}</span>
                     <span class="pull-right-container"></span>
                 </a>

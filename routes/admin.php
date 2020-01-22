@@ -58,6 +58,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
 //        country && city
+//        Route::get('countries_setting', function () {
+//            return view('admin.Dashboard_setting.countries_setting');
+//        });
         Route::resource('countries','Admin\Country\CountryController');
         Route::resource('cities','Admin\City\CitiesController');
         Route::resource('state','Admin\State\StateController');
@@ -241,6 +244,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.general_setting.general_setting');
         });
 
+        Route::get('employees_data', function () {
+            return view('admin.basic_data.employees_data');
+        });
+
 // 1_1 Dashboard_setting
 // 0_0 Dashboard_setting
         Route::get('Dashboard_setting', function () {
@@ -278,6 +285,10 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::get('sales_setting', function () {
             return view('admin.general_setting.sales_setting');
+        });
+
+        Route::get('account_setting', function () {
+            return view('admin.general_setting.account_setting');
         });
 
 
@@ -606,7 +617,7 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
-        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
+        Route::resource('mainCategories', 'Admin\categories\getSalesInvoicesGeneralView');
         Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
@@ -622,6 +633,12 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('getSalesInvoicesGeneralView',function (){
             return view('admin.sales_invoices.general_screen');
         })->name('getSalesInvoicesGeneralView');
+             Route::get('purchases',function (){
+            return view('admin.purchases_invoices.general_screen');
+        })->name('getpurchasesInvoicesGeneralView');
+             Route::get('stores',function (){
+            return view('admin.stores_invoices.general_screen');
+        })->name('getstoresInvoicesGeneralView');
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
 

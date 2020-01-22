@@ -120,6 +120,12 @@
                                 {!!Form::select('Cmp_No' ,$companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
                                     'class'=>'form-control', 'id'=>'companies','placeholder'=>trans('admin.select')
                                 ])!!}
+{{--                                <select class="form-control" id="companies" name="Cmp_No">--}}
+{{--                                    <option>{{trans('admin.select')}}</option>--}}
+{{--                                    @foreach($companies as $company)--}}
+{{--                                        <option @if() selected @endif></option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
                             </div>
                         </div>
                         <div class="form-group row col-md-12">
@@ -140,7 +146,7 @@
                                 <select class="form-control" name="StoreNo" id="stores">
                                     <option>{{trans('admin.select')}}</option>
                                     @foreach(\App\Models\Admin\MainBranch::all() as $branch)
-                                        <option @if($delegate->Brn_No == $branch->ID_No) selected @endif value="{{$branch->ID_NO}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
+                                        <option @if($delegate->Brn_No == $branch->ID_No) selected @endif value="{{$branch->ID_No}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
                                     @endforeach
                                 </select>
                             </div>

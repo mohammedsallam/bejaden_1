@@ -51,23 +51,36 @@
                     <div class="form-group row col-md-12">
                         <div class="col-md-3">{!!Form::label('Cmp_No', trans('admin.Cmp_No'))!!}</div>
                         <div class="col-md-9">
-                            {!!Form::select('Cmp_No' ,$companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                'class'=>'form-control', 'id'=>'companies', 'readonly'=>'true','placeholder'=>trans('admin.select')
-                            ])!!}
+                            @if($delegate->Cmp_No==null)
+                                {!! Form::text('Cmp_No', '' , ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Cmp_No', $delegate->company->{'Cmp_Nm'.ucfirst(session('lang'))}, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
                         </div>
                     </div>
                     <div class="form-group row col-md-12">
                         <div class="col-md-3">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
                         <div class="col-md-9">
-                            <select class="form-control" name="Brn_No" id="branches"  readonly="true">
-                                <option>{{trans('admin.select')}}</option>
-                            </select>
+                            @if($delegate->Brn_No==null)
+                                {!! Form::text('Brn_No', '' , ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('Brn_No', $delegate->branch->{'Brn_Nm'.ucfirst(session('lang'))}, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
                         </div>
                     </div>
 
                     <div class="form-group row col-md-12">
                         <div class="col-md-3">{!!Form::label('StoreNo', trans('admin.StoreNo'))!!}</div>
-                        <div class="col-md-9">{!!Form::text('StoreNo', null, ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
+                        <div class="col-md-9">
+                            @if($delegate->StoreNo==null)
+                                {!! Form::text('StoreNo', '' , ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                            @else
+                                {!! Form::text('StoreNo', $delegate->branch->{'Brn_Nm'.ucfirst(session('lang'))}, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                            @endif
+                        </div>
                     </div>
                     <div class="form-group row col-md-12">
                         <div class="col-md-3">{!!Form::label('Mark_No', trans('admin.Mark_No'))!!}</div>

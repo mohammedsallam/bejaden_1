@@ -6,7 +6,7 @@ use App\activities;
 use App\DataTables\ActivitiesDataTable;
 use App\subscription;
 use App\Models\Admin\AstNutrbusn;
-use App\Models\Admin\activitytypes;
+use App\Models\Admin\ActivityTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -21,7 +21,7 @@ class ActivitiesController extends Controller
      */
     public function index(ActivitiesDataTable $activities)
     {
-        $id = activitytypes::where('Name_Ar','=',null)->orWhere('Name_Ar','=','')->pluck('ID_No');
+        $id = ActivityTypes::where('Name_Ar','=',null)->orWhere('Name_Ar','=','')->pluck('ID_No');
         DB::table('activitytypes')->where('Name_En',null)->where('Name_Ar',null)->orWhere('Name_Ar','=','')->delete();
 
         return $activities->render('admin.activities.index',['title'=>trans('admin.types_of_activities')]);
@@ -35,7 +35,7 @@ class ActivitiesController extends Controller
     public function create()
     {
 
-        $last = activitytypes::orderBy('Actvty_No', 'desc')->latest()->first(); //latest record
+        $last = ActivityTypes::orderBy('Actvty_No', 'desc')->latest()->first(); //latest record
 
         if(!empty($last) || $last || $last < 0){
             $last = $last->Actvty_No+1;
@@ -59,7 +59,7 @@ class ActivitiesController extends Controller
             'Name_Ar'=>'required',
             'Name_En'=>'required',
         ]);
-        $act = activitytypes::create($data);
+        $act = ActivityTypes::create($data);
         return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_add')));
     }
 
@@ -71,7 +71,7 @@ class ActivitiesController extends Controller
      */
     public function show($id)
     {
-        $act= activitytypes::findOrFail($id);
+        $act= ActivityTypes::findOrFail($id);
         return view('admin.activities.show',compact('act'));
     }
 
@@ -83,7 +83,7 @@ class ActivitiesController extends Controller
      */
     public function edit($id)
     {
-        $act= activitytypes::findOrFail($id);
+        $act= ActivityTypes::findOrFail($id);
         return view('admin.activities.edit',['title'=> trans('admin.edit_type_of_activitie'),'act'=>$act]);
     }
 
@@ -102,7 +102,7 @@ class ActivitiesController extends Controller
             'Name_En'=>'required',
         ]);
 
-        $act  = activitytypes::where('ID_No',$id)->first();
+        $act  = ActivityTypes::where('ID_No',$id)->first();
         $act->update($data);
         return redirect(aurl('activities'))->with(session()->flash('message',trans('admin.success_update')));
     }
@@ -115,7 +115,7 @@ class ActivitiesController extends Controller
      */
     public function destroy($id)
     {
-        $activitie  = activitytypes::where('ID_No',$id);
+        $activitie  = ActivityTypes::where('ID_No',$id);
         //subscription::where('AstNutrbusn_id',$id)->update(['AstNutrbusn_id'=>null]);
         $activitie->delete();
         return redirect(aurl('activities'));

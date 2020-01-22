@@ -18,7 +18,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الاعدادات لوحة التحكم</h2>
+                        <h2 class="info-box-text"> لوحة التحكم</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -31,7 +31,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-user-plus"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">بيانات الشركات</h2>
+                        <h2 class="info-box-text">الشركات بالنظام</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -44,7 +44,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-shopping-cart"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الانشطة للشركات</h2>
+                        <h2 class="info-box-text">انشطة الشركات بالنظام</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -57,7 +57,20 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-users"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الفروع</h2>
+                        <h2 class="info-box-text">الفروع بالشركات</h2>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12">
+            <a href="#">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
+
+                    <div class="info-box-content">
+                        <h2 class="info-box-text">مكان تسليم البضاعة </h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -93,10 +106,10 @@
         <div class="col-md-3 col-sm-6 col-12">
             <a href="#">
                 <div class="info-box">
-            <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
+                    <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">طريقة الدفع </h2>
+                        <h2 class="info-box-text">المدن والمناطق </h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -109,13 +122,15 @@
             <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">مكان تسليم البضاعة </h2>
+                        <h2 class="info-box-text">طريقة الدفع للمبيعات و المشتريات </h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
                 <!-- /.info-box -->
             </a>
         </div>
+
+
         <div class="col-md-3 col-sm-6 col-12">
             <a href="{{route('import')}}">
                 <div class="info-box">
