@@ -32,7 +32,7 @@ use App\supplier;
 use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\MtsClosAcc;
 use App\Models\Admin\MainCompany;
-use App\Models\Admin\activitytypes;
+use App\Models\Admin\ActivityTypes;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,13 +54,13 @@ class DepartmentsController extends Controller
         if(count($chart) > 0){
             if(session('Cmp_No') == -1 || session('Actvty_No' == -1)){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-                $acts = activitytypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
+                $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))
                     ->where('Actvty_No', session('Actvty_No'))
                     ->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-                $acts = activitytypes::where('Actvty_No', session('Actvty_No'))
+                $acts = ActivityTypes::where('Actvty_No', session('Actvty_No'))
                     ->get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             $chart_item = MtsChartAc::first();
@@ -72,13 +72,13 @@ class DepartmentsController extends Controller
         else{
             if(session('Cmp_No') == -1 || session('Actvty_No' == -1)){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
-                $acts = activitytypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
+                $acts = ActivityTypes::get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             else{
                 $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))
                     ->where('Actvty_No', session('Actvty_No'))
                     ->get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No'])->first();
-                $acts = activitytypes::where('Actvty_No', session('Actvty_No'))
+                $acts = ActivityTypes::where('Actvty_No', session('Actvty_No'))
                     ->get(['Actvty_No', 'Name_'.ucfirst(session('lang'))]);
             }
             $Acc_No = $this->createAccNo(0);

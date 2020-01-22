@@ -18,7 +18,7 @@
                     <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">الاعدادات المبيعات</h2>
+                        <h2 class="info-box-text">اعدادات المبيعات</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>

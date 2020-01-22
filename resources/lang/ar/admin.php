@@ -1513,7 +1513,7 @@ return [
     'max_sells_quantity'       => 'أكبر كمية بالمبيعات',
     'not_found_data'       => 'البيانات غير موجودة',
     'found_data'       => 'البيانات موجودة مسبقاً',
-    'sales_invoices'       => 'فواتير المبيعات',
+    'sales_invoices'       => 'فاتورة المبيعات',
     'create_new_bill'       => 'إضافة فاتورة جديدة',
     'Doc_No'       => 'رقم المستند',
     'Doc_Ty'       => 'نوع المستند',
