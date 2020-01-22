@@ -11,6 +11,7 @@ use App\Models\Admin\MainBranch;
 use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\GLJrnal;
 use App\Models\Admin\GLjrnTrs;
+use App\Models\Admin\GLaccBnk;
 use App\operation;
 use App\receipts;
 use App\receiptsType;
@@ -312,7 +313,7 @@ class general_accountsController extends Controller
     }
     public function trialbalance_print(Request $request)
     {
-        dd($request->all());
+
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
@@ -331,22 +332,32 @@ class general_accountsController extends Controller
                     $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
                         ->where('ID_No', '>=', $fromtree)
                         ->where('ID_No', '<=', $totree)->pluck('Acc_No');
+//                    dd($Acc_No);
+                    $GLaccBnk = GLaccBnk::where('Cmp_No',$MainCompany)->pluck('Acc_No');
+//                    dd($GLaccBnk);
+//                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+//                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+//                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+//                        ->where(function ($q) use($Acc_No) {
+//                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+//                        })->groupBy(['Acc_No', 'Sysub_Account'])
+//                        ->get();
+//                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+//                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+//                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+//                        ->where(function ($q) use($Acc_No) {
+//                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+//                        })->get(['Acc_No','Sysub_Account'])->toArray();
+                    $GLJrnal = GLJrnal::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where(function ($q) use($GLaccBnk ,$Acc_No) {
+                            $q->whereIn('Acc_No', $GLaccBnk)->orWhereIn('Chrt_No',$Acc_No);
+                        })->get(['Acc_No','Chrt_No'])->toArray();
+                    dd($GLJrnal);
+//                    $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
+//                        ->whereIn('Acc_No',$GLjrnTrs)->get();
 
-                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-                        ->where(function ($q) use($Acc_No) {
-                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
-                        })->groupBy(['Acc_No', 'Sysub_Account'])
-                        ->get();
-                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-                        ->where(function ($q) use($Acc_No) {
-                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
-                        })->pluck('Sysub_Account')->toArray();
-                    $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
-                        ->whereIn('Acc_No',$GLjrnTrs)->get();
 
                     $data = $dara->map(function ($data)use($MainCompany,$Acc_No){
                         $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');
