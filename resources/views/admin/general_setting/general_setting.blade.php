@@ -26,7 +26,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="companies">
+            <a href="limitationType">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-user-plus"></i></span>
 
@@ -52,7 +52,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="branches">
+            <a href="contractortype">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-users"></i></span>
 
