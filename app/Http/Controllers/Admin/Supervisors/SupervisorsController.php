@@ -59,12 +59,14 @@ class SupervisorsController extends Controller
         $data = $this->validate($request, [
             'Mrkt_No'   => 'sometimes',
             'Brn_No'    => 'sometimes',
+            'Cmp_No'    => 'sometimes',
             'Mrkt_NmEn' => 'required',
             'Mrkt_NmAr' => 'required',
 
         ],[
-            'Mrkt_No'   => trans('admin.Cmp_No'),
+            'Mrkt_No'   => trans('admin.Mrkt_No'),
             'Brn_No'    => trans('admin.Brn_No'),
+            'Cmp_No'    => trans('admin.Cmp_No'),
             'Mrkt_NmEn' => trans('admin.Cstm_No'),
             'Mrkt_NmAr' => trans('admin.Cstm_Active'),
 

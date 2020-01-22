@@ -29,7 +29,16 @@ class AstSalesman extends Model
 
     public function supervisor()
     {
-        return $this->belongsTo('AstMarket','Mark_No', 'ID_No');
+        return $this->belongsTo('App\Models\Admin\AstMarket', 'Mark_No', 'ID_No');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo('App\Models\Admin\MainBranch','Brn_No','ID_No');
+    }
+
+    public function company(){
+        return $this->belongsTo('App\Models\Admin\MainCompany', 'Cmp_No', 'ID_No');
     }
 
 }

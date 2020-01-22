@@ -19,7 +19,6 @@
     @include('admin.layouts.message')
 
   {{Form::model($supervisor,['method'=>'PUT','route'=>['supervisors.update',$supervisor->ID_No],'class'=>'form-group','files'=>true])}}
-        <button class="btn btn-primary" style="float: left;"><i class="fa fa-save"></i></button>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h5>{{trans('admin.show_supervisor').$supervisor->Mrkt_Nm.ucfirst(session('lang'))}}</h5>
@@ -46,17 +45,24 @@
                         <div class="form-group row col-md-12">
                             <div class="col-md-3">{!!Form::label('Cmp_No', trans('admin.Cmp_No'))!!}</div>
                             <div class="col-md-9">
-                                {!!Form::select('Cmp_No' ,$companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                    'class'=>'form-control', 'id'=>'companies','placeholder'=>trans('admin.select')
-                                ])!!}
+                                @if($supervisor->Cmp_No==null)
+                                    {!! Form::text('Cmp_No', old('Cmp_No'), ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                                @else
+                                    {!! Form::text('Cmp_No', $supervisor->company->{'Cmp_Nm'.ucfirst(session('lang'))}, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                                @endif
                             </div>
                         </div>
                         <div class="form-group row col-md-12">
                             <div class="col-md-3">{!!Form::label('Brn_No', trans('admin.branche'))!!}</div>
                             <div class="col-md-9">
-                                <select class="form-control" name="Brn_No" id="branches">
-                                    <option>{{trans('admin.select')}}</option>
-                                </select>
+
+                                @if($supervisor->Brn_No==null)
+                                    {!! Form::text('Brn_No', old('Brn_No'), ['class' =>'form-control', 'readonly'=>'true']) !!}
+
+                                @else
+                                    {!! Form::text('Brn_No', $supervisor->branch->{'Brn_Nm'.ucfirst(session('lang'))}, ['class' =>'form-control', 'readonly'=>'true']) !!}
+                                @endif
                             </div>
                         </div>
 
@@ -69,9 +75,6 @@
                             <div class="col-md-9">{!!Form::text('Mrkt_NmEn', old('Mrkt_NmEn'), ['class'=>'form-control', 'readonly'=>'true'])!!}</div>
                         </div>
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">{{trans('admin.add')}}</button>
-                        </div>
                     </div>
 
                     <div class="col-md-6">

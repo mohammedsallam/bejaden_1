@@ -105,8 +105,14 @@
                         <div class="col-md-3">{!!Form::label('Cmp_No', trans('admin.Cmp_No'))!!}</div>
                         <div class="col-md-9">
                             {!!Form::select('Cmp_No' ,$companies->pluck('Cmp_Nm'.ucfirst(session('lang')),'ID_No')->toArray(),null,[
-                                'class'=>'form-control', 'id'=>'companies','placeholder'=>trans('admin.select')
-                            ])!!}
+                                    'class'=>'form-control', 'id'=>'companies','placeholder'=>trans('admin.select')
+                                ])!!}
+{{--                            <select class="form-control" id="companies" name="Cmp_No">--}}
+{{--                                <option>{{trans('admin.select')}}</option>--}}
+{{--                                @foreach(\App\Models\Admin\MainCompany::all() as $company)--}}
+{{--                                    <option @if($supervisor->Cmp_No == $company->ID_No) selected @endif value="{{$company->ID_No}}">{{$company->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
                         </div>
                     </div>
                     <div class="form-group row col-md-12">
@@ -114,6 +120,9 @@
                         <div class="col-md-9">
                             <select class="form-control" name="Brn_No" id="branches">
                                 <option>{{trans('admin.select')}}</option>
+                                @foreach(\App\Models\Admin\MainBranch::all() as $branch)
+                                    <option @if($supervisor->Brn_No == $branch->ID_No)selected @endif value="{{$branch->ID_No}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
