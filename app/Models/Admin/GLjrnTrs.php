@@ -50,9 +50,7 @@ class GLjrnTrs extends Model
     public function GLJrnal(){
         return $this->hasone('App\\Models\Admin\GLJrnal','Acc_No','Acc_No');
     }
-    public function MTsCustomer(){
-        return $this->hasone('App\Models\Admin\MTsCustomer','Cstm_No','Sysub_Account');
-    }
+
 
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Models\Admin\GLjrnTrs;
 use App\MtsCostcntr;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Admin\MtsChartAc;
@@ -919,6 +920,30 @@ if(!function_exists('alldepartmenttrial')) {
 
 
         return $value1 ;
+    }
+}
+if(!function_exists('BalanceFirstPeriod_department')) {
+    function BalanceFirstPeriod_department($Cmp_No = null,$Sysub_Account= Null,$From = null,$to = null,$sum = null,$sign = null)
+    {
+
+        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($From)))
+            ->where(function ($q) use($Acc_No) {
+                $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+            })->groupBy(['Acc_No', 'Sysub_Account'])
+            ->get();
+        $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
+            ->where('Sysub_Account',$Sysub_Account)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($From)))
+
+
+            ->sum($sum);
+
+        return $value1 ;
+
+
+
     }
 }
 if(!function_exists('balancefirstperiod')) {

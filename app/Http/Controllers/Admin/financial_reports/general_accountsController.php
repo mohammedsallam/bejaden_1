@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin\financial_reports;
 
 use App\Branches;
+use App\Department;
 use App\limitations;
 use App\limitationsType;
 use App\Models\Admin\MainCompany;
@@ -237,69 +238,124 @@ if($from > 1600 )
     //        @dd($request->all());
 $MainCompany = $request->MainCompany;
 
-$reporttype = $request->reporttype;
-$kind = $request->kind;
-$level       = $request->level;
 
         if($request->ajax())
         {
 
-            if($MainCompany != null &&  $reporttype != null && $kind != null && ($level != null || $level == null)){
 
-                switch ($reporttype){
-                    case '0';
-                        switch ($kind){
-                            default;
-                                $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
 
-                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('ID_No');
 
-                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-                                return $contents;
-                        }
-                        break;
-                    case '1';
-                        switch ($kind){
-                            default;
+                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
+                $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
+            $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
+                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['MtsChartAc'=>$MtsChartAc,'fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,'MainCompany'=>$MainCompany,'level'=>$level])->render();
+                return $contents;
 
-                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
-                                    ->where(function ($q)  {
-                                        $q->Where('Acc_No', 1)->orWhere('Acc_No',null);
-                                    })
 
-                                    ->where('Acc_Typ',1)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->where('Level_No',$level)->pluck('ID_No');
 
-                                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-                                return $contents;
-
-                        }
-                        break;
-                }
-            }
         }
     }
 
     public function trialbalance_details(Request $request)
     {
+//        dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
-            $MainBranch = $request->MainBranch;
+
             $level = $request->level;
-            $kind = $request->kind;
+
             $fromtree = $request->fromtree;
             $totree = $request->totree;
             $from = $request->from;
             $to = $request->to;
 
+            $but_level_check = $request->but_level_check;
+            $radiodepartment = $request->radiodepartment;
 
-            if ($from && $to){
-                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.details', ['MainCompany'=>$MainCompany,'MainBranch'=>$MainBranch,'level'=>$level,'kind'=>$kind,'fromtree'=>$fromtree, 'totree'=>$totree,'from'=>$from,'to'=>$to])->render();
+
+
+                $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.details',
+                    ['MainCompany'=>$MainCompany,
+                        'level'=>$level,
+                        'fromtree'=>$fromtree,
+                        'totree'=>$totree,
+                        'from'=>$from,
+                        'to'=>$to,
+                        'but_level_check'=>$but_level_check,
+                        'radiodepartment'=>$radiodepartment,
+                    ])->render();
                 return $contents;
-            }
+
         }
+
+    }
+    public function trialbalance_print(Request $request)
+    {
+//        dd($request->all());
+        $MainCompany = $request->MainCompany;
+        $level = $request->level;
+        $fromtree = $request->fromtree;
+        $totree = $request->totree;
+        $from = $request->from;
+        $to = $request->to;
+        $but_level_check = $request->but_level_check;
+
+        $radiodepartment = $request->radiodepartment;
+
+
+            if ($but_level_check){
+                switch ($radiodepartment) {
+
+                    case '1';
+                        $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
+                            ->where('ID_No', '>=', $fromtree)
+                            ->where('ID_No', '<=', $totree)->pluck('Acc_No');
+
+//                        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+//                            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+//                            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+//                            ->where(function ($q) use($Acc_No) {
+//                                $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+//                            })->groupBy(['Acc_No', 'Sysub_Account'])
+//                            ->get();
+                        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                            ->where(function ($q) use($Acc_No) {
+                                $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+                            })->pluck('Sysub_Account')->toArray();
+                      $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
+                         ->whereIn('Acc_No',$GLjrnTrs)->get();
+
+                        $data = $dara->map(function ($data)use($MainCompany,$Acc_No){
+                            $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');
+//                            $data->Acc_NmEn = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
+//                            $data->ID_No_MtsChartAc = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
+//                            $data->acc_no_chart = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
+
+
+                            return $data;
+                        });
+
+
+                        @dd($data);
+                        $config = ['instanceConfigurator' => function($mpdf) {
+                            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                            );
+                        }];
+                        $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.department_total',
+                            ['data'=>$data,'from' => $from,'to' => $to],[],$config);
+                        return $pdf->stream();
+
+                   }
+                }
+
+
+
 
     }
     public function daily_restriction()
