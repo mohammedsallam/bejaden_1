@@ -65,7 +65,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="stuff_data">
+            <a href="employees_data">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-user-plus" aria-hidden="true"></i></span>
 

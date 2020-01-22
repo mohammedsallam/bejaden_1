@@ -314,7 +314,7 @@ $MainCompany = $request->MainCompany;
     }
     public function trialbalance_print(Request $request)
     {
-//        dd($request->all());
+        dd($request->all());
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;

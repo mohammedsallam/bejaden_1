@@ -244,6 +244,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.general_setting.general_setting');
         });
 
+        Route::get('employees_data', function () {
+            return view('admin.basic_data.employees_data');
+        });
+
 // 1_1 Dashboard_setting
 // 0_0 Dashboard_setting
         Route::get('Dashboard_setting', function () {

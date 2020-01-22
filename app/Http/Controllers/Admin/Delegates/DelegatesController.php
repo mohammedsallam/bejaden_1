@@ -108,7 +108,7 @@ class DelegatesController extends Controller
     }
 
 
-    public function edit($id,state $state)
+    public function edit($id)
     {
 
 
@@ -120,7 +120,7 @@ class DelegatesController extends Controller
     public function update(Request $request, $ID_No)
     {
 
-        dd($request->all());
+//        dd($request->all());
 
         $data = $this->validate($request, [
             'Slm_No'    => 'sometimes',
