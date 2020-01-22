@@ -666,56 +666,7 @@ if (!function_exists('load_prj')){
     }
 }
 
-if (!function_exists('load_cc')){
-    function load_cc($select = null , $cc_hide = null, $Cmp_No){
 
-        $departments = \App\Models\Admin\MtsCostcntr::where('Cmp_No', $Cmp_No)->get(['Costcntr_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Costcntr_No', 'ID_No']);
-
-        $dep_arr = [];
-        foreach($departments as $department){
-            $list_arr = [];
-            $list_arr['icon'] = '';
-            $list_arr['li_attr'] = '';
-            $list_arr['a_attr'] = '';
-            $list_arr['children'] = [];
-            if ($select !== null and $select == $department->Acc_No){
-                $list_arr['state'] = [
-                    'opened'=>true,
-                    'selected'=>true,
-                    'disabled'=>false
-                ];
-            }
-            if ($cc_hide !== null and $cc_hide == $department->Acc_No){
-                $list_arr['state'] = [
-                    'opened'=>false,
-                    'selected'=>false,
-                    'disabled'=>true
-                ];
-            }
-
-            $levelType = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Level_No;
-            $Operation = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Acc_Typ ? \App\Enums\AccountType::getDescription($department->Acc_Typ) : null;
-            $cc = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
-            $code = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Costcntr_No;
-            $list_arr['id'] = $department->Costcntr_No;
-
-            if( $department->Parnt_Acc !== null){
-                if($department->Parnt_Acc == 0){
-                    $department->Parnt_Acc = '#';
-                    $list_arr['parent'] = $department->Parnt_Acc;
-                }
-                else{
-                    $list_arr['parent'] = $department->Parnt_Acc;
-                }
-            }
-
-            $list_arr['text'] = $department->{'Costcntr_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
-            array_push($dep_arr,$list_arr);
-
-        }
-        return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
-    }
-}
 
 if (!function_exists('lang')){
     function lang(){
@@ -1040,7 +991,59 @@ if(!function_exists('departmentsum')) {
 }
 
 
-    if (!function_exists('load_item')){
+
+if (!function_exists('load_cc')){
+    function load_cc($select = null , $cc_hide = null, $Cmp_No){
+
+        $departments = \App\Models\Admin\MtsCostcntr::where('Cmp_No', $Cmp_No)->get(['Costcntr_Nm'.ucfirst(session('lang')), 'Parnt_Acc', 'Costcntr_No', 'ID_No']);
+
+        $dep_arr = [];
+        foreach($departments as $department){
+            $list_arr = [];
+            $list_arr['icon'] = '';
+            $list_arr['li_attr'] = '';
+            $list_arr['a_attr'] = '';
+            $list_arr['children'] = [];
+            if ($select !== null and $select == $department->Acc_No){
+                $list_arr['state'] = [
+                    'opened'=>true,
+                    'selected'=>true,
+                    'disabled'=>false
+                ];
+            }
+            if ($cc_hide !== null and $cc_hide == $department->Acc_No){
+                $list_arr['state'] = [
+                    'opened'=>false,
+                    'selected'=>false,
+                    'disabled'=>true
+                ];
+            }
+
+            $levelType = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Level_No;
+            $Operation = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Acc_Typ ? \App\Enums\AccountType::getDescription($department->Acc_Typ) : null;
+            $cc = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->CostCntr_Flag ? '( '.trans('admin.with_cc').' )' : null;
+            $code = \App\Models\Admin\MtsCostcntr::where('Costcntr_No',$department->Costcntr_No)->first()->Costcntr_No;
+            $list_arr['id'] = $department->Costcntr_No;
+
+            if( $department->Parnt_Acc !== null){
+                if($department->Parnt_Acc == 0){
+                    $department->Parnt_Acc = '#';
+                    $list_arr['parent'] = $department->Parnt_Acc;
+                }
+                else{
+                    $list_arr['parent'] = $department->Parnt_Acc;
+                }
+            }
+
+            $list_arr['text'] = $department->{'Costcntr_Nm'.ucfirst(session('lang'))} .' '.'( '.$code.' )'.' '.$Operation.' '.$levelType.' '.$cc;
+            array_push($dep_arr,$list_arr);
+
+        }
+        return json_encode($dep_arr,JSON_UNESCAPED_UNICODE);
+    }
+}
+
+if (!function_exists('load_item')){
         function load_item($select = null , $item_hide = null, $Cmp_No ,$Actvty_No){
 
             $items = \App\Models\Admin\MtsItmmfs::where('Cmp_No', $Cmp_No)->where('Actvty_No' , $Actvty_No)->get(['Itm_Nm'.ucfirst(session('lang')), 'Itm_Parnt', 'Itm_No', 'ID_No']);
