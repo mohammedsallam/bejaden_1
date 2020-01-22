@@ -33,12 +33,11 @@ class MainCategoriesController extends Controller
 
         if ($request->ajax() && $request->Itm_No){
             $itemToEdit = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
-            return view('admin.categories.MainCategories.edit.index', ['title' => trans('admin.basic_types'),
+            return view('admin.categories.main_categories.edit.parent_index', ['title' => trans('admin.basic_types'),
                 'cmps' => $cmps, 'activity' => $activity, 'suplirs' => $suplirs, 'itemToEdit' => $itemToEdit]);
         }
 
-
-        return view('admin.categories.MainCategories.index', ['title' => trans('admin.basic_types'),
+        return view('admin.categories.main_categories.index', ['title' => trans('admin.basic_types'),
             'cmps' => $cmps, 'activity' => $activity, 'suplirs' => $suplirs, 'itemToEdit' => $itemToEdit]);
 
 
@@ -208,7 +207,7 @@ class MainCategoriesController extends Controller
     public function getCategoryItem(Request $request){
         if($request->ajax()){
             session(['updatedComNo' => $request->Cmp_No , 'updatedActiveNo' => $request->Actvty_No]);
-            $tree = load_item('Itm_Parnt', null, $request->Cmp_No, $request->Actvty_No);
+            $tree = load_item('Itm_Parnt', '', $request->Cmp_No, $request->Actvty_No);
             return $tree;
         }
     }
@@ -218,6 +217,16 @@ class MainCategoriesController extends Controller
     {
 
     }
+
+    //get blade child tree
+
+    public function getChildblade(Request $request){
+
+
+        $suplirs = MtsSuplir::all();
+        return view('admin.categories.main_categories.edit.child_index' ,compact(['suplirs']));
+    }
+
 
     // Generate Child number depend on parent number
     public function generateChildNo(Request $request){

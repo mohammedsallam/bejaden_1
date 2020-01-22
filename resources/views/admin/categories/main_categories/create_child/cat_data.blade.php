@@ -4,15 +4,15 @@
             <div class="panel-body">
                 <div style="display: flex">
                     @php
-                        $lastItem = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
+                        $itemToEdit  = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
                     @endphp
 
                     <div style="display: flex">
                         <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
-                        <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="@if($itemToEdit){{$itemToEdit->Itm_No}}@elseif(session()->has('ItemNoGenerated')){{session('ItemNoGenerated')}}@elseif($lastItem){{$lastItem->Itm_No+1}} @else{{1}}@endif" class="Itm_No form-control" readonly>
+                        <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="" class="Itm_No form-control" readonly>
 
                         <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
-                        <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="@if($itemToEdit){{$itemToEdit->Level_No}}@elseif($lastItem){{$lastItem->Level_No}} @else{{1}}@endif" class="Level_No form-control" readonly>
+                        <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="" class="Level_No form-control" readonly>
                     </div>
                     <div class="col-md-3">
                         <label for="parent">{{trans('admin.parent_cat')}}</label>
@@ -37,18 +37,18 @@
                     <div class="col-md-9">
                         <div class="col-md-12" style="display: flex; margin-top: 10px">
                             <label style="margin-left: 5px" for="Itm_NmAr">Ar</label>
-                            <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="@if($itemToEdit){{$itemToEdit->Itm_NmAr}}@endif">
+                            <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="Ahmed">
                         </div>
                         <div class="col-md-12" style="display: flex; margin-top: 10px">
                             <label style="margin-left: 5px" for="Itm_NmEn">En</label>
-                            <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="@if($itemToEdit){{$itemToEdit->Itm_NmEn}}@endif">
+                            <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="">
                         </div>
                         <div class="col-md-12" style="display: flex; margin-top: 10px">
                             <label for="Sup_No">{{trans('admin.Suppliers')}}</label>
                             <select class="form-control col-md-8 Sup_No" name="Sup_No" id="Sup_No" style="margin-right: 4px">
                                 <option value="" >{{trans('admin.select')}}</option>
                                 @foreach($suplirs as $suplir)
-                                    <option @if($itemToEdit && $itemToEdit->Sup_No == $suplir->ID_No) selected @endif value="{{$suplir->ID_No}}" >{{$suplir->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
+                                    <option value="{{$suplir->ID_No}}" >{{$suplir->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             </select>
                             <input type="text" class="form-control col-md-3 Sup_No_show" id="Sup_No_show">

@@ -3,10 +3,12 @@
 @section('content')
 @push('js')
     <script>
-        var timer = 0;
-        var delay = 200;
-        var prevent = false;
+
         $(document).ready(function () {
+
+            var timer = 0;
+            var delay = 200;
+            var prevent = false;
 
             $(document).on('change', '#Select_Cmp_No', function(){
                 $('#jstree').jstree('destroy');
@@ -81,7 +83,6 @@
                                 // }, delay);
                             });
 
-
                             //handle tree double click event
                             $('#jstree').on("dblclick.jstree", function (e){
                                 clearTimeout(timer);
@@ -92,8 +93,6 @@
                     });
                 }
             });
-
-
 
             $('#jstree').jstree({
                 "core" : {
@@ -127,10 +126,8 @@
             //handle tree click vent
             $('#jstree').on("click.jstree", function (e){
                 timer = setTimeout(function() {
-                if (!prevent) {
                     handle_click(e);
-                }
-                prevent = false;
+                    prevent = false;
                 }, delay);
             });
 
@@ -143,6 +140,8 @@
 
 
             function handle_click(Costcntr_No, children){
+
+                // console.log(Costcntr_No)
                 // var node = $(e.target).closest("li");
                 // var type = node.attr('rel');
                 // var Costcntr_No = node[0].id;
