@@ -1072,14 +1072,12 @@ if(!function_exists('departmentsum')) {
                 $code = $itemGet->Itm_No;
                 $list_arr['id'] = $item->Itm_No;
 
-                if( $item->Parent_Itm !== null){
-                    if($item->Itm_Parnt == 0){
-                        $item->Itm_Parnt = '#';
-                        $list_arr['parent'] = $item->Itm_Parnt;
-                    }
-                    else{
-                        $list_arr['parent'] = $item->Itm_Parnt;
-                    }
+                if($item->Itm_Parnt  == null){
+                    $item->Itm_Parnt = '#';
+                    $list_arr['parent'] = $item->Itm_Parnt;
+                }
+                else{
+                    $list_arr['parent'] = $item->Itm_Parnt;
                 }
 
                 $list_arr['text'] = $item->{'Itm_Nm'.ucfirst(session('lang'))}.' '.'( '.$code.' )'.' '.$levelType;
