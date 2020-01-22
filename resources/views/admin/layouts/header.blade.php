@@ -120,6 +120,11 @@
         body{
             padding-right: 0 !important;
         }
+        .info-box-content  .info-box-text
+        {
+            font-weight: 700;
+            white-space: normal;
+        }
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
