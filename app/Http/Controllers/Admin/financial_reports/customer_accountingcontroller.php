@@ -7,11 +7,14 @@ use App\limitations;
 use App\limitationsType;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\MainBranch;
+use App\Models\Admin\AstSalesman;
 use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\GLJrnal;
 use App\Models\Admin\GLjrnTrs;
+use App\Models\Admin\MTsCustomer;
 use App\operation;
 use App\receipts;
+use App\receiptsData;
 use App\receiptsType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -220,81 +223,263 @@ class customer_accountingcontroller extends Controller
             return $data = view('admin.financial_reports.customer_accounting.trial_balance.ajax.get_branche',compact('MainBranch','MainCompany'))->render();
         }
     }
-    public function details_trial_balance(Request $request)
+    public function show_trial_balance(Request $request)
     {
-                @dd($request->all());
-        $MainCompany = $request->MainCompany;
+
+        $MainCompany = $request->mainCompany;
         if($request->ajax())
 
         {
-            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',2)->get();
-            return      $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.details', ['MainCompany'=>$MainCompany])->render();
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->pluck('Acc_Nm' . ucfirst(session('lang')) ,'Acc_No');
+            $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->pluck('Acc_No');
+            $AstSalesman = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_Nm' . ucfirst(session('lang')) ,'Slm_No');
+            $AstSalesman2 = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_No');
+
+            return      $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['MainCompany'=>$MainCompany,'AstSalesman'=>$AstSalesman,'MtsChartAc'=>$MtsChartAc,'MtsChartAc2'=>$MtsChartAc2,'AstSalesman2'=>$AstSalesman2])->render();
 
         }
 
-//        $reporttype = $request->reporttype;
-//        $kind = $request->kind;
-//        $level       = $request->level;
 
-//        if($request->ajax())
-//        {
-//
-//            if($MainCompany != null &&  $reporttype != null && $kind != null && ($level != null || $level == null)){
-//
-//                switch ($reporttype){
-//                    case '0';
-//                        switch ($kind){
-//                            default;
-//                                $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->max('Level_No');
-//
-//                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-//                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
-//
-//                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-//                                return $contents;
-//                        }
-//                        break;
-//                    case '1';
-//                        switch ($kind){
-//                            default;
-//
-//                                $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
-//                                    ->where(function ($q)  {
-//                                        $q->Where('Acc_No', 1)->orWhere('Acc_No',null);
-//                                    })
-//
-//                                    ->where('Acc_Typ',2)->where('Level_No',$level)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
-//                                $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->where('Level_No',$level)->pluck('ID_No');
-//
-//                                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MainCompany'=>$MainCompany,'MtsChartAc'=>$MtsChartAc,'kind'=>$kind,'level'=>$level])->render();
-//                                return $contents;
-//
-//                        }
-//                        break;
-//                }
-//            }
-//        }
     }
 
-    public function trialbalance_details(Request $request)
+    public function details_trial_balance(Request $request)
     {
+
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
-            $MainBranch = $request->MainBranch;
-            $level = $request->level;
-            $kind = $request->kind;
+            $but_sales_check = $request->but_sales_check;
+            $sales_check = $request->sales_check;
             $fromtree = $request->fromtree;
+            $numberfromtree = $request->numberfromtree;
             $totree = $request->totree;
-            $from = $request->from;
+            $numbertotree = $request->numbertotree;
+            $radioDepartment = $request->radioDepartment;
+            $delegates = $request->delegates;
+            $mtscustomer = $request->mtscustomer;
+            $From = $request->From;
             $to = $request->to;
 
 
-            if ($from && $to){
-                $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.details', ['MainCompany'=>$MainCompany,'MainBranch'=>$MainBranch,'level'=>$level,'kind'=>$kind,'fromtree'=>$fromtree, 'totree'=>$totree,'from'=>$from,'to'=>$to])->render();
-                return $contents;
-            }
+
+                return  $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.details',
+
+            [
+                'MainCompany'=>$MainCompany,
+              'but_sales_check'=>$but_sales_check,
+              'sales_check'=>$sales_check,
+                'fromtree'=>$fromtree,
+                'numberfromtree'=>$numberfromtree,
+                'totree'=>$totree,
+                'numbertotree'=>$numbertotree,
+                'radioDepartment'=>$radioDepartment,
+                'From'=>$From,
+                'to'=>$to,
+                'delegates'=>$delegates,
+                'mtscustomer'=>$mtscustomer,
+
+
+            ])->render();
+
+
         }
+
+    }
+    public function print_trial_balance(Request $request)
+    {
+//@dd($request->all());
+        $MainCompany = $request->MainCompany;
+        $but_sales_check = $request->but_sales_check;
+        $sales_check = $request->sales_check;
+        $fromtree = $request->fromtree;
+        $numberfromtree = $request->numberfromtree;
+        $totree = $request->totree;
+        $numbertotree = $request->numbertotree;
+        $From = $request->From;
+        $to = $request->to;
+        $radioDepartment = $request->radioDepartment;
+        $delegates = $request->delegates;
+        $mtscustomer = $request->mtscustomer;
+//@dd($but_sales_check ,$delegates,$mtscustomer);
+        if($but_sales_check == null && $delegates == null&& $mtscustomer == null){
+
+            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
+
+            $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
+                ->where('Acc_Typ',2)
+                ->orderBy('Acc_No')
+                ->where('Acc_No', '>=', $fromtree)
+                ->where('Acc_No', '<=', $totree)
+                ->get();
+
+            $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where(function ($q) use($Cstm_No) {
+                    $q->whereIn('Acc_No', $Cstm_No)->orWhereIn('Sysub_Account',$Cstm_No);
+                })
+                ->get();
+//            @dd($GLjrnTrs);
+
+//            $GLjrnTrs = $GLjrnTrs->map(function ($data)use($MainCompany,$Cstm_No){
+//                $data->Cstm_NmAr = $data->MTsCustomer
+//                    ->where('Cmp_No',$MainCompany)
+//                 ->WhereIn('Cstm_No',$Cstm_No)
+//                   ->get();
+//
+//                return $data;
+//            });
+
+
+        }else if($but_sales_check != null && $delegates == null&& $mtscustomer == null ){
+            $MTsCustomer = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->get();
+
+            $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
+            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
+
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
+                ->where('Acc_Typ',2)
+
+                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
+                ->where('ID_No', '<=', $IdEndTree)
+                ->get();
+        }else if($but_sales_check != null && $delegates != null&& $mtscustomer == null )
+        {
+//            $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
+//            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
+//
+//            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
+//                ->where('Acc_Typ',2)
+//
+//                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
+//                ->where('ID_No', '<=', $IdEndTree)
+//                ->get();
+
+        }else if ($but_sales_check != null && $delegates != null&& $mtscustomer != null )
+        {           $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
+            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
+
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
+                ->where('Jr_Ty',2)
+
+                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
+                ->where('ID_No', '<=', $IdEndTree)
+                ->get();
+            $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)
+                ->where('Ac_Ty',2)
+
+                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
+                ->where('ID_No', '<=', $IdEndTree)
+                ->get();
+            @dd($MainCompany);
+
+        }
+            switch ($radioDepartment) {
+                case '1':
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                            );
+                        }];
+                        $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
+                            ['GLjrnTrs'=> $GLjrnTrs
+
+                             ,'From'=>$From
+                             ,'to'=>$to], [] , $config);
+                        return $pdf->stream();
+
+                    break;
+                case '2':
+
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                        $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                        );
+                    }];
+                    $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
+                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                    return $pdf->stream();
+                    break;
+                    case '3':
+
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                        $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                        );
+                    }];
+                    $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
+                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                    return $pdf->stream();
+                    break;
+                    case '4':
+
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                        $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                        );
+                    }];
+                    $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
+                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                    return $pdf->stream();
+                    break;
+            }
+//
+//                        break;
+//                    case '1';
+//                        $departments = Department::orderBy('code')->where('id', '>=', $fromtree)->where('id', '<=', $totree)->where('level_id',$level)->get();
+//
+//                        $config = ['instanceConfigurator' => function($mpdf) {
+//                            $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                            );
+//                        }];
+//                        $pdf = PDF::loadView('admin.accountingReports.trialBalance.pdf.level2', ['departments'=>$departments,'from'=>$from,'to'=>$to], [] , $config);
+//                        return $pdf->stream();
+//                        break;
+//                    case '2';
+//                        $departments = Department::orderBy('code')->where('level_id',$level)->where('id', '>=', $fromtree)->where('id', '<=', $totree)
+//                            ->get();
+//
+//                        $config = ['instanceConfigurator' => function($mpdf) {
+//                            $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                            );
+//                        }];
+//                        $pdf = PDF::loadView('admin.accountingReports.trialBalance.pdf.level3', ['departments'=>$departments,'from'=>$from,'to'=>$to], [] , $config);
+//                        return $pdf->stream();
+//                        break;
+//                    case '3';
+//                        $departments = Department::orderBy('code')->where('id', '>=', $fromtree)->where('id', '<=', $totree)->where('level_id',$level)->get();
+//
+//                        $config = ['instanceConfigurator' => function($mpdf) {
+//                            $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                            );
+//                        }];
+//                        $pdf = PDF::loadView('admin.accountingReports.trialBalance.pdf.level4', ['departments'=>$departments,'from'=>$from,'to'=>$to], [] , $config);
+//                        return $pdf->stream();
+//                    case '4';
+//                        $departments = Department::orderBy('code')->where('id', '>=', $fromtree)->where('id', '<=', $totree)->where('level_id',$level)->get();
+//
+//                        $config = ['instanceConfigurator' => function($mpdf) {
+//                            $mpdf->SetHTMLFooter('
+//                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+//                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+//                            );
+//                        }];
+//                        $pdf = PDF::loadView('admin.accountingReports.trialBalance.pdf.level5', ['departments'=>$departments,'from'=>$from,'to'=>$to], [] , $config);
+//                        return $pdf->stream();
+//                        break;
+
+
+
 
     }
     public function daily_restriction()

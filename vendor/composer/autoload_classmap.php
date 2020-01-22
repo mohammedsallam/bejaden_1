@@ -233,6 +233,7 @@ return array(
     'App\\Models\\Admin\\MtsItmCatgry' => $baseDir . '/app/Models/Admin/MtsItmCatgry.php',
     'App\\Models\\Admin\\MtsItmmfs' => $baseDir . '/app/Models/Admin/MtsItmmfs.php',
     'App\\Models\\Admin\\MtsSuplir' => $baseDir . '/app/Models/Admin/MtsSuplir.php',
+    'App\\Models\\Admin\\PjbranchDlv' => $baseDir . '/app/Models/Admin/PjbranchDlv.php',
     'App\\Models\\Admin\\Projcontractmfs' => $baseDir . '/app/Models/Admin/Projcontractmfs.php',
     'App\\Models\\Admin\\Projectmfs' => $baseDir . '/app/Models/Admin/Projectmfs.php',
     'App\\Models\\Admin\\Units' => $baseDir . '/app/Models/Admin/Units.php',

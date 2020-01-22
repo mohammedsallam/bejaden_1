@@ -51,4 +51,6 @@ class GLjrnTrs extends Model
         return $this->hasone('App\\Models\Admin\GLJrnal','Acc_No','Acc_No');
     }
 
+
+
 }

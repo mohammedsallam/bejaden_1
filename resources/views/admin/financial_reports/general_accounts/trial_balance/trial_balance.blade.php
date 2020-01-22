@@ -54,27 +54,24 @@
             $(function () {
                 'use strict';
 
-                $('.reporttype,.kind,.level').on('change',function () {
+                $('#MainCompany').on('change',function () {
 
-                    var MainCompany = $( ".MainCompany option:selected" ).val();
-                    var MainBranch = $( ".MainBranch option:selected" ).val();
-                    var reporttype = $( ".reporttype option:selected" ).val();
-                    var kind = $( ".kind option:selected" ).val();
-                    var level = $( ".level option:selected" ).val();
+                    var MainCompany = $( "#MainCompany option:selected" ).val();
+
 
 
 
                     if (this){
                         $("#loadingmessage").css("display","block");
-                        $(".column-form").css("display","none");
+                        $(".show_row").css("display","none");
                         $.ajax({
                             url: '{{route('trialbalance.show')}}',
                             type:'get',
                             dataType:'html',
-                            data:{MainCompany:MainCompany,MainBranch:MainBranch,reporttype:reporttype,kind:kind,level:level},
+                            data:{MainCompany:MainCompany},
                             success: function (data) {
                                 $("#loadingmessage").css("display","none");
-                                $('.column-form').css("display","block").html(data);
+                                $('.show_row').css("display","block").html(data);
                                 var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
                                 $('.datepicker').datepicker({
                                     format: 'yyyy-mm-dd',
@@ -87,7 +84,7 @@
                             }
                         });
                     }else{
-                        $('.column-form').html('');
+                        $('.show_row').html('');
                     }
                 });
 
@@ -138,11 +135,6 @@
             });
 
             // number maincompany
-            $(document).on('change','.MainCompany',function () {
-                var value = $(this).val();
-
-                $('.number_company').val(value);
-            });
 
             $('#select_check :checkbox[id=but_level_check]').change(function(){
                 if($(this).is(':checked')){
@@ -175,26 +167,32 @@
                     {{ Form::label('MainCompany','الشركه', ['class' => 'col-md-2 col-xs-4']) }}
                     {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'col-md-10 col-xs-8 form-control  e2  MainCompany','placeholder'=> trans('admin.select')])) }}
                 </div>
+
                 <div class="checkonly col-md-6 col-xs-12" id="select_check">
+
                     <div class="col-md-6 col-xs-12">
-                        {{ Form::label('level','المستوى', ['class' => 'col-xs-4 control-label']) }}
-                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-8', 'id'=>'level_check'])) }}
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                        <input  class="trialBalance_1"  type="checkbox" id="but_level_check" name="reviewBalance" value="1">
+                        <input  class="trialBalance_1"  type="checkbox" id="but_level_check" name="reviewBalance" value="1" checked>
                         <label for="reviewBalance">  ميزان المراجعة لاستاذ المساعد </label>
                     </div>
                 </div>
             </div>
             <br>
-            <div class="details_row col-md-6 col-xs-12">
+            <div class="show_row col-md-6 col-xs-12">
+                <div class="row">
+
+                    <div class="col-md-12 col-xs-12">
+                        {{ Form::label('level','المستوى', ['class' => 'col-md-2 control-label']) }}
+                        {{ Form::select('level',[],null, array_merge(['class' => 'form-control col-xs-10', 'id'=>'level_check' ,'disabled' =>'disabled'])) }}
+                    </div>
+                </div>
+                <br>
                 <div class="row">
                     <div class="col-xs-9">
                         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
                         {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee'])) }}
                     </div>
                     <div class="col-xs-3">
-                        {{ Form::text('fromtree',null, array_merge(['class' => 'form-control'])) }}
+                        {{ Form::text('number_fromtree',null, array_merge(['class' => 'form-control'])) }}
                     </div>
                 </div>
                 <br>
@@ -204,7 +202,7 @@
                         {{ Form::select('totree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee totree'])) }}
                     </div>
                     <div class="col-xs-3">
-                        {{ Form::text('totree',null, array_merge(['class' => 'form-control totree'])) }}
+                        {{ Form::text('number_totree',null, array_merge(['class' => 'form-control'])) }}
                     </div>
                 </div>
 
@@ -227,28 +225,28 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="col-md-6 col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label class="custom-control-label" for="defaultChecked">جميع الحسابات </label>
+                            <input type="radio" class="total_department" id="total_department" name="department" checked value="1">
+                            <label class="total_department" for="total_department">جميع الحسابات </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label for="levelBalance">  حسابات بارصدة </label>
+                            <input type="radio" class="balance_department" id="balance_department" name="department" value="2">
+                            <label for="balance_department">  حسابات بارصدة </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label class="custom-control-label" for="defaultChecked">حسابات مدينه </label>
+                            <input type="radio" class="debt_department" id="debt_department" name="department" value="3">
+                            <label class="debt_department" for="debt_department">حسابات مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                            <label for="levelBalance">  حسابات دائنه </label>
+                            <input type="radio" class="credit_department" id="credit_department" name="department" value="4">
+                            <label for="credit_department">  حسابات دائنه </label>
                         </div>
                     </div>
                 </div>
@@ -256,7 +254,9 @@
             </div>
 
         </div>
+        <div class="print_div">
 
+        </div>
     </div>
 
 
@@ -265,11 +265,7 @@
     <div id='loadingmessage_1' style='display:none; margin-top: 20px' class="text-center">
         <img src="{{ url('/') }}/images/ajax-loader.gif"/>
     </div>
-    <div id="report">
-        <div class="column-form">
 
-        </div>
-    </div>
     <br>
 
 

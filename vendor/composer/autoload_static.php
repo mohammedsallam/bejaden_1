@@ -903,6 +903,7 @@ class ComposerStaticInitb4abebd26d455775eaa5beaf9c0a61ea
         'App\\Models\\Admin\\MtsItmCatgry' => __DIR__ . '/../..' . '/app/Models/Admin/MtsItmCatgry.php',
         'App\\Models\\Admin\\MtsItmmfs' => __DIR__ . '/../..' . '/app/Models/Admin/MtsItmmfs.php',
         'App\\Models\\Admin\\MtsSuplir' => __DIR__ . '/../..' . '/app/Models/Admin/MtsSuplir.php',
+        'App\\Models\\Admin\\PjbranchDlv' => __DIR__ . '/../..' . '/app/Models/Admin/PjbranchDlv.php',
         'App\\Models\\Admin\\Projcontractmfs' => __DIR__ . '/../..' . '/app/Models/Admin/Projcontractmfs.php',
         'App\\Models\\Admin\\Projectmfs' => __DIR__ . '/../..' . '/app/Models/Admin/Projectmfs.php',
         'App\\Models\\Admin\\Units' => __DIR__ . '/../..' . '/app/Models/Admin/Units.php',
