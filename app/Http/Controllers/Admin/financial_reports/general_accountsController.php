@@ -248,7 +248,7 @@ $MainCompany = $request->MainCompany;
                 $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
                 $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
                 $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
-            $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
+                $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
                 $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['MtsChartAc'=>$MtsChartAc,'fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,'MainCompany'=>$MainCompany,'level'=>$level])->render();
                 return $contents;
 
@@ -293,7 +293,7 @@ $MainCompany = $request->MainCompany;
     }
     public function trialbalance_print(Request $request)
     {
-//        dd($request->all());
+        dd($request->all());
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
@@ -313,13 +313,13 @@ $MainCompany = $request->MainCompany;
                             ->where('ID_No', '>=', $fromtree)
                             ->where('ID_No', '<=', $totree)->pluck('Acc_No');
 
-//                        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-//                            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-//                            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-//                            ->where(function ($q) use($Acc_No) {
-//                                $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
-//                            })->groupBy(['Acc_No', 'Sysub_Account'])
-//                            ->get();
+                        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                            ->where(function ($q) use($Acc_No) {
+                                $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
+                            })->groupBy(['Acc_No', 'Sysub_Account'])
+                            ->get();
                         $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
                             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
