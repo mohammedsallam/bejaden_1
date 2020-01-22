@@ -46,6 +46,7 @@ class general_accountsController extends Controller
 
     }
 
+
 //    public function branche(Request $request)
 ////    {
 ////        if($request->ajax())
@@ -55,6 +56,17 @@ class general_accountsController extends Controller
 ////            return $data = view('admin.financial_reports.general_accounts.accountStatement.ajax.get_branche',compact('MainBranch','mainCompany'))->render();
 ////        }
 ////    }
+
+    public function branche(Request $request)
+    {
+        if($request->ajax())
+        {
+            $mainCompany = $request->mainCompany;
+            $MainBranch = MainBranch::where('Cmp_No',$mainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'ID_No');
+            return $data = view('admin.financial_reports.general_accounts.ajax.get_branche',compact('MainBranch','mainCompany'))->render();
+        }
+    }
+
     public function acc_state(Request $request)
     {
         $mainCompany = $request->mainCompany;
@@ -112,6 +124,7 @@ class general_accountsController extends Controller
         $totree = $request->totree;
         $from = $request->from;
         $to = $request->to;
+
 
         $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('Acc_No', '=', $fromtree)->where('Acc_No', '=', $totree)->pluck('Acc_No')->toArray();
         if($from > 1600 )
@@ -206,6 +219,12 @@ if($from > 1600 )
 
 
 
+
+            $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
+        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+
+            ->WhereIN('Sysub_Account',$Acc_No)->WhereIN('Acc_No',$Acc_No)
+            ->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
 
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
