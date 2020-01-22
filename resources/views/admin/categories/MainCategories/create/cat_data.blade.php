@@ -120,7 +120,6 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-md-12">
                         <label class="col-md-2" for="">{{trans('admin.main')}}</label>
@@ -184,41 +183,9 @@
                         <input type="text" name="Label_No" class="form-control col-md-6">
                     </div>
                 </div>
-            </div>
-        </div>
 
-{{--        <div class="panel panel-default">--}}
-{{--            <table class="tab">--}}
-{{--                <tr>--}}
-{{--                    <th></th>--}}
-{{--                    <th></th>--}}
-{{--                    <th></th>--}}
-{{--                    <th>{{trans('admin.package')}}</th>--}}
-{{--                    <th>{{trans('admin.sells_price')}}</th>--}}
-{{--                    <th>{{trans('admin.buy_price')}}</th>--}}
-{{--                    <th>{{trans('admin.coast')}}</th>--}}
-{{--                    <th>{{trans('admin.factory_barcode')}}</th>--}}
-{{--                </tr>--}}
-{{--                <tbody>--}}
-{{--                <tr>--}}
-{{--                    <td>{{trans('admin.main_unit')}}</td>--}}
-{{--                    <td>--}}
-{{--                        <select name="" id="">--}}
-{{--                            <option value="">asd</option>--}}
-{{--                            <option value="">asd</option>--}}
-{{--                            <option value="">asd</option>--}}
-{{--                        </select>--}}
-{{--                    </td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                    <td><input type="text"></td>--}}
-{{--                </tr>--}}
-{{--                </tbody>--}}
-{{--            </table>--}}
-{{--        </div>--}}
+
+
         <div class="panel panel-default col-md-12">
             <div class="panel-body">
                 <div class="row" style="display: flex; justify-content: space-between">
@@ -283,4 +250,9 @@
         {{--                                            {{method_field('DELETE')}}--}}
         {{--                                        </form>--}}
     </div>
+
 </div>
+
+
+
+
