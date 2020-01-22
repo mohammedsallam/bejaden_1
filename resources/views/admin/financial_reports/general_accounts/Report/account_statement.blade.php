@@ -30,7 +30,7 @@
 
             $(".MainCompany").on("change",function(){
                 var mainCompany = $(this).val();
-                var mainCompany = $(this).val();
+                // var mainCompany = $(this).val();
 
                 $("#loadingmessage-1").css("display","block");
                 $(".column_account").css("display","none");

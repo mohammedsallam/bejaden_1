@@ -126,7 +126,7 @@
                     {{$dataDebtor = 0}}
                     {{$dataCredit = 0}}
                 </div>
-
+                account_statement
                 @foreach($receipts as $key => $receipt)
 {{--                    @dd($day,$receipt);--}}
                     @if($key == 0)
