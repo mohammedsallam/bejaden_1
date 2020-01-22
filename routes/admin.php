@@ -280,6 +280,10 @@ Route::group(['prefix'=>'admin'],function (){
             return view('admin.general_setting.sales_setting');
         });
 
+        Route::get('account_setting', function () {
+            return view('admin.general_setting.account_setting');
+        });
+
 
         Route::get('Fixed_assets', function () {
             return view('admin.basic_data.Fixed_assets.Fixed_assets');
