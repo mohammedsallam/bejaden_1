@@ -58,6 +58,9 @@ Route::group(['prefix'=>'admin'],function (){
 
 
 //        country && city
+//        Route::get('countries_setting', function () {
+//            return view('admin.Dashboard_setting.countries_setting');
+//        });
         Route::resource('countries','Admin\Country\CountryController');
         Route::resource('cities','Admin\City\CitiesController');
         Route::resource('state','Admin\State\StateController');
