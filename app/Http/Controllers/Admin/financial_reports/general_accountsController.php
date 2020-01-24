@@ -344,7 +344,10 @@ class general_accountsController extends Controller
                             $q->whereIn('Acc_No', $GLaccBnk)->orWhereIn('Chrt_No',$Acc_No);
                         })->get(['Acc_No','Chrt_No'])->toArray();*/
 
-                    $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->where('Acc_No',$GLjrnTrs2)->get();
+                    $data = MtsChartAc::where('Cmp_No',$MainCompany)
+                    ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
+                            $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
+                        })->get();
                     //dd($data);
 
                     /*$data = $dara->map(function ($data)use($MainCompany,$Acc_No){
