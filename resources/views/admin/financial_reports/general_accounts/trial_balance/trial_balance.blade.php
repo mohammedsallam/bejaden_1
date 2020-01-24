@@ -55,12 +55,7 @@
                 'use strict';
 
                 $('#MainCompany').on('change',function () {
-
                     var MainCompany = $( "#MainCompany option:selected" ).val();
-
-
-
-
                     if (this){
                         $("#loadingmessage").css("display","block");
                         $(".show_row").css("display","none");
@@ -119,20 +114,21 @@
         </script>
 
         <script>
-            $("#seeAnotherField").change(function() {
+            // mah
+            // $("#seeAnotherField").change(function() {
 
-                if ($("#seeAnotherField").val() == 0 &&  $(".MainBranch").val() && $(".MainCompany").val()) {
-                    $('#otherField').attr('disabled', 'disabled');
+            //     if ($("#seeAnotherField").val() == 0 &&  $(".MainBranch").val() && $(".MainCompany").val()) {
+            //         $('#otherField').attr('disabled', 'disabled');
 
-                }else if  ($("#seeAnotherField").val() == 1) {
-                    $('#otherField').removeAttr('disabled');
+            //     }else if  ($("#seeAnotherField").val() == 1) {
+            //         $('#otherField').removeAttr('disabled');
 
-                }else if($("#seeAnotherField").val() == 0)
-                {
-                    $('#otherField').attr('disabled', 'disabled');
-                }
+            //     }else if($("#seeAnotherField").val() == 0)
+            //     {
+            //         $('#otherField').attr('disabled', 'disabled');
+            //     }
 
-            });
+            // });
 
             // number maincompany
 

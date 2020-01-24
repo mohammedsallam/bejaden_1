@@ -253,18 +253,13 @@ class general_accountsController extends Controller
             return $data = view('admin.financial_reports.general_accounts.trial_balance.ajax.get_branche',compact('MainBranch','MainCompany'))->render();
         }
     }
+
     public function trialbalance_show(Request $request)
     {
-        //        @dd($request->all());
+        //dd($request->all());
         $MainCompany = $request->MainCompany;
-
-
         if($request->ajax())
         {
-
-
-
-
             $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
             $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
             $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
@@ -272,14 +267,13 @@ class general_accountsController extends Controller
             $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['MtsChartAc'=>$MtsChartAc,'fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,'MainCompany'=>$MainCompany,'level'=>$level])->render();
             return $contents;
 
-
-
         }
     }
 
+
     public function trialbalance_details(Request $request)
     {
-//        dd($request->all());
+       //dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
@@ -313,7 +307,6 @@ class general_accountsController extends Controller
     }
     public function trialbalance_print(Request $request)
     {
-
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
@@ -321,7 +314,6 @@ class general_accountsController extends Controller
         $from = $request->from;
         $to = $request->to;
         $but_level_check = $request->but_level_check;
-
         $radiodepartment = $request->radiodepartment;
 
 
@@ -354,9 +346,9 @@ class general_accountsController extends Controller
                         ->where(function ($q) use($GLaccBnk ,$Acc_No) {
                             $q->whereIn('Acc_No', $GLaccBnk)->orWhereIn('Chrt_No',$Acc_No);
                         })->get(['Acc_No','Chrt_No'])->toArray();
-                    dd($GLJrnal);
-//                    $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
-//                        ->whereIn('Acc_No',$GLjrnTrs)->get();
+                    //dd($GLJrnal);
+                    $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
+                        ->whereIn('Acc_No',$GLJrnal)->get();
 
 
                     $data = $dara->map(function ($data)use($MainCompany,$Acc_No){
@@ -370,7 +362,7 @@ class general_accountsController extends Controller
                     });
 
 
-                    @dd($data);
+                    //@dd($data);
                     $config = ['instanceConfigurator' => function($mpdf) {
                         $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>

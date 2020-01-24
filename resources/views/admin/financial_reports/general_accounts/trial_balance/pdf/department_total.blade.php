@@ -104,6 +104,7 @@
             <th>{{trans('admin.debtor')}}</th>
             <th>{{trans('admin.creditor')}}</th>
         </tr>
+
         <div style="display: none">{{ $i = 1 }}
             {{$balance = 0}}
             {{$sum = 0}}
@@ -115,7 +116,7 @@
             {{$dataDebtor2 = 0}}
             {{$dataCredit2 = 0}}
         </div>
-@dd($data);
+
         @foreach($data as $key => $merged)
 
             <tr>
