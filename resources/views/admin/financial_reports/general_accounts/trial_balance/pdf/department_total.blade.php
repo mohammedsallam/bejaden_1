@@ -117,15 +117,16 @@
             {{$dataCredit2 = 0}}
         </div>
 
-        @foreach($data as $key => $merged)
-
+        @foreach($data as $merged)
+{{-- @dd($merged->Acc_NmAr) --}}
             <tr>
                 <td>
-                    {{$key}}
+                    {{-- {{$key}} --}}
+                    {{$merged->Acc_No}}
                 </td>
                 <td>
 {{--                    {{session_lang($merged->dep_name_en,$merged->dep_name_ar)}}--}}
-                    {{$merged[0]->Acc_NmEn}}
+                    {{$merged->Acc_NmAr}}
                 </td>
 
                 <td class="depratment_first_debter">

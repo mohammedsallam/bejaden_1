@@ -324,42 +324,39 @@ class general_accountsController extends Controller
                     $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
                         ->where('ID_No', '>=', $fromtree)
                         ->where('ID_No', '<=', $totree)->pluck('Acc_No');
-//                    dd($Acc_No);
-                    $GLaccBnk = GLaccBnk::where('Cmp_No',$MainCompany)->pluck('Acc_No');
-//                    dd($GLaccBnk);
-//                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-//                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-//                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-//                        ->where(function ($q) use($Acc_No) {
-//                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
-//                        })->groupBy(['Acc_No', 'Sysub_Account'])
-//                        ->get();
-//                    $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-//                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-//                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-//                        ->where(function ($q) use($Acc_No) {
-//                            $q->whereIn('Acc_No', $Acc_No)->orWhereIn('Sysub_Account',$Acc_No);
-//                        })->get(['Acc_No','Sysub_Account'])->toArray();
-                    $GLJrnal = GLJrnal::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    //dd($Acc_No);
+
+
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No',1)->pluck('Acc_No');
+
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No','>',1)->pluck('Sysub_Account');
+
+                    /*$GLJrnal = GLJrnal::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where(function ($q) use($GLaccBnk ,$Acc_No) {
                             $q->whereIn('Acc_No', $GLaccBnk)->orWhereIn('Chrt_No',$Acc_No);
-                        })->get(['Acc_No','Chrt_No'])->toArray();
-                    //dd($GLJrnal);
-                    $dara =   MtsChartAc::where('Cmp_No',$MainCompany)
-                        ->whereIn('Acc_No',$GLJrnal)->get();
+                        })->get(['Acc_No','Chrt_No'])->toArray();*/
 
+                    $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->where('Acc_No',$GLjrnTrs2)->get();
+                    //dd($data);
 
-                    $data = $dara->map(function ($data)use($MainCompany,$Acc_No){
-                        $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');
+                    /*$data = $dara->map(function ($data)use($MainCompany,$Acc_No){
+                        $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');*/
+
 //                            $data->Acc_NmEn = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
 //                            $data->ID_No_MtsChartAc = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
 //                            $data->acc_no_chart = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
 
 
-                        return $data;
-                    });
+                        //return $data;
+                    //});
 
 
                     //@dd($data);
