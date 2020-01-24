@@ -337,12 +337,6 @@ class general_accountsController extends Controller
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No','>',1)->pluck('Sysub_Account');
 
-                    /*$GLJrnal = GLJrnal::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
-                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
-                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-                        ->where(function ($q) use($GLaccBnk ,$Acc_No) {
-                            $q->whereIn('Acc_No', $GLaccBnk)->orWhereIn('Chrt_No',$Acc_No);
-                        })->get(['Acc_No','Chrt_No'])->toArray();*/
 
                     $data = MtsChartAc::where('Cmp_No',$MainCompany)
                     ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
