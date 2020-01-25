@@ -445,7 +445,7 @@
                 </div>
             </div>
             {{----}}
-            <div class="tab-content" id="myTabContent1" style="margin-top:1%">
+                <div class="tab-content" id="myTabContent1" style="margin-top:1%">
 
                 {{--First tap--}}
                 @include('admin.categories.main_categories.create_parent.cat_data')
