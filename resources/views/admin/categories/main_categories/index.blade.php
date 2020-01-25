@@ -34,7 +34,7 @@
 
                                 $('#jstree').jstree({
                                     "core" : {
-                                        {{--'data' : "{{load_item('parent_id', '', '')}}",--}}
+                                        'data' : {!!  load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo')) !!},
                                         'data' : tree,
                                         "themes" : {
                                             "variant" : "large"
@@ -54,8 +54,10 @@
                                 });
 
                                 $('#jstree').on("changed.jstree", function (e, data) {
+
                                     var i, j, r = [];
                                     var name = [];
+
                                     for (i=0,j=data.selected.length;i < j;i++){
                                         r.push(data.instance.get_node(data.selected[i]).id);
                                         name.push(data.instance.get_node(data.selected[i]).text);
@@ -78,13 +80,8 @@
                                         }
                                     });
 
-                                    //handle click event
-                                    // timer = setTimeout(function() {
-                                    // if (!prevent) {
                                     handle_click(r[0], result);
-                                    // }
-                                    // prevent = false;
-                                    // }, delay);
+
                                 });
 
                                 //handle tree double click event
@@ -126,32 +123,62 @@
                         name.push(data.instance.get_node(data.selected[i]).text);
                     }
                     $('#parent_name').text(name);
+
+                    //get all direct and undirect children of selected node
+                    var currentNode = data.node;
+                    var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                    // var result = [currentNode.id];
+                    var result = [];
+                    allChildren.find('li').addBack().each(function(index, element) {
+                        if ($(this).jstree(true).is_leaf(element)) {
+                            // result.push(element.textContent);
+                            result.push(parseInt(element.id));
+                        } else {
+                            var nod = $(this).jstree(true).get_node(element);
+                            // result.push(nod.text);
+                            result.push(parseInt(nod.id));
+                        }
+                    });
+
+                    //handle click event
+                    // timer = setTimeout(function() {
+                    // if (!prevent) {
+                    // timer = setTimeout(function () {
+                    //     handle_click(r[0], result);
+                    //     prevent = false;
+                    // }, 200)
+
+                    handle_click(r[0], result);
+
+                    $('#jstree').on("dblclick.jstree", function (e){
+                        clearTimeout(timer);
+                        prevent = true;
+                        handle_dbclick(e);
+                    });
+
+
+
+                    // }
+                    // prevent = false;
+                    // }, delay);
                 });
 
-                //handle tree click vent
-                $('#jstree').on("click.jstree", function (e){
-                    timer = setTimeout(function() {
-                        handle_click(e);
-                        prevent = false;
-                    }, delay);
-                });
+                // handle tree double click event
+                // $('#jstree').on("dblclick.jstree", function (e){
+                //     clearTimeout(timer);
+                //     prevent = true;
+                //     handle_dbclick(e);
+                // });
 
-                //handle tree double click event
-                $('#jstree').on("dblclick.jstree", function (e){
-                    clearTimeout(timer);
-                    prevent = true;
-                    handle_dbclick(e);
-                });
 
                 // handle click event
                 function handle_click(Itm_No, children){
-
                     // console.log(Costcntr_No)
                     // var node = $(e.target).closest("li");
                     // var type = node.attr('rel');
                     // var Costcntr_No = node[0].id;
                     $.ajax({
-                        url: "{{route('mainCategories.index')}}",
+                        url: "{{route('getRootForEdit')}}",
                         type: "get",
                         dataType: 'html',
                         data: {
@@ -172,7 +199,7 @@
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('getChildblade')}}",
+                        url: "{{route('getChildForEdit')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", parent: parent },
@@ -182,12 +209,9 @@
                     });
                 }
 
-
                 /**
                  * Separate
                  */
-
-
 
 
                 $('#parent').click(function () {
@@ -214,7 +238,6 @@
                 $('.Sup_No').change(function () {
                     $('.Sup_No_show').val($(this).val())
                 });
-
 
                 $('.addRootOrChild').click(function () {
                     var Itm_No = $('.Itm_No').val();
@@ -369,6 +392,7 @@
                 <div class="col-md-6">
                     <div class="form-group" style="display: flex">
                         <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
+                        {{--@if($cmp->ID_No == session('updatedComNo')) selected @endif--}}
                         <select name="Cmp_No" id="Cmp_No" class="form-control Cmp_No">
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($cmps) > 0)
@@ -380,6 +404,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    {{--@if($active->ID_No == session('updatedActiveNo')) selected @endif--}}
                     <div class="form-group" style="display: flex">
                         <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
                         <select name="Actvty_No" id="Actvty_No" class="form-control Actvty_No">
