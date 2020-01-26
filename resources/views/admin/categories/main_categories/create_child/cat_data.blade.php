@@ -4,16 +4,12 @@
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">
                     <div style="display: flex">
-                        @php
-                            $lastItem = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
-                        @endphp
-
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
-                            <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="@if($itemToEdit){{$itemToEdit->Itm_No}}@elseif($lastItem){{$lastItem->Itm_No+1}} @else{{1}}@endif" class="Itm_No form-control" readonly>
+                            <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
 
                             <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
-                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="@if($itemToEdit){{$itemToEdit->Level_No}}@elseif($lastItem){{$lastItem->Level_No}} @else{{1}}@endif" class="Level_No form-control" readonly>
+                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$lastChild != null ? $lastChild->Level_No : 2}}" class="Level_No form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label for="parent">{{trans('admin.parent_cat')}}</label>
@@ -38,18 +34,18 @@
                         <div class="col-md-9">
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label style="margin-left: 5px" for="Itm_NmAr">Ar</label>
-                                <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="@if($itemToEdit){{$itemToEdit->Itm_NmAr}}@endif">
+                                <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="">
                             </div>
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label style="margin-left: 5px" for="Itm_NmEn">En</label>
-                                <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="@if($itemToEdit){{$itemToEdit->Itm_NmEn}}@endif">
+                                <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="">
                             </div>
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label for="Sup_No">{{trans('admin.Suppliers')}}</label>
                                 <select class="form-control col-md-8 Sup_No" name="Sup_No" id="Sup_No" style="margin-right: 4px">
                                     <option value="" >{{trans('admin.select')}}</option>
                                     @foreach($suppliers as $suppliers)
-                                        <option @if($itemToEdit && $itemToEdit->Sup_No == $suppliers->ID_No) selected @endif value="{{$suppliers->ID_No}}" >{{$suppliers->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
+                                        <option value="{{$suppliers->ID_No}}" >{{$suppliers->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" class="form-control col-md-3 Sup_No_show" id="Sup_No_show">
@@ -83,36 +79,36 @@
                         </div>
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
-                                <label for="stored">{{trans('admin.stored')}}</label>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
+                                    <label for="stored">{{trans('admin.stored')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
+                                    <label for="request">{{trans('admin.request')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
+                                    <label for="linked">{{trans('admin.linked')}}</label>
+                                </div>
                             </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
-                                <label for="request">{{trans('admin.request')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
-                                <label for="linked">{{trans('admin.linked')}}</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
-                                <label for="general">{{trans('admin.general')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
-                                <label for="product_collect">{{trans('admin.product_collect')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
-                                <label for="pure_material">{{trans('admin.pure_material')}}</label>
+                            <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
+                                    <label for="general">{{trans('admin.general')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
+                                    <label for="product_collect">{{trans('admin.product_collect')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
+                                    <label for="pure_material">{{trans('admin.pure_material')}}</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">

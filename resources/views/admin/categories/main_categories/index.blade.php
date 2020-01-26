@@ -332,12 +332,22 @@
 
                 });
 
+                // close-open tree
+                $('.tree_panel .close_tree').click(function () {
+                    $('.tree_panel').toggleClass('collaps_tree col-md-4 col-md-1');
+                    $('.weight_measure_panel').toggleClass('col-md-8 col-md-11');
+                    $('#chart_form').toggleClass('col-md-8 col-md-11')
+                })
+
             });
 
         </script>
     @endpush
     @push('css')
         <style>
+            .collaps_tree{
+                width: 0;
+            }
             .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
                 border-top: 1px groove black;
                 background: #8e8e8e5c;
@@ -434,11 +444,13 @@
             {{-- End Ul taps--}}
 
 
-            <div class="panel panel-default col-md-4" style="margin-top:1%; overflow: auto">
+            <div class="panel panel-default col-md-4 tree_panel" style="margin-top:1%; overflow: auto">
                 <div class="panel-body">
                     <a class="btn btn-primary addRootOrChild" id="addRootOrChild">{{trans('admin.new_category')}}</a>
+                    <span class="btn btn-danger btn-sm  pull-left close_tree"><i class="fa fa-close"></i></span>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
+
                 </div>
             </div>
             {{----}}
@@ -450,6 +462,7 @@
                 @include('admin.categories.main_categories.create_parent.weight_measure')
                 {{--third tap--}}
                 @include('admin.categories.main_categories.create_parent.purchases')
+
             </div>
         </div>
     </div>
