@@ -175,7 +175,7 @@
                     // var type = node.attr('rel');
                     // var Costcntr_No = node[0].id;
                     $.ajax({
-                        url: "{{route('getRootForEdit')}}",
+                        url: "{{route('getRootOrChildForEdit')}}",
                         type: "get",
                         dataType: 'html',
                         data: {
@@ -196,10 +196,10 @@
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('getChildForEdit')}}",
+                        url: "{{route('createChild')}}",
                         type: "post",
                         dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", parent: parent },
+                        data: {"_token": "{{ csrf_token() }}", parent: parent},
                         success: function(data){
                             $('#myTabContent1').html(data);
                         }

@@ -4,16 +4,12 @@
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">
                     <div style="display: flex">
-                        @php
-                            $lastItem = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
-                        @endphp
-
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
-                            <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="" class="Itm_No form-control" readonly>
+                            <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
 
                             <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
-                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="" class="Level_No form-control" readonly>
+                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$lastChild != null ? $lastChild->Level_No : 2}}" class="Level_No form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label for="parent">{{trans('admin.parent_cat')}}</label>
@@ -38,18 +34,18 @@
                         <div class="col-md-9">
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label style="margin-left: 5px" for="Itm_NmAr">Ar</label>
-                                <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="sallam ar">
+                                <input type="text" id="Itm_NmAr" name="Itm_NmAr" class="form-control Itm_NmAr" value="">
                             </div>
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label style="margin-left: 5px" for="Itm_NmEn">En</label>
-                                <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="sallam en">
+                                <input type="text" id="Itm_NmEn" name="Itm_NmEn" class="form-control Itm_NmEn" value="">
                             </div>
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <label for="Sup_No">{{trans('admin.Suppliers')}}</label>
                                 <select class="form-control col-md-8 Sup_No" name="Sup_No" id="Sup_No" style="margin-right: 4px">
                                     <option value="" >{{trans('admin.select')}}</option>
-                                    @foreach($suppliers as $supplier)
-                                        <option value="{{$supplier->ID_No}}" >{{$supplier->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
+                                    @foreach($suppliers as $suppliers)
+                                        <option value="{{$suppliers->ID_No}}" >{{$suppliers->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" class="form-control col-md-3 Sup_No_show" id="Sup_No_show">
@@ -83,6 +79,11 @@
                         </div>
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
+
+                                {{--                            <div style="margin-left: 3px">--}}
+                                {{--                                <label for="sell">{{trans('admin.sell')}}</label>--}}
+                                {{--                                <input type="checkbox" name="Sale_Active" id="sell" value="1">--}}
+                                {{--                            </div>--}}
                                 <div style="margin-left: 3px">
                                     <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
                                     <label for="stored">{{trans('admin.stored')}}</label>
@@ -258,6 +259,20 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="tab-pane fade" id="purchases" role="tabpanel" aria-labelledby="home-tab">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            purchases
+        </div>
+    </div>
+</div>
+<div class="tab-pane fade" id="weight_measure" role="tabpanel" aria-labelledby="home-tab">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            weight_measure
         </div>
     </div>
 </div>
