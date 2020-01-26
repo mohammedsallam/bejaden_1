@@ -54,34 +54,31 @@
                                 });
 
                                 $('#jstree').on("changed.jstree", function (e, data) {
-
                                     var i, j, r = [];
                                     var name = [];
-
                                     for (i=0,j=data.selected.length;i < j;i++){
                                         r.push(data.instance.get_node(data.selected[i]).id);
                                         name.push(data.instance.get_node(data.selected[i]).text);
                                     }
-                                    $('#parent_name').text(name);
+                                    // $('#parent_name').text(name);
 
                                     //get all direct and undirect children of selected node
                                     var currentNode = data.node;
                                     var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                                    // var result = [currentNode.id];
                                     var result = [];
                                     allChildren.find('li').addBack().each(function(index, element) {
                                         if ($(this).jstree(true).is_leaf(element)) {
-                                            // result.push(element.textContent);
                                             result.push(parseInt(element.id));
                                         } else {
                                             var nod = $(this).jstree(true).get_node(element);
-                                            // result.push(nod.text);
                                             result.push(parseInt(nod.id));
                                         }
                                     });
 
-                                    handle_click(r[0], result);
-
+                                    timer = setTimeout(function () {
+                                        handle_click(r[0], result);
+                                        prevent = false;
+                                    }, delay)
                                 });
 
                                 //handle tree double click event
@@ -122,34 +119,26 @@
                         r.push(data.instance.get_node(data.selected[i]).id);
                         name.push(data.instance.get_node(data.selected[i]).text);
                     }
-                    $('#parent_name').text(name);
+                    // $('#parent_name').text(name);
 
                     //get all direct and undirect children of selected node
                     var currentNode = data.node;
                     var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                    // var result = [currentNode.id];
                     var result = [];
                     allChildren.find('li').addBack().each(function(index, element) {
                         if ($(this).jstree(true).is_leaf(element)) {
-                            // result.push(element.textContent);
                             result.push(parseInt(element.id));
                         } else {
                             var nod = $(this).jstree(true).get_node(element);
-                            // result.push(nod.text);
                             result.push(parseInt(nod.id));
                         }
                     });
 
-                    //handle click event
-                    // timer = setTimeout(function() {
-                    // if (!prevent) {
                     timer = setTimeout(function () {
                         handle_click(r[0], result);
                         prevent = false;
                     }, delay)
-                    // handle_click(r[0], result);
                 });
-
 
 
                 $('#jstree').on("dblclick.jstree", function (e){
@@ -157,16 +146,6 @@
                     prevent = true;
                     handle_dbclick(e);
                 });
-
-
-
-                // handle tree double click event
-                // $('#jstree').on("dblclick.jstree", function (e){
-                //     clearTimeout(timer);
-                //     prevent = true;
-                //     handle_dbclick(e);
-                // });
-
 
                 // handle click event
                 function handle_click(Itm_No, children){
@@ -337,6 +316,10 @@
                     $('.tree_panel').toggleClass('collaps_tree col-md-4 col-md-1');
                     $('.weight_measure_panel').toggleClass('col-md-8 col-md-11');
                     $('#chart_form').toggleClass('col-md-8 col-md-11')
+                })
+
+                $('select').change(function () {
+                    $(this).siblings('input').val($(this).val())
                 })
 
             });

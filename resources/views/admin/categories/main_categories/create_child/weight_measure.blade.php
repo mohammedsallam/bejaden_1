@@ -90,6 +90,16 @@
 
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="form-group" style="display: flex">
+                    <label style="width: 12%" for="">{{trans('admin.note_1')}}</label>
+                    <textarea name="Itm_Othr1" id="Itm_Othr1" class="form-control"></textarea>
+                </div>
+                <div class="form-group" style="display: flex">
+                    <label style="width: 12%" for="">{{trans('admin.note_2')}}</label>
+                    <textarea name="Itm_Othr1" id="Itm_Othr1" class="form-control"></textarea>
+                </div>
+            </div>
 
         </div>
     </div>

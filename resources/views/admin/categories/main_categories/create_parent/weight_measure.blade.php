@@ -87,7 +87,16 @@
                     <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center">
                         <img style="width:100%" src="{{asset('images/cover_img_2.jpg')}}" alt="{{trans('item_img')}}">
                     </div>
-
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group" style="display: flex">
+                    <label style="width: 12%" for="">{{trans('admin.note_1')}}</label>
+                    <textarea name="Itm_Othr1" id="Itm_Othr1" class="form-control"></textarea>
+                </div>
+                <div class="form-group" style="display: flex">
+                    <label style="width: 12%" for="">{{trans('admin.note_2')}}</label>
+                    <textarea name="Itm_Othr1" id="Itm_Othr1" class="form-control"></textarea>
                 </div>
             </div>
 
