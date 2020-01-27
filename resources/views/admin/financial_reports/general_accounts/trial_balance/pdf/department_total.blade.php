@@ -118,7 +118,7 @@
         </div>
 
         @foreach($data as $merged)
-{{-- @dd($merged->Acc_NmAr) --}}
+{{-- @dd($merged)--}}
             <tr>
                 <td>
                     {{-- {{$key}} --}}
@@ -130,7 +130,7 @@
                 </td>
 
                 <td class="depratment_first_debter">
-
+                    {{$merged->Fbal_DB}}
 {{--                    <div style="display:none">--}}
 
 {{--                            {{ $creditor =   depratment_first($merged->id,null,$from,$to,'creditor','<')}}--}}
@@ -157,7 +157,9 @@
 
                 </td>
                 <td class="depratment_first_creditor">
-{{--                    <div style="display:none">--}}
+                    {{$merged->Fbal_CR}}
+
+                    {{--                    <div style="display:none">--}}
 {{--                        @if($merged->type =='0')--}}
 {{--                            {{$creditor1 = trialbalance_first_blance($merged->id,'creditor')+  totaldepartment($merged->id,'creditor') }}--}}
 {{--                            {{$debtor1 =trialbalance_first_blance($merged->id,'debtor')+   totaldepartment($merged->id,'debtor') }}--}}
@@ -185,7 +187,9 @@
 
                 </td>
                 <td class="depratment_move_debter">
-{{--                    {{$value_debtor2 = sumall($merged->id,null,$from,$to,'debtor','>=')}}--}}
+@dd($merged->GLjrnTr)
+                    {{$merged->GLjrnTrs->FTr_Db}}
+                    {{--                    {{$value_debtor2 = sumall($merged->id,null,$from,$to,'debtor','>=')}}--}}
 {{--                    <div style="display:none">--}}
 {{--                        {{$dataDebtor1 += sumall($merged->id,null,$from,$to,'debtor','>=')}}--}}
 {{--                    </div>--}}

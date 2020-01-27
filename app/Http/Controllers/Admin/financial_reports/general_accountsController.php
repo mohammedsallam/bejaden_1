@@ -83,7 +83,7 @@ class general_accountsController extends Controller
     }
     public function details(Request $request)
     {
-
+// dd($request->all());
         $maincompany = $request->maincompany;
 
         $fromtree = $request->fromtree;
@@ -222,7 +222,7 @@ class general_accountsController extends Controller
 
 
         $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
-        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)
 
             ->WhereIN('Sysub_Account',$Acc_No)->WhereIN('Acc_No',$Acc_No)
             ->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
@@ -326,7 +326,7 @@ class general_accountsController extends Controller
                         ->where('ID_No', '<=', $totree)->pluck('Acc_No');
                     //dd($Acc_No);
 
-
+                    $all_trans = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)->get();
                     $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
@@ -342,8 +342,8 @@ class general_accountsController extends Controller
                     ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
                             $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
                         })->get();
-                    //dd($data);
-
+//                    dd($data);
+    
                     /*$data = $dara->map(function ($data)use($MainCompany,$Acc_No){
                         $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');*/
 
@@ -364,7 +364,7 @@ class general_accountsController extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.department_total',
-                        ['data'=>$data,'from' => $from,'to' => $to],[],$config);
+                        ['data'=>$data,'from' => $from,'to' => $to, 'all_trans'=>$all_trans],[],$config);
                     return $pdf->stream();
 
             }
