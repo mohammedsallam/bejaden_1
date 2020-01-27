@@ -1091,3 +1091,65 @@ if (!function_exists('load_item')){
         }
 
 }
+//if(!function_exists('alldepartmenttrial2')) {
+//    function alldepartmenttrial2($id = null,$from = null,$to = null,$sum = null,$sign = null)
+//    {
+//        $depart = \App\Department::where('type','1')->whereIn('id',$values)->pluck('id');
+////        dd(\App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations')->sum('debtor'));
+//        $value1 = \App\limitationsType::whereIn('tree_id',$depart)->whereHas('limitations', function($query) use ($from,$to,$sign){
+//            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+//        })->sum($sum);
+//        $value2 = \App\receiptsType::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
+//            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+//        })->sum($sum);
+//        $value3 = \App\receiptsData::whereIn('tree_id',$depart)->whereHas('receipts', function($query) use ($from,$to,$sign){
+//            $query->whereDate('created_at', $sign, $from)->whereDate('created_at', '<=', $to);
+//        })->sum($sum);
+//
+//        return $value1 + $value2 + $value3;
+//
+//    }
+//}
+if(!function_exists('Fbalance')) {
+    function Fbalance($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//        dd($Cmp_No,$Acc_No,$from,$sum);
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+//@dd($value2);
+
+
+       return $value1  +$value2;
+//            + $value2;
+    }
+}
+if(!function_exists('getTrans')) {
+    function getTrans($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//        dd($Cmp_No,$Acc_No,$from,$sum);
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+//@dd($value2);
+
+
+       return $value1  +$value2;
+//            + $value2;
+    }
+}

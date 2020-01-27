@@ -1,12 +1,53 @@
 <script>
-    $(function () {
-        'use strict'
+
+
+
+    $(document).ready(function () {
+        $('#level_check').on('keyup',function(){
+            var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+
+            var level = $(this).val();
+
+            var radiodepartment =  $('input[name="department"]:checked').val();
+
+            var from =  $('input[name="From"]').val();
+            var to =  $('input[name="To"]').val();
+
+            var but_level_check =  $('input[id="but_level_check"]:checked').val();
+
+            $(".details_level").css("display","none");
+            if (this) {
+                $.ajax({
+                    url: '{{route('trialbalance.level')}}',
+                    type: 'get',
+                    dataType: 'html',
+                    data: {MainCompany: MainCompany,
+                        level: level,
+
+                        from: from,
+                        to: to,
+                        radiodepartment: radiodepartment,
+                        but_level_check: but_level_check,
+                    },
+                    success: function (data) {
+                        $("#loadingmessage-2").css("display", "none");
+                        $('.details_level').css("display", "block").html(data);
+
+                    }
+                });
+            }
+        });
+
+
+
+        });
+    $(document).ready(function () {
         if ("{{$fromtree,$totree}}"){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
 
             var level = '{{isset($level) ? $level : null}}';
 
-
+// alert(1);
 
 
 
@@ -42,40 +83,10 @@
             }
         }
 
-            {{--$(".fromtree,.totree,.from,.to").on("change",function(){--}}
-            {{--    var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';--}}
-            {{--    var MainBranch = '{{isset($MainBranch) ? $MainBranch : null}}';--}}
-            {{--    var level = '{{isset($level) ? $level : null}}';--}}
-            {{--    var kind = '{{$kind}}';--}}
-            {{--    var fromtree = $('.fromtree').val();--}}
-            {{--    var totree = $('.totree').val();--}}
-            {{--    var to = $('.to').val();--}}
-            {{--    var from = $('.from').val();--}}
-
-            {{--    $("#loadingmessage-2").css("display","block");--}}
-            {{--    $(".column-account-date").css("display","none");--}}
-            {{--    if (this){--}}
-            {{--        $.ajax({--}}
-            {{--            url: '{{route('trialbalance.details')}}',--}}
-            {{--            type:'get',--}}
-            {{--            dataType:'html',--}}
-            {{--            data: {MainCompany: MainCompany,MainBranch: MainBranch,level: level, kind: kind, fromtree: fromtree, totree: totree, from: from, to: to},--}}
-            {{--            success: function (data) {--}}
-            {{--                $("#loadingmessage-2").css("display","none");--}}
-            {{--                $('.column-account-date').css("display","block").html(data);--}}
-
-            {{--            }--}}
-            {{--        });--}}
-            {{--    }else{--}}
-            {{--        $('.column-account-date').html('');--}}
-            {{--    }--}}
-            {{--});--}}
-
-
-
-
-
     });
+
+
+
 </script>
 
 <script>
@@ -93,23 +104,26 @@
     </div>
 </div>
 <br>
-<div class="row">
-    <div class="col-xs-9">
-        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst'])) }}
+<div class="details_level">
+    <div class="row" >
+        <div class="col-xs-9">
+            {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
+            {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst'])) }}
+        </div>
+        <div class="col-xs-3">
+            {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}
+        </div>
     </div>
-    <div class="col-xs-3">
-        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}
+    <br>
+    <div class="row">
+        <div class="col-xs-9">
+            {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
+            {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
+        </div>
+        <div class="col-xs-3">
+            {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control'])) }}
+        </div>
     </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-9">
-        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
-        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
-    </div>
-    <div class="col-xs-3">
-        {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control'])) }}
-    </div>
+
 </div>
 

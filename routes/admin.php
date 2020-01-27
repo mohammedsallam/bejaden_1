@@ -316,6 +316,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('branche_trial_balance','Admin\financial_reports\general_accountsController@branche_trial_balance')->name('branche_trial_balance');
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
+        Route::get('trialbalance_details_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
         Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 
