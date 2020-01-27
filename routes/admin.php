@@ -428,7 +428,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('rcatchs', 'Admin\banks\ReceiptCatchController');
         Route::get('get_snadat', 'Admin\banks\ReceiptCatchController@get_snadat');
         Route::get('hijri', 'Admin\banks\ReceiptCatchController@convertToDateToHijri')->name('hijri');
-        Route::post('getSalesMan', 'Admin\banks\ReceiptCatchController@getSalesMan')->name('getSalesMan');
+        Route::post('getSalesMan', 'Admin\banks\ReceiptCatchControllgenerateChildNoer@getSalesMan')->name('getSalesMan');
         Route::post('createTrNo', 'Admin\banks\ReceiptCatchController@createTrNo')->name('createTrNo');
         Route::post('getSubAcc', 'Admin\banks\ReceiptCatchController@getSubAcc')->name('getSubAcc');
         Route::post('getMainAccNo', 'Admin\banks\ReceiptCatchController@getMainAccNo')->name('getMainAccNo');
@@ -617,11 +617,13 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
-        Route::resource('mainCategories', 'Admin\categories\getSalesInvoicesGeneralView');
+        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
         Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
+        Route::post('getChildForEdit', 'Admin\categories\MainCategoriesController@getChildForEdit')->name('getChildForEdit');
+        Route::get('getRootForEdit', 'Admin\categories\MainCategoriesController@getRootForEdit')->name('getRootForEdit');
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
 
