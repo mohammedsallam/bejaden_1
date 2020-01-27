@@ -158,10 +158,10 @@
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
-                                <td style="width: 25%"><input type="text" class="form-control col-md-12"></td>
-                                <td style="width: 27%"></td>
-                                <td style="width: 10%;"><b>{{trans('admin.coast')}}</b></td>
-                                <td style="width: 28%;"><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
+                                <td><input type="text" class="form-control col-md-11"></td>
+                                <td style="width: 20%"></td>
+                                <td><b>{{trans('admin.coast')}}</b></td>
+                                <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
                             </tr>
                         </table>
                     </div>
