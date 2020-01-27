@@ -623,8 +623,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
-        Route::post('getChildForEdit', 'Admin\categories\MainCategoriesController@getChildForEdit')->name('getChildForEdit');
-        Route::get('getRootForEdit', 'Admin\categories\MainCategoriesController@getRootForEdit')->name('getRootForEdit');
+        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::get('getRootOrChildForEdit', 'Admin\categories\MainCategoriesController@getRootOrChildForEdit')->name('getRootOrChildForEdit');
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
 

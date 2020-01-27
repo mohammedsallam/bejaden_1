@@ -10,6 +10,7 @@ use App\Models\Admin\Units;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use phpDocumentor\Reflection\DocBlock\Description;
 
 class MainCategoriesController extends Controller
 {
@@ -209,11 +210,33 @@ class MainCategoriesController extends Controller
     // Create child
     public function createChild(Request $request)
     {
+        if ($request->ajax() && $request->parent){
+            $item = MtsItmmfs::where('Itm_No', $request->parent)->first();
+            if (session('Cmp_No') == -1) {
+                $cmps = MainCompany::get();
+            } else {
+                $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
+            }
 
+            $activity = ActivityTypes::all();
+            $suppliers = MtsSuplir::all();
+            $units  = Units::all();
+
+            $lastChild = null;
+
+            if (count($item->children) > 0){
+                $lastChild = $item->children[count($item->children)-1];
+            }
+
+            return view('admin.categories.main_categories.create_child.index', compact(['cmps', 'activity', 'suppliers', 'units', 'lastChild', 'item']));
+
+
+
+        }
     }
 
-    // get root for edit
-    public function getRootForEdit(Request $request)
+    // get root or child for edit
+    public function getRootOrChildForEdit(Request $request)
     {
         if (session('Cmp_No') == -1) {
             $cmps = MainCompany::get();
@@ -226,28 +249,11 @@ class MainCategoriesController extends Controller
         $units  = Units::all();
         $itemToEdit = null;
 
-        if ($request->ajax() && $request->Itm_No){
-            $itemToEdit = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
-            return view('admin.categories.main_categories.edit.parent_index', ['title' => trans('admin.basic_types'),
+        if ($request->ajax() && ($request->Itm_No || $request->parent)){
+            $itemToEdit = MtsItmmfs::where('Itm_No', $request->Itm_No)->orWhere('Itm_No', $request->parent)->first();
+            return view('admin.categories.main_categories.edit.edit_parent_or_child', ['title' => trans('admin.basic_types'),
                 'cmps' => $cmps, 'activity' => $activity, 'suppliers' => $suppliers, 'itemToEdit' => $itemToEdit, 'units' => $units]);
         }
-    }
-
-    //get blade child tree
-    public function getChildForEdit(Request $request){
-
-        $item = MtsItmmfs::get(['Itm_Nm' . ucfirst(session('lang')), 'Itm_No']);
-        if (session('Cmp_No') == -1) {
-            $cmps = MainCompany::get();
-        } else {
-            $cmps = MainCompany::where('Cmp_No', session('Cmp_No'))->first();
-        }
-
-        $activity = ActivityTypes::all();
-        $suppliers = MtsSuplir::all();
-        $units  = Units::all();
-        $itemToEdit = null;
-        return view('admin.categories.main_categories.edit.child_index' ,compact(['suppliers', 'units', 'activity']));
     }
 
 
@@ -256,7 +262,6 @@ class MainCategoriesController extends Controller
         $parentId = $request->parent;
         $parent = MtsItmmfs::where('Itm_No', $parentId)->first();
         if($parent){
-
             if (count($parent->children) > 0){
                 // last + 1 if has children
                 $index = count($parent->children)-1;
