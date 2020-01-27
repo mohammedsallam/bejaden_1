@@ -287,7 +287,7 @@ class customer_accountingcontroller extends Controller
     }
     public function print_trial_balance(Request $request)
     {
-//@dd($request->all());
+//@dd($request->all(),$request->all(),$request->all());
         $MainCompany = $request->MainCompany;
         $but_sales_check = $request->but_sales_check;
         $sales_check = $request->sales_check;

@@ -25,7 +25,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="contractors">
+            <a href="#">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-users" aria-hidden="true"></i></span>
 

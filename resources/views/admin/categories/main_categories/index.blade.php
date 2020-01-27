@@ -7,7 +7,7 @@
             $(document).ready(function () {
 
                 var timer = 0;
-                var delay = 200;
+                var delay = 100;
                 var prevent = false;
 
                 $(document).on('change', '.Cmp_No , .Actvty_No', function(){
@@ -143,25 +143,22 @@
                     //handle click event
                     // timer = setTimeout(function() {
                     // if (!prevent) {
-                    // timer = setTimeout(function () {
-                    //     handle_click(r[0], result);
-                    //     prevent = false;
-                    // }, 200)
-
-                    handle_click(r[0], result);
-
-                    $('#jstree').on("dblclick.jstree", function (e){
-                        clearTimeout(timer);
-                        prevent = true;
-                        handle_dbclick(e);
-                    });
-
-
-
-                    // }
-                    // prevent = false;
-                    // }, delay);
+                    timer = setTimeout(function () {
+                        handle_click(r[0], result);
+                        prevent = false;
+                    }, delay)
+                    // handle_click(r[0], result);
                 });
+
+
+
+                $('#jstree').on("dblclick.jstree", function (e){
+                    clearTimeout(timer);
+                    prevent = true;
+                    handle_dbclick(e);
+                });
+
+
 
                 // handle tree double click event
                 // $('#jstree').on("dblclick.jstree", function (e){
@@ -445,7 +442,7 @@
                 </div>
             </div>
             {{----}}
-                <div class="tab-content" id="myTabContent1" style="margin-top:1%">
+            <div class="tab-content" id="myTabContent1" style="margin-top:1%">
 
                 {{--First tap--}}
                 @include('admin.categories.main_categories.create_parent.cat_data')
