@@ -24,6 +24,7 @@
                 'use strict'
 
                 $(".MainCompany").on("change",function(){
+
                     var mainCompany = $(this).val();
                     $('.column-form').html('');
                     $("#loadingmessage-1").css("display","block");
@@ -44,6 +45,8 @@
                         $('.div_branch').html('');
                     }
                 });
+
+
 
 
 
@@ -185,7 +188,7 @@
                 <div class="row">
                     <div class="col-xs-9">
                         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee'])) }}
+                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control fromtree col-xs-9 e2 ee', 'id'=>'fromtree'])) }}
                     </div>
                     <div class="col-xs-3">
                         {{ Form::text('number_fromtree',null, array_merge(['class' => 'form-control'])) }}

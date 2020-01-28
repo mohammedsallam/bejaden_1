@@ -76,6 +76,7 @@
 
 
     });
+
 </script>
 
 <script>
@@ -96,7 +97,7 @@
 <div class="row">
     <div class="col-xs-9">
         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst'])) }}
+        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control fromtree col-xs-9 e2 efirst'])) }}
     </div>
     <div class="col-xs-3">
         {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}
