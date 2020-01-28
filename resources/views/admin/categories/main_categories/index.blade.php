@@ -5,6 +5,7 @@
         <style>
             .collaps_tree{
                 width: 0;
+                overflow: hidden !important;
             }
             .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
                 border-top: 1px groove black;
@@ -209,6 +210,7 @@
                             $('.editRootOrChildLink ').removeClass('hidden');
                             $('.deleteRootOrChildLink  ').removeClass('hidden');
                         }
+
                     });
                 }
 
@@ -357,8 +359,9 @@
                 $('.tree_panel .close_tree').click(function () {
                     $('.tree_panel').toggleClass('collaps_tree col-md-4 col-md-1');
                     $('.weight_measure_panel').toggleClass('col-md-8 col-md-11');
-                    $('#chart_form').toggleClass('col-md-8 col-md-11')
-                })
+                    $('#chart_form').toggleClass('col-md-8 col-md-11');
+                    $(this).toggleClass('btn-danger btn-success').children('i').toggleClass('fa-close fa-arrow-left')
+                });
 
                 // effect inputs number whene change unit generally
                 $('select').change(function () {
@@ -426,24 +429,25 @@
                     let unitSalVal = parseFloat($('#Unit_Sal1').val()),
                         unitPureVal = parseFloat($('#Unit_Pur1').val()),
                         unitCostVal = parseFloat($('#Unit_Cost1').val()),
-                        count = parseFloat($(this).val()),
+                        unitRation2Count = parseFloat($('#Unit_Ratio_2').val()),
+                        unitRation3Count = parseFloat($('#Unit_Ratio_3').val()),
                         UnitSal = $($(this).data('unit-sal')),
                         unitPure = $($(this).data('unit-pure')),
                         unitCost = $($(this).data('unit-cost'));
 
                     if($(this).attr('id') === 'Unit_Ratio_3'){
-                        UnitSal.val((unitSalVal/count)/count);
-                        unitPure.val((unitPureVal/count)/count);
-                        unitCost.val((unitCostVal/count)/count);
+                        UnitSal.val(unitSalVal/(unitRation2Count*unitRation3Count));
+                        unitPure.val(unitPureVal/(unitRation2Count*unitRation3Count));
+                        unitCost.val(unitCostVal/(unitRation2Count*unitRation3Count));
                     } else {
-                        UnitSal.val(unitSalVal/count);
-                        unitPure.val(unitPureVal/count);
-                        unitCost.val(unitCostVal/count);
+                        UnitSal.val(unitSalVal/unitRation2Count);
+                        unitPure.val(unitPureVal/unitRation2Count);
+                        unitCost.val(unitCostVal/unitRation2Count);
 
                         if($('#Unit_Ratio_3').val() !== ''){
-                            $('#Unit_Sal3').val((unitSalVal/count)/parseFloat($('#Unit_Ratio_3').val()));
-                            $('#Unit_Pur3').val((unitPureVal/count)/parseFloat($('#Unit_Ratio_3').val()));
-                            $('#Unit_Cost3').val((unitCostVal/count)/parseFloat($('#Unit_Ratio_3').val()));
+                            $('#Unit_Sal3').val(unitSalVal/(unitRation2Count*unitRation3Count));
+                            $('#Unit_Pur3').val(unitPureVal/(unitRation2Count*unitRation3Count));
+                            $('#Unit_Cost3').val(unitCostVal/(unitRation2Count*unitRation3Count));
                         }
 
 
@@ -528,7 +532,7 @@
             <div class="panel panel-default tree_panel collaps_tree col-md-1" style="margin-top:1%; overflow: auto">
                 <div class="panel-body">
                     <a class="btn btn-primary addRootOrChild" id="addRootOrChild">{{trans('admin.new_category')}}</a>
-                    <span class="btn btn-danger btn-sm  pull-left close_tree"><i class="fa fa-close"></i></span>
+                    <span class="btn btn-success btn-sm  pull-left close_tree"><i class="fa fa-arrow-left"></i></span>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
 

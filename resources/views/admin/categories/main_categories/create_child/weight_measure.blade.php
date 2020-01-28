@@ -1,5 +1,5 @@
 <div class="tab-pane fade" id="weight_measure" role="tabpanel" aria-labelledby="home-tab">
-    <div class="panel panel-default col-md-11 weight_measure_panel">
+    <div class="panel panel-default col-md-8 weight_measure_panel">
         <div class="panel-body">
 
             <div class="panel panel-primary col-md-6">

@@ -1,5 +1,5 @@
 <div class="tab-pane fade show active in" id="cat_data" role="tabpanel" aria-labelledby="home-tab">
-    <div class="col-md-11" id="chart_form">
+    <div class="col-md-8" id="chart_form">
         <div class="row">
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">
@@ -163,7 +163,7 @@
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
                                 <td><input type="text" class="form-control col-md-11"></td>
-                                <td style="width: 20%"></td>
+                                <td style="width: 15%"></td>
                                 <td><b>{{trans('admin.coast')}}</b></td>
                                 <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
                             </tr>
