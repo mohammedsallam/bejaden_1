@@ -491,4 +491,10 @@ return [
         NotiType::Debit       => 'مدين',     //1
     ],
 
+    \App\Enums\BarCodeSize::class =>[
+        \App\Enums\BarCodeSize::large => 'كبير',
+        \App\Enums\BarCodeSize::medium => 'متوسط',
+        \App\Enums\BarCodeSize::small => 'صغير',
+    ],
+
 ];

@@ -316,6 +316,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('branche_trial_balance','Admin\financial_reports\general_accountsController@branche_trial_balance')->name('branche_trial_balance');
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
+        Route::get('trialbalance_details_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
         Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
 
@@ -617,12 +618,13 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
-        Route::resource('mainCategories', 'Admin\categories\getSalesInvoicesGeneralView');
+        Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
         Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
         Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
-        Route::post('getChildblade', 'Admin\categories\MainCategoriesController@getChildblade')->name('getChildblade');
+        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::get('getRootOrChildForEdit', 'Admin\categories\MainCategoriesController@getRootOrChildForEdit')->name('getRootOrChildForEdit');
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');
 

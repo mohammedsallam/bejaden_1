@@ -83,36 +83,36 @@
                         </div>
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
-                                <label for="stored">{{trans('admin.stored')}}</label>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
+                                    <label for="stored">{{trans('admin.stored')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
+                                    <label for="request">{{trans('admin.request')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
+                                    <label for="linked">{{trans('admin.linked')}}</label>
+                                </div>
                             </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
-                                <label for="request">{{trans('admin.request')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
-                                <label for="linked">{{trans('admin.linked')}}</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
-                                <label for="general">{{trans('admin.general')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
-                                <label for="product_collect">{{trans('admin.product_collect')}}</label>
-                            </div>
-                            <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
-                                <label for="pure_material">{{trans('admin.pure_material')}}</label>
+                            <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
+                                    <label for="general">{{trans('admin.general')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
+                                    <label for="product_collect">{{trans('admin.product_collect')}}</label>
+                                </div>
+                                <div style="margin-left: 3px">
+                                    <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
+                                    <label for="pure_material">{{trans('admin.pure_material')}}</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">

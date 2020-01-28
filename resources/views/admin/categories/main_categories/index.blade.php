@@ -1,13 +1,55 @@
 @extends('admin.index')
 @section('title',trans('admin.basic_types'))
 @section('content')
+    @push('css')
+        <style>
+            .collaps_tree{
+                width: 0;
+            }
+            .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
+                border-top: 1px groove black;
+                background: #019ce65c;
+                border-radius: 0;
+                font-weight: bold;
+            }
+
+            .nav-tabs.nav-justified>li>a{
+                color: #444;
+                background: rgba(1, 156, 230, 0.11);
+            }
+
+            .nav-tabs.nav-justified>li>a:hover{
+                background: #019ce65c;
+            }
+
+
+
+            .input_number{
+                width: 100%;
+                height: 30px;
+                font-size: 14px;
+                line-height: 1.42857143;
+                text-align: center;
+                color: #555;
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            }
+        </style>
+    @endpush
     @push('js')
         <script>
 
             $(document).ready(function () {
 
                 var timer = 0;
-                var delay = 200;
+                var delay = 100;
                 var prevent = false;
 
                 $(document).on('change', '.Cmp_No , .Actvty_No', function(){
@@ -34,7 +76,7 @@
 
                                 $('#jstree').jstree({
                                     "core" : {
-                                        {{--'data' : "{{load_item('parent_id', '', '')}}",--}}
+                                        'data' : {!!  load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo')) !!},
                                         'data' : tree,
                                         "themes" : {
                                             "variant" : "large"
@@ -60,31 +102,25 @@
                                         r.push(data.instance.get_node(data.selected[i]).id);
                                         name.push(data.instance.get_node(data.selected[i]).text);
                                     }
-                                    $('#parent_name').text(name);
+                                    // $('#parent_name').text(name);
 
                                     //get all direct and undirect children of selected node
                                     var currentNode = data.node;
                                     var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                                    // var result = [currentNode.id];
                                     var result = [];
                                     allChildren.find('li').addBack().each(function(index, element) {
                                         if ($(this).jstree(true).is_leaf(element)) {
-                                            // result.push(element.textContent);
                                             result.push(parseInt(element.id));
                                         } else {
                                             var nod = $(this).jstree(true).get_node(element);
-                                            // result.push(nod.text);
                                             result.push(parseInt(nod.id));
                                         }
                                     });
 
-                                    //handle click event
-                                    // timer = setTimeout(function() {
-                                    // if (!prevent) {
-                                    handle_click(r[0], result);
-                                    // }
-                                    // prevent = false;
-                                    // }, delay);
+                                    timer = setTimeout(function () {
+                                        handle_click(r[0], result);
+                                        prevent = false;
+                                    }, delay)
                                 });
 
                                 //handle tree double click event
@@ -125,18 +161,28 @@
                         r.push(data.instance.get_node(data.selected[i]).id);
                         name.push(data.instance.get_node(data.selected[i]).text);
                     }
-                    $('#parent_name').text(name);
-                });
+                    // $('#parent_name').text(name);
 
-                //handle tree click vent
-                $('#jstree').on("click.jstree", function (e){
-                    timer = setTimeout(function() {
-                        handle_click(e);
+                    //get all direct and undirect children of selected node
+                    var currentNode = data.node;
+                    var allChildren = $(this).jstree(true).get_children_dom(currentNode);
+                    var result = [];
+                    allChildren.find('li').addBack().each(function(index, element) {
+                        if ($(this).jstree(true).is_leaf(element)) {
+                            result.push(parseInt(element.id));
+                        } else {
+                            var nod = $(this).jstree(true).get_node(element);
+                            result.push(parseInt(nod.id));
+                        }
+                    });
+
+                    timer = setTimeout(function () {
+                        handle_click(r[0], result);
                         prevent = false;
-                    }, delay);
+                    }, delay)
                 });
 
-                //handle tree double click event
+
                 $('#jstree').on("dblclick.jstree", function (e){
                     clearTimeout(timer);
                     prevent = true;
@@ -145,13 +191,12 @@
 
                 // handle click event
                 function handle_click(Itm_No, children){
-
                     // console.log(Costcntr_No)
                     // var node = $(e.target).closest("li");
                     // var type = node.attr('rel');
                     // var Costcntr_No = node[0].id;
                     $.ajax({
-                        url: "{{route('mainCategories.index')}}",
+                        url: "{{route('getRootOrChildForEdit')}}",
                         type: "get",
                         dataType: 'html',
                         data: {
@@ -172,22 +217,19 @@
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('getChildblade')}}",
+                        url: "{{route('createChild')}}",
                         type: "post",
                         dataType: 'html',
-                        data: {"_token": "{{ csrf_token() }}", parent: parent },
+                        data: {"_token": "{{ csrf_token() }}", parent: parent},
                         success: function(data){
                             $('#myTabContent1').html(data);
                         }
                     });
                 }
 
-
                 /**
                  * Separate
                  */
-
-
 
 
                 $('#parent').click(function () {
@@ -214,7 +256,6 @@
                 $('.Sup_No').change(function () {
                     $('.Sup_No_show').val($(this).val())
                 });
-
 
                 $('.addRootOrChild').click(function () {
                     var Itm_No = $('.Itm_No').val();
@@ -312,37 +353,107 @@
 
                 });
 
+                // close-open tree
+                $('.tree_panel .close_tree').click(function () {
+                    $('.tree_panel').toggleClass('collaps_tree col-md-4 col-md-1');
+                    $('.weight_measure_panel').toggleClass('col-md-8 col-md-11');
+                    $('#chart_form').toggleClass('col-md-8 col-md-11')
+                })
+
+                // effect inputs number whene change unit generally
+                $('select').change(function () {
+                    $(this).siblings('input').val($(this).val())
+                });
+
+                // effect inputs number whene change unit in MtsItmfsunit
+                $('.Unit_No_1, .Unit_No_2, .Unit_No_3').change(function () {
+                    $('#'+this.classList[1]).val($(this).val())
+                });
+
+                // change unit no in MtsItmfsunit depend unit no in item
+                $('.Unit_No').change(function () {
+
+                    $(this).css({
+                        borderColor: '#d2d6de'
+                    });
+
+                    let value = $(this).val(),
+                        html = $(this).children('option:selected').html(),
+                        selectedOption = `<option selected value="`+value+`">`+html+`</option>`,
+                        Unit_No_1 = $('.Unit_No_1');
+
+                    Unit_No_1.children('option:selected').removeAttr('selected');
+                    Unit_No_1.prepend(selectedOption);
+                    Unit_No_1.children('option[value="'+value+'"]:not(:selected)').remove();
+                    $('#Unit_No_1').val(value);
+
+                    if($('.Itm_Sal1').val() !== ''){
+                        $('#Unit_Sal1').val(parseFloat($('.Itm_Sal1').val()));
+                    }
+
+
+                });
+
+                $('.Itm_Sal1, .Itm_Pur, .Itm_COst').change(function () {
+                    let unitRation2 = $('#Unit_Ratio_2'),
+                        unitRation3 = $('#Unit_Ratio_3');
+
+                    if($('.Unit_No').val() === ''){
+                        $('.Unit_No').css({
+                            borderColor: 'red'
+                        });
+                        return false;
+                    }
+                    $($(this).data('sal')).val(parseFloat($(this).val()));
+
+                    if(unitRation2.val() !== ''){
+                        $(unitRation2.data('unit-sal')).val(parseFloat($('.Itm_Sal1').val())/parseFloat(unitRation2.val()))
+                        $(unitRation2.data('unit-pure')).val(parseFloat($('.Itm_Pur').val())/parseFloat(unitRation2.val()))
+                        $(unitRation2.data('unit-cost')).val(parseFloat($('.Itm_COst').val())/parseFloat(unitRation2.val()))
+                    }
+
+                    if(unitRation3.val() !== ''){
+                        $(unitRation3.data('unit-sal')).val((parseFloat($('.Itm_Sal1').val())/parseFloat(unitRation2.val()))/parseFloat(unitRation3.val()))
+                        $(unitRation3.data('unit-pure')).val((parseFloat($('.Itm_Pur').val())/parseFloat(unitRation2.val()))/parseFloat(unitRation3.val()))
+                        $(unitRation3.data('unit-cost')).val((parseFloat($('.Itm_COst').val())/parseFloat(unitRation2.val()))/parseFloat(unitRation3.val()))
+                    }
+
+
+
+                });
+
+                $('#Unit_Ratio_2 ,#Unit_Ratio_3').change(function () {
+                    let unitSalVal = parseFloat($('#Unit_Sal1').val()),
+                        unitPureVal = parseFloat($('#Unit_Pur1').val()),
+                        unitCostVal = parseFloat($('#Unit_Cost1').val()),
+                        count = parseFloat($(this).val()),
+                        UnitSal = $($(this).data('unit-sal')),
+                        unitPure = $($(this).data('unit-pure')),
+                        unitCost = $($(this).data('unit-cost'));
+
+                    if($(this).attr('id') === 'Unit_Ratio_3'){
+                        UnitSal.val((unitSalVal/count)/count);
+                        unitPure.val((unitPureVal/count)/count);
+                        unitCost.val((unitCostVal/count)/count);
+                    } else {
+                        UnitSal.val(unitSalVal/count);
+                        unitPure.val(unitPureVal/count);
+                        unitCost.val(unitCostVal/count);
+
+                        if($('#Unit_Ratio_3').val() !== ''){
+                            $('#Unit_Sal3').val((unitSalVal/count)/parseFloat($('#Unit_Ratio_3').val()));
+                            $('#Unit_Pur3').val((unitPureVal/count)/parseFloat($('#Unit_Ratio_3').val()));
+                            $('#Unit_Cost3').val((unitCostVal/count)/parseFloat($('#Unit_Ratio_3').val()));
+                        }
+
+
+                    }
+
+                })
+
             });
 
         </script>
-    @endpush
-    @push('css')
-        <style>
-            .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
-                border-top: 1px groove black;
-                background: #8e8e8e5c;
-                border-radius: 0;
-                font-weight: bold;
-            }
-
-            .input_number{
-                width: 100%;
-                height: 30px;
-                font-size: 14px;
-                line-height: 1.42857143;
-                text-align: center;
-                color: #555;
-                background-color: #fff;
-                background-image: none;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-                box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-                -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-                -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-                transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-            }
-        </style>
     @endpush
     <div class="box">
 
@@ -369,6 +480,7 @@
                 <div class="col-md-6">
                     <div class="form-group" style="display: flex">
                         <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
+                        {{--@if($cmp->ID_No == session('updatedComNo')) selected @endif--}}
                         <select name="Cmp_No" id="Cmp_No" class="form-control Cmp_No">
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($cmps) > 0)
@@ -380,6 +492,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    {{--@if($active->ID_No == session('updatedActiveNo')) selected @endif--}}
                     <div class="form-group" style="display: flex">
                         <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
                         <select name="Actvty_No" id="Actvty_No" class="form-control Actvty_No">
@@ -412,11 +525,13 @@
             {{-- End Ul taps--}}
 
 
-            <div class="panel panel-default col-md-4" style="margin-top:1%; overflow: auto">
+            <div class="panel panel-default tree_panel collaps_tree col-md-1" style="margin-top:1%; overflow: auto">
                 <div class="panel-body">
                     <a class="btn btn-primary addRootOrChild" id="addRootOrChild">{{trans('admin.new_category')}}</a>
+                    <span class="btn btn-danger btn-sm  pull-left close_tree"><i class="fa fa-close"></i></span>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
+
                 </div>
             </div>
             {{----}}
@@ -428,6 +543,7 @@
                 @include('admin.categories.main_categories.create_parent.weight_measure')
                 {{--third tap--}}
                 @include('admin.categories.main_categories.create_parent.purchases')
+
             </div>
         </div>
     </div>

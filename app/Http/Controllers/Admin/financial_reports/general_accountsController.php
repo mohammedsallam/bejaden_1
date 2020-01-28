@@ -83,7 +83,6 @@ class general_accountsController extends Controller
     }
     public function details(Request $request)
     {
-
         $maincompany = $request->maincompany;
 
         $fromtree = $request->fromtree;
@@ -222,7 +221,7 @@ class general_accountsController extends Controller
 
 
         $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
-        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Brn_No',$MainBranch)->where('Ac_Ty',1)
+        $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)
 
             ->WhereIN('Sysub_Account',$Acc_No)->WhereIN('Acc_No',$Acc_No)
             ->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
@@ -256,7 +255,7 @@ class general_accountsController extends Controller
 
     public function trialbalance_show(Request $request)
     {
-        //dd($request->all());
+//        dd($request->all());
         $MainCompany = $request->MainCompany;
         if($request->ajax())
         {
@@ -270,10 +269,42 @@ class general_accountsController extends Controller
         }
     }
 
+    public function trialbalance_level(Request $request)
+    {
+        $MainCompany = $request->MainCompany;
+        $level = $request->level;
+        $from = $request->from;
+        $to = $request->to;
 
+        $but_level_check = $request->but_level_check;
+        $radiodepartment = $request->radiodepartment;
+
+        if($request->ajax()){
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+            $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('ID_No');
+            $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('Acc_No');
+            return   $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show_level',
+
+                ['MtsChartAc'=>$MtsChartAc,
+                    'fromtree'=>$MtsChartAc2->first(),
+                    'totree'=>$MtsChartAc2->last(),
+                    'MtsChartAc3'=>$MtsChartAc3,
+                    'MainCompany'=>$MainCompany,'level'=>$level,
+                    'from'=>$from,
+                    'to'=>$to,
+                    'but_level_check'=>$but_level_check,
+                    'radiodepartment'=>$radiodepartment,
+                    'level'=>$level,
+
+                ])->render();
+
+
+        }
+
+    }
     public function trialbalance_details(Request $request)
     {
-       //dd($request->all());
+//dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
@@ -305,8 +336,10 @@ class general_accountsController extends Controller
         }
 
     }
+
     public function trialbalance_print(Request $request)
     {
+        dd($request->all());
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
@@ -319,15 +352,73 @@ class general_accountsController extends Controller
 
         if ($but_level_check){
             switch ($radiodepartment) {
+                case '1';
+                dd('jj');
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No',1)->pluck('Acc_No');
+
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No','>',1)->pluck('Sysub_Account');
+
+                    $data = MtsChartAc::where('Cmp_No',$MainCompany)
+                        ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
+                            $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
+                        })->get();
+
+
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                        $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                        );
+                    }];
+                    $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.department_total',
+                        ['data'=>$data,'from' => $from,'to' => $to],[],$config);
+                    return $pdf->stream();
+                    /****/
+                case '2';
+                dd('ggg');
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No',1)->pluck('Acc_No');
+
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                        ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                        ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                        ->where('Ln_No','>',1)->pluck('Sysub_Account');
+
+                    $data = MtsChartAc::where('Cmp_No',$MainCompany)
+                        ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
+                            $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
+                        })->get();
+
+
+                    $config = ['instanceConfigurator' => function($mpdf) {
+                        $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+                        );
+                    }];
+                    $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.department_total',
+                        ['data'=>$data,'from' => $from,'to' => $to],[],$config);
+                    return $pdf->stream();
+
+
+            }
+        }else
+        {
+
+            switch ($radiodepartment) {
 
                 case '1';
-                    $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
-                        ->where('ID_No', '>=', $fromtree)
-                        ->where('ID_No', '<=', $totree)->pluck('Acc_No');
-                    //dd($Acc_No);
-
 
                     $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No',1)->pluck('Acc_No');
@@ -339,31 +430,17 @@ class general_accountsController extends Controller
 
 
                     $data = MtsChartAc::where('Cmp_No',$MainCompany)
-                    ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
-                            $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
-                        })->get();
-                    //dd($data);
-
-                    /*$data = $dara->map(function ($data)use($MainCompany,$Acc_No){
-                        $data->Acc_NmAr = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->pluck('Acc_NmAr');*/
-
-//                            $data->Acc_NmEn = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
-//                            $data->ID_No_MtsChartAc = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
-//                            $data->acc_no_chart = $data->GLjrnTr->where('Cmp_No',$MainCompany)->whereIn('Acc_No',$Acc_No)->get();
+                        ->where('Level_No',$level)->get();
 
 
-                        //return $data;
-                    //});
 
-
-                    //@dd($data);
                     $config = ['instanceConfigurator' => function($mpdf) {
                         $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
                     <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
                         );
                     }];
-                    $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.department_total',
+                    $pdf = PDF::loadView('admin.financial_reports.general_accounts.trial_balance.pdf.levels.level',
                         ['data'=>$data,'from' => $from,'to' => $to],[],$config);
                     return $pdf->stream();
 
