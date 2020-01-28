@@ -65,7 +65,7 @@ class MtsChartAc extends Model
         return $this->hasMany(MtsChartAc::class, 'Parnt_Acc', 'Acc_No');
     }
      public function GLjrnTrs(){
-        return $this->hasOne('App\Models\Admin\GLjrnTrs','Acc_No','Acc_No');
+            return $this->hasOne('App\Models\Admin\GLjrnTrs','Acc_No','Acc_No');
     }
     public function GLjrnTr(){
         return $this->hasMany('App\Models\Admin\GLjrnTrs','Acc_No','Sysub_Account');

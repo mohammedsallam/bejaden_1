@@ -866,7 +866,6 @@ if(!function_exists('alldepartmenttrial')) {
     {
 
         $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
-
             ->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to)->sum($sum);
 
 
@@ -1151,5 +1150,167 @@ if(!function_exists('getTrans')) {
 
        return $value1  +$value2;
 //            + $value2;
+    }
+}
+if(!function_exists('levelFbalance')) {
+    function levelFbalance($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//        dd($Cmp_No,$Acc_No,$from,$sum);
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+//@dd($value2);
+
+
+        return $value1  +$value2;
+//            + $value2;
+    }
+}
+if(!function_exists('allFbalance')) {
+    function allFbalance($ID_No = null,$Cmp_No = null,$Acc_No = null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+        $value = [];
+
+        $departments = MtsChartAc::findOrFail($ID_No);
+        $pros = [];
+        $products = [];
+        $categories = $departments->children;
+
+
+
+        while(count($categories) > 0){
+            $nextCategories = [];
+            foreach ($categories as $category) {
+                $products = array_merge($products, $category->children->all());
+                $nextCategories = array_merge($nextCategories, $category->children->all());
+            }
+            $categories = $nextCategories;
+        }
+        $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
+
+
+//            0
+        $pro = new Collection($products); //Illuminate\Database\Eloquent\Collection
+
+        $pros = $departments->children->pluck('ID_No');
+
+        $plucks = $pro->pluck('ID_No');
+        $values = $pros->concat($plucks);
+
+
+
+
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+
+
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+
+//        $value1 = MtsChartAc::where('Level_Status','0')->whereIn('ID_No',$values)->sum($sum);
+
+@dd($value1 + $value2);
+        return $value1 + $value2 ;
+
+
+    }
+}
+if(!function_exists('all_getTrans')) {
+    function all_getTrans($ID_No = null,$Cmp_No = null,$Acc_No = null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//       @dd($sum);
+        $value = [];
+        $departments = MtsChartAc::findOrFail($ID_No);
+
+        $pros = [];
+        $products = [];
+        $categories = $departments->children;
+        while(count($categories) > 0){
+            $nextCategories = [];
+            foreach ($categories as $category) {
+                $products = array_merge($products, $category->children->all());
+                $nextCategories = array_merge($nextCategories, $category->children->all());
+            }
+            $categories = $nextCategories;
+        }
+        $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
+        $pros = $departments->children->pluck('ID_No');
+        $plucks = $pro->pluck('ID_No');
+        $values = $pros->concat($plucks);
+
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+//@dd($value2);
+
+
+        return $value1  +$value2;
+
+
+
+
+    }
+}
+if(!function_exists('alldepartmenttrial')) {
+    function alldepartmenttrial($Cmp_No = null,$Acc_No=null,$from=null,$to=null,$sum=null,$sign=null)
+    {
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+//@dd($value2);
+
+
+        return $value1  +$value2;
+
+
+    }
+}
+if(!function_exists('levelFbalance')) {
+    function levelFbalance($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+
+
+
+        return $value1  +$value2;
+
     }
 }

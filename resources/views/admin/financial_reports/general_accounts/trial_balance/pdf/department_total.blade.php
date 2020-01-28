@@ -116,8 +116,8 @@
             {{$dataDebtor2 = 0}}
             {{$dataCredit2 = 0}}
         </div>
-{{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
-
+        {{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
+{{--@dd($data)--}}
         @foreach($data as $merged)
 
             <tr>
@@ -253,3 +253,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 </body>
 </html>
+

@@ -44,17 +44,11 @@
     $(document).ready(function () {
         if ("{{$fromtree,$totree}}"){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-
             var level = '{{isset($level) ? $level : null}}';
-
-// alert(1);
-
-
-
             var fromtree = $('.efirst').val();
             var totree = $('.elast').val();
             var radiodepartment =  $('input[name="department"]:checked').val();
-
+            alert(radiodepartment);
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
 
