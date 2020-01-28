@@ -154,7 +154,6 @@
                     $('#jstree').jstree('open_all');
                 });
 
-
                 $('#jstree').on("changed.jstree", function (e, data) {
                     var i, j, r = [];
                     var name = [];
@@ -183,7 +182,6 @@
                     }, delay)
                 });
 
-
                 $('#jstree').on("dblclick.jstree", function (e){
                     clearTimeout(timer);
                     prevent = true;
@@ -207,7 +205,8 @@
                         },
                         success: function(data){
                             $('#myTabContent1').html(data);
-                            $('.editRootOrChildLink ').removeClass('hidden');
+                            $('.editRootOrChildLink ').removeClass('hidden createChild');
+                            $('.createChild').addClass('editRootOrChildLink').removeClass('createChild');
                             $('.deleteRootOrChildLink  ').removeClass('hidden');
                         }
 
@@ -219,12 +218,14 @@
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('createChild')}}",
+                        url: "{{route('returnCreateChildBlade')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", parent: parent},
                         success: function(data){
                             $('#myTabContent1').html(data);
+                            $('.editRootOrChildLink ').addClass('createChild').removeClass('editRootOrChildLink');
+                            $('.deleteRootOrChildLink  ').addClass('hidden');
                         }
                     });
                 }
@@ -290,10 +291,10 @@
                 });
 
                 var lastItemNo = $('.Itm_No ').val();
-                $('.editRootOrChildLink').click(function () {
+                $('.editRootOrChildLink, .createChild').click(function () {
                     var Itm_No = $('.Itm_No').val();
                     $.ajax({
-                        url: "{{route('updateRootOrChild')}}",
+                        url: "{{route('updateRootOrChildOrCreateChild')}}",
                         type: "post",
                         dataType: 'json',
                         data: {
@@ -301,6 +302,7 @@
                             Cmp_No: $('.Cmp_No').val(),
                             Actvty_No: $('.Actvty_No').val(),
                             Itm_No: Itm_No,
+                            Itm_Parnt: $('.Itm_Parnt').val(),
                             Level_No: $('.Level_No').val(),
                             Level_Status: $('input[type=radio].Level_Status:checked').val(),
                             Itm_NmAr: $('.Itm_NmAr').val(),
@@ -327,31 +329,29 @@
                 });
 
                 $('.deleteRootOrChildLink').click(function () {
-                    $.ajax({
-                        url: "{{route('deleteRootOrChild')}}",
-                        type: "post",
-                        dataType: 'json',
-                        data: {
-                            _token: "{{csrf_token()}}",
-                            Itm_No: $('.Itm_No').val(),
-                        },
-                        success: function (data) {
-                            if(data.status === 0){
-                                $('.error_message').removeClass('hidden').html(data.message);
-                                $('.success_message').addClass('hidden')
-                            } else {
-                                $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                                $('.success_message').removeClass('hidden').html(data.message);
-                                $('.error_message').addClass('hidden');
-                                $('.Itm_No').val(lastItemNo);
-                                $('.Level_No').val(1);
-                                $('.Itm_NmAr').val('');
-                                $('.Itm_NmEn').val('');
-                                $('.jstree-clicked').parent('li').remove();
-                                $('#parent_name').html('')
+
+                    $('.conform_delete').click(function () {
+                        $.ajax({
+                            url: "{{route('deleteRootOrChild')}}",
+                            type: "post",
+                            dataType: 'json',
+                            data: {
+                                _token: "{{csrf_token()}}",
+                                Itm_No: $('.Itm_No').val(),
+                            },
+                            success: function (data) {
+                                if(data.status === 0){
+                                    $('#delete_modal').modal('hide');
+                                    $('.error_message').removeClass('hidden').html(data.message);
+                                    $('.success_message').addClass('hidden')
+                                } else {
+                                    window.location.reload();
+                                }
+
                             }
-                        }
-                    });
+                        });
+                    })
+
 
                 });
 
@@ -463,7 +463,23 @@
 
     @include('admin.layouts.message')
 
-
+        <div class="modal fade" id="delete_modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">{{trans('admin.Delete_Record')}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{trans('admin.You_Want_You_Sure_Delete_This_Record')}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger conform_delete">{{trans('admin.delete')}}</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     <!-- /.box-header -->
         <div class="box-body table-responsive" id="create_chart">
             <div class="row">
@@ -477,7 +493,7 @@
             <div class="row text-left" style="margin-bottom: 5px">
                 <div class="col-md-4 pull-left">
                     <a class="btn btn-info editRootOrChildLink hidden" href="#"><i class="fa fa-floppy-o"></i></a>
-                    <a class="btn btn-danger deleteRootOrChildLink hidden" href="#"><i class="fa fa-trash"></i></a>
+                    <a data-toggle="modal" href="#delete_modal" class="btn btn-danger deleteRootOrChildLink hidden"><i class="fa fa-trash"></i></a>
                 </div>
             </div>
             <div class="row">
@@ -489,7 +505,7 @@
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($cmps) > 0)
                                 @foreach($cmps as $cmp)
-                                    <option value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    <option @if(session('updatedComNo') == $cmp->ID_No) selected @endif value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             @endif
                         </select>
@@ -503,7 +519,7 @@
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($activity) > 0)
                                 @foreach($activity as $active)
-                                    <option value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
+                                    <option @if(session('updatedActiveNo') == $active->ID_No) selected @endif value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             @endif
                         </select>

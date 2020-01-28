@@ -7,17 +7,17 @@
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
                             <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
-
+                            <input type="hidden" name="Itm_Parnt" class="Itm_Parnt" value="{{$item->Itm_No}}">
                             <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
-                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$lastChild != null ? $lastChild->Level_No : 2}}" class="Level_No form-control" readonly>
+                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$item->Level_No+1}}" class="Level_No form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label for="parent">{{trans('admin.parent_cat')}}</label>
-                            <input id="parent" checked type="radio" name="Level_Status" class="Level_Status" value="0">
+                            <input id="parent" type="radio" name="Level_Status" class="Level_Status" value="0">
                         </div>
                         <div class="col-md-3">
                             <label for="child">{{trans('admin.sub_cat')}}</label>
-                            <input id="child" type="radio" name="Level_Status" class="Level_Status" value="1">
+                            <input id="child" checked type="radio" name="Level_Status" class="Level_Status" value="1">
                         </div>
                         <div class="col-md-6" style="display: flex; justify-content: space-between">
                             <div class="selles">

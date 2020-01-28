@@ -1540,6 +1540,7 @@ return [
     'choose_pic'       => 'اختر صورة',
     'note_1'       => 'ملاحظات1',
     'note_2'       => 'ملاحظات2',
+    'cant_delete_category'       => 'لا يمكن حذف الصنف',
 
 
 

@@ -1,5 +1,10 @@
 <script>
 
+    $('#parent').click(function () {
+        $(this).prop('checked', false)
+        return false
+    });
+
     $('select').change(function () {
         $(this).siblings('input').val($(this).val())
     });

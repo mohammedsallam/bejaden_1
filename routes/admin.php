@@ -619,11 +619,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
-        Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
+        Route::post('updateRootOrChildOrCreateChild', 'Admin\categories\MainCategoriesController@updateRootOrChildOrCreateChild')->name('updateRootOrChildOrCreateChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
-        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::post('returnCreateChildBlade', 'Admin\categories\MainCategoriesController@returnCreateChildBlade')->name('returnCreateChildBlade');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
-        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::get('getRootOrChildForEdit', 'Admin\categories\MainCategoriesController@getRootOrChildForEdit')->name('getRootOrChildForEdit');
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');

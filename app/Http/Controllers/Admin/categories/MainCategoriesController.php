@@ -140,12 +140,12 @@ class MainCategoriesController extends Controller
     }
 
     // Update child or root
-    public function updateRootOrChild(Request $request){
-
+    public function updateRootOrChildOrCreateChild(Request $request){
         $validation = Validator::make($request->all(), [
             'Cmp_No' => 'required',
             'Actvty_No' => 'required',
             'Itm_No' => 'required',
+            'Itm_Parnt' => 'required',
             'Level_No' => 'required',
             'Level_Status' => 'required',
             'Sup_No' => 'required',
@@ -166,12 +166,10 @@ class MainCategoriesController extends Controller
             return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
         $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
-        if (!$item){
-            return response()->json(['status' => 0, 'message' => trans('admin.not_found_data')]);
-        }
-        $item->update($request->all());
+        !$item ? MtsItmmfs::create($request->all()) : $item->update($request->all());
         session(['updatedComNo', $request->Cmp_No,'updatedActiveNo', $request->Actvty_No]);
         return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
+
 
     }
 
@@ -188,6 +186,9 @@ class MainCategoriesController extends Controller
             return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
         $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+        if(count($item->children) > 0){
+            return response()->json(['status' => 0, 'message' => trans('admin.cant_delete_category')]);
+        }
         if($item){
             $item->delete();
             return response()->json(['status' => 1, 'message' => trans('admin.success_deleted')]);
@@ -208,7 +209,7 @@ class MainCategoriesController extends Controller
     }
 
     // Create child
-    public function createChild(Request $request)
+    public function returnCreateChildBlade(Request $request)
     {
         if ($request->ajax() && $request->parent){
             $item = MtsItmmfs::where('Itm_No', $request->parent)->first();
@@ -255,7 +256,6 @@ class MainCategoriesController extends Controller
                 'cmps' => $cmps, 'activity' => $activity, 'suppliers' => $suppliers, 'itemToEdit' => $itemToEdit, 'units' => $units]);
         }
     }
-
 
     // Generate Child number depend on parent number
     public function generateChildNo(Request $request){
