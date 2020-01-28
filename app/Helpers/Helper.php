@@ -866,7 +866,6 @@ if(!function_exists('alldepartmenttrial')) {
     {
 
         $value1 = \App\Models\Admin\GLjrnTrs::where('Cmp_No',$Cmp_No)
-
             ->whereDate('created_at',$sign,$from)->whereDate('created_at','<=',$to)->sum($sum);
 
 
@@ -1174,7 +1173,7 @@ if(!function_exists('levelFbalance')) {
     }
 }
 if(!function_exists('allFbalance')) {
-    function allFbalance($ID_No = null,$from = null,$to = null,$sum = null,$sign = null)
+    function allFbalance($ID_No = null,$Cmp_No = null,$Acc_No = null,$from = null,$to = null,$sum = null,$sign = null)
     {
         $value = [];
 
@@ -1182,6 +1181,7 @@ if(!function_exists('allFbalance')) {
         $pros = [];
         $products = [];
         $categories = $departments->children;
+
 
 
         while(count($categories) > 0){
@@ -1206,12 +1206,22 @@ if(!function_exists('allFbalance')) {
 
 
 
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
 
 
-        $value1 = MtsChartAc::where('Level_Status','0')->whereIn('ID_No',$values)->sum($sum);
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
 
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
 
-        return $value1 ;
+//        $value1 = MtsChartAc::where('Level_Status','0')->whereIn('ID_No',$values)->sum($sum);
+
+@dd($value1 + $value2);
+        return $value1 + $value2 ;
 
 
     }
@@ -1281,6 +1291,26 @@ if(!function_exists('alldepartmenttrial')) {
 
         return $value1  +$value2;
 
+
+    }
+}
+if(!function_exists('levelFbalance')) {
+    function levelFbalance($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Acc_No',$Acc_No)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+            ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Sysub_Account',$Acc_No)
+            ->where('Ln_No','>',1)->sum($sum);
+
+
+
+        return $value1  +$value2;
 
     }
 }

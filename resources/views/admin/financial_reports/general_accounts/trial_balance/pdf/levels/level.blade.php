@@ -129,25 +129,24 @@
                     {{session_lang($merged->Acc_NmEn,$merged->Acc_NmAr)}}
                 </td>
                 <td class="depratment_first_debter">
-
                     <div style="display:none">
                         @if($merged->Level_Status == '0')
 
                             {{$creditor = $merged->Fbal_CR +
-                            allFbalance($merged->ID_No,$from,$to,'Fbal_CR','<')}}
+                            allFbalance($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')
+                            }}
 
-                            {{$debtor =  $merged->Fbal_DB + allFbalance($merged->ID_No,
-                            $from,$to,'Fbal_DB','<')}}
-
+                            {{$debtor =  $merged->Fbal_DB +
+                              allFbalance($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Dt','<')
+                            }}
 
                         @else
 
-
                             {{$creditor = $merged->Fbal_CR +
-                 levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
+                            levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
 
                             {{$debtor =$merged->Fbal_DB  +
-   levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
+                            levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Dt','<')}}
                         @endif
 
 
@@ -166,65 +165,63 @@
                     @endif
                 </td>
                 <td class="depratment_first_creditor">
-                    <div style="display:none">
-                        @if($merged->Level_Status == '0')
+{{--                    <div style="display:none">--}}
+{{--                        @if($merged->Level_Status == '0')--}}
 
-                            {{
-    $creditor1 = $merged->Fbal_CR +
-                            allFbalance($merged->ID_No,$from,$to,'Fbal_CR','<')
-                            }}
+{{--                            {{$creditor1 = $merged->Fbal_CR +--}}
+{{--                              allFbalance($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')--}}
+{{--                            }}--}}
 
-                            {{$debtor1 =  $merged->Fbal_DB + allFbalance($merged->ID_No,
-                            $from,$to,'Fbal_DB','<')}}
-
-
-                        @else
+{{--                            {{$debtor1 =  $merged->Fbal_DB +--}}
+{{--                              allFbalance($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Dt','<')--}}
+{{--                            }}--}}
 
 
-                            {{$creditor1 = $merged->Fbal_CR +
-                 levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
+{{--                        @else--}}
+{{--                            {{$creditor1 = $merged->Fbal_CR +--}}
+{{--                                levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}--}}
 
-                            {{$debtor1 =$merged->Fbal_DB  +
-   levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')}}
-                        @endif
+{{--                            {{$debtor1 =$merged->Fbal_DB  +--}}
+{{--                                levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')}}--}}
+{{--                        @endif--}}
 
-                        @if(($creditor1 - $debtor1) > 0)
-                            {{$dataCredit += $creditor1 - $debtor1}}
-                        @else
-                            {{$dataCredit += 0}}
-                        @endif
-                    </div>
-                    @if(($creditor1- $debtor1) > 0)
-                        {{ $alldeb2 = $creditor1 - $debtor1}}
-                    @else
-                        {{$alldeb2 = 0}}
-                    @endif
+{{--                        @if(($creditor1 - $debtor1) > 0)--}}
+{{--                            {{$dataCredit += $creditor1 - $debtor1}}--}}
+{{--                        @else--}}
+{{--                            {{$dataCredit += 0}}--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
+{{--                    @if(($creditor1- $debtor1) > 0)--}}
+{{--                        {{ $alldeb2 = $creditor1 - $debtor1}}--}}
+{{--                    @else--}}
+{{--                        {{$alldeb2 = 0}}--}}
+{{--                    @endif--}}
                 </td>
                 <td class="depratment_move_debter">
-                    @if($merged->Level_Status == '0')
-                        {{$debtor2 = all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}
-                        <div style="display:none">
-                            {{$dataDebtor1 += getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}
-                        </div>
-                    @else
-                        {{$debtor2 = alldepartmenttrial($merged->id,$from,$to,'Tr_Db','>=')}}
-                        <div style="display:none">
-                            {{$dataDebtor1 += alldepartmenttrial($merged->id,$from,$to,'Tr_Db','>=')}}
-                        </div>
-                    @endif
+{{--                    @if($merged->Level_Status == '0')--}}
+{{--                        {{$debtor2 = all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        <div style="display:none">--}}
+{{--                            {{$dataDebtor1 += all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        </div>--}}
+{{--                    @else--}}
+{{--                        {{$debtor2 = levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        <div style="display:none">--}}
+{{--                            {{$dataDebtor1 += levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
                 </td>
                 <td class="depratment_move_creditor">
-                @if($merged->Level_Status == '0')
-                        {{$creditor2 = all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
-                        <div style="display:none">
-                            {{$dataCredit1 += all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
-                        </div>
-                    @else
-                        {{$creditor2 = alldepartmenttrial($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
-                        <div style="display:none">
-                            {{$dataCredit1 +=alldepartmenttrial($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
-                        </div>
-                    @endif
+{{--                @if($merged->Level_Status == '0')--}}
+{{--                        {{$creditor2 = all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}--}}
+{{--                        <div style="display:none">--}}
+{{--                            {{$dataCredit1 += all_getTrans($merged->ID_No,$merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}--}}
+{{--                        </div>--}}
+{{--                    @else--}}
+{{--                        {{$creditor2 = levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        <div style="display:none">--}}
+{{--                            {{$dataCredit1 +=levelFbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
                 </td>
                 <td>
 {{--                    @if(($alldeb + $debtor2) - ($alldeb2 + $creditor2) > 0)--}}

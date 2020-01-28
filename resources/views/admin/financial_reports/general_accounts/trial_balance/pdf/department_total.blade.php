@@ -117,7 +117,7 @@
             {{$dataCredit2 = 0}}
         </div>
         {{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
-
+{{--@dd($data)--}}
         @foreach($data as $merged)
 
             <tr>
