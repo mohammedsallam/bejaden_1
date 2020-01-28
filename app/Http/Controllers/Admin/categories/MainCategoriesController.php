@@ -57,6 +57,7 @@ class MainCategoriesController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $validation = Validator::make($request->all(), [
             'Cmp_No' => 'required',
             'Actvty_No' => 'required',
@@ -145,7 +146,7 @@ class MainCategoriesController extends Controller
             'Cmp_No' => 'required',
             'Actvty_No' => 'required',
             'Itm_No' => 'required',
-            'Itm_Parnt' => 'required',
+            'Itm_Parnt' => 'sometimes',
             'Level_No' => 'required',
             'Level_Status' => 'required',
             'Sup_No' => 'required',

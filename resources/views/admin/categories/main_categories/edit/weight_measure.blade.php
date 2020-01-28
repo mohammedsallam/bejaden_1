@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group" style="display: flex">
                         <label style="width: 20%" for="">{{trans('admin.width')}}</label>
-                        <input type="text" name="Itm_WidthٍSteel" id="Itm_WidthٍSteel" class="form-control Itm_WidthٍSteel" style="width: 100%">
+                        <input type="text" name="Itm_WidthSteel" id="Itm_WidthSteel" class="form-control Itm_WidthSteel" style="width: 100%">
                     </div>
                     <div class="form-group" style="display: flex">
                         <label style="width: 20%" for="">{{trans('admin.durability')}}</label>
