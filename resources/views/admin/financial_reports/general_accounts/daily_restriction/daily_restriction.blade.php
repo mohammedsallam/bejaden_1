@@ -31,26 +31,25 @@
             $(".date_limition").on("change",function(){
                 var MainCompany = $('.MainCompany').val();
                 var type = $('.type').val();
-                var date_limition = $('.date_limition').val();
-                // var mainCompany = $(this).val();
-                alert(date_limition);
+                var date_limition = $('input[name="date_limition"]:checked').val();
+
 
                 $("#loadingmessage-1").css("display","block");
-                $(".column_account").css("display","none");
+                $(".show_row").css("display","none");
                 if (this){
                     $.ajax({
-                        url: '{{route('branche')}}',
+                        url: '{{route('daily_restriction.show')}}',
                         type:'get',
                         dataType:'html',
-                        data:{mainCompany: mainCompany},
+                        data:{MainCompany: MainCompany,type: type,date_limition: date_limition},
                         success: function (data) {
                             $("#loadingmessage-1").css("display","none");
-                            $('.column_account').css("display","block").html(data);
+                            $('.show_row').css("display","block").html(data);
 
                         }
                     });
                 }else{
-                    $('.column_account').html('');
+                    $('.show_row').html('');
                 }
             });
 
@@ -90,80 +89,60 @@
     </div>
     <div class="box-body">
         <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-12" style="display: flex; flex-direction: row">
+                <div class="col-md-12">
+
+                        <div class="col-md-4" style="display: flex; flex-direction: row">
                             {{ Form::label('maincompany','الشركات', ['class' => 'control-label','style'=>'margin:1%']) }}
                             {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control MainCompany','placeholder'=> trans('admin.select') ])) }}
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12" style="display: flex; flex-direction: row; margin-top: 2%">
+
+
+                        <div class="col-md-4" style="display: flex; flex-direction: row;">
                             {{ Form::label('type',trans('admin.TypeOfConstraintOrBond'), ['class' => 'control-label','style'=>'margin:1%']) }}
 
                             {{ Form::select('type', $limitationReceipts,null, array_merge(['class' => 'form-control type','placeholder'=>trans('admin.select')])) }}
                         </div>
-                    </div>
+                        <div class="col-md-2">
+
+                            <input type="radio" class="date_limition" id="TYPE_limition" name="date_limition" value="0">
+                            <label for="TYPE_limition"> {{trans('admin.date')}} </label>
+
+                        </div>
+                        <div class="col-md-2">
+                            <input type="radio" class="date_limition" id="TYPE_limition" name="date_limition" value="1">
+                            <label for="TYPE_limition"> {{trans('admin.limitation')}} </label>
+                        </div>
                 </div>
 
-        </div>
-
-
-          <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ Form::label('date_limition',trans('admin.date'), ['class' => 'control-label','style'=>'margin:1%']) }}
-                        {{ Form::radio('date_limition','0') }}
-
-
-                    </div>
-                    <div class="col-md-6">
-                        {{ Form::label('date_limition',trans('admin.limitation'), ['class' => 'control-label','style'=>'margin:1%']) }}
-
-                        {{ Form::radio('date_limition','1') }}
-
-                    </div>
-
-                </div>
-
-          </div>
-
 
 
 
         </div>
-        <br>
-        <br>
-        <br>
-        <div class="row details_row">
+
+
+
+
+
+
+
+
+
+        <div class="show_row">
 
         </div>
 
-       <br>
 
 
-
-    {{--loader spinner--}}
-    <div id='loadingmessage-1' style='display:none; margin-top: 20px' class="text-center">
-        <img src="{{ url('/') }}/images/ajax-loader.gif"/>
     </div>
 
-    <br>
 
-        <div class="row">
-            <div class="button_print" style="position: absolute; right: 60px;">
 
-            </div>
-            <div class="back">
-                <a class="btn btn-danger" href="javascript:history.back()">الرجوع</a>
 
-            </div>
 
-        </div>
 
 
 </div>
-</div>
+
 
 
 @endsection

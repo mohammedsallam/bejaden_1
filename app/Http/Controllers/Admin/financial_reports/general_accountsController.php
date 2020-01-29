@@ -457,6 +457,31 @@ class general_accountsController extends Controller
         return view('admin.financial_reports.general_accounts.daily_restriction.daily_restriction',compact('limitationReceipts','MainCompany'));
 
     }
+    public function daily_restriction_show(Request $request)
+    {
+
+        $MainCompany = $request->MainCompany;
+        $type = $request->type;
+        $date_limition = $request->date_limition;
+        if($request->ajax())
+        {
+            if($date_limition == '0')
+            {
+                return $date = view('admin.financial_reports.general_accounts.daily_restriction.ajax.date',compact('MainCompany','type'))->render();
+
+            }else
+            {
+                return $date = view('admin.financial_reports.general_accounts.daily_restriction.ajax.limition',compact('MainCompany','type'))->render();
+
+
+            }
+            $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+
+        }
+
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+
+    }
 
 
     public function index()
