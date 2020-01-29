@@ -861,7 +861,7 @@ return [
     'daily_report'=>'تقارير قيود يوميه',
     'Jv_Flg' => 'قيود يوميه',
     'operation_type'=>'نوع العمليه',
-    'TypeOfConstraintOrBond'=>'نوع القيد أو السند',
+    'TypeOfConstraintOrBond'=>'نوع القيد',
     'by_receipt'=>'بالقيد',
     'by_date'=>'بالتاريخ',
     'next' => 'التالى',

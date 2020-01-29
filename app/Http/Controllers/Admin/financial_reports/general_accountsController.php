@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin\financial_reports;
 
 use App\Branches;
 use App\Department;
+use App\limitationReceipts;
 use App\limitations;
 use App\limitationsType;
 use App\Models\Admin\MainCompany;
@@ -432,7 +433,10 @@ class general_accountsController extends Controller
     }
     public function daily_restriction()
     {
-        return view('admin.financial_reports.general_accounts.report.daily_restriction');
+        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+        return view('admin.financial_reports.general_accounts.daily_restriction.daily_restriction',compact('limitationReceipts','MainCompany'));
 
     }
 

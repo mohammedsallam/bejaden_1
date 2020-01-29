@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title',trans('admin.account_statement'))
+@section('title','القيود اليومية للحسابات العامة')
 
 @section('content')
 @push('css')
@@ -28,9 +28,12 @@
         $(function () {
             'use strict'
 
-            $(".MainCompany").on("change",function(){
-                var mainCompany = $(this).val();
+            $(".date_limition").on("change",function(){
+                var MainCompany = $('.MainCompany').val();
+                var type = $('.type').val();
+                var date_limition = $('.date_limition').val();
                 // var mainCompany = $(this).val();
+                alert(date_limition);
 
                 $("#loadingmessage-1").css("display","block");
                 $(".column_account").css("display","none");
@@ -83,20 +86,49 @@
 @endpush
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">كشف حساب للحسابات العامة</h3>
+        <h3 class="box-title">القيود اليومية للحسابات العامة</h3>
     </div>
     <div class="box-body">
         <div class="row">
-            <div class="col-md-6">
-                {{ Form::label('maincompany','الشركات', ['class' => 'control-label']) }}
-                {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control MainCompany e2 fromtree','placeholder'=> trans('admin.select') ])) }}
-            </div>
-            <div class="column_account col-md-6">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12" style="display: flex; flex-direction: row">
+                            {{ Form::label('maincompany','الشركات', ['class' => 'control-label','style'=>'margin:1%']) }}
+                            {{ Form::select('MainCompany',$MainCompany,null, array_merge(['class' => 'form-control MainCompany','placeholder'=> trans('admin.select') ])) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="display: flex; flex-direction: row; margin-top: 2%">
+                            {{ Form::label('type',trans('admin.TypeOfConstraintOrBond'), ['class' => 'control-label','style'=>'margin:1%']) }}
 
-                    {{ Form::label('MainBranch','الفروع', ['class' => 'control-label']) }}
-                    {{ Form::select('MainBranch',[],null, array_merge(['class' => 'form-control MainBranch e2','placeholder'=> trans('admin.select') ])) }}
+                            {{ Form::select('type', $limitationReceipts,null, array_merge(['class' => 'form-control type','placeholder'=>trans('admin.select')])) }}
+                        </div>
+                    </div>
+                </div>
 
-            </div>
+        </div>
+
+
+          <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ Form::label('date_limition',trans('admin.date'), ['class' => 'control-label','style'=>'margin:1%']) }}
+                        {{ Form::radio('date_limition','0') }}
+
+
+                    </div>
+                    <div class="col-md-6">
+                        {{ Form::label('date_limition',trans('admin.limitation'), ['class' => 'control-label','style'=>'margin:1%']) }}
+
+                        {{ Form::radio('date_limition','1') }}
+
+                    </div>
+
+                </div>
+
+          </div>
+
+
 
 
         </div>
