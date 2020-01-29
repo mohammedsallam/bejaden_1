@@ -308,14 +308,11 @@ class general_accountsController extends Controller
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
-
             $level = $request->level;
-
             $fromtree = $request->fromtree;
             $totree = $request->totree;
             $from = $request->from;
             $to = $request->to;
-
             $but_level_check = $request->but_level_check;
             $radiodepartment = $request->radiodepartment;
 
@@ -339,7 +336,7 @@ class general_accountsController extends Controller
 
     public function trialbalance_print(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
