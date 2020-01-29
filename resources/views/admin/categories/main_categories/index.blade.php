@@ -23,8 +23,6 @@
                 background: #019ce65c;
             }
 
-
-
             .input_number{
                 width: 100%;
                 height: 30px;
@@ -264,84 +262,7 @@
                 });
 
                 $('.addRootOrChild').click(function () {
-                    // let Cmp_No = $('.Cmp_No').val(),
-                    //     Actvty_No = $('.Actvty_No').val(),
-                    //     Itm_No = $('.Itm_No').val(),
-                    //     Level_No = $('.Level_No').val(),
-                    //     Level_Status = $('input[type=radio].Level_Status:checked').val(),
-                    //     Sale_Active = $('input[type=checkbox].Sale_Active:checked').val(),
-                    //     Itm_Active = $('input[type=checkbox].Itm_Active:checked').val(),
-                    //     Invt_Active = $('input[type=checkbox].Invt_Active:checked').val(),
-                    //     Itm_Req = $('input[type=checkbox].Itm_Req:checked').val(),
-                    //     Itm_Relation = $('input[type=checkbox].Itm_Relation:checked').val(),
-                    //     Measure_Grp = $('input[type=checkbox].Measure_Grp:checked').val(),
-                    //     Itm_NmAr = $('.Itm_NmAr').val(),
-                    //     Itm_NmEn = $('.Itm_NmEn').val(),
-                    //     Sup_No = $('.Sup_No').val(),
-                    //     Prct_SalBouns = $('.Prct_SalBouns').val(),
-                    //     Taxp_Extra = $('.Taxp_Extra').val(),
-                    //     Req_Limit = $('.Req_Limit').val(),
-                    //     Prct_Discount = $('input[type=checkbox].Prct_Discount').val(),
-                    //     MaxQty_SaL = $('.MaxQty_SaL').val(),
-                    //     Chk_Qty2 = $('input[type=checkbox].Chk_Qty2').val(),
-                    //     Chk_Qty3 = $('input[type=checkbox].Chk_Qty3').val(),
-                    //     Main_Unit_No = $('.Unit_No').val(),
-                    //     UnitPur_No = $('.UnitPur_No').val(),
-                    //     UnitSaL_No = $('.UnitSaL_No').val(),
-                    //     Ref_No = $('.Ref_No').val(),
-                    //     Itm_Sal1 = $('.Itm_Sal1').val(),
-                    //     Itm_Sal2 = $('.Itm_Sal2').val(),
-                    //     Itm_Pur = $('.Itm_Pur').val(),
-                    //     Itm_COst = $('.Itm_COst').val(),
-                    //     unitLines = [
-                    //         {
-                    //             'Ln_No': 0,
-                    //             'Unit_No':$('.Unit_No_1').val(),
-                    //             'Unit_Ratio':$('.Unit_Ratio_1').val(),
-                    //             'Unit_Sal1': $('.Unit_Sal1').val(),
-                    //             'Unit_Pur':$('.Unit_Pur1').val(),
-                    //             'Unit_Cost':$('.Unit_Cost1').val(),
-                    //             'Label_No':$('.Label_No1').val(),
-                    //         },
-                    //         {
-                    //             'Ln_No': 1,
-                    //             'Unit_No':$('.Unit_No_2').val(),
-                    //             'Unit_Ratio':$('.Unit_Ratio_2').val(),
-                    //             'Unit_Sal1': $('.Unit_Sal2').val(),
-                    //             'Unit_Pur':$('.Unit_Pur2').val(),
-                    //             'Unit_Cost':$('.Unit_Cost2').val(),
-                    //             'Label_No':$('.Label_No2').val(),
-                    //         },
-                    //         {
-                    //             'Ln_No': 2,
-                    //             'Unit_No':$('.Unit_No_3').val(),
-                    //             'Unit_Ratio':$('.Unit_Ratio_3').val(),
-                    //             'Unit_Sal1': $('.Unit_Sal3').val(),
-                    //             'Unit_Pur':$('.Unit_Pur3').val(),
-                    //             'Unit_Cost':$('.Unit_Cost3').val(),
-                    //             'Label_No':$('.Label_No3').val(),
-                    //         }
-                    //     ],
-                    //
-                    //     Fctry_Barcode = $('.Fctry_Barcode1').val(),
-                    //     Fctry_Barcode2 = $('.Fctry_Barcode2').val(),
-                    //     Fctry_Barcode3 = $('.Fctry_Barcode3').val(),
-                    //     Itm_LengthSteel = $('.Itm_LengthSteel').val(),
-                    //     Itm_WidthSteel = $('.Itm_WidthSteel').val(),
-                    //     Itm_Durability = $('.Itm_Durability').val(),
-                    //     Itm_LengthPaper = $('.Itm_LengthPaper').val(),
-                    //     Itm_WidthPaper = $('.Itm_WidthPaper').val(),
-                    //     Itm_WghtPaper = $('.Itm_WghtPaper').val(),
-                    //     Mdcn_Grup1 = $('.Mdcn_Grup1').val(),
-                    //     Mdcn_Grup2 = $('.Mdcn_Grup2').val(),
-                    //     Mdcn_Grup3 = $('.Mdcn_Grup3').val(),
-                    //     ItmRplc_No1 = $('.ItmRplc_No1').val(),
-                    //     ItmRplc_No2 = $('.ItmRplc_No2').val(),
-                    //     ItmRplc_No3 = $('.ItmRplc_No3').val(),
-                    //     Shelf_No = $('.Shelf_No').val(),
-                    //     Itm_Othr1 = $('.Itm_Othr1').val(),
-                    //     Itm_Othr2 = $('.Itm_Othr2').val(),
-                    //     Itm_Picture = $('.Itm_Picture').val();
+
 
                     let form = $('form.mainCategories'),
                         formData = new FormData(form[0]);
@@ -355,61 +276,6 @@
                         contentType: false,
                         // crossDomain: true,
                         data: formData,
-                        {{--data: {--}}
-                        {{--    _token: "{{csrf_token()}}",--}}
-                        {{--    Cmp_No:Cmp_No,--}}
-                        {{--    Actvty_No:Actvty_No,--}}
-                        {{--    Itm_No:Itm_No,--}}
-                        {{--    Level_No:Level_No,--}}
-                        {{--    Level_Status:Level_Status,--}}
-                        {{--    Sale_Active:Sale_Active,--}}
-                        {{--    Itm_Active:Itm_Active,--}}
-                        {{--    Invt_Active:Invt_Active,--}}
-                        {{--    Itm_Req:Itm_Req,--}}
-                        {{--    Itm_Relation:Itm_Relation,--}}
-                        {{--    Measure_Grp:Measure_Grp,--}}
-                        {{--    Itm_NmAr:Itm_NmAr,--}}
-                        {{--    Itm_NmEn:Itm_NmEn,--}}
-                        {{--    Sup_No:Sup_No,--}}
-                        {{--    Prct_SalBouns:Prct_SalBouns,--}}
-                        {{--    Taxp_Extra:Taxp_Extra,--}}
-                        {{--    Req_Limit:Req_Limit,--}}
-                        {{--    Prct_Discount:Prct_Discount,--}}
-                        {{--    MaxQty_SaL:MaxQty_SaL,--}}
-                        {{--    Chk_Qty2:Chk_Qty2,--}}
-                        {{--    Chk_Qty3:Chk_Qty3,--}}
-                        {{--    Main_Unit_No:Main_Unit_No,--}}
-                        {{--    UnitPur_No:UnitPur_No,--}}
-                        {{--    UnitSaL_No:UnitSaL_No,--}}
-                        {{--    Ref_No:Ref_No,--}}
-                        {{--    Itm_Sal1:Itm_Sal1,--}}
-                        {{--    Itm_Sal2:Itm_Sal2,--}}
-                        {{--    Itm_Pur:Itm_Pur,--}}
-                        {{--    Itm_COst:Itm_COst,--}}
-                        {{--    // line1: line1,--}}
-                        {{--    // line2: line2,--}}
-                        {{--    // line3: line3,--}}
-                        {{--    unitLines:unitLines,--}}
-                        {{--    Fctry_Barcode:Fctry_Barcode,--}}
-                        {{--    Fctry_Barcode2:Fctry_Barcode2,--}}
-                        {{--    Fctry_Barcode3:Fctry_Barcode3,--}}
-                        {{--    Itm_LengthSteel:Itm_LengthSteel,--}}
-                        {{--    Itm_WidthSteel:Itm_WidthSteel,--}}
-                        {{--    Itm_Durability:Itm_Durability,--}}
-                        {{--    Itm_LengthPaper:Itm_LengthPaper,--}}
-                        {{--    Itm_WidthPaper:Itm_WidthPaper,--}}
-                        {{--    Itm_WghtPaper:Itm_WghtPaper,--}}
-                        {{--    Mdcn_Grup1:Mdcn_Grup1,--}}
-                        {{--    Mdcn_Grup2:Mdcn_Grup2,--}}
-                        {{--    Mdcn_Grup3:Mdcn_Grup3,--}}
-                        {{--    ItmRplc_No1:ItmRplc_No1,--}}
-                        {{--    ItmRplc_No2:ItmRplc_No2,--}}
-                        {{--    ItmRplc_No3:ItmRplc_No3,--}}
-                        {{--    Shelf_No:Shelf_No,--}}
-                        {{--    Itm_Othr1:Itm_Othr1,--}}
-                        {{--    Itm_Othr2:Itm_Othr2,--}}
-                        {{--    Itm_Picture:Itm_Picture,--}}
-                        {{--},--}}
                         success: function (data) {
                             if(data.status === 0){
                                 $('.error_message').removeClass('hidden').html(data.message);

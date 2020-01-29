@@ -1,5 +1,11 @@
 <script>
-
+    $(document).on('change', '.Itm_Picture', function () {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('.img_content').html('<img src="'+e.target.result+'">');
+        };
+        reader.readAsDataURL(this.files[0]);
+    });
     $('select').change(function () {
         $(this).siblings('input').val($(this).val())
     });
