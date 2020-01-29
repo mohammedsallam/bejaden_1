@@ -284,7 +284,7 @@
                                 $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
                                 $('.success_message').removeClass('hidden').html(data.message);
                                 $('.error_message').addClass('hidden');
-                                // window.location.reload();
+                                window.location.reload();
                             }
                         }
                     })

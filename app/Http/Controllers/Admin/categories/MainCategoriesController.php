@@ -61,6 +61,8 @@ class MainCategoriesController extends Controller
      */
     public function store(Request $request)
     {
+
+        dd($request->all());
         $validation = Validator::make($request->all(), [
             'Cmp_No' => 'required',
             'Actvty_No' => 'required',
@@ -125,7 +127,7 @@ class MainCategoriesController extends Controller
         $MtsItmfsunit = [
             [
                 'Ln_No' => 0,
-                'ItmUnit_No' =>$request->ItmUnit_No[0],
+                'Unit_No' =>$request->ItmUnit_No[0],
                 'Unit_Ratio' =>$request->Unit_Ratio[0],
                 'Unit_Sal1' =>$request->Unit_Sal1[0],
                 'Unit_Pur' =>$request->Unit_Pur[0],
@@ -134,7 +136,7 @@ class MainCategoriesController extends Controller
             ],
             [
                 'Ln_No' => 1,
-                'ItmUnit_No' =>$request->ItmUnit_No[1],
+                'Unit_No' =>$request->ItmUnit_No[1],
                 'Unit_Ratio' =>$request->Unit_Ratio[1],
                 'Unit_Sal1' =>$request->Unit_Sal1[1],
                 'Unit_Pur' =>$request->Unit_Pur[1],
@@ -143,7 +145,7 @@ class MainCategoriesController extends Controller
             ],
             [
                 'Ln_No' => 2,
-                'ItmUnit_No' =>$request->ItmUnit_No[2],
+                'Unit_No' =>$request->ItmUnit_No[2],
                 'Unit_Ratio' =>$request->Unit_Ratio[2],
                 'Unit_Sal1' =>$request->Unit_Sal2[2],
                 'Unit_Pur' =>$request->Unit_Pur[2],
@@ -153,7 +155,7 @@ class MainCategoriesController extends Controller
         ];
 
         foreach ($MtsItmfsunit as $key => $item) {
-            if ($item['ItmUnit_No'] == null || $item['Unit_Ratio'] == null){
+            if ($item['Unit_No'] == null || $item['Unit_Ratio'] == null){
                 continue;
             }
 
@@ -162,7 +164,7 @@ class MainCategoriesController extends Controller
                 'Cmp_No' => $request->Cmp_No,
                 'Itm_No' => $request->Itm_No,
                 'Ln_No' => $item['Ln_No'],
-                'ItmUnit_No' => $item['ItmUnit_No'],
+                'Unit_No' => $item['Unit_No'],
                 'Unit_Ratio' => $item['Unit_Ratio'],
                 'Unit_Sal1' => $item['Unit_Sal1'],
                 'Unit_Pur' => $item['Unit_Pur'],
