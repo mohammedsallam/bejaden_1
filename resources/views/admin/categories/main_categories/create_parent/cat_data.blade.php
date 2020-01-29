@@ -7,7 +7,6 @@
                         @php
                             $lastItem = \App\Models\Admin\MtsItmmfs::where('Itm_Parnt', null)->orderByDesc('ID_No')->latest()->first();
                         @endphp
-
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
                             <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="@if($itemToEdit){{$itemToEdit->Itm_No}}@elseif($lastItem){{$lastItem->Itm_No+1}} @else{{1}}@endif" class="Itm_No form-control" readonly>
@@ -79,6 +78,16 @@
                                     <input type="text" name="MaxQty_SaL" class="MaxQty_SaL form-control" id="max_sells_quantity">
                                 </div>
                             </div>
+                            <div class="col-md-12" style="display: flex; justify-content: space-between; margin-top: 10px">
+                                <div style="display: flex">
+                                    <input type="checkbox" name="Chk_Qty2" class="Chk_Qty2 checkbox-inline" id="Chk_Qty2" value="1">
+                                    <label style="width: 100%" for="Chk_Qty2">{{trans('admin.u2_q_a')}}</label>
+                                </div>
+                                <div style="display: flex">
+                                    <input type="checkbox" name="Chk_Qty3" class="Chk_Qty3 checkbox-inline" id="Chk_Qty3" value="1">
+                                    <label style="width: 100%" for="Chk_Qty3">{{trans('admin.u3_q_a')}}</label>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
@@ -98,20 +107,20 @@
                         </div>
                         <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
                             <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
+                                <input type="radio" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
                                 <label for="general">{{trans('admin.general')}}</label>
                             </div>
                             <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
+                                <input type="radio" name="Measure_Grp" class="Measure_Grp" id="product_collect"value="1">
                                 <label for="product_collect">{{trans('admin.product_collect')}}</label>
                             </div>
                             <div style="margin-left: 3px">
-                                <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
+                                <input type="radio" name="Measure_Grp" class="Measure_Grp" id="pure_material" value="2">
                                 <label for="pure_material">{{trans('admin.pure_material')}}</label>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
             </div>
             </div>
             <div class="panel panel-default col-md-12">
@@ -162,8 +171,8 @@
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
-                                <td><input type="text" class="form-control col-md-11"></td>
-                                <td style="width: 20%"></td>
+                                <td><input name="Ref_No" id="Ref_No" type="text" class="form-control col-md-11 Ref_No"></td>
+                                <td style="width: 15%"></td>
                                 <td><b>{{trans('admin.coast')}}</b></td>
                                 <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
                             </tr>
@@ -204,7 +213,7 @@
                                 <td><input class=" form-control Unit_Cost1" id="Unit_Cost1" name="Unit_Cost[]" type="text" readonly style="background: #fff"></td>
                                 <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No1" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>
@@ -229,7 +238,7 @@
                                 <td><input class=" form-control Unit_Cost2" id="Unit_Cost2" name="Unit_Cost[]" type="text"></td>
                                 <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No2" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>
@@ -254,7 +263,7 @@
                                 <td><input class=" form-control Unit_Cost3" id="Unit_Cost3" name="Unit_Cost[]" type="text"></td>
                                 <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No3" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>

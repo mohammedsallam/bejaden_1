@@ -5,6 +5,7 @@
         <style>
             .collaps_tree{
                 width: 0;
+                overflow: hidden !important;
             }
             .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
                 border-top: 1px groove black;
@@ -153,7 +154,6 @@
                     $('#jstree').jstree('open_all');
                 });
 
-
                 $('#jstree').on("changed.jstree", function (e, data) {
                     var i, j, r = [];
                     var name = [];
@@ -182,7 +182,6 @@
                     }, delay)
                 });
 
-
                 $('#jstree').on("dblclick.jstree", function (e){
                     clearTimeout(timer);
                     prevent = true;
@@ -191,6 +190,8 @@
 
                 // handle click event
                 function handle_click(Itm_No, children){
+
+                    $('form.mainCategories').attr('action', "{{route('updateRootOrChildOrCreateChild')}}")
                     // console.log(Costcntr_No)
                     // var node = $(e.target).closest("li");
                     // var type = node.attr('rel');
@@ -206,23 +207,28 @@
                         },
                         success: function(data){
                             $('#myTabContent1').html(data);
-                            $('.editRootOrChildLink ').removeClass('hidden');
+                            $('.editRootOrChildLink ').removeClass('hidden createChild');
+                            $('.createChild').addClass('editRootOrChildLink').removeClass('createChild');
                             $('.deleteRootOrChildLink  ').removeClass('hidden');
                         }
+
                     });
                 }
 
                 function handle_dbclick(e){
+                    $('form.mainCategories').attr('action', "{{route('updateRootOrChildOrCreateChild')}}")
                     var node = $(e.target).closest("li");
                     var type = node.attr('rel');
                     var parent = node[0].id;
                     $.ajax({
-                        url: "{{route('createChild')}}",
+                        url: "{{route('returnCreateChildBlade')}}",
                         type: "post",
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", parent: parent},
                         success: function(data){
                             $('#myTabContent1').html(data);
+                            $('.editRootOrChildLink ').addClass('createChild').removeClass('editRootOrChildLink');
+                            $('.deleteRootOrChildLink  ').addClass('hidden');
                         }
                     });
                 }
@@ -232,66 +238,205 @@
                  */
 
 
-                $('#parent').click(function () {
-                    $('input[type="checkbox"]#sells').prop('checked', true);
-                });
+                // $('#parent').click(function () {
+                //     $('input[type="checkbox"]#sells').prop('checked', true);
+                // });
+                //
+                // if($('#parent').prop('checked') === true){
+                //     $('input[type="checkbox"]#sells').prop('checked', true);
+                // }
+                //
+                // $('#child').click(function () {
+                //     $('input[type="checkbox"]#sells').prop('checked', false);
+                // });
 
-                if($('#parent').prop('checked') === true){
-                    $('input[type="checkbox"]#sells').prop('checked', true);
-                }
-
-                $('#child').click(function () {
-                    $('input[type="checkbox"]#sells').prop('checked', false);
-                });
-
-                $('input[type="checkbox"]#sells').click(function () {
-                    if($('#child').prop('checked') === true){
-                        $('input[type="checkbox"]#sells').prop('checked', false);
-                    }
-                    if($('#parent').prop('checked') === true){
-                        $('input[type="checkbox"]#sells').prop('checked', true);
-                    }
-                });
+                // $('input[type="checkbox"]#sells').click(function () {
+                //     if($('#child').prop('checked') === true){
+                //         $('input[type="checkbox"]#sells').prop('checked', false);
+                //     }
+                //     if($('#parent').prop('checked') === true){
+                //         $('input[type="checkbox"]#sells').prop('checked', true);
+                //     }
+                // });
 
                 $('.Sup_No').change(function () {
                     $('.Sup_No_show').val($(this).val())
                 });
 
                 $('.addRootOrChild').click(function () {
-                    var Itm_No = $('.Itm_No').val();
-                   $.ajax({
-                       url: "{{route('mainCategories.store')}}",
-                       type: "post",
-                       dataType: 'json',
-                       data: {
-                           _token: "{{csrf_token()}}",
-                           Cmp_No: $('.Cmp_No').val(),
-                           Actvty_No: $('.Actvty_No').val(),
-                           Itm_No: Itm_No,
-                           Level_No: $('.Level_No').val(),
-                           Level_Status: $('input[type=radio].Level_Status:checked').val(),
-                           Itm_NmAr: $('.Itm_NmAr').val(),
-                           Sup_No: $('.Sup_No').val(),
-                       },
-                       success: function (data) {
-                           if(data.status === 0){
-                               $('.error_message').removeClass('hidden').html(data.message);
-                               $('.success_message').addClass('hidden')
-                           } else {
-                               $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                               $('.success_message').removeClass('hidden').html(data.message);
-                               $('.error_message').addClass('hidden');
-                               window.location.reload();
-                           }
-                       }
-                   })
+                    // let Cmp_No = $('.Cmp_No').val(),
+                    //     Actvty_No = $('.Actvty_No').val(),
+                    //     Itm_No = $('.Itm_No').val(),
+                    //     Level_No = $('.Level_No').val(),
+                    //     Level_Status = $('input[type=radio].Level_Status:checked').val(),
+                    //     Sale_Active = $('input[type=checkbox].Sale_Active:checked').val(),
+                    //     Itm_Active = $('input[type=checkbox].Itm_Active:checked').val(),
+                    //     Invt_Active = $('input[type=checkbox].Invt_Active:checked').val(),
+                    //     Itm_Req = $('input[type=checkbox].Itm_Req:checked').val(),
+                    //     Itm_Relation = $('input[type=checkbox].Itm_Relation:checked').val(),
+                    //     Measure_Grp = $('input[type=checkbox].Measure_Grp:checked').val(),
+                    //     Itm_NmAr = $('.Itm_NmAr').val(),
+                    //     Itm_NmEn = $('.Itm_NmEn').val(),
+                    //     Sup_No = $('.Sup_No').val(),
+                    //     Prct_SalBouns = $('.Prct_SalBouns').val(),
+                    //     Taxp_Extra = $('.Taxp_Extra').val(),
+                    //     Req_Limit = $('.Req_Limit').val(),
+                    //     Prct_Discount = $('input[type=checkbox].Prct_Discount').val(),
+                    //     MaxQty_SaL = $('.MaxQty_SaL').val(),
+                    //     Chk_Qty2 = $('input[type=checkbox].Chk_Qty2').val(),
+                    //     Chk_Qty3 = $('input[type=checkbox].Chk_Qty3').val(),
+                    //     Main_Unit_No = $('.Unit_No').val(),
+                    //     UnitPur_No = $('.UnitPur_No').val(),
+                    //     UnitSaL_No = $('.UnitSaL_No').val(),
+                    //     Ref_No = $('.Ref_No').val(),
+                    //     Itm_Sal1 = $('.Itm_Sal1').val(),
+                    //     Itm_Sal2 = $('.Itm_Sal2').val(),
+                    //     Itm_Pur = $('.Itm_Pur').val(),
+                    //     Itm_COst = $('.Itm_COst').val(),
+                    //     unitLines = [
+                    //         {
+                    //             'Ln_No': 0,
+                    //             'Unit_No':$('.Unit_No_1').val(),
+                    //             'Unit_Ratio':$('.Unit_Ratio_1').val(),
+                    //             'Unit_Sal1': $('.Unit_Sal1').val(),
+                    //             'Unit_Pur':$('.Unit_Pur1').val(),
+                    //             'Unit_Cost':$('.Unit_Cost1').val(),
+                    //             'Label_No':$('.Label_No1').val(),
+                    //         },
+                    //         {
+                    //             'Ln_No': 1,
+                    //             'Unit_No':$('.Unit_No_2').val(),
+                    //             'Unit_Ratio':$('.Unit_Ratio_2').val(),
+                    //             'Unit_Sal1': $('.Unit_Sal2').val(),
+                    //             'Unit_Pur':$('.Unit_Pur2').val(),
+                    //             'Unit_Cost':$('.Unit_Cost2').val(),
+                    //             'Label_No':$('.Label_No2').val(),
+                    //         },
+                    //         {
+                    //             'Ln_No': 2,
+                    //             'Unit_No':$('.Unit_No_3').val(),
+                    //             'Unit_Ratio':$('.Unit_Ratio_3').val(),
+                    //             'Unit_Sal1': $('.Unit_Sal3').val(),
+                    //             'Unit_Pur':$('.Unit_Pur3').val(),
+                    //             'Unit_Cost':$('.Unit_Cost3').val(),
+                    //             'Label_No':$('.Label_No3').val(),
+                    //         }
+                    //     ],
+                    //
+                    //     Fctry_Barcode = $('.Fctry_Barcode1').val(),
+                    //     Fctry_Barcode2 = $('.Fctry_Barcode2').val(),
+                    //     Fctry_Barcode3 = $('.Fctry_Barcode3').val(),
+                    //     Itm_LengthSteel = $('.Itm_LengthSteel').val(),
+                    //     Itm_WidthSteel = $('.Itm_WidthSteel').val(),
+                    //     Itm_Durability = $('.Itm_Durability').val(),
+                    //     Itm_LengthPaper = $('.Itm_LengthPaper').val(),
+                    //     Itm_WidthPaper = $('.Itm_WidthPaper').val(),
+                    //     Itm_WghtPaper = $('.Itm_WghtPaper').val(),
+                    //     Mdcn_Grup1 = $('.Mdcn_Grup1').val(),
+                    //     Mdcn_Grup2 = $('.Mdcn_Grup2').val(),
+                    //     Mdcn_Grup3 = $('.Mdcn_Grup3').val(),
+                    //     ItmRplc_No1 = $('.ItmRplc_No1').val(),
+                    //     ItmRplc_No2 = $('.ItmRplc_No2').val(),
+                    //     ItmRplc_No3 = $('.ItmRplc_No3').val(),
+                    //     Shelf_No = $('.Shelf_No').val(),
+                    //     Itm_Othr1 = $('.Itm_Othr1').val(),
+                    //     Itm_Othr2 = $('.Itm_Othr2').val(),
+                    //     Itm_Picture = $('.Itm_Picture').val();
+
+                    let form = $('form.mainCategories'),
+                        formData = new FormData(form[0]);
+                        console.log(formData);
+                    $.ajax({
+                        url: "{{route('mainCategories.store')}}",
+                        type: "post",
+                        dataType: 'json',
+                        processData: false,
+                        cache: false,
+                        contentType: false,
+                        // crossDomain: true,
+                        data: formData,
+                        {{--data: {--}}
+                        {{--    _token: "{{csrf_token()}}",--}}
+                        {{--    Cmp_No:Cmp_No,--}}
+                        {{--    Actvty_No:Actvty_No,--}}
+                        {{--    Itm_No:Itm_No,--}}
+                        {{--    Level_No:Level_No,--}}
+                        {{--    Level_Status:Level_Status,--}}
+                        {{--    Sale_Active:Sale_Active,--}}
+                        {{--    Itm_Active:Itm_Active,--}}
+                        {{--    Invt_Active:Invt_Active,--}}
+                        {{--    Itm_Req:Itm_Req,--}}
+                        {{--    Itm_Relation:Itm_Relation,--}}
+                        {{--    Measure_Grp:Measure_Grp,--}}
+                        {{--    Itm_NmAr:Itm_NmAr,--}}
+                        {{--    Itm_NmEn:Itm_NmEn,--}}
+                        {{--    Sup_No:Sup_No,--}}
+                        {{--    Prct_SalBouns:Prct_SalBouns,--}}
+                        {{--    Taxp_Extra:Taxp_Extra,--}}
+                        {{--    Req_Limit:Req_Limit,--}}
+                        {{--    Prct_Discount:Prct_Discount,--}}
+                        {{--    MaxQty_SaL:MaxQty_SaL,--}}
+                        {{--    Chk_Qty2:Chk_Qty2,--}}
+                        {{--    Chk_Qty3:Chk_Qty3,--}}
+                        {{--    Main_Unit_No:Main_Unit_No,--}}
+                        {{--    UnitPur_No:UnitPur_No,--}}
+                        {{--    UnitSaL_No:UnitSaL_No,--}}
+                        {{--    Ref_No:Ref_No,--}}
+                        {{--    Itm_Sal1:Itm_Sal1,--}}
+                        {{--    Itm_Sal2:Itm_Sal2,--}}
+                        {{--    Itm_Pur:Itm_Pur,--}}
+                        {{--    Itm_COst:Itm_COst,--}}
+                        {{--    // line1: line1,--}}
+                        {{--    // line2: line2,--}}
+                        {{--    // line3: line3,--}}
+                        {{--    unitLines:unitLines,--}}
+                        {{--    Fctry_Barcode:Fctry_Barcode,--}}
+                        {{--    Fctry_Barcode2:Fctry_Barcode2,--}}
+                        {{--    Fctry_Barcode3:Fctry_Barcode3,--}}
+                        {{--    Itm_LengthSteel:Itm_LengthSteel,--}}
+                        {{--    Itm_WidthSteel:Itm_WidthSteel,--}}
+                        {{--    Itm_Durability:Itm_Durability,--}}
+                        {{--    Itm_LengthPaper:Itm_LengthPaper,--}}
+                        {{--    Itm_WidthPaper:Itm_WidthPaper,--}}
+                        {{--    Itm_WghtPaper:Itm_WghtPaper,--}}
+                        {{--    Mdcn_Grup1:Mdcn_Grup1,--}}
+                        {{--    Mdcn_Grup2:Mdcn_Grup2,--}}
+                        {{--    Mdcn_Grup3:Mdcn_Grup3,--}}
+                        {{--    ItmRplc_No1:ItmRplc_No1,--}}
+                        {{--    ItmRplc_No2:ItmRplc_No2,--}}
+                        {{--    ItmRplc_No3:ItmRplc_No3,--}}
+                        {{--    Shelf_No:Shelf_No,--}}
+                        {{--    Itm_Othr1:Itm_Othr1,--}}
+                        {{--    Itm_Othr2:Itm_Othr2,--}}
+                        {{--    Itm_Picture:Itm_Picture,--}}
+                        {{--},--}}
+                        success: function (data) {
+                            if(data.status === 0){
+                                $('.error_message').removeClass('hidden').html(data.message);
+                                $('.success_message').addClass('hidden')
+                            } else {
+                                $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
+                                $('.success_message').removeClass('hidden').html(data.message);
+                                $('.error_message').addClass('hidden');
+                                window.location.reload();
+                            }
+                        }
+                    })
+                });
+
+                $(document).on('change', '.Itm_Picture', function () {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('.img_content').html('<img src="'+e.target.result+'">');
+                    };
+                    reader.readAsDataURL(this.files[0]);
                 });
 
                 var lastItemNo = $('.Itm_No ').val();
-                $('.editRootOrChildLink').click(function () {
+                $('.editRootOrChildLink, .createChild').click(function () {
                     var Itm_No = $('.Itm_No').val();
                     $.ajax({
-                        url: "{{route('updateRootOrChild')}}",
+                        url: "{{route('updateRootOrChildOrCreateChild')}}",
                         type: "post",
                         dataType: 'json',
                         data: {
@@ -299,6 +444,7 @@
                             Cmp_No: $('.Cmp_No').val(),
                             Actvty_No: $('.Actvty_No').val(),
                             Itm_No: Itm_No,
+                            Itm_Parnt: $('.Itm_Parnt').val(),
                             Level_No: $('.Level_No').val(),
                             Level_Status: $('input[type=radio].Level_Status:checked').val(),
                             Itm_NmAr: $('.Itm_NmAr').val(),
@@ -325,31 +471,28 @@
                 });
 
                 $('.deleteRootOrChildLink').click(function () {
-                    $.ajax({
-                        url: "{{route('deleteRootOrChild')}}",
-                        type: "post",
-                        dataType: 'json',
-                        data: {
-                            _token: "{{csrf_token()}}",
-                            Itm_No: $('.Itm_No').val(),
-                        },
-                        success: function (data) {
-                            if(data.status === 0){
-                                $('.error_message').removeClass('hidden').html(data.message);
-                                $('.success_message').addClass('hidden')
-                            } else {
-                                $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                                $('.success_message').removeClass('hidden').html(data.message);
-                                $('.error_message').addClass('hidden');
-                                $('.Itm_No').val(lastItemNo);
-                                $('.Level_No').val(1);
-                                $('.Itm_NmAr').val('');
-                                $('.Itm_NmEn').val('');
-                                $('.jstree-clicked').parent('li').remove();
-                                $('#parent_name').html('')
+
+                    $('.conform_delete').click(function () {
+                        $.ajax({
+                            url: "{{route('deleteRootOrChild')}}",
+                            type: "post",
+                            dataType: 'json',
+                            data: {
+                                _token: "{{csrf_token()}}",
+                                Itm_No: $('.Itm_No').val(),
+                            },
+                            success: function (data) {
+                                if(data.status === 0){
+                                    $('.error_message').removeClass('hidden').html(data.message);
+                                    $('.success_message').addClass('hidden')
+                                } else {
+                                    window.location.reload();
+                                }
+
                             }
-                        }
-                    });
+                        });
+                    })
+
 
                 });
 
@@ -357,8 +500,9 @@
                 $('.tree_panel .close_tree').click(function () {
                     $('.tree_panel').toggleClass('collaps_tree col-md-4 col-md-1');
                     $('.weight_measure_panel').toggleClass('col-md-8 col-md-11');
-                    $('#chart_form').toggleClass('col-md-8 col-md-11')
-                })
+                    $('#chart_form').toggleClass('col-md-8 col-md-11');
+                    $(this).toggleClass('btn-danger btn-success').children('i').toggleClass('fa-close fa-arrow-left')
+                });
 
                 // effect inputs number whene change unit generally
                 $('select').change(function () {
@@ -426,24 +570,25 @@
                     let unitSalVal = parseFloat($('#Unit_Sal1').val()),
                         unitPureVal = parseFloat($('#Unit_Pur1').val()),
                         unitCostVal = parseFloat($('#Unit_Cost1').val()),
-                        count = parseFloat($(this).val()),
+                        unitRation2Count = parseFloat($('#Unit_Ratio_2').val()),
+                        unitRation3Count = parseFloat($('#Unit_Ratio_3').val()),
                         UnitSal = $($(this).data('unit-sal')),
                         unitPure = $($(this).data('unit-pure')),
                         unitCost = $($(this).data('unit-cost'));
 
                     if($(this).attr('id') === 'Unit_Ratio_3'){
-                        UnitSal.val((unitSalVal/count)/count);
-                        unitPure.val((unitPureVal/count)/count);
-                        unitCost.val((unitCostVal/count)/count);
+                        UnitSal.val(unitSalVal/(unitRation2Count*unitRation3Count));
+                        unitPure.val(unitPureVal/(unitRation2Count*unitRation3Count));
+                        unitCost.val(unitCostVal/(unitRation2Count*unitRation3Count));
                     } else {
-                        UnitSal.val(unitSalVal/count);
-                        unitPure.val(unitPureVal/count);
-                        unitCost.val(unitCostVal/count);
+                        UnitSal.val(unitSalVal/unitRation2Count);
+                        unitPure.val(unitPureVal/unitRation2Count);
+                        unitCost.val(unitCostVal/unitRation2Count);
 
                         if($('#Unit_Ratio_3').val() !== ''){
-                            $('#Unit_Sal3').val((unitSalVal/count)/parseFloat($('#Unit_Ratio_3').val()));
-                            $('#Unit_Pur3').val((unitPureVal/count)/parseFloat($('#Unit_Ratio_3').val()));
-                            $('#Unit_Cost3').val((unitCostVal/count)/parseFloat($('#Unit_Ratio_3').val()));
+                            $('#Unit_Sal3').val(unitSalVal/(unitRation2Count*unitRation3Count));
+                            $('#Unit_Pur3').val(unitPureVal/(unitRation2Count*unitRation3Count));
+                            $('#Unit_Cost3').val(unitCostVal/(unitRation2Count*unitRation3Count));
                         }
 
 
@@ -459,7 +604,23 @@
 
     @include('admin.layouts.message')
 
-
+        <div class="modal fade" id="delete_modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">{{trans('admin.Delete_Record')}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{trans('admin.You_Want_You_Sure_Delete_This_Record')}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger conform_delete" data-dismiss="modal">{{trans('admin.delete')}}</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     <!-- /.box-header -->
         <div class="box-body table-responsive" id="create_chart">
             <div class="row">
@@ -473,9 +634,10 @@
             <div class="row text-left" style="margin-bottom: 5px">
                 <div class="col-md-4 pull-left">
                     <a class="btn btn-info editRootOrChildLink hidden" href="#"><i class="fa fa-floppy-o"></i></a>
-                    <a class="btn btn-danger deleteRootOrChildLink hidden" href="#"><i class="fa fa-trash"></i></a>
+                    <a data-toggle="modal" href="#delete_modal" class="btn btn-danger deleteRootOrChildLink hidden"><i class="fa fa-trash"></i></a>
                 </div>
             </div>
+            {!! Form::open(['route' => 'mainCategories.store', 'method' => 'post', 'class' => 'mainCategories', 'files' => true]) !!}
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" style="display: flex">
@@ -485,7 +647,7 @@
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($cmps) > 0)
                                 @foreach($cmps as $cmp)
-                                    <option value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                                    <option @if(session('updatedComNo') == $cmp->ID_No) selected @endif value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             @endif
                         </select>
@@ -499,7 +661,7 @@
                             <option value="">{{trans('admin.select')}}</option>
                             @if(count($activity) > 0)
                                 @foreach($activity as $active)
-                                    <option value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
+                                    <option @if(session('updatedActiveNo') == $active->ID_No) selected @endif value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             @endif
                         </select>
@@ -524,28 +686,28 @@
             </ul>
             {{-- End Ul taps--}}
 
-
             <div class="panel panel-default tree_panel collaps_tree col-md-1" style="margin-top:1%; overflow: auto">
                 <div class="panel-body">
                     <a class="btn btn-primary addRootOrChild" id="addRootOrChild">{{trans('admin.new_category')}}</a>
-                    <span class="btn btn-danger btn-sm  pull-left close_tree"><i class="fa fa-close"></i></span>
+                    <span class="btn btn-success btn-sm  pull-left close_tree"><i class="fa fa-arrow-left"></i></span>
                     <div id="parent_name" style="display: inline-block"></div>
                     <div id="jstree" style="margin-top: 20px"></div>
 
                 </div>
             </div>
-            {{----}}
-            <div class="tab-content" id="myTabContent1" style="margin-top:1%">
 
+            <div class="tab-content" id="myTabContent1" style="margin-top:1%">
                 {{--First tap--}}
                 @include('admin.categories.main_categories.create_parent.cat_data')
                 {{--Second tap--}}
                 @include('admin.categories.main_categories.create_parent.weight_measure')
                 {{--third tap--}}
                 @include('admin.categories.main_categories.create_parent.purchases')
-
             </div>
+            {!! Form::close() !!}
+
         </div>
+
     </div>
 
 @endsection
