@@ -68,4 +68,15 @@ class MtsItmmfs extends Model
     public function children(){
         return $this->hasMany(MtsItmmfs::class, 'Itm_Parnt','Itm_No');
     }
+
+    public function units()
+    {
+        return $this->hasMany(MtsItmfsunit::class, 'Itm_No', 'Itm_No');
+    }
+
+
+    public function others()
+    {
+        return $this->hasMany(MtsItmOthr::class, 'Itm_No', 'Itm_No');
+    }
 }

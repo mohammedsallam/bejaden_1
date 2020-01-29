@@ -1,5 +1,5 @@
 <div class="tab-pane fade show active in" id="cat_data" role="tabpanel" aria-labelledby="home-tab">
-    <div class="col-md-11" id="chart_form">
+    <div class="col-md-8" id="chart_form">
         <div class="row">
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">
@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-6" style="display: flex; justify-content: space-between">
                             <div class="selles">
-                                <input id="sells" type="checkbox" name="Sale_Active" class="Sale_Active" value="1">
+                                <input @if($itemToEdit->Sale_Active == 1) checked @endif id="sells" type="checkbox" name="Sale_Active" class="Sale_Active" value="1">
                                 <label for="sells">{{trans('admin.sells')}}</label>
                             </div>
                             <div style="margin-left: 3px">
@@ -57,26 +57,36 @@
                             <div class="col-md-12" style="display: flex; margin-top: 10px">
                                 <div style="display: flex">
                                     <label style="width: 100%" for="bounce">{{trans('admin.bounce')}}</label>
-                                    <input min="1" type="number" name="Prct_SalBouns" class="Prct_SalBouns form-control col-md-12" id="bounce">
+                                    <input min="1" type="number" name="Prct_SalBouns" class="Prct_SalBouns form-control col-md-12" id="bounce" value="{{$itemToEdit->Prct_SalBouns}}">
                                 </div>
                                 <div style="display: flex">
                                     <label style="width: 100%" for="additional_ax">{{trans('admin.additional_tax')}}</label>
-                                    <input min="1" type="number" name="Taxp_Extra" class="Taxp_Extra form-control col-md-12" id="additional_ax">
+                                    <input min="1" type="number" name="Taxp_Extra" class="Taxp_Extra form-control col-md-12" id="additional_ax" value="{{$itemToEdit->Taxp_Extra}}">
                                 </div>
                                 <div style="display: flex">
                                     <label style="width: 100%" for="request_limit">{{trans('admin.request_limit')}}</label>
-                                    <input min="1" type="number" name="Req_Limit" class="Req_Limit form-control col-md-12" id="request_limit">
+                                    <input min="1" type="number" name="Req_Limit" class="Req_Limit form-control col-md-12" id="request_limit" value="{{$itemToEdit->Req_Limit}}">
                                 </div>
                             </div>
 
                             <div class="col-md-12" style="display: flex; justify-content: space-between; margin-top: 10px">
                                 <div style="display: flex">
-                                    <input type="checkbox" name="Prct_Discount" class="Prct_Discount checkbox-inline" id="discount" value="1">
+                                    <input @if($itemToEdit->Prct_Discount == 1) checked @endif type="checkbox" name="Prct_Discount" class="Prct_Discount checkbox-inline" id="discount" value="1">
                                     <label style="width: 100%" for="discount">{{trans('admin.discount')}}</label>
                                 </div>
                                 <div style="display: flex">
                                     <label style="width: 100%" for="max_sells_quantity">{{trans('admin.max_sells_quantity')}}</label>
-                                    <input type="text" name="MaxQty_SaL" class="MaxQty_SaL form-control" id="max_sells_quantity">
+                                    <input @if($itemToEdit->MaxQty_SaL == 1) checked @endif type="text" name="MaxQty_SaL" class="MaxQty_SaL form-control" id="max_sells_quantity">
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="display: flex; justify-content: space-between; margin-top: 10px">
+                                <div style="display: flex">
+                                    <input @if($itemToEdit->Chk_Qty2 == 1) checked @endif type="checkbox" name="Chk_Qty2" class="Chk_Qty2 checkbox-inline" id="Chk_Qty2" value="1">
+                                    <label style="width: 100%" for="Chk_Qty2">{{trans('admin.u2_q_a')}}</label>
+                                </div>
+                                <div style="display: flex">
+                                    <input @if($itemToEdit->Chk_Qty3 == 1) checked @endif type="checkbox" name="Chk_Qty3" class="Chk_Qty3 checkbox-inline" id="Chk_Qty3" value="1">
+                                    <label style="width: 100%" for="Chk_Qty3">{{trans('admin.u3_q_a')}}</label>
                                 </div>
                             </div>
 
@@ -84,29 +94,29 @@
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
+                                    <input @if($itemToEdit->Invt_Active == 1) checked @endif type="checkbox" name="Invt_Active" class="Invt_Active" id="stored" value="1">
                                     <label for="stored">{{trans('admin.stored')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
+                                    <input @if($itemToEdit->Itm_Req == 1) checked @endif type="checkbox" name="Itm_Req" class="Itm_Req" id="request" value="1">
                                     <label for="request">{{trans('admin.request')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
+                                    <input @if($itemToEdit->Itm_Relation == 1) checked @endif type="checkbox" name="Itm_Relation" class="Itm_Relation" id="linked" value="1">
                                     <label for="linked">{{trans('admin.linked')}}</label>
                                 </div>
                             </div>
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
+                                    <input @if($itemToEdit->Measure_Grp == 0) checked @endif type="radio" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
                                     <label for="general">{{trans('admin.general')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
+                                    <input @if($itemToEdit->Measure_Grp == 1) checked @endif type="radio" name="Measure_Grp" id="product_collect"value="1">
                                     <label for="product_collect">{{trans('admin.product_collect')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
+                                    <input @if($itemToEdit->Measure_Grp == 2) checked @endif type="radio" name="Measure_Grp" id="pure_material" value="2">
                                     <label for="pure_material">{{trans('admin.pure_material')}}</label>
                                 </div>
                             </div>
@@ -124,13 +134,13 @@
                                     <select name="Unit_No" id="Unit_No" class="form-control col-md-6 Unit_No">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if($itemToEdit->Unit_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                     <input type="text" class="form-control col-md-3">
                                 </td>
                                 <td style="width: 15%;"><b>{{trans('admin.sells_1')}}</b></td>
-                                <td><input type="text" name="Itm_Sal1" id="Itm_Sal1" data-sal="#Unit_Sal1" class="form-control col-md-12 Itm_Sal1"></td>
+                                <td><input type="text" name="Itm_Sal1" id="Itm_Sal1" data-sal="#Unit_Sal1" class="form-control col-md-12 Itm_Sal1" value="{{$itemToEdit->Itm_Sal1}}"></td>
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.buy')}}</b></td>
@@ -138,13 +148,13 @@
                                     <select name="UnitPur_No" id="UnitPur_No" class="form-control col-md-6 UnitPur_No">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if($itemToEdit->UnitPur_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                     <input type="text" class="form-control col-md-3">
                                 </td>
                                 <td style="width: 15%;"><b>{{trans('admin.sells_2')}}</b></td>
-                                <td><input type="text" name="Itm_Sal2" id="Itm_Sal2" class="form-control col-md-12 Itm_Sal2"></td>
+                                <td><input type="text" name="Itm_Sal2" id="Itm_Sal2" class="form-control col-md-12 Itm_Sal2" value="{{$itemToEdit->Itm_Sal2}}"></td>
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.sell')}}</b></td>
@@ -152,20 +162,20 @@
                                     <select name="UnitSaL_No" id="UnitSaL_No" class="form-control col-md-6 UnitSaL_No">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if($itemToEdit->UnitSaL_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                     <input type="text" class="form-control col-md-3">
                                 </td>
                                 <td style="width: 15%;"><b>{{trans('admin.buy_price')}}</b></td>
-                                <td><input type="text" name="Itm_Pur" id="Itm_Pur" data-sal="#Unit_Pur1" class="form-control col-md-12 Itm_Pur"></td>
+                                <td><input type="text" name="Itm_Pur" id="Itm_Pur" data-sal="#Unit_Pur1" class="form-control col-md-12 Itm_Pur" value="{{$itemToEdit->Itm_Pur}}"></td>
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
-                                <td><input type="text" class="form-control col-md-11"></td>
-                                <td style="width: 20%"></td>
+                                <td><input name="Ref_No" id="Ref_No" type="text" class="form-control col-md-11 Ref_No" value="{{$itemToEdit->Ref_No}}"></td>
+                                <td style="width: 15%"></td>
                                 <td><b>{{trans('admin.coast')}}</b></td>
-                                <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
+                                <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst" value="{{$itemToEdit->Itm_COst}}"></td>
                             </tr>
                         </table>
                     </div>
@@ -193,21 +203,21 @@
                                     <select class="form-control Unit_No_1" name="Unit_No[]" disabled  style="background: #fff">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if(count($itemToEdit->units) > 0 && $itemToEdit->units[0]->Unit_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input class="form-control" id="Unit_No_1" type="text" readonly style="background: #fff"></td>
+                                <td><input class="form-control" id="Unit_No_1" type="text" readonly style="background: #fff" value="{{count($itemToEdit->units)>0?$itemToEdit->units[0]->Unit_No:''}}"></td>
                                 <td ><input class="form-control Unit_Ratio_1" id="Unit_Ratio_1" type="text" name="Unit_Ratio[]" value="1" readonly style="background: #fff"></td>
-                                <td><input class="form-control Unit_Sal1" id="Unit_Sal1" name="Unit_Sal1[]" type="text" readonly style="background: #fff"></td>
-                                <td><input class="form-control Unit_Pur1" id="Unit_Pur1" name="Unit_Pur[]" type="text" readonly style="background: #fff"></td>
-                                <td><input class=" form-control Unit_Cost1" id="Unit_Cost1" name="Unit_Cost[]" type="text" readonly style="background: #fff"></td>
-                                <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control Unit_Sal1" id="Unit_Sal1" name="Unit_Sal1[]" type="text" readonly style="background: #fff" value="{{count($itemToEdit->units)>0?$itemToEdit->units[0]->Unit_Sal1:''}}"></td>
+                                <td><input class="form-control Unit_Pur1" id="Unit_Pur1" name="Unit_Pur[]" type="text" readonly style="background: #fff" value="{{count($itemToEdit->units)>0?$itemToEdit->units[0]->Unit_Pur:''}}"></td>
+                                <td><input class=" form-control Unit_Cost1" id="Unit_Cost1" name="Unit_Cost[]" type="text" readonly style="background: #fff" value="{{count($itemToEdit->units)>0?$itemToEdit->units[0]->Unit_Cost:''}}"></td>
+                                <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode" type="text" value="{{$itemToEdit->Fctry_Barcode}}"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No1" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
-                                            <option value="{{$key}}">{{$barCode}}</option>
+                                            <option @if(count($itemToEdit->units) > 0 && $itemToEdit->units[0]->Label_No == $key) selected @endif value="{{$key}}">{{$barCode}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -218,21 +228,21 @@
                                     <select class="form-control Unit_No_2" name="Unit_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if(count($itemToEdit->units) > 1 && $itemToEdit->units[1]->Unit_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input class="form-control" id="Unit_No_2" type="text" readonly style="background: #fff"></td>
-                                <td ><input class="form-control Unit_Ratio_2" id="Unit_Ratio_2" data-unit-sal="#Unit_Sal2" data-unit-pure="#Unit_Pur2" data-unit-cost="#Unit_Cost2" type="text" name="Unit_Ratio[]"></td>
-                                <td><input class="form-control Unit_Sal2" id="Unit_Sal2" name="Unit_Sal1[]" type="text"></td>
-                                <td><input class="form-control Unit_Pur2" id="Unit_Pur2" name="Unit_Pur[]" type="text"></td>
-                                <td><input class=" form-control Unit_Cost2" id="Unit_Cost2" name="Unit_Cost[]" type="text"></td>
-                                <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control" id="Unit_No_2" type="text" value="{{count($itemToEdit->units)>1?$itemToEdit->units[1]->Unit_No:''}}"></td>
+                                <td ><input class="form-control Unit_Ratio_2" id="Unit_Ratio_2" data-unit-sal="#Unit_Sal2" data-unit-pure="#Unit_Pur2" data-unit-cost="#Unit_Cost2" type="text" name="Unit_Ratio[]" value="{{count($itemToEdit->units)>1?$itemToEdit->units[1]->Unit_Ratio:''}}"></td>
+                                <td><input class="form-control Unit_Sal2" id="Unit_Sal2" name="Unit_Sal1[]" type="text" value="{{count($itemToEdit->units)>1?$itemToEdit->units[1]->Unit_Sal1:''}}"></td>
+                                <td><input class="form-control Unit_Pur2" id="Unit_Pur2" name="Unit_Pur[]" type="text" value="{{count($itemToEdit->units)>1?$itemToEdit->units[1]->Unit_Pur:''}}"></td>
+                                <td><input class=" form-control Unit_Cost2" id="Unit_Cost2" name="Unit_Cost[]" type="text" value="{{count($itemToEdit->units)>1?$itemToEdit->units[1]->Unit_Cost:''}}"></td>
+                                <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode2" type="text" value="{{$itemToEdit->Fctry_Barcode2}}"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No2" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
-                                            <option value="{{$key}}">{{$barCode}}</option>
+                                            <option @if(count($itemToEdit->units) > 1 && $itemToEdit->units[1]->Label_No == $key) selected @endif value="{{$key}}">{{$barCode}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -243,21 +253,21 @@
                                     <select class="form-control Unit_No_3" name="Unit_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option @if(count($itemToEdit->units) > 2 && $itemToEdit->units[2]->Unit_No == $unit->ID_No) selected @endif value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input class="form-control" id="Unit_No_3" type="text" readonly style="background: #fff"></td>
-                                <td ><input class="form-control Unit_Ratio_3" id="Unit_Ratio_3" data-unit-sal="#Unit_Sal3" data-unit-pure="#Unit_Pur3" data-unit-cost="#Unit_Cost3" type="text" name="Unit_Ratio[]"></td>
-                                <td><input class="form-control Unit_Sal3" id="Unit_Sal3" name="Unit_Sal1[]" type="text"></td>
-                                <td><input class="form-control Unit_Pur3" id="Unit_Pur3" name="Unit_Pur[]" type="text"></td>
-                                <td><input class=" form-control Unit_Cost3" id="Unit_Cost3" name="Unit_Cost[]" type="text"></td>
-                                <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control" id="Unit_No_3" type="text" value="{{count($itemToEdit->units)>2?$itemToEdit->units[2]->Unit_No:''}}"></td>
+                                <td ><input class="form-control Unit_Ratio_3" id="Unit_Ratio_3" data-unit-sal="#Unit_Sal3" data-unit-pure="#Unit_Pur3" data-unit-cost="#Unit_Cost3" type="text" name="Unit_Ratio[]" value="{{count($itemToEdit->units)>2?$itemToEdit->units[2]->Unit_Ratio:''}}"></td>
+                                <td><input class="form-control Unit_Sal3" id="Unit_Sal3" name="Unit_Sal1[]" type="text" value="{{count($itemToEdit->units)>2?$itemToEdit->units[2]->Unit_Sal1:''}}"></td>
+                                <td><input class="form-control Unit_Pur3" id="Unit_Pur3" name="Unit_Pur[]" type="text" value="{{count($itemToEdit->units)>2?$itemToEdit->units[2]->Unit_Pur:''}}"></td>
+                                <td><input class=" form-control Unit_Cost3" id="Unit_Cost3" name="Unit_Cost[]" type="text" value="{{count($itemToEdit->units)>2?$itemToEdit->units[2]->Unit_Cost:''}}"></td>
+                                <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode3" type="text" value="{{$itemToEdit->Fctry_Barcode3}}"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No3" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
-                                            <option value="{{$key}}">{{$barCode}}</option>
+                                            <option @if(count($itemToEdit->units) > 2 && $itemToEdit->units[2]->Label_No == $key) selected @endif value="{{$key}}">{{$barCode}}</option>
                                         @endforeach
                                     </select>
                                 </td>

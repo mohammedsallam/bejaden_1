@@ -319,6 +319,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('trialbalance_details_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
         Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
+        Route::get('daily_restriction_show','Admin\financial_reports\general_accountsController@daily_restriction_show')->name('daily_restriction.show');
 
         //       1
 //        0
@@ -329,7 +330,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::Post('cust_account_statement/pdf','Admin\financial_reports\customer_accountingcontroller@print')->name('accountStatementCust.acc_pdf');
 
         Route::get('cust_trial_balance','Admin\financial_reports\customer_accountingcontroller@trial_balance')->name('cust_trial_balance');
-        Route::get('show_trial_balance','Admin\financial_reports\customer_accountingcontroller@show_trial_balance')->name('show_trial_balance');
+        Route::get('trialbalance_cust_show','Admin\financial_reports\customer_accountingcontroller@trialbalance_show')->name('trialbalanceCust.show');
         Route::get('details_trial_balance','Admin\financial_reports\customer_accountingcontroller@details_trial_balance')->name('details_trial_balance');
         Route::Post('print_trial_balance','Admin\financial_reports\customer_accountingcontroller@print_trial_balance')->name('print_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
@@ -342,6 +343,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('acc_state_sup','Admin\financial_reports\supplier_accountingController@acc_state')->name('acc_state_sup');
         Route::Post('sup_account_statement/pdf','Admin\financial_reports\supplier_accountingController@print')->name('accountStatementSup.acc_pdf');
         Route::get('supp_trial_balance','Admin\financial_reports\supplier_accountingController@trial_balance')->name('supp_trial_balance');
+        Route::get('trialbalance_sup_show','Admin\financial_reports\supplier_accountingController@trialbalance_show')->name('trialbalanceSup.show');
+        Route::get('trialbalance_sup_details','Admin\financial_reports\supplier_accountingController@trialbalance_details')->name('trialbalanceSup.details');
+        Route::get('trialbalance_sup_details_level','Admin\financial_reports\supplier_accountingController@trialbalance_level')->name('trialbalanceSup.level');
+        Route::POST('trialbalance_sup_print','Admin\financial_reports\supplier_accountingController@trialbalance_print')->name('trialbalanceSup.print');
+
         Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
 
 
@@ -619,11 +625,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::resource('categories', 'Admin\categories\CategoriesController');
         Route::resource('units', 'Admin\categories\UnitsController');
         Route::resource('mainCategories', 'Admin\categories\MainCategoriesController');
-        Route::post('updateRootOrChild', 'Admin\categories\MainCategoriesController@updateRootOrChild')->name('updateRootOrChild');
+        Route::post('updateRootOrChildOrCreateChild', 'Admin\categories\MainCategoriesController@updateRootOrChildOrCreateChild')->name('updateRootOrChildOrCreateChild');
         Route::post('deleteRootOrChild', 'Admin\categories\MainCategoriesController@deleteRootOrChild')->name('deleteRootOrChild');
-        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
+        Route::post('returnCreateChildBlade', 'Admin\categories\MainCategoriesController@returnCreateChildBlade')->name('returnCreateChildBlade');
         Route::post('generateChildNo', 'Admin\categories\MainCategoriesController@generateChildNo')->name('generateChildNo');
-        Route::post('createChild', 'Admin\categories\MainCategoriesController@createChild')->name('createChild');
         Route::get('getRootOrChildForEdit', 'Admin\categories\MainCategoriesController@getRootOrChildForEdit')->name('getRootOrChildForEdit');
 
         Route::post('getCategoryItem','Admin\categories\MainCategoriesController@getCategoryItem')->name('getCategoryItem');

@@ -1,5 +1,5 @@
 <div class="tab-pane fade show active in" id="cat_data" role="tabpanel" aria-labelledby="home-tab">
-    <div class="col-md-11" id="chart_form">
+    <div class="col-md-8" id="chart_form">
         <div class="row">
             <div class="panel panel-default col-md-12">
                 <div class="panel-body">
@@ -7,17 +7,17 @@
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
                             <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
-
+                            <input type="hidden" name="Itm_Parnt" class="Itm_Parnt" value="{{$item->Itm_No}}">
                             <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
-                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$lastChild != null ? $lastChild->Level_No : 2}}" class="Level_No form-control" readonly>
+                            <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$item->Level_No+1}}" class="Level_No form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label for="parent">{{trans('admin.parent_cat')}}</label>
-                            <input id="parent" checked type="radio" name="Level_Status" class="Level_Status" value="0">
+                            <input id="parent" type="radio" name="Level_Status" class="Level_Status" value="0">
                         </div>
                         <div class="col-md-3">
                             <label for="child">{{trans('admin.sub_cat')}}</label>
-                            <input id="child" type="radio" name="Level_Status" class="Level_Status" value="1">
+                            <input id="child" checked type="radio" name="Level_Status" class="Level_Status" value="1">
                         </div>
                         <div class="col-md-6" style="display: flex; justify-content: space-between">
                             <div class="selles">
@@ -75,6 +75,16 @@
                                     <input type="text" name="MaxQty_SaL" class="MaxQty_SaL form-control" id="max_sells_quantity">
                                 </div>
                             </div>
+                            <div class="col-md-12" style="display: flex; justify-content: space-between; margin-top: 10px">
+                                <div style="display: flex">
+                                    <input type="checkbox" name="Chk_Qty2" class="Chk_Qty2 checkbox-inline" id="Chk_Qty2" value="1">
+                                    <label style="width: 100%" for="Chk_Qty2">{{trans('admin.u2_q_a')}}</label>
+                                </div>
+                                <div style="display: flex">
+                                    <input type="checkbox" name="Chk_Qty3" class="Chk_Qty3 checkbox-inline" id="Chk_Qty3" value="1">
+                                    <label style="width: 100%" for="Chk_Qty3">{{trans('admin.u3_q_a')}}</label>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="col-md-3" style="margin-bottom: 10px; float: left">
@@ -94,15 +104,15 @@
                             </div>
                             <div class="col-md-12" style="border: 1px groove; border-radius: 5px; background: #3c8dbc; color: #fff; padding: 6px">
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
+                                    <input type="radio" name="Measure_Grp" class="Measure_Grp" id="general" value="0">
                                     <label for="general">{{trans('admin.general')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" id="product_collect"value="1">
+                                    <input type="radio" name="Measure_Grp" id="product_collect"value="1">
                                     <label for="product_collect">{{trans('admin.product_collect')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="checkbox" name="Measure_Grp" id="pure_material" value="2">
+                                    <input type="radio" name="Measure_Grp" id="pure_material" value="2">
                                     <label for="pure_material">{{trans('admin.pure_material')}}</label>
                                 </div>
                             </div>
@@ -158,8 +168,8 @@
                             </tr>
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
-                                <td><input type="text" class="form-control col-md-11"></td>
-                                <td style="width: 20%"></td>
+                                <td><input name="Ref_No" id="Ref_No" type="text" class="form-control col-md-11 Ref_No"></td>
+                                <td style="width: 15%"></td>
                                 <td><b>{{trans('admin.coast')}}</b></td>
                                 <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
                             </tr>
@@ -200,7 +210,7 @@
                                 <td><input class=" form-control Unit_Cost1" id="Unit_Cost1" name="Unit_Cost[]" type="text" readonly style="background: #fff"></td>
                                 <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No1" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>
@@ -225,7 +235,7 @@
                                 <td><input class=" form-control Unit_Cost2" id="Unit_Cost2" name="Unit_Cost[]" type="text"></td>
                                 <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No2" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>
@@ -250,7 +260,7 @@
                                 <td><input class=" form-control Unit_Cost3" id="Unit_Cost3" name="Unit_Cost[]" type="text"></td>
                                 <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode[]" type="text"></td>
                                 <td>
-                                    <select class="form-control Label_No" name="Label_No[]">
+                                    <select class="form-control Label_No3" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach (\App\Enums\BarCodeSize::toSelectArray() as $key => $barCode)
                                             <option value="{{$key}}">{{$barCode}}</option>

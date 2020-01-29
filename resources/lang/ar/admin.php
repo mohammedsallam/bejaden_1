@@ -861,7 +861,7 @@ return [
     'daily_report'=>'تقارير قيود يوميه',
     'Jv_Flg' => 'قيود يوميه',
     'operation_type'=>'نوع العمليه',
-    'TypeOfConstraintOrBond'=>'نوع القيد أو السند',
+    'TypeOfConstraintOrBond'=>'نوع القيد',
     'by_receipt'=>'بالقيد',
     'by_date'=>'بالتاريخ',
     'next' => 'التالى',
@@ -1540,6 +1540,9 @@ return [
     'choose_pic'       => 'اختر صورة',
     'note_1'       => 'ملاحظات1',
     'note_2'       => 'ملاحظات2',
+    'cant_delete_category'       => 'لا يمكن حذف الصنف',
+    'u2_q_a'       => 'تفعيل الكمية بالوحدة الثانية',
+    'u3_q_a'       => 'تفعيل الكمية بالوحدة الثالثة',
 
 
 

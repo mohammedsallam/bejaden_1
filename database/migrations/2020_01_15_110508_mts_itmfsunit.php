@@ -21,6 +21,7 @@ class MtsItmfsunit extends Migration
             $table->bigInteger('Itm_No')->nullable();
             $table->smallInteger('Ln_No')->nullable();
             $table->smallInteger('Unit_No')->nullable();
+            $table->smallInteger('Label_No')->nullable();
             $table->float('Unit_Ratio')->nullable();
             $table->float('Unit_Pur')->nullable();
             $table->float('Unit_Cost')->nullable();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin\financial_reports;
 
 use App\Branches;
 use App\Department;
+use App\limitationReceipts;
 use App\limitations;
 use App\limitationsType;
 use App\Models\Admin\MainCompany;
@@ -304,18 +305,15 @@ class general_accountsController extends Controller
     }
     public function trialbalance_details(Request $request)
     {
-//dd($request->all());
+dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
-
             $level = $request->level;
-
             $fromtree = $request->fromtree;
             $totree = $request->totree;
             $from = $request->from;
             $to = $request->to;
-
             $but_level_check = $request->but_level_check;
             $radiodepartment = $request->radiodepartment;
 
@@ -339,7 +337,7 @@ class general_accountsController extends Controller
 
     public function trialbalance_print(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
         $MainCompany = $request->MainCompany;
         $level = $request->level;
         $fromtree = $request->fromtree;
@@ -453,7 +451,35 @@ class general_accountsController extends Controller
     }
     public function daily_restriction()
     {
-        return view('admin.financial_reports.general_accounts.report.daily_restriction');
+        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+        return view('admin.financial_reports.general_accounts.daily_restriction.daily_restriction',compact('limitationReceipts','MainCompany'));
+
+    }
+    public function daily_restriction_show(Request $request)
+    {
+
+        $MainCompany = $request->MainCompany;
+        $type = $request->type;
+        $date_limition = $request->date_limition;
+        if($request->ajax())
+        {
+            if($date_limition == '0')
+            {
+                return $date = view('admin.financial_reports.general_accounts.daily_restriction.ajax.date',compact('MainCompany','type'))->render();
+
+            }else
+            {
+                return $date = view('admin.financial_reports.general_accounts.daily_restriction.ajax.limition',compact('MainCompany','type'))->render();
+
+
+            }
+            $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+
+        }
+
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
 
     }
 

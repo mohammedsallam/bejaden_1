@@ -52,6 +52,36 @@
 
             });
         </script>
+{{--        <script>--}}
+{{--            $(function () {--}}
+{{--                'use strict'--}}
+
+{{--                $(".MainCompany").on("change",function(){--}}
+{{--                    var mainCompany = $(this).val();--}}
+{{--                    $('.column-form').html('');--}}
+{{--                    $("#loadingmessage-1").css("display","block");--}}
+{{--                    $(".div_branch").css("display","none");--}}
+{{--                    if (this){--}}
+{{--                        $.ajax({--}}
+{{--                            url: '{{route('branche_trial_balance')}}',--}}
+{{--                            type:'get',--}}
+{{--                            dataType:'html',--}}
+{{--                            data:{mainCompany: mainCompany},--}}
+{{--                            success: function (data) {--}}
+{{--                                $("#loadingmessage-1").css("display","none");--}}
+{{--                                $('.div_branch').css("display","block").html(data);--}}
+
+{{--                            }--}}
+{{--                        });--}}
+{{--                    }else{--}}
+{{--                        $('.div_branch').html('');--}}
+{{--                    }--}}
+{{--                });--}}
+
+
+
+{{--            });--}}
+{{--        </script>--}}
         <script>
 
             $(function () {
@@ -210,11 +240,11 @@
                 <div class="col-xs-12">
                     <div class="col-xs-6">
                         {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2 col-xs-3']) }}
-                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input date','id'=>'toDate','autocomplete'=>'off'])) }}
+                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input fromDate ','id'=>'fromDate','autocomplete'=>'off'])) }}
                     </div>
                     <div class="col-xs-6">
                         {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2 col-xs-3']) }}
-                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}
+                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input  toDate','id'=>'toDate'])) }}
 
                     </div>
                 </div>
@@ -231,20 +261,20 @@
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="balance_department" id="balance_department" name="department" value="2">
+                            <input type="radio" class="total_department" id="balance_department" name="department" value="2">
                             <label for="balance_department">  حسابات بارصدة </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="debt_department" id="debt_department" name="department" value="3">
+                            <input type="radio" class="total_department" id="debt_department" name="department" value="3">
                             <label class="debt_department" for="debt_department">حسابات مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="credit_department" id="credit_department" name="department" value="4">
+                            <input type="radio" class="total_department" id="credit_department" name="department" value="4">
                             <label for="credit_department">  حسابات دائنه </label>
                         </div>
                     </div>
