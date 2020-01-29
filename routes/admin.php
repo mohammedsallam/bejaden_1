@@ -319,6 +319,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('trialbalance_details_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
         Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
+        Route::get('daily_restriction_show','Admin\financial_reports\general_accountsController@daily_restriction_show')->name('daily_restriction.show');
 
         //       1
 //        0
