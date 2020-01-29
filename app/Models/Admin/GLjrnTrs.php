@@ -45,10 +45,10 @@ class GLjrnTrs extends Model
         'Curncy_No',
     ];
     public function MtsChartAc(){
-        return $this->hasone('App\\Models\Admin\MtsChartAc','Acc_No','Acc_No');
+        return $this->belongsTo('App\Models\Admin\MtsChartAc','Acc_No','Acc_No');
     }
     public function GLJrnal(){
-        return $this->hasone('App\\Models\Admin\GLJrnal','Acc_No','Acc_No');
+        return $this->hasone('App\Models\Admin\GLJrnal','Acc_No','Acc_No');
     }
 
 

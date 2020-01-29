@@ -214,29 +214,24 @@ class customer_accountingcontroller extends Controller
         return view('admin.financial_reports.customer_accounting.trial_balance.trial_balance',compact('MainCompany'));
 
     }
-    public function branche_trial_balance(Request $request)
-    {
-        if($request->ajax())
-        {
-            $MainCompany = $request->mainCompany;
-            $MainBranch = MainBranch::where('Cmp_No',$MainCompany)->pluck('Brn_Nm'.ucfirst(session('lang')),'Brn_No');
-            return $data = view('admin.financial_reports.customer_accounting.trial_balance.ajax.get_branche',compact('MainBranch','MainCompany'))->render();
-        }
-    }
-    public function show_trial_balance(Request $request)
-    {
 
+    public function trialbalance_show(Request $request)
+    {
         $MainCompany = $request->mainCompany;
+        $delegates   = $request->delegates;
+        $mtscustomer = $request->mtscustomer;
         if($request->ajax())
 
         {
-            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->pluck('Acc_Nm' . ucfirst(session('lang')) ,'Acc_No');
-            $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',2)->pluck('Acc_No');
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+            $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
+            $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
             $AstSalesman = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_Nm' . ucfirst(session('lang')) ,'Slm_No');
-            $AstSalesman2 = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_No');
-
-            return      $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['MainCompany'=>$MainCompany,'AstSalesman'=>$AstSalesman,'MtsChartAc'=>$MtsChartAc,'MtsChartAc2'=>$MtsChartAc2,'AstSalesman2'=>$AstSalesman2])->render();
-
+            $AstSalesman2= AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_No');
+            $mtscustomer = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_Nm' . ucfirst(session('lang')) ,'Cstm_No');
+            $delegates   = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_Nm' . ucfirst(session('lang')) ,'Slm_No');
+            $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.show', ['delegates'=>$delegates,'mtscustomer'=>$mtscustomer,'AstSalesman'=>$AstSalesman,'AstSalesman2'=>$AstSalesman2,'MtsChartAc'=>$MtsChartAc,'fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,'MainCompany'=>$MainCompany])->render();
+            return $contents;
         }
 
 
@@ -244,12 +239,12 @@ class customer_accountingcontroller extends Controller
 
     public function details_trial_balance(Request $request)
     {
-
-
+dd($request->all());
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
             $but_sales_check = $request->but_sales_check;
             $sales_check = $request->sales_check;
+            $state_check = $request->state_check;
             $fromtree = $request->fromtree;
             $numberfromtree = $request->numberfromtree;
             $totree = $request->totree;
@@ -260,14 +255,13 @@ class customer_accountingcontroller extends Controller
             $From = $request->From;
             $to = $request->to;
 
-
-
                 return  $contents = view('admin.financial_reports.customer_accounting.trial_balance.ajax.details',
 
             [
                 'MainCompany'=>$MainCompany,
-              'but_sales_check'=>$but_sales_check,
-              'sales_check'=>$sales_check,
+                'but_sales_check'=>$but_sales_check,
+                'sales_check'=>$sales_check,
+                'state_check'=>$state_check,
                 'fromtree'=>$fromtree,
                 'numberfromtree'=>$numberfromtree,
                 'totree'=>$totree,
@@ -287,7 +281,7 @@ class customer_accountingcontroller extends Controller
     }
     public function print_trial_balance(Request $request)
     {
-//@dd($request->all(),$request->all(),$request->all());
+@dd($request->all());
         $MainCompany = $request->MainCompany;
         $but_sales_check = $request->but_sales_check;
         $sales_check = $request->sales_check;
