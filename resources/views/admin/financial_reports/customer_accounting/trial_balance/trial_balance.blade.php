@@ -11,11 +11,13 @@
                 color: red;
             }
         </style>
-
+        {{--    Date Hijri--}}
+        <link rel="stylesheet" href="{{url('/')}}/adminlte/dateHijri/dist/css/bootstrap-datetimepicker.min.css">
 
 
     @endpush
     @push('js')
+        <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
         <script>
             $(function () {
@@ -23,15 +25,17 @@
 
                 $(".MainCompany").on("change",function(){
                     var mainCompany = $(this).val();
+                    var delegates = $('.delegates').val();
+                    var mtscustomer = $('.mtscustomer').val();
                     $('.column-form').html('');
                     $("#loadingmessage-1").css("display","block");
                     $(".details_row").css("display","none");
                     if (this){
                         $.ajax({
-                            url: '{{route('show_trial_balance')}}',
+                            url: '{{route('trialbalanceCust.show')}}',
                             type:'get',
                             dataType:'html',
-                            data:{mainCompany: mainCompany},
+                            data:{mainCompany: mainCompany, delegates:delegates, mtscustomer:mtscustomer},
                             success: function (data) {
                                 $("#loadingmessage-1").css("display","none");
                                 $('.details_row').css("display","block").html(data);
@@ -53,6 +57,13 @@
                     $(this).prop("checked",true);
 
                 });
+            });
+
+            $(".hijri-date-input").hijriDatePicker({
+                hijri : false,
+                format: "YYYY-MM-DD",
+                hijriFormat: 'iYYYY-iMM-iDD',
+                showTodayButton:true,
             });
         </script>
         {{--<script>--}}
@@ -148,27 +159,30 @@
             // });
             $(document).on('change','#select_check :checkbox[id=but_sales_check]',function () {
 
-            if($(this).is(':checked')){
-                $('#sales_check').removeAttr('disabled');
-                calcTax();
-            }
-            else{
-                $('#sales_check').attr('disabled','disabled');
+                if($(this).is(':checked')){
+                    $('#sales_check').removeAttr('disabled');
+                    $('#sales_check_num').removeAttr('disabled');
+                }
+                else{
+                    $('#sales_check').attr('disabled','disabled');
+                    $('#sales_check_num').attr('disabled','disabled');
 
-            }
+                }
 
-        });
+            });
+            $(document).on('change','#select_check :checkbox[id=but_state_check]',function () {
 
-        $('#select_check :checkbox[id=but_state_check]').change(function(){
-            if($(this).is(':checked')){
-                $('#state_check').removeAttr('disabled');
-                calcTax();
-            }
-            else{
-                $('#state_check').attr('disabled','disabled');
+                if($(this).is(':checked')){
+                    $('#state_check').removeAttr('disabled');
+                    $('#state_check_num').removeAttr('disabled');
+                }
+                else{
+                    $('#state_check').attr('disabled','disabled');
+                    $('#state_check_num').attr('disabled','disabled');
 
-            }
-        });
+                }
+
+            });
 
         </script>
 
@@ -188,11 +202,11 @@
                 </div>
                 <div class="checkonly col-md-6 col-xs-12">
                     <div class="col-md-6 col-xs-6">
-                        <input class="col-xs-2 delegates" name="delegates" type="checkbox" value="1"  >
+                        <input class="col-xs-2 delegates" name="delegates" type="checkbox" value="1">
                         <label>كل المندوبين</label>
                     </div>
                     <div class="col-md-6 col-xs-6">
-                        <input class="col-xs-2 mtscustomer" name="mtscustomer" type="checkbox"  value="1" >
+                        <input class="col-xs-2 mtscustomer" name="mtscustomer" type="checkbox"  value="1">
                         <label>كل العملاء</label>
                     </div>
                 </div>
@@ -207,7 +221,7 @@
                         {{ Form::select('sales_select',[],null, array_merge(['class' => 'form-control col-md-8 col-xs-8 e2 ee', 'disabled', 'id'=>'sales_check'])) }}
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        {{ Form::text('sales_select_no',null, array_merge(['class' => 'form-control'])) }}
+                        {{ Form::text('sales_select_no',null, array_merge(['class' => 'form-control', 'disabled', 'id'=>'sales_check_num'])) }}
                     </div>
                 </div>
                 <br>
@@ -218,7 +232,7 @@
                         {{ Form::select('state',[],null, array_merge(['class' => 'form-control col-md-8 col-xs-8 e2 ee', 'disabled', 'id'=>'state_check'])) }}
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        {{ Form::text('state_no',null, array_merge(['class' => 'form-control'])) }}
+                        {{ Form::text('state_no',null, array_merge(['class' => 'form-control', 'disabled', 'id'=>'state_check_num'])) }}
                     </div>
                 </div>
                 <br>
@@ -247,11 +261,11 @@
                 <div class="col-xs-12">
                     <div class="col-xs-6">
                         {{ Form::label('From', trans('admin.From'), ['class' => 'col-md-2 col-xs-3']) }}
-                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input','id'=>'froxsate','autocomplete'=>'off'])) }}
+                        {{ Form::text('From',\Carbon\Carbon::today()->format('Y-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear()).'-'.\Carbon\Carbon::now()->diffInYears(\Carbon\Carbon::now()->copy()->addYear())), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input fromDate ','id'=>'fromDate','autocomplete'=>'off'])) }}
                     </div>
                     <div class="col-xs-6">
                         {{ Form::label('To', trans('admin.To'), ['class' => 'col-md-2 col-xs-3']) }}
-                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input date','id'=>'toDate'])) }}
+                        {{ Form::text('To',\Carbon\Carbon::today()->format('Y-m-d'), array_merge(['class' => 'col-md-10 col-xs-9 form-control  hijri-date-input  toDate','id'=>'toDate'])) }}
 
                     </div>
                 </div>

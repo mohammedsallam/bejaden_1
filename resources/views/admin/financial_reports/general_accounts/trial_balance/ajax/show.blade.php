@@ -1,7 +1,4 @@
 <script>
-
-
-
     $(document).ready(function () {
         $('#level_check').on('keyup',function(){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
@@ -48,7 +45,7 @@
             var fromtree = $('.efirst').val();
             var totree = $('.elast').val();
             var radiodepartment =  $('input[name="department"]:checked').val();
-            alert(radiodepartment);
+
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
 
@@ -76,7 +73,42 @@
                 });
             }
         }
+        $('#toDate,#fromDate').on('blur',function(){
+            var to =  $('input[name="To"]').val();
+            var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+            var level = '{{isset($level) ? $level : null}}';
+            var fromtree = $('.efirst').val();
+            var totree = $('.elast').val();
 
+            var radiodepartment =  $('input[name="department"]:checked').val();
+
+            var from =  $('input[name="From"]').val();
+
+
+            var but_level_check =  $('input[id="but_level_check"]:checked').val();
+
+            $(".print_div").css("display","none");
+            if (this) {
+                $.ajax({
+                    url: '{{route('trialbalance.details')}}',
+                    type: 'get',
+                    dataType: 'html',
+                    data: {MainCompany: MainCompany,
+                        level: level,
+                        fromtree: fromtree, totree: totree,
+                        from: from,
+                        to: to,
+                        radiodepartment: radiodepartment,
+                        but_level_check: but_level_check,
+                    },
+                    success: function (data) {
+                        $("#loadingmessage-2").css("display", "none");
+                        $('.print_div').css("display", "block").html(data);
+
+                    }
+                });
+            }
+        });
     });
 
 
