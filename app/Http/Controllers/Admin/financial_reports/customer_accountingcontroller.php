@@ -239,7 +239,7 @@ class customer_accountingcontroller extends Controller
 
     public function details_trial_balance(Request $request)
     {
-dd($request->all());
+//dd($request->all());
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
             $but_sales_check = $request->but_sales_check;
