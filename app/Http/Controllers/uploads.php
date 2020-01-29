@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;use Illuminate\Http\Request;
+namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use App\files;
-use Illuminate\Support\Str;class uploads extends Controller
-{    public static function delete($id){
+use Illuminate\Support\Str;
+
+class uploads extends Controller
+{
+
+    public static function delete($id){
         $file = files::findOrFail($id);
         if(!empty($file)){
             Storage::delete($file->full_file);
@@ -17,10 +22,12 @@ use Illuminate\Support\Str;class uploads extends Controller
             $new_name = $data['new_name'] === null ?time():$data['new_name'];
         }
         if (request()->hasFile($data['request']) && $data['upload_type'] == 'single'){
-            // dd($data['path']);
             !empty($data['delete_file']) ? File::delete($data['delete_file']) : '';
-            $filename = time().'_'.md5(Str::random(16)).'.'.request()->file($data['request'])->getClientOriginalExtension();            
-            $path = 'public/uploads/'.$data['path'];            return request()->file($data['request'])->move($path, $filename);
+            $filename = time().'_'.md5(Str::random(16)).'.'.request()->file($data['request'])->getClientOriginalExtension();
+
+            $path = 'public/uploads/'.$data['path'];
+
+            return request()->file($data['request'])->move($path, $filename);
         } elseif (request()->hasFile($data['request']) && $data['upload_type'] == 'files'){
             $files =  request()->{$data['request']};
             foreach ($files as $file) {
@@ -40,8 +47,12 @@ use Illuminate\Support\Str;class uploads extends Controller
                     'file_type'=> $data['file_type'],
                     'relation_id' => $data['relation_id']
                 ]);
-            }        }
-    }    /**
+            }
+
+        }
+    }
+
+    /**
      * Delete files as [images] from storage
      * @param array $file
      * @return void
@@ -53,4 +64,6 @@ use Illuminate\Support\Str;class uploads extends Controller
             }
         }
         File::delete($file);
-    }}
+    }
+
+}
