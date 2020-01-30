@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\categories;
 
-use App\Http\Controllers\uploads;
 use App\Models\Admin\ActivityTypes;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\MtsItmfsunit;
@@ -15,7 +14,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\DocBlock\Description;
 
 class MainCategoriesController extends Controller
 {
