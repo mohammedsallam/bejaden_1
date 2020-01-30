@@ -523,6 +523,13 @@ class MainCategoriesController extends Controller
         }
         if($item){
             $item->delete();
+            foreach ($item->units as $unit) {
+                $unit->delete();
+            }
+            $otherItems = $item->others->first();
+            File::delete($otherItems->Itm_Picture);
+            File::deleteDirectory(public_path('uploads/other_items/'.$otherItems->ID_No));
+            $otherItems->delete();
             return response()->json(['status' => 1, 'message' => trans('admin.success_deleted')]);
         } else {
             return response()->json(['status' => 0, 'message' => trans('admin.not_found_data')]);
