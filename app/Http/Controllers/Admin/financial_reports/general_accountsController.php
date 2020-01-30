@@ -305,7 +305,7 @@ class general_accountsController extends Controller
     }
     public function trialbalance_details(Request $request)
     {
-//dd($request->all());
+dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;

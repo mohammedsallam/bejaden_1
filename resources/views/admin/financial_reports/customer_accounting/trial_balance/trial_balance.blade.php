@@ -82,21 +82,20 @@
 
 
 
-        <script>
-            $(document).ready(function(){
-                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';
-                console.log(minDate);
-                $('.date').datepicker({
-                    format: 'yyyy-mm-dd',
-                    rtl: true,
-                    language: '{{session('lang')}}',
-                    autoclose:true,
-                    todayBtn:true,
-                    clearBtn:true,
-                });
-            });
+{{--        <script>--}}
+{{--            $(document).ready(function(){--}}
+{{--                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';--}}
+{{--                $('.date').datepicker({--}}
+{{--                    format: 'yyyy-mm-dd',--}}
+{{--                    rtl: true,--}}
+{{--                    language: '{{session('lang')}}',--}}
+{{--                    autoclose:true,--}}
+{{--                    todayBtn:true,--}}
+{{--                    clearBtn:true,--}}
+{{--                });--}}
+{{--            });--}}
 
-        </script>
+{{--        </script>--}}
         <script>
             $(function () {
                 'use strict'

@@ -75,7 +75,7 @@
                     type: 'get',
                     dataType: 'html',
                     data: {MainCompany: MainCompany,fromtree: fromtree, totree: totree,
-                        From: From,to: to,radioDepartment: radioDepartment,but_level_check: but_level_check,
+                        From: From,to: to,radioDepartment: radioDepartment,
                         delegates:delegates, mtscustomer:mtscustomer, sales_check:sales_check, state_check:state_check,
                         but_sales_check:but_sales_check
                     },
@@ -95,9 +95,9 @@
         var state_check = $('#state_check').val();
         var but_sales_check =  $('input[id="but_sales_check"]:checked').val();
         var fromtree = $('.fromtree').val();
-        // var numberfromtree = $('.numberfromtree').val();
+        var numberfromtree = $('.numberfromtree').val();
         var totree = $('.totree').val();
-        // var numbertotree = $('.numbertotree').val();
+        var numbertotree = $('.numbertotree').val();
         var radioDepartment =  $('input[name="department"]:checked').val();
         var delegates =  $('input[name="delegates"]:checked').val();
         var mtscustomer =  $('input[name="mtscustomer"]:checked').val();
@@ -112,12 +112,14 @@
                 dataType: 'html',
                 data: {MainCompany: MainCompany,
                     fromtree: fromtree, totree: totree,
-                    From: From, to: to,
+                    From: From,
+                    to: to,
                     radioDepartment: radioDepartment,
-                    but_level_check: but_level_check,
                     sales_check:sales_check, state_check:state_check,
                     delegates:delegates, mtscustomer:mtscustomer,
-                    but_sales_check:but_sales_check
+                    but_sales_check:but_sales_check,
+                    numberfromtree:numberfromtree,
+                    numbertotree  :numbertotree
 
         },
                 success: function (data) {
@@ -206,7 +208,7 @@
 <div class="row" >
     <div class="col-xs-9">
         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst'])) }}
+        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 elast efirst fromtree'])) }}
     </div>
     <div class="col-xs-3">
         {{ Form::text('number_fromtree',$fromtree, array_merge(['class' => 'form-control'])) }}

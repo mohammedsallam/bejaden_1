@@ -239,7 +239,7 @@ class customer_accountingcontroller extends Controller
 
     public function details_trial_balance(Request $request)
     {
-dd($request->all());
+//dd($request->all());
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
             $but_sales_check = $request->but_sales_check;
@@ -281,7 +281,6 @@ dd($request->all());
     }
     public function print_trial_balance(Request $request)
     {
-@dd($request->all());
         $MainCompany = $request->MainCompany;
         $but_sales_check = $request->but_sales_check;
         $sales_check = $request->sales_check;
@@ -294,11 +293,8 @@ dd($request->all());
         $radioDepartment = $request->radioDepartment;
         $delegates = $request->delegates;
         $mtscustomer = $request->mtscustomer;
-//@dd($but_sales_check ,$delegates,$mtscustomer);
         if($but_sales_check == null && $delegates == null&& $mtscustomer == null){
-
             $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
-
             $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
                 ->where('Acc_Typ',2)
                 ->orderBy('Acc_No')
@@ -365,7 +361,6 @@ dd($request->all());
                 ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
                 ->where('ID_No', '<=', $IdEndTree)
                 ->get();
-            @dd($MainCompany);
 
         }
             switch ($radioDepartment) {
@@ -378,7 +373,6 @@ dd($request->all());
                         }];
                         $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
                             ['GLjrnTrs'=> $GLjrnTrs
-
                              ,'From'=>$From
                              ,'to'=>$to], [] , $config);
                         return $pdf->stream();
