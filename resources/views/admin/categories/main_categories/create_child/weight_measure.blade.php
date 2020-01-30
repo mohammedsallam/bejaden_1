@@ -1,7 +1,6 @@
 <div class="tab-pane fade" id="weight_measure" role="tabpanel" aria-labelledby="home-tab">
     <div class="panel panel-default col-md-8 weight_measure_panel">
         <div class="panel-body">
-
             <div class="panel panel-primary col-md-6">
                 <div class="panel-heading">
                     <h3 class="panel-title">{{trans('admin.iron_measure')}}</h3>
@@ -84,7 +83,8 @@
                         <label for="Itm_Picture"><span class="btn btn-success"> <i class="fa fa-photo"></i> <b>{{trans('admin.choose_pic')}}</b></span></label>
                         <input type="file" name="Itm_Picture" id="Itm_Picture" class="Itm_Picture hidden">
                     </div>
-                    <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center">
+
+                    <div class="img_content" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center">
                         <img style="width:100%" src="{{asset('images/cover_img_2.jpg')}}" alt="{{trans('item_img')}}">
                     </div>
                 </div>

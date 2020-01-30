@@ -6,7 +6,7 @@
                     <div style="display: flex">
                         <div style="display: flex">
                             <label style="width: 26%" for="Itm_No">{{trans('admin.item_no')}}</label>
-                            <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
+                    <input style="width: 41%; background: #fff" type="text" name="Itm_No" id="Itm_No" value="{{$lastChild != null ? $lastChild->Itm_No+1 : $item->Itm_No.'01'}}" class="Itm_No form-control" readonly>
                             <input type="hidden" name="Itm_Parnt" class="Itm_Parnt" value="{{$item->Itm_No}}">
                             <label style="width: 20%; margin-right: 3px" for="Level_No">{{trans('admin.level_no')}}</label>
                             <input style="width: 17%; background: #fff" type="text" name="Level_No" id="Level_No" value="{{$item->Level_No+1}}" class="Level_No form-control" readonly>
@@ -45,7 +45,7 @@
                                 <select class="form-control col-md-8 Sup_No" name="Sup_No" id="Sup_No" style="margin-right: 4px">
                                     <option value="" >{{trans('admin.select')}}</option>
                                     @foreach($suppliers as $suppliers)
-                                        <option value="{{$suppliers->ID_No}}" >{{$suppliers->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
+                                        <option  value="{{$suppliers->ID_No}}" >{{$suppliers->{'Sup_Nm'.ucfirst(session('lang'))} }}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" class="form-control col-md-3 Sup_No_show" id="Sup_No_show">
@@ -108,11 +108,11 @@
                                     <label for="general">{{trans('admin.general')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="radio" name="Measure_Grp" id="product_collect"value="1">
+                                    <input type="radio" name="Measure_Grp" class="Measure_Grp" id="product_collect"value="1">
                                     <label for="product_collect">{{trans('admin.product_collect')}}</label>
                                 </div>
                                 <div style="margin-left: 3px">
-                                    <input type="radio" name="Measure_Grp" id="pure_material" value="2">
+                                    <input type="radio" name="Measure_Grp" class="Measure_Grp" id="pure_material" value="2">
                                     <label for="pure_material">{{trans('admin.pure_material')}}</label>
                                 </div>
                             </div>
@@ -169,7 +169,7 @@
                             <tr style="display: flex">
                                 <td style="width: 10%;"><b>{{trans('admin.refno')}}</b></td>
                                 <td><input name="Ref_No" id="Ref_No" type="text" class="form-control col-md-11 Ref_No"></td>
-                                <td style="width: 15%"></td>
+                                <td style="width: 20%"></td>
                                 <td><b>{{trans('admin.coast')}}</b></td>
                                 <td><input type="text" name="Itm_COst" id="Itm_COst" data-sal="#Unit_Cost1" class="form-control col-md-12 Itm_COst"></td>
                             </tr>
@@ -196,10 +196,10 @@
                             <tr>
                                 <td>{{trans('admin.main_unit')}}</td>
                                 <td>
-                                    <select class="form-control Unit_No_1" name="Unit_No[]" disabled  style="background: #fff">
+                                    <select class="form-control Unit_No_1" name="ItmUnit_No[]"   style="background: #fff">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                            <option disabled value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -208,7 +208,7 @@
                                 <td><input class="form-control Unit_Sal1" id="Unit_Sal1" name="Unit_Sal1[]" type="text" readonly style="background: #fff"></td>
                                 <td><input class="form-control Unit_Pur1" id="Unit_Pur1" name="Unit_Pur[]" type="text" readonly style="background: #fff"></td>
                                 <td><input class=" form-control Unit_Cost1" id="Unit_Cost1" name="Unit_Cost[]" type="text" readonly style="background: #fff"></td>
-                                <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control Fctry_Barcode1" id="Fctry_Barcode1" name="Fctry_Barcode" type="text"></td>
                                 <td>
                                     <select class="form-control Label_No1" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
@@ -221,7 +221,7 @@
                             <tr>
                                 <td>{{trans('admin.unit_1')}}</td>
                                 <td>
-                                    <select class="form-control Unit_No_2" name="Unit_No[]">
+                                    <select class="form-control Unit_No_2" name="ItmUnit_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
                                             <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
@@ -233,7 +233,7 @@
                                 <td><input class="form-control Unit_Sal2" id="Unit_Sal2" name="Unit_Sal1[]" type="text"></td>
                                 <td><input class="form-control Unit_Pur2" id="Unit_Pur2" name="Unit_Pur[]" type="text"></td>
                                 <td><input class=" form-control Unit_Cost2" id="Unit_Cost2" name="Unit_Cost[]" type="text"></td>
-                                <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control Fctry_Barcode2" id="Fctry_Barcode2" name="Fctry_Barcode2" type="text"></td>
                                 <td>
                                     <select class="form-control Label_No2" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
@@ -246,7 +246,7 @@
                             <tr>
                                 <td>{{trans('admin.unit_2')}}</td>
                                 <td>
-                                    <select class="form-control Unit_No_3" name="Unit_No[]">
+                                    <select class="form-control Unit_No_3" name="ItmUnit_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
                                         @foreach ($units as $unit)
                                             <option value="{{$unit->ID_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
@@ -258,7 +258,7 @@
                                 <td><input class="form-control Unit_Sal3" id="Unit_Sal3" name="Unit_Sal1[]" type="text"></td>
                                 <td><input class="form-control Unit_Pur3" id="Unit_Pur3" name="Unit_Pur[]" type="text"></td>
                                 <td><input class=" form-control Unit_Cost3" id="Unit_Cost3" name="Unit_Cost[]" type="text"></td>
-                                <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode[]" type="text"></td>
+                                <td><input class="form-control Fctry_Barcode3" id="Fctry_Barcode3" name="Fctry_Barcode3" type="text"></td>
                                 <td>
                                     <select class="form-control Label_No3" name="Label_No[]">
                                         <option value="">{{trans('admin.select')}}</option>
