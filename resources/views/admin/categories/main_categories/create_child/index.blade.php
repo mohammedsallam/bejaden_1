@@ -1,10 +1,17 @@
+<style>
+    .collaps_tree{
+        width: 0;
+        overflow: hidden !important;
+    }
+</style>
 <script>
-
-    $('#parent').click(function () {
-        $(this).prop('checked', false)
-        return false
+    $(document).on('change', '.Itm_Picture', function () {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('.img_content').html('<img style="width:100%" src="'+e.target.result+'">');
+        };
+        reader.readAsDataURL(this.files[0]);
     });
-
     $('select').change(function () {
         $(this).siblings('input').val($(this).val())
     });

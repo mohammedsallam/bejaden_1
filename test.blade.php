@@ -1,437 +1,151 @@
-@extends('admin.index')
-@section('title',trans('admin.basic_types'))
-@section('content')
-@push('js')
-<script>
+<?php
 
-    $(document).ready(function () {
+public function store(Request $request)
+{
+    $validation = Validator::make($request->all(), [
+        'Cmp_No' => 'required',
+        'Actvty_No' => 'required',
+        'Itm_No' => 'required',
+        'Level_No' => 'required',
+        'Level_Status' => 'required',
+        'Sup_No' => 'required',
+        'Itm_NmAr' => 'required',
+        'Itm_NmEn' => 'sometimes',
+        'Unit_No' => 'required',
+    ],[], [
+        'Cmp_No' => trans('admin.na_Comp'),
+        'Actvty_No' => trans('admin.activity'),
+        'Itm_No' => trans('admin.item_no'),
+        'Level_No' => trans('admin.level_no'),
+        'Level_Status' => trans('admin.level_number'),
+        'Sup_No' => trans('admin.Suppliers'),
+        'Itm_NmAr' => trans('admin.name_ar'),
+        'Itm_NmEn' => trans('admin.name_en'),
+        'Unit_No' => trans('admin.unit_no'),
+    ]);
 
-        var timer = 0;
-        var delay = 200;
-        var prevent = false;
-
-        $(document).on('change', '.Cmp_No , .Actvty_No', function(){
-            $('#jstree').jstree('destroy');
-            var tree = [];
-            var Cmp_No = $('.Cmp_No').val();
-            var Actvty_No = $('.Actvty_No').val();
-            if(Cmp_No != null){
-                $.ajax({
-                    url: "{{route('getCategoryItem')}}",
-                    type: "post",
-                    dataType: 'html',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        Cmp_No: Cmp_No,
-                        Actvty_No: Actvty_No
-                    },
-                    success: function(data){
-                        let dataParse = JSON.parse(data);
-
-                        for(var i = 0; i < dataParse.length; i++){
-                            tree.push(dataParse[i])
-                        }
-
-                        $('#jstree').jstree({
-                            "core" : {
-                        {{--'data' : "{{load_item('parent_id', '', '')}}",--}}
-                        'data' : tree,
-                            "themes" : {
-                            "variant" : "large"
-                        },
-                        "multiple" : false,
-                            "animation" : 300
-                    },
-                        "checkbox" : {
-                            "keep_selected_style" : false
-                        },
-                        "plugins" : [ "themes","html_data","dnd","ui","types" ]
-                    });
-
-                        //close or open all nodes on jstree load -opened by default-
-                        $('#jstree').on('loaded.jstree', function() {
-                            $('#jstree').jstree('open_all');
-                        });
-
-                        $('#jstree').on("changed.jstree", function (e, data) {
-                            var i, j, r = [];
-                            var name = [];
-                            for (i=0,j=data.selected.length;i < j;i++){
-                                r.push(data.instance.get_node(data.selected[i]).id);
-                                name.push(data.instance.get_node(data.selected[i]).text);
-                            }
-                            $('#parent_name').text(name);
-
-                            //get all direct and undirect children of selected node
-                            var currentNode = data.node;
-                            var allChildren = $(this).jstree(true).get_children_dom(currentNode);
-                            // var result = [currentNode.id];
-                            var result = [];
-                            allChildren.find('li').addBack().each(function(index, element) {
-                                if ($(this).jstree(true).is_leaf(element)) {
-                                    // result.push(element.textContent);
-                                    result.push(parseInt(element.id));
-                                } else {
-                                    var nod = $(this).jstree(true).get_node(element);
-                                    // result.push(nod.text);
-                                    result.push(parseInt(nod.id));
-                                }
-                            });
-
-                            //handle click event
-                            // timer = setTimeout(function() {
-                            // if (!prevent) {
-                            handle_click(r[0], result);
-                            // }
-                            // prevent = false;
-                            // }, delay);
-                        });
-
-                        //handle tree double click event
-                        $('#jstree').on("dblclick.jstree", function (e){
-                            clearTimeout(timer);
-                            prevent = true;
-                            handle_dbclick(e);
-                        });
-                    }
-                });
-            }
-        });
-
-        $('#jstree').jstree({
-            "core" : {
-                'data' : {!!  load_item('Itm_Parnt', '', session('updatedComNo'), session('updatedActiveNo')) !!},
-        "themes" : {
-            "variant" : "large"
-        },
-        "multiple" : false,
-            "animation" : 300
-    },
-        "checkbox" : {
-            "keep_selected_style" : false
-        },
-        "plugins" : [ "themes","html_data","dnd","ui","types" ]
-    });
-
-        $('#jstree').on('loaded.jstree', function() {
-            $('#jstree').jstree('open_all');
-        });
-
-        $('#jstree').on("changed.jstree", function (e, data) {
-            var i, j, r = [];
-            var name = [];
-            for (i=0,j=data.selected.length;i < j;i++){
-                r.push(data.instance.get_node(data.selected[i]).id);
-                name.push(data.instance.get_node(data.selected[i]).text);
-            }
-            $('#parent_name').text(name);
-        });
-
-        //handle tree click vent
-        $('#jstree').on("click.jstree", function (){
-            timer = setTimeout(function() {
-                handle_click();
-                prevent = false;
-            }, delay);
-        });
-
-        //handle tree double click event
-        $('#jstree').on("dblclick.jstree", function (e){
-            clearTimeout(timer);
-            prevent = true;
-            handle_dbclick(e);
-        });
-
-        // handle click event
-        function handle_click(Itm_No, children){
-            // var node = $(e.target).closest("li");
-            // var type = node.attr('rel');
-            // var Itm_No = node[0].id;
-            $.ajax({
-                url: "{{route('mainCategories.index')}}",
-                type: "get",
-                dataType: 'html',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    Itm_No: Itm_No,
-                    children: children
-                },
-                success: function(data){
-                    $('#myTabContent1').html(data);
-                    $('.editRootOrChildLink ').removeClass('hidden');
-                    $('.deleteRootOrChildLink  ').removeClass('hidden');
-                }
-            });
-        }
-
-        function handle_dbclick(e){
-            var node = $(e.target).closest("li");
-            var type = node.attr('rel');
-            var parent = node[0].id;
-
-            $.ajax({
-                url: "{{route('getChildblade')}}",
-                type: "post",
-                dataType: 'html',
-                data: {
-                    _token: "{{csrf_token()}}",
-                    parent: parent
-                },
-                success: function(data){
-                    $('#myTabContent1').html(data);
-                }
-            });
-
-        }
-
-
-        /**
-         * Separate
-         */
-
-
-
-
-        $('#parent').click(function () {
-            $('input[type="checkbox"]#sells').prop('checked', true);
-        });
-
-        if($('#parent').prop('checked') === true){
-            $('input[type="checkbox"]#sells').prop('checked', true);
-        }
-
-        $('#child').click(function () {
-            $('input[type="checkbox"]#sells').prop('checked', false);
-        });
-
-        $('input[type="checkbox"]#sells').click(function () {
-            if($('#child').prop('checked') === true){
-                $('input[type="checkbox"]#sells').prop('checked', false);
-            }
-            if($('#parent').prop('checked') === true){
-                $('input[type="checkbox"]#sells').prop('checked', true);
-            }
-        });
-
-        $('.Sup_No').change(function () {
-            $('.Sup_No_show').val($(this).val())
-        });
-
-
-        $('.addRootOrChild').click(function () {
-            var Itm_No = $('.Itm_No').val();
-            $.ajax({
-                url: "{{route('mainCategories.store')}}",
-                type: "post",
-                dataType: 'json',
-                data: {
-                    _token: "{{csrf_token()}}",
-                    Cmp_No: $('.Cmp_No').val(),
-                    Actvty_No: $('.Actvty_No').val(),
-                    Itm_No: Itm_No,
-                    Level_No: $('.Level_No').val(),
-                    Level_Status: $('input[type=radio].Level_Status:checked').val(),
-                    Itm_NmAr: $('.Itm_NmAr').val(),
-                    Sup_No: $('.Sup_No').val(),
-                },
-                success: function (data) {
-                    if(data.status === 0){
-                        $('.error_message').removeClass('hidden').html(data.message);
-                        $('.success_message').addClass('hidden')
-                    } else {
-                        $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                        $('.success_message').removeClass('hidden').html(data.message);
-                        $('.error_message').addClass('hidden');
-                        window.location.reload();
-                    }
-                }
-            })
-        });
-
-        var lastItemNo = $('.Itm_No ').val();
-        $('.editRootOrChildLink').click(function () {
-            var Itm_No = $('.Itm_No').val();
-            $.ajax({
-                url: "{{route('updateRootOrChild')}}",
-                type: "post",
-                dataType: 'json',
-                data: {
-                    _token: "{{csrf_token()}}",
-                    Cmp_No: $('.Cmp_No').val(),
-                    Actvty_No: $('.Actvty_No').val(),
-                    Itm_No: Itm_No,
-                    Level_No: $('.Level_No').val(),
-                    Level_Status: $('input[type=radio].Level_Status:checked').val(),
-                    Itm_NmAr: $('.Itm_NmAr').val(),
-                    Itm_NmEn: $('.Itm_NmEn').val(),
-                    Sup_No: $('.Sup_No').val(),
-                },
-                success: function (data) {
-                    if(data.status === 0){
-                        $('.error_message').removeClass('hidden').html(data.message);
-                        $('.success_message').addClass('hidden')
-                    } else {
-                        $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                        $('.success_message').removeClass('hidden').html(data.message);
-                        $('.error_message').addClass('hidden');
-                        $('.Itm_No').val(lastItemNo);
-                        $('.Level_No').val(1);
-                        $('.Itm_NmAr').val('');
-                        $('.Itm_NmEn').val('');
-                        window.location.reload();
-                    }
-                }
-            });
-
-        });
-
-        $('.deleteRootOrChildLink').click(function () {
-            $.ajax({
-                url: "{{route('deleteRootOrChild')}}",
-                type: "post",
-                dataType: 'json',
-                data: {
-                    _token: "{{csrf_token()}}",
-                    Itm_No: $('.Itm_No').val(),
-                },
-                success: function (data) {
-                    if(data.status === 0){
-                        $('.error_message').removeClass('hidden').html(data.message);
-                        $('.success_message').addClass('hidden')
-                    } else {
-                        $('.Itm_No').val(parseInt($('.Itm_No').val())+1);
-                        $('.success_message').removeClass('hidden').html(data.message);
-                        $('.error_message').addClass('hidden');
-                        $('.Itm_No').val(lastItemNo);
-                        $('.Level_No').val(1);
-                        $('.Itm_NmAr').val('');
-                        $('.Itm_NmEn').val('');
-                        $('.jstree-clicked').parent('li').remove();
-                        $('#parent_name').html('')
-                    }
-                }
-            });
-
-        });
-
-    });
-
-</script>
-@endpush
-@push('css')
-<style>
-    .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover{
-        border-top: 1px groove black;
-        background: #8e8e8e5c;
-        border-radius: 0;
-        font-weight: bold;
+    if ($validation->fails()){
+        return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
     }
 
-    .input_number{
-        width: 100%;
-        height: 30px;
-        font-size: 14px;
-        line-height: 1.42857143;
-        text-align: center;
-        color: #555;
-        background-color: #fff;
-        background-image: none;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    $itemIfExist = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+
+    if ($itemIfExist){
+        return response()->json(['status' => 0, 'message' => trans('admin.found_data')]);
     }
-</style>
-@endpush
-<div class="box">
 
-    @include('admin.layouts.message')
+    $item = MtsItmmfs::create($request->except(
+        [
+            'ItmUnit_No',
+            'Unit_Ratio',
+            'Unit_Sal1',
+            'Unit_Pur',
+            'Unit_Cost',
+            'Label_No',
+            'Itm_LengthSteel',
+            'Itm_WidthSteel',
+            'Itm_Durability',
+            'Itm_LengthPaper',
+            'Itm_WidthPaper',
+            'Itm_WghtPaper',
+            'Mdcn_Grup1',
+            'Mdcn_Grup2',
+            'Mdcn_Grup3',
+            'ItmRplc_No1',
+            'ItmRplc_No4',
+            'ItmRplc_No3',
+            'Shelf_No',
+            'Itm_Othr1',
+            'Itm_Othr2',
+            'Itm_Picture',
+        ]
+    ));
 
+    $item->update(['Level_Status' => 0, 'Level_No' => 1]);
 
-    <!-- /.box-header -->
-    <div class="box-body table-responsive" id="create_chart">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger error_message hidden"></div>
-            </div>
-            <div class="col-md-12">
-                <div class="alert alert-success success_message hidden"></div>
-            </div>
-        </div>
-        <div class="row text-left" style="margin-bottom: 5px">
-            <div class="col-md-4 pull-left">
-                <a class="btn btn-info editRootOrChildLink hidden" href="#"><i class="fa fa-floppy-o"></i></a>
-                <a class="btn btn-danger deleteRootOrChildLink hidden" href="#"><i class="fa fa-trash"></i></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="display: flex">
-                    <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
-                    <select name="Cmp_No" id="Cmp_No" class="form-control Cmp_No">
-                        <option value="">{{trans('admin.select')}}</option>
-                        @if(count($cmps) > 0)
-                        @foreach($cmps as $cmp)
-                        <option value="{{$cmp->ID_No}}">{{$cmp->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
-                        @endforeach
-                        @endif
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group" style="display: flex">
-                    <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
-                    <select name="Actvty_No" id="Actvty_No" class="form-control Actvty_No">
-                        <option value="">{{trans('admin.select')}}</option>
-                        @if(count($activity) > 0)
-                        @foreach($activity as $active)
-                        <option value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
-                        @endforeach
-                        @endif
-                    </select>
-                </div>
-            </div>
-        </div>
+    $MtsItmfsunit = [
+        [
+            'Ln_No' => 0,
+            'Unit_No' =>$request->ItmUnit_No[0],
+            'Unit_Ratio' =>$request->Unit_Ratio[0],
+            'Unit_Sal1' =>$request->Unit_Sal1[0],
+            'Unit_Pur' =>$request->Unit_Pur[0],
+            'Unit_Cost' =>$request->Unit_Cost[0],
+            'Label_No' =>$request->Label_No[0],
+        ],
+        [
+            'Ln_No' => 1,
+            'Unit_No' =>$request->ItmUnit_No[1],
+            'Unit_Ratio' =>$request->Unit_Ratio[1],
+            'Unit_Sal1' =>$request->Unit_Sal1[1],
+            'Unit_Pur' =>$request->Unit_Pur[1],
+            'Unit_Cost' =>$request->Unit_Cost[1],
+            'Label_No' =>$request->Label_No[1],
+        ],
+        [
+            'Ln_No' => 2,
+            'Unit_No' =>$request->ItmUnit_No[2],
+            'Unit_Ratio' =>$request->Unit_Ratio[2],
+            'Unit_Sal1' =>$request->Unit_Sal2[2],
+            'Unit_Pur' =>$request->Unit_Pur[2],
+            'Unit_Cost' =>$request->Unit_Cost[2],
+            'Label_No' =>$request->Label_No[2],
+        ]
+    ];
 
-        {{-- start Ul taps--}}
-        <ul class="nav nav-tabs nav-justified" id="myTab1" role="tablist">
-            <li class="nav-item active">
-                <a class="nav-link active" id="home-tab1" data-toggle="tab" href="#cat_data" role="tab" aria-controls="home"
-                   aria-selected="true">{{trans('admin.cat_data')}}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab1" data-toggle="tab" href="#weight_measure" role="tab" aria-controls="profile"
-                   aria-selected="false">{{trans('admin.weight_measure')}}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#purchases" role="tab" aria-controls="profile"
-                   aria-selected="false">{{trans('admin.purchases')}}</a>
-            </li>
-        </ul>
-        {{-- End Ul taps--}}
+    foreach ($MtsItmfsunit as $key => $item) {
+        if ($item['Unit_No'] == null || $item['Unit_Ratio'] == null){
+            continue;
+        }
 
+        MtsItmfsunit::create([
+            'Actvty_No' => $request->Actvty_No,
+            'Cmp_No' => $request->Cmp_No,
+            'Itm_No' => $request->Itm_No,
+            'Ln_No' => $item['Ln_No'],
+            'Unit_No' => $item['Unit_No'],
+            'Unit_Ratio' => $item['Unit_Ratio'],
+            'Unit_Sal1' => $item['Unit_Sal1'],
+            'Unit_Pur' => $item['Unit_Pur'],
+            'Unit_Cost' => $item['Unit_Cost'],
+            'Label_No' => $item['Label_No'],
 
-        <div class="panel panel-default col-md-4" style="margin-top:1%; overflow: auto">
-            <div class="panel-body">
-                <a class="btn btn-primary addRootOrChild" id="addRootOrChild">{{trans('admin.new_category')}}</a>
-                <div id="parent_name" style="display: inline-block"></div>
-                <div id="jstree" style="margin-top: 20px"></div>
-            </div>
-        </div>
-        {{----}}
-        <div class="tab-content" id="myTabContent1" style="margin-top:1%">
+        ]);
 
-            {{--First tap--}}
-            @include('admin.categories.main_categories.create_parent.cat_data')
-            {{--Second tap--}}
-            @include('admin.categories.main_categories.create_parent.weight_measure')
-            {{--third tap--}}
-            @include('admin.categories.main_categories.create_parent.purchases')
-        </div>
-    </div>
-</div>
+    }
 
-@endsection
+    $otherItems = MtsItmOthr::create(
+        $request->all([
+            'Actvty_No',
+            'Cmp_No',
+            'Itm_No',
+            'Itm_LengthSteel',
+            'Itm_WidthSteel',
+            'Itm_Durability',
+            'Itm_LengthPaper',
+            'Itm_WidthPaper',
+            'Itm_WghtPaper',
+            'Mdcn_Grup1',
+            'Mdcn_Grup2',
+            'Mdcn_Grup3',
+            'ItmRplc_No1',
+            'ItmRplc_No4',
+            'ItmRplc_No3',
+            'Shelf_No',
+            'Itm_Othr1',
+            'Itm_Othr2'
+        ])
+    );
+
+    if($request->hasFile('Itm_Picture')){
+        $file = $request->file('Itm_Picture');
+        $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
+        $path = 'uploads/other_items/'.$otherItems->ID_No;
+        $file->move($path, $filename);
+        $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
+    }
+
+    session(['updatedComNo', $request->Cmp_No,'updatedActiveNo', $request->Actvty_No]);
+    return response()->json(['status' => 1, 'message' => trans('admin.success_add')]);
+
+}

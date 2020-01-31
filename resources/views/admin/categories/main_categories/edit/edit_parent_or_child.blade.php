@@ -2,7 +2,7 @@
     $(document).on('change', '.Itm_Picture', function () {
         var reader = new FileReader();
         reader.onload = function(e) {
-            $('.img_content').html('<img src="'+e.target.result+'">');
+            $('.img_content').html('<img style="width:100%" src="'+e.target.result+'">');
         };
         reader.readAsDataURL(this.files[0]);
     });

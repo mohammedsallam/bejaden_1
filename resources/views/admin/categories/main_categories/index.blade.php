@@ -266,7 +266,6 @@
 
                     let form = $('form.mainCategories'),
                         formData = new FormData(form[0]);
-                        console.log(formData);
                     $.ajax({
                         url: "{{route('mainCategories.store')}}",
                         type: "post",
@@ -293,30 +292,24 @@
                 $(document).on('change', '.Itm_Picture', function () {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        $('.img_content').html('<img src="'+e.target.result+'">');
+                        $('.img_content').html('<img style="width:100%" src="'+e.target.result+'">');
                     };
                     reader.readAsDataURL(this.files[0]);
                 });
 
                 var lastItemNo = $('.Itm_No ').val();
                 $('.editRootOrChildLink, .createChild').click(function () {
-                    var Itm_No = $('.Itm_No').val();
+
+                    let form = $('form.mainCategories'),
+                        formData = new FormData(form[0]);
                     $.ajax({
                         url: "{{route('updateRootOrChildOrCreateChild')}}",
                         type: "post",
                         dataType: 'json',
-                        data: {
-                            _token: "{{csrf_token()}}",
-                            Cmp_No: $('.Cmp_No').val(),
-                            Actvty_No: $('.Actvty_No').val(),
-                            Itm_No: Itm_No,
-                            Itm_Parnt: $('.Itm_Parnt').val(),
-                            Level_No: $('.Level_No').val(),
-                            Level_Status: $('input[type=radio].Level_Status:checked').val(),
-                            Itm_NmAr: $('.Itm_NmAr').val(),
-                            Itm_NmEn: $('.Itm_NmEn').val(),
-                            Sup_No: $('.Sup_No').val(),
-                        },
+                        processData: false,
+                        cache: false,
+                        contentType: false,
+                        data: formData,
                         success: function (data) {
                             if(data.status === 0){
                                 $('.error_message').removeClass('hidden').html(data.message);
