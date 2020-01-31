@@ -293,6 +293,7 @@ class customer_accountingcontroller extends Controller
         $radioDepartment = $request->radioDepartment;
         $delegates = $request->delegates;
         $mtscustomer = $request->mtscustomer;
+
         if($but_sales_check == null && $delegates == null&& $mtscustomer == null){
             $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
             $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
@@ -309,7 +310,7 @@ class customer_accountingcontroller extends Controller
                     $q->whereIn('Acc_No', $Cstm_No)->orWhereIn('Sysub_Account',$Cstm_No);
                 })
                 ->get();
-//            @dd($GLjrnTrs);
+
 
 //            $GLjrnTrs = $GLjrnTrs->map(function ($data)use($MainCompany,$Cstm_No){
 //                $data->Cstm_NmAr = $data->MTsCustomer
@@ -322,6 +323,7 @@ class customer_accountingcontroller extends Controller
 
 
         }else if($but_sales_check != null && $delegates == null&& $mtscustomer == null ){
+            dd('2');
             $MTsCustomer = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->get();
 
             $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
@@ -346,7 +348,8 @@ class customer_accountingcontroller extends Controller
 //                ->get();
 
         }else if ($but_sales_check != null && $delegates != null&& $mtscustomer != null )
-        {           $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
+        {
+           $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
             $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
 
             $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
@@ -387,7 +390,7 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['GLjrnTrs'=> $GLjrnTrs,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
                     case '3':
@@ -399,7 +402,7 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['GLjrnTrs'=> $GLjrnTrs,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
                     case '4':
@@ -411,7 +414,7 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['GLjrnTrs'=> $GLjrnTrs,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
             }

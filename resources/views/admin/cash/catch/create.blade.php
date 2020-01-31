@@ -192,7 +192,7 @@
                     //get salesman in case Acc_Ty == 2 (customers)
                     if(Acc_Ty == 2){
                         $.ajax({
-                            url: "{{route('getSalesMan')}}",
+                            url: "{{route('getSalesManC')}}",
                             type: "POST",
                             dataType: 'html',
                             data: {"_token": "{{ csrf_token() }}", Acc_No: Acc_No },
