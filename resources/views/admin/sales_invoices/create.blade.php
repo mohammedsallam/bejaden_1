@@ -53,22 +53,22 @@
 
                         let row = `<tr>
                     <td class="delete_row bg-red">`+count+`</td>
-                    <td style="width: 11%"><input name="Itm_No" id="Itm_No" class="Itm_No" type="text"></td>
+                    <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
                     <td style="width: 20%">
                         <select name="" >
                             <option value=""></option>
                         </select>
                     </td>
                     <td style="width: 9%">
-                        <select name="Unit_No" id="Unit_No" class="Unit_No" >
+                        <select name="Unit_No[]" id="Unit_No" class="Unit_No" >
                             <option value=""></option>
                         </select>
                     </td>
-                    <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
-                    <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
-                    <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
+                    <td><input type="text" name="Loc_No[]" id="Loc_No" class="Loc_No"></td>
+                    <td><input type="number" min="1" name="Qty[]" id="Qty" class="Qty"></td>
+                    <td><input type="number" min="1" name="Itm_Sal[]" id="Itm_Sal" class="Itm_Sal"></td>
                     <td><input type="text"></td>
-                    <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
+                    <td style="width: 11%;"><input type="text" name="Exp_Date[]" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
                     <td><input type="text"></td>
                     <td><input type="text"></td>
                     <td><input type="text" class="last_td"></td>
@@ -225,7 +225,7 @@
         </div>
 
         {{--Start table--}}
-        <div class="row" style="max-height: 400px; overflow: auto">
+        <div class="row" style="max-height: 400px; overflow: auto;">
             <table class="table table-bordered">
                 <tr class="bg-aqua">
                     <th>م</th>
@@ -246,22 +246,22 @@
                 <tbody class="table_body">
                 <tr class="first_row">
                     <td class="delete_row bg-red">1</td>
-                    <td style="width: 11%"><input name="Itm_No" id="Itm_No" class="Itm_No" type="text"></td>
+                    <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
                     <td style="width: 20%">
                         <select name="" >
                             <option value=""></option>
                         </select>
                     </td>
                     <td style="width: 9%">
-                        <select name="Unit_No" id="Unit_No" class="Unit_No" >
+                        <select name="Unit_No[]" id="Unit_No" class="Unit_No" >
                             <option value=""></option>
                         </select>
                     </td>
-                    <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
-                    <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
-                    <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
-                    <td><input type="text"></td>
-                    <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
+                    <td><input type="text" name="Loc_No[]" id="Loc_No" class="Loc_No"></td>
+                    <td><input type="number" min="1" name="Qty[]" id="Qty" class="Qty"></td>
+                    <td><input type="number" min="1" name="Itm_Sal[]" id="Itm_Sal" class="Itm_Sal"></td>
+                    <td><input type="text" name="" id="sum" class="sum"></td>
+                    <td style="width: 11%;"><input type="text" name="Exp_Date[]" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
                     <td><input type="text"></td>
                     <td><input type="text"></td>
                     <td><input type="text" class="last_td"></td>
@@ -302,17 +302,20 @@
                     <input type="text" name="" id="" class="form-control">
                 </div>
             </div>
-
-
-
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
-                    <label for="">رصيد الصنف</label>
+                    <label for="">قيمة الضريبة</label>
                     <input type="text" name="" id="" class="form-control">
                 </div>
             </div>
-
-
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الصافي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">حد الائتمان</label>
@@ -321,13 +324,34 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
+                    <label for="">الرصيد الحالي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الفرق</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
                     <label for="">رصيد الصنف</label>
                     <input type="text" name="" id="" class="form-control">
                 </div>
             </div>
-        </div>
-        <div class="row">
-
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">رصيد المستودعات</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">سعر البيع</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
         </div>
 
         {{--End table--}}
