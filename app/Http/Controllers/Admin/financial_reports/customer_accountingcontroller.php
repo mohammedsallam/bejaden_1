@@ -293,48 +293,38 @@ class customer_accountingcontroller extends Controller
         $radioDepartment = $request->radioDepartment;
         $delegates = $request->delegates;
         $mtscustomer = $request->mtscustomer;
-        if($but_sales_check == null && $delegates == null&& $mtscustomer == null){
-            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
-            $Acc_No = MtsChartAc::where('Cmp_No',$MainCompany)
-                ->where('Acc_Typ',2)
-                ->orderBy('Acc_No')
-                ->where('Acc_No', '>=', $fromtree)
-                ->where('Acc_No', '<=', $totree)
-                ->get();
 
-            $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+        if($but_sales_check == null && $delegates == null&& $mtscustomer == null){
+
+            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
                 ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
                 ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-                ->where(function ($q) use($Cstm_No) {
-                    $q->whereIn('Acc_No', $Cstm_No)->orWhereIn('Sysub_Account',$Cstm_No);
-                })
-                ->get();
-//            @dd($GLjrnTrs);
+                ->where('Ln_No','>',1)->pluck('Acc_No');
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
 
-//            $GLjrnTrs = $GLjrnTrs->map(function ($data)use($MainCompany,$Cstm_No){
-//                $data->Cstm_NmAr = $data->MTsCustomer
-//                    ->where('Cmp_No',$MainCompany)
-//                 ->WhereIn('Cstm_No',$Cstm_No)
-//                   ->get();
-//
-//                return $data;
-//            });
-
-
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
         }else if($but_sales_check != null && $delegates == null&& $mtscustomer == null ){
-            $MTsCustomer = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->get();
+            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->pluck('Cstm_No');
+//            dd($Cstm_No);
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Acc_No');
+//            dd($GLjrnTrs1);
 
-            $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
-            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
 
-            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
-                ->where('Acc_Typ',2)
-
-                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
-                ->where('ID_No', '<=', $IdEndTree)
-                ->get();
-        }else if($but_sales_check != null && $delegates != null&& $mtscustomer == null )
-        {
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
+//            dd($data);
+//            $MTsCustomer = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->get();
+//
 //            $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
 //            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
 //
@@ -344,27 +334,71 @@ class customer_accountingcontroller extends Controller
 //                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
 //                ->where('ID_No', '<=', $IdEndTree)
 //                ->get();
+        }
+        else if($but_sales_check != null && $delegates != null&& $mtscustomer == null )
+        {
+//            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->pluck('Cstm_No');
 
-        }else if ($but_sales_check != null && $delegates != null&& $mtscustomer != null )
-        {           $IdFristTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$fromtree)->pluck('ID_No');
-            $IdEndTree =  MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$totree)->pluck('ID_No');
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Acc_No');
 
-            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)
-                ->where('Jr_Ty',2)
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
 
-                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
-                ->where('ID_No', '<=', $IdEndTree)
-                ->get();
-            $GLjrnTrs = GLjrnTrs::where('Cmp_No',$MainCompany)
-                ->where('Ac_Ty',2)
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
+        }
+        else if($but_sales_check == null && $delegates != null&& $mtscustomer == null )
+        {
+            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->pluck('Cstm_No');
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Acc_No');
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
 
-                ->orderBy('Acc_No')->where('ID_No', '>=', $IdFristTree)
-                ->where('ID_No', '<=', $IdEndTree)
-                ->get();
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
+        }
+        else if ($but_sales_check != null && $delegates != null&& $mtscustomer != null )
+        {
+            $Cstm_No = MTsCustomer::where('Cmp_No',$MainCompany)->where('Slm_No',$sales_check)->pluck('Cstm_No');
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Acc_No');
+
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
+
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
+
+        }
+        else if ($but_sales_check == null && $delegates == null&& $mtscustomer != null )
+        {
+            $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Acc_No');
+
+            $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($From)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->where('Ln_No','>',1)->pluck('Sysub_Account');
+
+            $data = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_No',$GLjrnTrs1)->get();
 
         }
             switch ($radioDepartment) {
                 case '1':
+
                     $config = ['instanceConfigurator' => function($mpdf) {
                             $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
@@ -372,9 +406,7 @@ class customer_accountingcontroller extends Controller
                             );
                         }];
                         $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                            ['GLjrnTrs'=> $GLjrnTrs
-                             ,'From'=>$From
-                             ,'to'=>$to], [] , $config);
+                            ['data'   =>$data, 'From'=>$From,'to'=>$to], [] , $config);
                         return $pdf->stream();
 
                     break;
@@ -387,11 +419,15 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['data'   =>$data,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
+
                     case '3':
-
+                        $data = MtsChartAc::where('Cmp_No',$MainCompany)->whereRaw('Fbal_DB > Fbal_CR')
+                            ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
+                                $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
+                            })->get();
                     $config = ['instanceConfigurator' => function($mpdf) {
                         $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
@@ -399,11 +435,15 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['data'=> $data,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
-                    case '4':
 
+                    case '4':
+                        $data = MtsChartAc::where('Cmp_No',$MainCompany)->whereRaw('Fbal_DB < Fbal_CR')
+                            ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
+                                $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
+                            })->get();
                     $config = ['instanceConfigurator' => function($mpdf) {
                         $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
@@ -411,7 +451,7 @@ class customer_accountingcontroller extends Controller
                         );
                     }];
                     $pdf = PDF::loadView('admin.financial_reports.customer_accounting.trial_balance.pdf.totalDepartment',
-                        ['MtsChartAc'=> $MtsChartAc,'From'=>$From,'to'=>$to], [] , $config);
+                        ['data'=> $data,'From'=>$From,'to'=>$to], [] , $config);
                     return $pdf->stream();
                     break;
             }

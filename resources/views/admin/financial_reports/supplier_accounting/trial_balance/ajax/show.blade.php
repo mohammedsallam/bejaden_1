@@ -1,18 +1,11 @@
 <script>
-
-
-
     $(document).ready(function () {
         $('#level_check').on('keyup',function(){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-
             var level = $(this).val();
-
             var radiodepartment =  $('input[name="department"]:checked').val();
-
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
-
             var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
             $(".details_level").css("display","none");

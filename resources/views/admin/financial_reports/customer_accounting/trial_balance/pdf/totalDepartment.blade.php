@@ -110,93 +110,103 @@
             {{$dataDebtor = 0}}
             {{$dataCredit = 0}}
             {{$dataDebtor1 = 0}}
+            {{$dataDebtor3  = 0}}
             {{$dataCredit1 = 0}}
             {{$dataDebtor2 = 0}}
             {{$dataCredit2 = 0}}
         </div>
-        @foreach($GLjrnTrs as $merged)
+        @foreach($data as $merged)
+{{--            @dd($data)--}}
             <tr>
                 <td>
-                    {{$merged->Sysub_Account}}
+                    {{$merged->Acc_No}}
                 </td>
                 <td>
-                    {{App\Models\Admin\MTsCustomer::where('Cstm_No',$merged->Sysub_Account)->pluck('Cstm_Nm'. ucfirst(session('lang')))->first()}}
+                    {{session_lang($merged->Acc_NmEn,$merged->Acc_NmAr)}}
+                    {{-- {{App\Models\Admin\MTsCustomer::where('Cstm_No',$merged->Sysub_Account)->pluck('Cstm_Nm'. ucfirst(session('lang')))->first()}}--}}
                 </td>
                 <td>
                     <div style="display:none">
-                            {{$Tr_Cr = balancefirstperiod($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
-                            {{$Tr_Db = balancefirstperiod($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')}}
+                        {{ $debtor = $merged->Fbal_DB +
+                        FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<') }}
 
-                        @if(($Tr_Db - $Tr_Cr) > 0)
-                            {{ $dataDebtor += $Tr_Db - $Tr_Cr}}
+                        {{ $creditor =  $merged->Fbal_CR  +
+                         FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
+                        @if(($debtor - $creditor) > 0)
+                            {{ $dataDebtor += $debtor - $creditor}}
                         @else
                             {{$dataDebtor += 0}}
                         @endif
                     </div>
 
-                    @if(($Tr_Db - $Tr_Cr) > 0)
-                        {{ $alldeb = $Tr_Db - $Tr_Cr}}
+
+                    @if(($debtor - $creditor) > 0)
+                        {{ $value_debtor = $debtor - $creditor}}
                     @else
-                        {{$alldeb = 0}}
+                        {{$value_debtor = 0}}
                     @endif
                 </td>
                 <td>
                     <div style="display:none">
+                        {{ $debtor1 = $merged->Fbal_DB +
+                        FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')  }}
 
-                        {{$Tr_Cr = balancefirstperiod($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
-                        {{$Tr_Db = balancefirstperiod($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')}}
+                        {{ $creditor1 =  $merged->Fbal_CR  +
+                         FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
 
-                        @if(($Tr_Cr - $Tr_Db) > 0)
-                            {{$dataCredit += $Tr_Cr - $Tr_Db}}
+
+                        @if(($creditor1 - $debtor1) > 0)
+                            {{ $dataCredit +=  $creditor1 - $debtor1}}
                         @else
                             {{$dataCredit += 0}}
                         @endif
+
+
                     </div>
-                    @if(($Tr_Cr- $Tr_Db) > 0)
-                        {{ $alldeb2 = $Tr_Cr - $Tr_Db}}
+
+                    @if(( $creditor1 -$debtor1) > 0)
+                        {{ $value_creditor =  $creditor1-  $debtor1 }}
                     @else
-                        {{$alldeb2 = 0}}
+                        {{$value_creditor = 0}}
                     @endif
-                </td>
-                <td>
-                        {{$debtor2 = balance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','>=')}}
-                        <div style="display:none">
-                            {{$dataDebtor1 += balance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','>=')}}
-                        </div>
 
                 </td>
                 <td>
-                    {{$creditor2 = balance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','>=')}}
-
-                        <div style="display:none">
-                            {{$dataCredit1 += balance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','>=')}}
-
-                        </div>
-
+                    {{$value_debtor2 = getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Db','>=')}}
+                    <div style="display:none">
+                        {{$dataDebtor1 += getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Db','>=')}}
+                    </div>
                 </td>
                 <td>
-                    @if(($alldeb + $debtor2) - ($alldeb2 + $creditor2) > 0)
-                        {{($alldeb + $debtor2) - ($alldeb2 + $creditor2)}}
+                    {{$value_creditor2 =getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Cr','>=')}}
+                    <div style="display:none">
+                        {{$dataCredit1 += getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Cr','>=')}}
+                    </div>
+                </td>
+                <td>
+                    @if(($value_debtor2 + $value_debtor) - ($value_creditor2 + $value_creditor) > 0)
+                        {{($value_debtor2 + $value_debtor) - ($value_creditor2 + $value_creditor)}}
                     @else
                         0
                     @endif
+
                     <div style="display:none">
-                        @if(($alldeb + $debtor2) - ($alldeb2 + $creditor2) > 0)
-                            {{$dataDebtor2 += ($alldeb + $debtor2) - ($alldeb2 + $creditor2)}}
+                        @if(($value_debtor2 + $value_debtor) - ($value_creditor + $value_creditor2) > 0)
+                            {{$dataDebtor2 += ($value_debtor2 + $value_debtor) - ($value_creditor + $value_creditor2)}}
                         @else
                             {{$dataDebtor2 += 0}}
                         @endif
                     </div>
                 </td>
                 <td>
-                    @if(($alldeb2 + $creditor2) - ($alldeb + $debtor2) > 0)
-                        {{($alldeb2 + $creditor2) - ($alldeb + $debtor2)}}
+                    @if(($value_creditor2 + $value_creditor) - ($value_debtor + $value_debtor2) > 0)
+                        {{($value_creditor2 + $value_creditor) - ($value_debtor + $value_debtor2)}}
                     @else
                         0
                     @endif
                     <div style="display:none">
-                        @if(($alldeb2 + $creditor2) - ($alldeb + $debtor2) > 0)
-                            {{$dataCredit2 += ($alldeb2 + $creditor2) - ($alldeb + $debtor2)}}
+                        @if(($value_creditor2 + $value_creditor) - ($value_debtor + $value_debtor2) > 0)
+                            {{$dataCredit2 += ($value_creditor2 + $value_creditor) - ($value_debtor + $value_debtor2)}}
                         @else
                             {{$dataCredit2 += 0}}
                         @endif

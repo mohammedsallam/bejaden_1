@@ -118,7 +118,7 @@
         </div>
 
         @foreach($data as $merged)
-
+@dd($data)
 {{--@dd( allFbalance($merged->ID_No,$merged->Cmp_No,$from,$to,'Fbal_CR','<'))--}}
 
             <tr>

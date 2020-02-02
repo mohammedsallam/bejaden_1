@@ -19,6 +19,39 @@
     @push('js')
         <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
+        <script>
+            $(function () {
+                'use strict'
+
+                $(".MainCompany").on("change",function(){
+
+                    var mainCompany = $(this).val();
+                    $('.column-form').html('');
+                    $("#loadingmessage-1").css("display","block");
+                    $(".div_branch").css("display","none");
+                    if (this){
+                        $.ajax({
+                            url: '{{route('branche_trial_balance')}}',
+                            type:'get',
+                            dataType:'html',
+                            data:{mainCompany: mainCompany},
+                            success: function (data) {
+                                $("#loadingmessage-1").css("display","none");
+                                $('.div_branch').css("display","block").html(data);
+
+                            }
+                        });
+                    }else{
+                        $('.div_branch').html('');
+                    }
+                });
+
+
+
+
+
+            });
+        </script>
 {{--        <script>--}}
 {{--            $(function () {--}}
 {{--                'use strict'--}}
@@ -185,7 +218,7 @@
                 <div class="row">
                     <div class="col-xs-9">
                         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee'])) }}
+                        {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control fromtree col-xs-9 e2 ee', 'id'=>'fromtree'])) }}
                     </div>
                     <div class="col-xs-3">
                         {{ Form::text('number_fromtree',null, array_merge(['class' => 'form-control'])) }}
