@@ -28,30 +28,28 @@
                 });
 
                 $(document).on('click', '.delete_row', function () {
-
                     if(tableBody.children().length === 1){
                         count = 1;
                         return false;
                     }
-                    else if(tableBody.children().length > 1){
-                        count = parseInt($('.delete_row').parent('tr').siblings('tr:last-child').children('td:first-child').html());
-                    }
                     $(this).parent('tr').remove();
-                    $('.first_row').siblings('tr').children('tr.delete_row').html()
+                    tableBody.children().each(function () {
+                        $(this).children('td:first-child').html(parseInt($(this).index())+1)
 
-
+                    });
                 });
 
-
-                $('.table_body').keypress(function (e) {
+                tableBody.keypress(function (e) {
 
                     if(e.keyCode  === 13){
                         if(tableBody.children().length === 1){
                             count = 2;
                         }
-                        else if(tableBody.children().length > 1){
-                            count = parseInt($('.delete_row').parent('tr').siblings('tr:last-child').children('td:first-child').html())+1;
-                        }
+
+                        tableBody.children().each(function () {
+                            $(this).children('td:first-child').html(parseInt($(this).index())+1)
+
+                        });
 
                         let row = `<tr>
                     <td class="delete_row bg-red">`+count+`</td>
@@ -227,7 +225,7 @@
         </div>
 
         {{--Start table--}}
-        <div class="row" style="max-height: 600px; overflow: auto">
+        <div class="row" style="max-height: 400px; overflow: auto">
             <table class="table table-bordered">
                 <tr class="bg-aqua">
                     <th>م</th>
@@ -294,6 +292,29 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
+                    <label for="">خصم إضافي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">خصم أصناف</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+
+
+
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">رصيد الصنف</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+
+
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
                     <label for="">حد الائتمان</label>
                     <input type="text" name="" id="" class="form-control">
                 </div>
@@ -306,30 +327,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">الإجمالي</label>
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">بعد الخصم</label>
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">حد الائتمان</label>
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">رصيد الصنف</label>
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-            </div>
+
         </div>
 
         {{--End table--}}
