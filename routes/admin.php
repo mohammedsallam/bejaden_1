@@ -649,6 +649,12 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
 
+        /**
+         * all about stores place
+         */
+
+        Route::resource('stores', 'Admin\stores\StoresController');
+
 
 
 

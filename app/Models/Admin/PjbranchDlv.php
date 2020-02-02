@@ -12,6 +12,6 @@ class PjbranchDlv extends Model
     protected $fillable = ['Brn_No', 'Dlv_Stor', 'Dlv_NmAr', 'Dlv_NmEn'];
 
     public function branch(){
-        return $this->belongsTo(MainBranch::class, 'ID_No', 'Brn_No');
+        return $this->belongsTo(MainBranch::class, 'Brn_No', 'ID_No');
     }
 }

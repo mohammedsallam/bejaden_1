@@ -65,12 +65,12 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="#">
+            <a href="{{route('stores.index')}}">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-money" aria-hidden="true"></i></span>
 
                     <div class="info-box-content">
-                        <h2 class="info-box-text">مكان تسليم البضاعة </h2>
+                        <h2 class="info-box-text">{{trans('admin.delivery_place')}}</h2>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
