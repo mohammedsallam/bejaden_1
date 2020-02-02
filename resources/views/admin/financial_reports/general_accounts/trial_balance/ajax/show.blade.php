@@ -2,14 +2,10 @@
     $(document).ready(function () {
         $('#level_check').on('keyup',function(){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-
             var level = $(this).val();
-
             var radiodepartment =  $('input[name="department"]:checked').val();
-
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
-
             var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
             $(".details_level").css("display","none");
@@ -128,22 +124,22 @@
     </div>
 </div>
 <br>
-<<<<<<< HEAD
-<div class="row">
-    <div class="col-xs-9">
-        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control fromtree col-xs-9 e2 efirst'])) }}
-    </div>
-    <div class="col-xs-3">
-        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-9">
-        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
-        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
-=======
+{{--<<<<<<< HEAD--}}
+{{--<div class="row">--}}
+{{--    <div class="col-xs-9">--}}
+{{--        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}--}}
+{{--        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control fromtree col-xs-9 e2 efirst'])) }}--}}
+{{--    </div>--}}
+{{--    <div class="col-xs-3">--}}
+{{--        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}--}}
+{{--    </div>--}}
+{{--</div>--}}
+{{--<br>--}}
+{{--<div class="row">--}}
+{{--    <div class="col-xs-9">--}}
+{{--        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}--}}
+{{--        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}--}}
+{{--=======--}}
 <div class="details_level">
     <div class="row" >
         <div class="col-xs-9">
@@ -153,7 +149,7 @@
         <div class="col-xs-3">
             {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}
         </div>
->>>>>>> 60c4d2791bfd85fc2d50967b48976746009298f4
+{{-->>>>>>> 60c4d2791bfd85fc2d50967b48976746009298f4--}}
     </div>
     <br>
     <div class="row">

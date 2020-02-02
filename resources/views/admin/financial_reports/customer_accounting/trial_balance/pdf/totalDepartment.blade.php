@@ -110,30 +110,28 @@
             {{$dataDebtor = 0}}
             {{$dataCredit = 0}}
             {{$dataDebtor1 = 0}}
+            {{$dataDebtor3  = 0}}
             {{$dataCredit1 = 0}}
             {{$dataDebtor2 = 0}}
             {{$dataCredit2 = 0}}
         </div>
-        @foreach($GLjrnTrs as $merged)
+        @foreach($data as $merged)
+{{--            @dd($data)--}}
             <tr>
                 <td>
-                    {{$merged->Sysub_Account}}
+                    {{$merged->Acc_No}}
                 </td>
                 <td>
-                    {{App\Models\Admin\MTsCustomer::where('Cstm_No',$merged->Sysub_Account)->pluck('Cstm_Nm'. ucfirst(session('lang')))->first()}}
+                    {{session_lang($merged->Acc_NmEn,$merged->Acc_NmAr)}}
+                    {{-- {{App\Models\Admin\MTsCustomer::where('Cstm_No',$merged->Sysub_Account)->pluck('Cstm_Nm'. ucfirst(session('lang')))->first()}}--}}
                 </td>
                 <td>
                     <div style="display:none">
-                    {{ $debtor = $merged->Tr_DB  +
-                       Fbalance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')  }}
+                        {{ $debtor = $merged->Fbal_DB +
+                        FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<') }}
 
-                        {{ $creditor =  $merged->Tr_Cr  +
-
-                         Fbalance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
-
-
-
-
+                        {{ $creditor =  $merged->Fbal_CR  +
+                         FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
                         @if(($debtor - $creditor) > 0)
                             {{ $dataDebtor += $debtor - $creditor}}
                         @else
@@ -150,12 +148,11 @@
                 </td>
                 <td>
                     <div style="display:none">
-                        {{ $debtor1 = $merged->Tr_DB  +
-                        Fbalance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')  }}
+                        {{ $debtor1 = $merged->Fbal_DB +
+                        FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','<')  }}
 
-                        {{ $creditor1 =  $merged->Tr_Cr  +
-
-                         Fbalance($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
+                        {{ $creditor1 =  $merged->Fbal_CR  +
+                         FbalanceCust($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','<')}}
 
 
                         @if(($creditor1 - $debtor1) > 0)
@@ -175,18 +172,16 @@
 
                 </td>
                 <td>
-                    {{$value_debtor2 = getTrans($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','>=')}}
+                    {{$value_debtor2 = getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Db','>=')}}
                     <div style="display:none">
-                        {{$dataDebtor1 += getTrans($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Db','>=')}}
+                        {{$dataDebtor1 += getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Db','>=')}}
                     </div>
-
                 </td>
                 <td>
-                    {{$value_creditor2 =getTrans($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','>=')}}
+                    {{$value_creditor2 =getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Cr','>=')}}
                     <div style="display:none">
-                        {{$dataCredit1 += getTrans($merged->Cmp_No,$merged->Sysub_Account,$From,$to,'Tr_Cr','>=')}}
+                        {{$dataCredit1 += getTransCust($merged->Cmp_No,$merged->Acc_No,$From,$to,'Tr_Cr','>=')}}
                     </div>
-
                 </td>
                 <td>
                     @if(($value_debtor2 + $value_debtor) - ($value_creditor2 + $value_creditor) > 0)

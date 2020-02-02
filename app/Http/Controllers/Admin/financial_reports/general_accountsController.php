@@ -305,7 +305,7 @@ class general_accountsController extends Controller
     }
     public function trialbalance_details(Request $request)
     {
-dd($request->all());
+//dd($request->all());
 
         if($request->ajax()){
             $MainCompany = $request->MainCompany;
@@ -351,7 +351,6 @@ dd($request->all());
         if ($but_level_check){
             switch ($radiodepartment) {
                 case '1';
-                dd('jj');
                     $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))

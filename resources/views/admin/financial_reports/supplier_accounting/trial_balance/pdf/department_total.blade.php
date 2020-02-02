@@ -119,7 +119,7 @@
         {{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
 {{--@dd($data)--}}
         @foreach($data as $merged)
-
+@dd($data)
             <tr>
                 <td>
 
@@ -134,11 +134,11 @@
                     <div style="display:none">
 
                         {{ $debtor = $merged->Fbal_DB  +
-                       Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
+                       FbalanceSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
 
                         {{ $creditor =  $merged->Fbal_CR  +
 
-                         Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
+                         FbalanceSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
 
 
 
@@ -163,11 +163,11 @@
 
 
                         {{ $debtor1 = $merged->Fbal_DB  +
-                       Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
+                       FbalanceSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
 
                         {{ $creditor1 =  $merged->Fbal_CR  +
 
-                         Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
+                         FbalanceSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
 
 
 
@@ -197,9 +197,9 @@
                     </div>
                 </td>
                 <td class="depratment_move_creditor">
-                    {{$value_creditor2 =getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
+                    {{$value_creditor2 =getTransSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
                     <div style="display:none">
-                        {{$dataCredit1 += getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
+                        {{$dataCredit1 += getTransSup($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
                     </div>
                 </td>
                 <td class="depratment_end_debt">

@@ -269,10 +269,9 @@ class supplier_accountingController extends Controller
     public function trialbalance_level(Request $request)
     {
         $MainCompany = $request->MainCompany;
-        $level = $request->level;
-        $from = $request->from;
-        $to = $request->to;
-
+        $level       = $request->level;
+        $from        = $request->from;
+        $to          = $request->to;
         $but_level_check = $request->but_level_check;
         $radiodepartment = $request->radiodepartment;
 
@@ -317,7 +316,6 @@ class supplier_accountingController extends Controller
         if ($but_level_check){
             switch ($radiodepartment) {
                 case '1';
-                    dd('jj');
                     $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
@@ -332,7 +330,6 @@ class supplier_accountingController extends Controller
                         ->where(function ($q) use($GLjrnTrs1, $GLjrnTrs2) {
                             $q->whereIn('Acc_No',$GLjrnTrs2)->orWhereIn('Acc_No',$GLjrnTrs1);
                         })->get();
-
 
                     $config = ['instanceConfigurator' => function($mpdf) {
                         $mpdf->SetHTMLFooter('
@@ -426,13 +423,13 @@ class supplier_accountingController extends Controller
         {
             switch ($radiodepartment) {
                 case '1';
-                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
 
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No',1)->pluck('Acc_No');
 
-                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No','>',1)->pluck('Sysub_Account');
@@ -455,13 +452,13 @@ class supplier_accountingController extends Controller
 
                 /*****/
                 case '2';
-                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
 
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No',1)->pluck('Acc_No');
 
-                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No','>',1)->pluck('Sysub_Account');
@@ -484,13 +481,13 @@ class supplier_accountingController extends Controller
 
                 /*****/
                 case '3';
-                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
 
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No',1)->pluck('Acc_No');
 
-                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No','>',1)->pluck('Sysub_Account');
@@ -513,13 +510,13 @@ class supplier_accountingController extends Controller
 
                 /*****/
                 case '4';
-                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
 
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No',1)->pluck('Acc_No');
 
-                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',1)
+                    $GLjrnTrs2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',3)
                         ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
                         ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
                         ->where('Ln_No','>',1)->pluck('Sysub_Account');
