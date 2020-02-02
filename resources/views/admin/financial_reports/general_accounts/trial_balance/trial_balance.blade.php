@@ -23,34 +23,31 @@
             $(function () {
                 'use strict'
 
-                $(".MainCompany").on("change",function(){
+                {{--$(".MainCompany").on("change",function(){--}}
+                {{--    var mainCompany = $(this).val();--}}
+                {{--    $('.column-form').html('');--}}
+                {{--    $("#loadingmessage-1").css("display","block");--}}
+                {{--    $(".div_branch").css("display","none");--}}
+                {{--    if (this){--}}
+                {{--        $.ajax({--}}
+                {{--            url: '{{route('branche_trial_balance')}}',--}}
+                {{--            type:'get',--}}
+                {{--            dataType:'html',--}}
+                {{--            data:{mainCompany: mainCompany},--}}
+                {{--            success: function (data) {--}}
+                {{--                $("#loadingmessage-1").css("display","none");--}}
+                {{--                $('.div_branch').css("display","block").html(data);--}}
 
-                    var mainCompany = $(this).val();
-                    $('.column-form').html('');
-                    $("#loadingmessage-1").css("display","block");
-                    $(".div_branch").css("display","none");
-                    if (this){
-                        $.ajax({
-                            url: '{{route('branche_trial_balance')}}',
-                            type:'get',
-                            dataType:'html',
-                            data:{mainCompany: mainCompany},
-                            success: function (data) {
-                                $("#loadingmessage-1").css("display","none");
-                                $('.div_branch').css("display","block").html(data);
-
-                            }
-                        });
-                    }else{
-                        $('.div_branch').html('');
-                    }
-                });
-
-
-
-
+                {{--            }--}}
+                {{--        });--}}
+                {{--    }else{--}}
+                {{--        $('.div_branch').html('');--}}
+                {{--    }--}}
+                {{--});--}}
 
             });
+
+
         </script>
 {{--        <script>--}}
 {{--            $(function () {--}}
@@ -118,6 +115,70 @@
 
 
             });
+            $('.total_department').change(function () {
+                var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+                var level = '{{isset($level) ? $level : null}}';
+                var fromtree = $('.fromtree').val();
+                var totree = $('.totree').val();
+                var radiodepartment =  $(this).val();
+                var from =  $('input[name="From"]').val();
+                var to =  $('input[name="To"]').val();
+                var but_level_check =  $('input[id="but_level_check"]:checked').val();
+
+                $(".print_div").css("display","none");
+                if (this) {
+                    $.ajax({
+                        url: '{{route('trialbalance.details')}}',
+                        type: 'get',
+                        dataType: 'html',
+                        data: {MainCompany: MainCompany,
+                            level: level,
+                            fromtree: fromtree, totree: totree,
+                            from: from,
+                            to: to,
+                            radiodepartment: radiodepartment,
+                            but_level_check: but_level_check,
+                        },
+                        success: function (data) {
+                            $("#loadingmessage-2").css("display", "none");
+                            $('.print_div').css("display", "block").html(data);
+
+                        }
+                    });
+                }
+            });
+            $('#but_level_check').change(function () {
+                var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+                var level = '{{isset($level) ? $level : null}}';
+                var fromtree = $('.fromtree').val();
+                var totree = $('.totree').val();
+                var radiodepartment =  $('input[name="department"]').val();
+                var from =  $('input[name="From"]').val();
+                var to =  $('input[name="To"]').val();
+                var but_level_check =  $(this).val();
+
+                $(".print_div").css("display","none");
+                if (this) {
+                    $.ajax({
+                        url: '{{route('trialbalance.details')}}',
+                        type: 'get',
+                        dataType: 'html',
+                        data: {MainCompany: MainCompany,
+                            level: level,
+                            fromtree: fromtree, totree: totree,
+                            from: from,
+                            to: to,
+                            radiodepartment: radiodepartment,
+                            but_level_check: but_level_check,
+                        },
+                        success: function (data) {
+                            $("#loadingmessage-2").css("display", "none");
+                            $('.print_div').css("display", "block").html(data);
+
+                        }
+                    });
+                }
+            });
         </script>
 
 
@@ -180,7 +241,6 @@
                     hijriFormat: 'iYYYY-iMM-iDD',
                     showTodayButton:true,
             });
-
         </script>
 
     @endpush
