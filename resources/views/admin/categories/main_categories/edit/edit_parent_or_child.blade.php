@@ -10,7 +10,7 @@
         $(this).siblings('input').val($(this).val())
     });
 
-    // effect inputs number whene change unit in MtsItmfsunit
+    // effect inputs number when change unit in MtsItmfsunit
     $('.Unit_No_1, .Unit_No_2, .Unit_No_3').change(function () {
         $('#'+this.classList[1]).val($(this).val())
     });
@@ -106,5 +106,3 @@
 @include('admin.categories.main_categories.edit.weight_measure')
 {{--third tap--}}
 @include('admin.categories.main_categories.edit.purchases')
-
-

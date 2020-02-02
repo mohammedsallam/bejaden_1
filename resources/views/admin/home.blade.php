@@ -247,29 +247,29 @@
                 {!! Form::close() !!}
             </div>
             <!-- Map box -->
-            <div class="box box-solid bg-light-blue">
-                <div class="box-header">
-                    <!-- tools box -->
-                    <div class="pull-right box-tools">
-                        <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse"
-                                data-toggle="tooltip" title="{{trans('admin.Collapse')}}" style="margin-right: 5px;">
-                            <i class="fa fa-minus"></i></button>
-                    </div>
-                    <!-- /. tools -->
+{{--            <div class="box box-solid bg-light-blue">--}}
+{{--                <div class="box-header">--}}
+{{--                    <!-- tools box -->--}}
+{{--                    <div class="pull-right box-tools">--}}
+{{--                        <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse"--}}
+{{--                                data-toggle="tooltip" title="{{trans('admin.Collapse')}}" style="margin-right: 5px;">--}}
+{{--                            <i class="fa fa-minus"></i></button>--}}
+{{--                    </div>--}}
+{{--                    <!-- /. tools -->--}}
 
-                    <i class="fa fa-map-marker"></i>
+{{--                    <i class="fa fa-map-marker"></i>--}}
 
-                    <h3 class="box-title">
-                        {{trans('admin.Visitors')}}
-                    </h3>
-                </div>
-                <div class="box-body">
-                    <div id="visitor"  style="height: 250px; width: 100%;direction: ltr">
-                        {!! $lava->render("GeoChart","Popularity","visitor")!!}
-                    </div>
-                </div>
-                <!-- /.box-body-->
-            </div>
+{{--                    <h3 class="box-title">--}}
+{{--                        {{trans('admin.Visitors')}}--}}
+{{--                    </h3>--}}
+{{--                </div>--}}
+{{--                <div class="box-body">--}}
+{{--                    <div id="visitor"  style="height: 250px; width: 100%;direction: ltr">--}}
+{{--                        {!! $lava->render("GeoChart","Popularity","visitor")!!}--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <!-- /.box-body-->--}}
+{{--            </div>--}}
             <!-- /.box -->
         </section>
         <!-- /.Left col -->

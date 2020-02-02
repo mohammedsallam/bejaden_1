@@ -14,7 +14,6 @@
 
             $(document).ready(function () {
                 let count = 1, tableBody = $('.table_body');
-
                 $('input.Doc_Dt').change(function () {
                     let Hijri = $(this).val();
                     $.ajax({
@@ -29,51 +28,61 @@
                 });
 
                 $(document).on('click', '.delete_row', function () {
-
                     if(tableBody.children().length === 1){
                         count = 1;
-                    }
-                    else if(tableBody.children().length > 1){
-                        count = parseInt($('.delete_row').parent('tr').siblings('tr:last-child').children('td:first-child').html());
+                        return false;
                     }
                     $(this).parent('tr').remove();
+                    tableBody.children().each(function () {
+                        $(this).children('td:first-child').html(parseInt($(this).index())+1)
 
+                    });
                 });
 
-                $('tfoot').click(function () {
+                tableBody.keypress(function (e) {
 
-                    if(tableBody.children().length === 0){
-                        count = 1;
-                    }
-                    else if(tableBody.children().length > 1){
-                        count = parseInt($('.delete_row').parent('tr').siblings('tr:last-child').children('td:first-child').html())+1;
-                    }
+                    if(e.keyCode  === 13){
+                        if(tableBody.children().length === 1){
+                            count = 2;
+                        }
 
-                    let row = `<tr>
+                        tableBody.children().each(function () {
+                            $(this).children('td:first-child').html(parseInt($(this).index())+1)
+
+                        });
+
+                        let row = `<tr>
                     <td class="delete_row bg-red">`+count+`</td>
-                    <td style="width: 11%"><input type="text"></td>
+                    <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
                     <td style="width: 20%">
                         <select name="" >
                             <option value=""></option>
                         </select>
                     </td>
                     <td style="width: 9%">
-                        <select name="" >
+                        <select name="Unit_No[]" id="Unit_No" class="Unit_No" >
                             <option value=""></option>
                         </select>
                     </td>
+                    <td><input type="text" name="Loc_No[]" id="Loc_No" class="Loc_No"></td>
+                    <td><input type="number" min="1" name="Qty[]" id="Qty" class="Qty"></td>
+                    <td><input type="number" min="1" name="Itm_Sal[]" id="Itm_Sal" class="Itm_Sal"></td>
                     <td><input type="text"></td>
-                    <td><input type="number" min="1"></td>
-                    <td><input type="number" min="1"></td>
-                    <td><input type="text"></td>
-                    <td style="width: 11%;"><input type="text" class="datepicker" style="padding: 0; border-radius: 0"></td>
+                    <td style="width: 11%;"><input type="text" name="Exp_Date[]" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
                     <td><input type="text"></td>
                     <td><input type="text"></td>
                     <td><input type="text" class="last_td"></td>
+                    <td><input type="text" class="last_td"></td>
+                    <td><input type="text" class="last_td"></td>
                 </tr>`;
 
-                    tableBody.append(row);
-                    count +=1;
+                        tableBody.append(row);
+                        count +=1;
+                    }
+
+
+
+
 
                 });
             })
@@ -93,8 +102,8 @@
         <div>
             <div class="col-md-3">
                 <div class="form-group">
-                    {{ Form::label('admin.Branches', trans('admin.Branches') , ['class' => 'control-label']) }}
-                    <select name="Brn_No" id="Brn_No" class="form-control">
+                    {{ Form::label('Brn_No', trans('admin.Branches') , ['class' => 'control-label']) }}
+                    <select name="Brn_No" id="Brn_No" class="form-control Brn_No">
                         <option value="">{{trans('admin.select')}}</option>
                         @foreach($branches as $branch)
                             <option value="{{$branch->ID_No}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
@@ -104,8 +113,8 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="" class="control-label">مستودع</label>
-                    <select name="Brn_No" id="Brn_No" class="form-control">
+                    <label for="Dlv_Stor" class="control-label">مستودع</label>
+                    <select name="Dlv_Stor" id="Dlv_Stor" class="form-control Dlv_Stor">
                         <option value="">{{trans('admin.select')}}</option>
                         @foreach($branches as $branch)
                             <option value="{{$branch->ID_No}}">{{$branch->{'Brn_Nm'.ucfirst(session('lang'))} }}</option>
@@ -121,7 +130,7 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="" class="control-label">ميلادي</label>
+                    <label for="Doc_Dt" class="control-label">ميلادي</label>
                     <input type="text" name="Doc_Dt" class="form-control Doc_Dt datepicker" id="Doc_Dt">
                 </div>
             </div>
@@ -139,32 +148,32 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="" class="control-label">طريقة الدفع</label>
-                    <select name=""  class="form-control">
+                    <label for="Pym_No" class="control-label">طريقة الدفع</label>
+                    <select name="Pym_No"  id="Pym_No" class="form-control Pym_No">
                         <option value="">{{trans('admin.select')}}</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="" class="control-label">نوع المرجع</label>
-                    <select name=""  class="form-control">
+                    <label for="Reftyp_No" class="control-label">نوع المرجع</label>
+                    <select name="Reftyp_No" id="Reftyp_No" class="form-control Reftyp_No">
                         <option value="">{{trans('admin.select')}}</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="" class="control-label">رقم المرجع</label>
-                    <select name=""  class="form-control">
+                    <label for="Ref_No" class="control-label">رقم المرجع</label>
+                    <select name="Ref_No" id="Ref_No"  class="form-control Ref_No">
                         <option value="">{{trans('admin.select')}}</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="" class="control-label">العميل</label>
-                    <select name=""  class="form-control">
+                    <label for="Cstm_No" class="control-label">العميل</label>
+                    <select name="Cstm_No" id="Cstm_No"  class="form-control Cstm_No">
                         <option value="">{{trans('admin.select')}}</option>
                     </select>
                 </div>
@@ -177,8 +186,8 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="" class="control-label">مبيعات مكتب</label>
-                    <select name=""  class="form-control">
+                    <label for="Slm_No" class="control-label">مندوب المبيعات</label>
+                    <select name="Slm_No" id="Slm_No"  class="form-control Slm_No">
                         <option value="">{{trans('admin.select')}}</option>
                     </select>
                 </div>
@@ -190,15 +199,15 @@
                         <label for="cache" class="control-label">نقداً خلال</label>
                     </div>
                     <div style="width: 62%">
-                        <label for="" class="control-label">مدة السداد</label>
-                        <input type="text" class="form-control" placeholder="يوم">
+                        <label for="Credit_Days" class="control-label">مدة السداد</label>
+                        <input type="text" name="Credit_Days" id="Credit_Days" class="form-control Credit_Days" placeholder="يوم">
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="">تاريخ السداد</label>
-                    <input type="text" class="form-control datepicker" style="direction: rtl">
+                    <label for="Pym_Dt">تاريخ السداد</label>
+                    <input type="text" name="Pym_Dt" id="Pym_Dt" class="form-control Pym_Dt datepicker" style="direction: rtl">
                 </div>
             </div>
             <div class="col-md-6">
@@ -216,29 +225,134 @@
         </div>
 
         {{--Start table--}}
-
-        <table class="table table-bordered">
-            <tr class="bg-aqua">
-                <th>م</th>
-                <th>رقم الصنف</th>
-                <th>إسم الصنف</th>
-                <th>الوحدة</th>
-                <th>رقم الموقع</th>
-                <th>الكمية</th>
-                <th>سعر البيع</th>
-                <th>إجمالي القيمة</th>
-                <th>تاريخ الصلاحية</th>
-                <th>رقم الباتش</th>
-                <th>خصم بيع%</th>
-                <th>خصم قيمة1</th>
-            </tr>
-            <tbody class="table_body"></tbody>
-            <tfoot class="bg-primary" style="cursor: pointer">
-                <tr>
-                    <td colspan="20" style="height: 40px; text-align: center"><i class="fa fa-plus"></i> <b>أضف</b></td>
+        <div class="row" style="max-height: 400px; overflow: auto;">
+            <table class="table table-bordered">
+                <tr class="bg-aqua">
+                    <th>م</th>
+                    <th>رقم الصنف</th>
+                    <th>إسم الصنف</th>
+                    <th>الوحدة</th>
+                    <th>رقم الموقع</th>
+                    <th>الكمية</th>
+                    <th>سعر البيع</th>
+                    <th>إجمالي القيمة</th>
+                    <th>تاريخ الصلاحية</th>
+                    <th>رقم الباتش</th>
+                    <th>خصم بيع%</th>
+                    <th>خصم قيمة1</th>
+                    <th>الضريبة%</th>
+                    <th>قيمة الضريبة</th>
                 </tr>
-            </tfoot>
-        </table>
+                <tbody class="table_body">
+                <tr class="first_row">
+                    <td class="delete_row bg-red">1</td>
+                    <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
+                    <td style="width: 20%">
+                        <select name="" >
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td style="width: 9%">
+                        <select name="Unit_No[]" id="Unit_No" class="Unit_No" >
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td><input type="text" name="Loc_No[]" id="Loc_No" class="Loc_No"></td>
+                    <td><input type="number" min="1" name="Qty[]" id="Qty" class="Qty"></td>
+                    <td><input type="number" min="1" name="Itm_Sal[]" id="Itm_Sal" class="Itm_Sal"></td>
+                    <td><input type="text" name="" id="sum" class="sum"></td>
+                    <td style="width: 11%;"><input type="text" name="Exp_Date[]" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text" class="last_td"></td>
+                    <td><input type="text" class="last_td"></td>
+                    <td><input type="text" class="last_td"></td>
+                </tr>
+                </tbody>
+                <tfoot class="bg-primary" style="cursor: pointer">
+{{--                <tr>--}}
+{{--                    <td colspan="20" style="height: 40px; text-align: center"><i class="fa fa-plus"></i> <b>أضف</b></td>--}}
+{{--                </tr>--}}
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الإجمالي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">بعد الخصم</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">خصم إضافي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">خصم أصناف</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">قيمة الضريبة</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الصافي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">حد الائتمان</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الرصيد الحالي</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">الفرق</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">رصيد الصنف</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">رصيد المستودعات</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group" style="display: flex">
+                    <label for="">سعر البيع</label>
+                    <input type="text" name="" id="" class="form-control">
+                </div>
+            </div>
+        </div>
 
         {{--End table--}}
 

@@ -18,7 +18,7 @@
         @endphp
 
         {!! Form::open(['method'=>'POST','route' => 'units.store']) !!}
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <div class="form-group">
                 {{ Form::label('Unit_No', trans('admin.unit_no') , ['class' => 'control-label']) }}
                 <input type="text" value="{{$lastUnit != null ? $lastUnit->Unit_No+1 : 1}}" name="Unit_No" class="form-control" readonly>
