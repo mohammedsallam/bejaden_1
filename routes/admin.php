@@ -320,6 +320,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
         Route::get('daily_restriction_show','Admin\financial_reports\general_accountsController@daily_restriction_show')->name('daily_restriction.show');
+        Route::get('daily_restriction_details','Admin\financial_reports\general_accountsController@daily_restriction_details')->name('daily_restriction.details');
+        Route::Post('daily_restriction_print','Admin\financial_reports\general_accountsController@daily_restriction_print')->name('daily_restriction.print');
 
         //       1
 //        0

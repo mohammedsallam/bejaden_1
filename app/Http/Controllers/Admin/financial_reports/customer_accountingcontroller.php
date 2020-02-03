@@ -192,11 +192,6 @@ class customer_accountingcontroller extends Controller
 
         }
 
-
-
-
-
-
         $config = ['instanceConfigurator' => function($mpdf) {
             $mpdf->SetHTMLFooter('
                     <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>

@@ -49,7 +49,7 @@
                         }
                     });
                 }else{
-                    $('.show_row').html('');
+                    $('.    show_row').html('');
                 }
             });
 
@@ -128,6 +128,9 @@
 
 
         <div class="show_row">
+
+        </div>
+       <div class="details_row">
 
         </div>
 

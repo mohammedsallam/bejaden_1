@@ -1206,7 +1206,7 @@ if(!function_exists('getTransCust')) {
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
             ->where('Acc_No',$Acc_No)
             ->where('Ln_No','>',1)->sum($sum);
-        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',2)
             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
             ->where('Ln_No',1)->sum($sum);
@@ -1284,8 +1284,8 @@ if(!function_exists('allFbalance')) {
 
 //            0
         $pro = new Collection($products); //Illuminate\Database\Eloquent\Collection
-        $pros = $departments->children->pluck('ID_No');
-        $plucks = $pro->pluck('ID_No');
+        $pros = $departments->children->pluck('Acc_No');
+        $plucks = $pro->pluck('Acc_No');
         $values = $pros->concat($plucks);
 
 
@@ -1293,16 +1293,20 @@ if(!function_exists('allFbalance')) {
             ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
 
 
-            ->where('Acc_No',$Acc_No)
-            ->where('Ln_No',1)->sum($sum);
-
+            ->whereIn('Acc_No',$values)
+            ->where('Ln_No',1)
+            ->sum($sum);
         $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
             ->where('Tr_Dt','<', date('Y-m-d 00:00:00',strtotime($from)))
-            ->where('Sysub_Account',$Acc_No)
-            ->where('Ln_No','>',1)->sum($sum);
 
-//        $value1 = MtsChartAc::where('Level_Status','0')->whereIn('ID_No',$values)->sum($sum);
-        return $value1 + $value2 ;
+
+            ->whereIn('Sysub_Account',$values)
+            ->where('Ln_No','>',1)
+            ->sum($sum);
+
+
+
+        return $value1 + $value2;
 
 
     }
@@ -1326,23 +1330,28 @@ if(!function_exists('all_getTrans')) {
             $categories = $nextCategories;
         }
         $pro = new Illuminate\Database\Eloquent\Collection($products); //Illuminate\Database\Eloquent\Collection
-        $pros = $departments->children->pluck('ID_No');
-        $plucks = $pro->pluck('ID_No');
+        $pros = $departments->children->pluck('Acc_No');
+        $plucks = $pro->pluck('Acc_No');
         $values = $pros->concat($plucks);
+
+
 
         $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
 
-            ->where('Acc_No',$Acc_No)
-            ->where('Ln_No',1)->sum($sum);
 
+            ->whereIn('Acc_No',$values)
+            ->where('Ln_No',1)
+            ->sum($sum);
         $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-            ->where('Sysub_Account',$Acc_No)
-            ->where('Ln_No','>',1)->sum($sum);
-//@dd($value2);
+
+            ->whereIn('Sysub_Account',$values)
+            ->where('Ln_No','>',1)
+            ->sum($sum);
+
 
 
         return $value1  +$value2;
