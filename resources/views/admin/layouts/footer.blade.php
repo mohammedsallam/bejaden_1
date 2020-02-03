@@ -14,11 +14,11 @@
 <div class="control-sidebar-bg"></div>
 <!-- ./wrapper -->
 
-<script src="{{url('/')}}/js/app.js?v=2.4.1"></script>
+<script src="{{asset('public/js/app.js?v=2.4.1')}}"></script>
 <!-- jQuery 3 -->
-<script src="{{url('/')}}/adminlte/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/jquery/dist/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{url('/')}}/adminlte/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/jquery-ui/jquery-ui.min.js')}}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
 $.widget.bridge('uibutton', $.ui.button);
@@ -36,39 +36,39 @@ $.widget.bridge('uibutton', $.ui.button);
     echo json_encode($trans);
     ?>;
 </script>
-<script src="{{url('/')}}/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="{{url('/')}}/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="{{url('/')}}/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+<script src="{{asset('public/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('public/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 @hasanyrole('admin|writer')
-<script src="{{url('/')}}/js/dataTables.buttons.min.js"></script>
+<script src="{{asset('public/js/dataTables.buttons.min.js')}}"></script>
 @endhasanyrole
 <!-- Morris.js charts -->
-<script src="{{url('/')}}/adminlte/bower_components/raphael/raphael.min.js"></script>
-<script src="{{url('/')}}/adminlte/bower_components/morris.js/morris.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/raphael/raphael.min.js')}}"></script>
+<script src="{{asset('public/adminlte/bower_components/morris.js/morris.min.js')}}"></script>
 <!-- Sparkline -->
-<script src="{{url('/')}}/adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js')}}"></script>
 <!-- jvectormap -->
-<script src="{{url('/')}}/adminlte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="{{url('/')}}/adminlte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="{{asset('public/adminlte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>
+<script src="{{asset('public/adminlte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
 <!-- jQuery Knob Chart -->
-<script src="{{url('/')}}/adminlte/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/jquery-knob/dist/jquery.knob.min.js')}}"></script>
 <!-- daterangepicker -->
-<script src="{{url('/')}}/adminlte/bower_components/moment/min/moment.min.js"></script>
-<script src="{{url('/')}}/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{asset('public/adminlte/bower_components/moment/min/moment.min.js')}}"></script>
+<script src="{{asset('public/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
 <!-- datepicker -->
-<script src="{{url('/')}}/adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<script src="{{url('/')}}/js/bootstrap-datepicker.ar.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
+<script src="{{asset('public/js/bootstrap-datepicker.ar.min.js')}}"></script>
 <!-- Bootstrap WYSIHTML5 -->
-<script src="{{url('/')}}/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script src="{{asset('public/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')}}"></script>
 <!-- Slimscroll -->
-<script src="{{url('/')}}/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="{{asset('public/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
 <!-- FastClick -->
-<script src="{{url('/')}}/adminlte/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="{{asset('public/adminlte/bower_components/fastclick/lib/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
-<script src="{{url('/')}}/adminlte/dist/js/adminlte.min.js"></script>
-<script src="{{url('/')}}/js/select2.full.min.js"></script>
+<script src="{{asset('public/adminlte/dist/js/adminlte.min.js')}}"></script>
+<script src="{{asset('public/js/select2.full.min.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{url('/')}}/adminlte/dist/js/pages/dashboard.js"></script>
+<script src="{{asset('public/adminlte/dist/js/pages/dashboard.js')}}"></script>
 {{--Date Hijri--}}
 
 
@@ -77,15 +77,15 @@ $.widget.bridge('uibutton', $.ui.button);
 {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>--}}
 
 <!-- AdminLTE for demo purposes -->
-<script src="{{url('/')}}/adminlte/dist/js/demo.js"></script>
-<script src="{{url('/')}}/vendor/datatables/buttons.server-side.js"></script>
-<script src="{{url('/')}}/jstree/dist/jstree.min.js"></script>
+<script src="{{asset('public/adminlte/dist/js/demo.js')}}"></script>
+<script src="{{asset('public/vendor/datatables/buttons.server-side.js')}}"></script>
+<script src="{{asset('public/jstree/dist/jstree.min.js')}}"></script>
 <script src="http://cdn.datatables.net/plug-ins/1.10.19/sorting/enum.js"></script>
-<script src="{{url('/')}}/js/jquery.validate.min.js"></script>
-<script src="{{url('/')}}/js/additional-methods.min.js"></script>
-<script src="{{url('/')}}/js/messages_ar.min.js"></script>
-<script src="{{url('/')}}/js/dropzone.min.js"></script>
-<script src="{{url('/')}}/js/custom.js"></script>
+<script src="{{asset('public/js/jquery.validate.min.js')}}"></script>
+<script src="{{asset('public/js/additional-methods.min.js')}}"></script>
+<script src="{{asset('public/js/messages_ar.min.js')}}"></script>
+<script src="{{asset('public/js/dropzone.min.js')}}"></script>
+<script src="{{asset('public/js/custom.js')}}"></script>
 <script data-require="angular.js@1.5.0" data-semver="1.5.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
 <script data-require="moment.js@2.10.2" data-semver="2.10.2" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
 
