@@ -225,7 +225,7 @@
         </div>
 
         {{--Start table--}}
-        <div class="row" style="max-height: 400px; overflow: auto;">
+        <div class="row">
             <table class="table table-bordered">
                 <tr class="bg-aqua">
                     <th>م</th>
