@@ -85,7 +85,7 @@
                     </div>
 
                     <div class="img_content" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center">
-                        <img style="width:100%" src="{{asset('images/cover_img_2.jpg')}}" alt="{{trans('item_img')}}">
+                        <img style="width:100%" src="{{asset('public/images/cover_img_2.jpg')}}" alt="{{trans('item_img')}}">
                     </div>
                 </div>
             </div>

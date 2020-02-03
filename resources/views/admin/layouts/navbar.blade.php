@@ -92,13 +92,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{url('/')}}/adminlte/previewImage.png @endif" class="user-image" alt="User Image">
+                        <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{asset('public/adminlte/previewImage.png')}} @endif" class="user-image" alt="User Image">
                         <span class="hidden-xs">{{admin()->user()->name}}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{url('/')}}/adminlte/previewImage.png @endif" class="img-circle" alt="User Image">
+                            <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{asset('public/adminlte/previewImage.png')}} @endif" class="img-circle" alt="User Image">
 
                             <p>
                                 {{admin()->user()->name}}@if(admin()->user()->hasAnyRole(\Spatie\Permission\Models\Role::all())) -  {{admin()->user()->getRoleNames()[0]}}@endif

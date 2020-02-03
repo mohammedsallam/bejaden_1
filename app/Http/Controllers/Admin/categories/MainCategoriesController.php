@@ -198,7 +198,7 @@ class MainCategoriesController extends Controller
         if($request->hasFile('Itm_Picture')){
             $file = $request->file('Itm_Picture');
             $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
-            $path = 'uploads/other_items/'.$otherItems->ID_No;
+            $path = 'public/uploads/other_items/'.$otherItems->ID_No;
             $file->move($path, $filename);
             $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
         }
@@ -386,7 +386,7 @@ class MainCategoriesController extends Controller
             if($request->hasFile('Itm_Picture')){
                 $file = $request->file('Itm_Picture');
                 $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
-                $path = 'uploads/other_items/'.$otherItems->ID_No;
+                $path = 'public/uploads/other_items/'.$otherItems->ID_No;
                 $file->move($path, $filename);
                 $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
             }
@@ -491,7 +491,7 @@ class MainCategoriesController extends Controller
                 File::delete($otherItems->Itm_Picture);
                 $file = $request->file('Itm_Picture');
                 $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
-                $path = 'uploads/other_items/'.$otherItems->ID_No;
+                $path = 'public/uploads/other_items/'.$otherItems->ID_No;
                 $file->move($path, $filename);
                 $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
             }

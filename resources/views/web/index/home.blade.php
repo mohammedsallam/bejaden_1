@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="dashboard_logo">
                     <div class="dashboard_logo_in">
-                        <img class="img-fluid" src="{{url('/')}}/images/logo2.png" alt="">
+                        <img class="img-fluid" src="{{asset('public/images/logo2.png')}}" alt="">
                     </div>
                 </div>
                 <div class="w-100 d-flex flex-wrap justify-content-center pb-5 text-center">
