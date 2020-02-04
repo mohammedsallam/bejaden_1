@@ -19,36 +19,6 @@
     @push('js')
         <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
-{{--        <script>--}}
-{{--            $(function () {--}}
-{{--                'use strict'--}}
-
-{{--                $(".MainCompany").on("change",function(){--}}
-{{--                    var mainCompany = $(this).val();--}}
-{{--                    $('.column-form').html('');--}}
-{{--                    $("#loadingmessage-1").css("display","block");--}}
-{{--                    $(".div_branch").css("display","none");--}}
-{{--                    if (this){--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('branche_trial_balance')}}',--}}
-{{--                            type:'get',--}}
-{{--                            dataType:'html',--}}
-{{--                            data:{mainCompany: mainCompany},--}}
-{{--                            success: function (data) {--}}
-{{--                                $("#loadingmessage-1").css("display","none");--}}
-{{--                                $('.div_branch').css("display","block").html(data);--}}
-
-{{--                            }--}}
-{{--                        });--}}
-{{--                    }else{--}}
-{{--                        $('.div_branch').html('');--}}
-{{--                    }--}}
-{{--                });--}}
-
-
-
-{{--            });--}}
-{{--        </script>--}}
         <script>
 
             $(function () {
@@ -83,26 +53,74 @@
                     }
                 });
 
+                $('.total_department').change(function () {
+                    var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+                    var level = '{{isset($level) ? $level : null}}';
+                    var fromtree = $('.fromtree').val();
+                    var totree = $('.totree').val();
+                    var radiodepartment =  $(this).val();
+                    var from =  $('input[name="From"]').val();
+                    var to =  $('input[name="To"]').val();
+                    var but_level_check =  $('input[id="but_level_check"]:checked').val();
+
+                    $(".print_div").css("display","none");
+                    if (this) {
+                        $.ajax({
+                            url: '{{route('trialbalanceSup.details')}}',
+                            type: 'get',
+                            dataType: 'html',
+                            data: {MainCompany: MainCompany,
+                                level: level,
+                                fromtree: fromtree, totree: totree,
+                                from: from,
+                                to: to,
+                                radiodepartment: radiodepartment,
+                                but_level_check: but_level_check,
+                            },
+                            success: function (data) {
+                                $("#loadingmessage-2").css("display", "none");
+                                $('.print_div').css("display", "block").html(data);
+
+                            }
+                        });
+                    }
+                });
+                $('#but_level_check').change(function () {
+                    var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+                    var level = '{{isset($level) ? $level : null}}';
+                    var fromtree = $('.fromtree').val();
+                    var totree = $('.totree').val();
+                    var radiodepartment =  $('input[name="department"]').val();
+                    var from =  $('input[name="From"]').val();
+                    var to =  $('input[name="To"]').val();
+                    var but_level_check =  $(this).val();
+
+                    $(".print_div").css("display","none");
+                    if (this) {
+                        $.ajax({
+                            url: '{{route('trialbalanceSup.details')}}',
+                            type: 'get',
+                            dataType: 'html',
+                            data: {MainCompany: MainCompany,
+                                level: level,
+                                fromtree: fromtree, totree: totree,
+                                from: from,
+                                to: to,
+                                radiodepartment: radiodepartment,
+                                but_level_check: but_level_check,
+                            },
+                            success: function (data) {
+                                $("#loadingmessage-2").css("display", "none");
+                                $('.print_div').css("display", "block").html(data);
+
+                            }
+                        });
+                    }
+                });
 
             });
         </script>
 
-
-{{--        <script>--}}
-{{--            $(document).ready(function(){--}}
-{{--                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';--}}
-{{--                console.log(minDate);--}}
-{{--                $('.date').datepicker({--}}
-{{--                    format: 'yyyy-mm-dd',--}}
-{{--                    rtl: true,--}}
-{{--                    language: '{{session('lang')}}',--}}
-{{--                    autoclose:true,--}}
-{{--                    todayBtn:true,--}}
-{{--                    clearBtn:true,--}}
-{{--                });--}}
-{{--            });--}}
-
-{{--        </script>--}}
         <script>
             $(function () {
                 'use strict'
@@ -114,23 +132,6 @@
         </script>
 
         <script>
-            // mah
-            // $("#seeAnotherField").change(function() {
-
-            //     if ($("#seeAnotherField").val() == 0 &&  $(".MainBranch").val() && $(".MainCompany").val()) {
-            //         $('#otherField').attr('disabled', 'disabled');
-
-            //     }else if  ($("#seeAnotherField").val() == 1) {
-            //         $('#otherField').removeAttr('disabled');
-
-            //     }else if($("#seeAnotherField").val() == 0)
-            //     {
-            //         $('#otherField').attr('disabled', 'disabled');
-            //     }
-
-            // });
-
-            // number maincompany
 
             $('#select_check :checkbox[id=but_level_check]').change(function(){
                 if($(this).is(':checked')){
@@ -228,20 +229,20 @@
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="balance_department" id="balance_department" name="department" value="2">
+                            <input type="radio" class="total_department" id="balance_department" name="department" value="2">
                             <label for="balance_department">  حسابات بارصدة </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="debt_department" id="debt_department" name="department" value="3">
+                            <input type="radio" class="total_department" id="debt_department" name="department" value="3">
                             <label class="debt_department" for="debt_department">حسابات مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
-                            <input type="radio" class="credit_department" id="credit_department" name="department" value="4">
+                            <input type="radio" class="total_department" id="credit_department" name="department" value="4">
                             <label for="credit_department">  حسابات دائنه </label>
                         </div>
                     </div>

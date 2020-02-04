@@ -74,8 +74,6 @@ class general_accountsController extends Controller
         $mainCompany = $request->mainCompany;
         if($request->ajax())
         {
-
-
             $mtschartac = MtsChartAc::where('Cmp_No',$mainCompany)->where('Acc_Typ',1)->get(['Acc_No', 'Acc_NmAr']);
 //            @dd($mtschartac[0]->Acc_No);
             $mtschartac_Acc_No = MtsChartAc::where('Cmp_No',$mainCompany)->where('Acc_Typ',1)->get();
@@ -85,7 +83,6 @@ class general_accountsController extends Controller
     public function details(Request $request)
     {
         $maincompany = $request->maincompany;
-
         $fromtree = $request->fromtree;
         $totree = $request->totree;
         $acc_fromtree = $request->acc_fromtree;
@@ -94,39 +91,19 @@ class general_accountsController extends Controller
         $to = $request->to;
         if($request->ajax())
         {
-//            if($fromtree != null  && $totree != null )
-//            {
-//                $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $fromtree)->where('ID_No', '<=', $totree)->pluck('Acc_No')->toArray();
-
-//                $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)->whereIN('Acc_No',$Acc_No)->orWhereIN('Sysub_Account',$Acc_No)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
 
             return $date = view('admin.financial_reports.general_accounts.accountStatement.ajax.details',compact('maincompany','MainBranch','fromtree','totree','from','to'))->render();
-
-//            }else{
-//                $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('ID_No', '>=', $acc_fromtree)->where('ID_No', '<=', $acc_totree)->pluck('Acc_No')->toArray();
-//
-//                $GLjrnTrs = GLjrnTrs::where('Cmp_No',$maincompany)->where('Ac_Ty',1)->whereIN('Acc_No',$Acc_No)->orWhereIN('Sysub_Account',$Acc_No)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->get();
-//                return $date = view('admin.financial_reports.general_accounts.accountStatement.ajax.details',compact('maincompany','MainBranch','fromtree','totree','from','to','acc_fromtree','acc_totree'))->render();
-
-//            }
 
         }
 
     }
     public function print(Request $request)
     {
-
-
-
         $maincompany = $request->maincompany;
-
-
         $fromtree = $request->fromtree;
         $totree = $request->totree;
         $from = $request->from;
         $to = $request->to;
-
-
         $Acc_No = MtsChartAc::where('Cmp_No',$maincompany)->where('Acc_No', '=', $fromtree)->where('Acc_No', '=', $totree)->pluck('Acc_No')->toArray();
         if($from > 1600 )
         {
@@ -602,6 +579,7 @@ class general_accountsController extends Controller
         $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
 
         $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+
         return view('admin.financial_reports.general_accounts.daily_restriction.daily_restriction',compact('limitationReceipts','MainCompany'));
 
     }

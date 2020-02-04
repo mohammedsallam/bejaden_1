@@ -50,6 +50,34 @@
 
 
             });
+
+            $('.toDate,.fromDate').on('blur',function(){
+                var mainCompany = $(this).val();
+                var delegates = $('.delegates').val();
+                var mtscustomer = $('.mtscustomer').val();
+                var fromDate    = $('.fromDate').val();
+                var toDate      = $('.toDate').val();
+                $('.column-form').html('');
+                $("#loadingmessage-1").css("display","block");
+                $(".details_row").css("display","none");
+                if (this){
+                    $.ajax({
+                        url: '{{route('trialbalanceCust.show')}}',
+                        type:'get',
+                        dataType:'html',
+                        data:{mainCompany: mainCompany, delegates:delegates, mtscustomer:mtscustomer,
+                            fromDate:fromDate, toDate:toDate},
+                        success: function (data) {
+                            $("#loadingmessage-1").css("display","none");
+                            $('.details_row').css("display","block").html(data);
+
+                        }
+                    });
+                }else{
+                    $('.details_row').html('');
+                }
+            });
+
         </script>
         <script>
             $(document).ready(function(){
@@ -66,36 +94,6 @@
                 showTodayButton:true,
             });
         </script>
-        {{--<script>--}}
-
-        {{--        $(function () {--}}
-        {{--            'use strict'--}}
-        {{--            if ($( ".MainCompany option:selected" ).val() && $( ".MainCompany option:selected" ).val() &&--}}
-        {{--                $( ".MainCompany option:selected" ).val() && $( ".MainCompany option:selected" ).val()--}}
-
-        {{--            )--}}
-
-
-
-        {{--        });--}}
-        {{--    </script>--}}
-
-
-
-{{--        <script>--}}
-{{--            $(document).ready(function(){--}}
-{{--                var minDate = '{{\Carbon\Carbon::today()->format('Y-m-d')}}';--}}
-{{--                $('.date').datepicker({--}}
-{{--                    format: 'yyyy-mm-dd',--}}
-{{--                    rtl: true,--}}
-{{--                    language: '{{session('lang')}}',--}}
-{{--                    autoclose:true,--}}
-{{--                    todayBtn:true,--}}
-{{--                    clearBtn:true,--}}
-{{--                });--}}
-{{--            });--}}
-
-{{--        </script>--}}
         <script>
             $(function () {
                 'use strict'

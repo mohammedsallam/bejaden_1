@@ -336,6 +336,9 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('details_trial_balance','Admin\financial_reports\customer_accountingcontroller@details_trial_balance')->name('details_trial_balance');
         Route::Post('print_trial_balance','Admin\financial_reports\customer_accountingcontroller@print_trial_balance')->name('print_trial_balance');
         Route::get('cust_daily_restriction','Admin\financial_reports\customer_accountingcontroller@daily_restriction')->name('cust_daily_restriction');
+        Route::get('cust_daily_restriction_show','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction_show')->name('cust_daily_restriction.show');
+        Route::get('cust_daily_restriction_details','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction_details')->name('cust_daily_restriction.details');
+        Route::Post('cust_daily_restriction_print','Admin\financial_reports\customer_accountingcontroller@cust_daily_restriction_print')->name('cust_daily_restriction.print');
 
 //        1
 //        0
@@ -349,8 +352,10 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('trialbalance_sup_details','Admin\financial_reports\supplier_accountingController@trialbalance_details')->name('trialbalanceSup.details');
         Route::get('trialbalance_sup_details_level','Admin\financial_reports\supplier_accountingController@trialbalance_level')->name('trialbalanceSup.level');
         Route::POST('trialbalance_sup_print','Admin\financial_reports\supplier_accountingController@trialbalance_print')->name('trialbalanceSup.print');
-
-        Route::get('supp_daily_restriction','Admin\financial_reports\supplier_accountingController@supp_daily_restriction')->name('supp_daily_restriction');
+        Route::get('sup_daily_restriction','Admin\financial_reports\supplier_accountingController@sup_daily_restriction')->name('sup_daily_restriction');
+        Route::get('sup_daily_restriction_show','Admin\financial_reports\supplier_accountingController@sup_daily_restriction_show')->name('sup_daily_restriction.show');
+        Route::get('sup_daily_restriction_details','Admin\financial_reports\supplier_accountingController@sup_daily_restriction_details')->name('sup_daily_restriction.details');
+        Route::Post('sup_daily_restriction_print','Admin\financial_reports\supplier_accountingController@sup_daily_restriction_print')->name('sup_daily_restriction.print');
 
 
 
@@ -368,7 +373,10 @@ Route::group(['prefix'=>'admin'],function (){
 //   0
         Route::get('cc_accounting','Admin\financial_reports\CC_accountingController@cc_accounting')->name('cc_accounting');
         Route::get('balances_cc','Admin\financial_reports\CC_accountingController@balances_cc')->name('balances_cc');
-        Route::get('motion_cc','Admin\financial_reports\CC_accountingController@motion_cc')->name('motion_cc');
+        Route::get('movement_statement','Admin\financial_reports\CC_accountingController@movement_statement')->name('movement_statement');
+        Route::get('movement_acc_cc','Admin\financial_reports\CC_accountingController@movement_acc_cc')->name('movement_acc_cc');
+        Route::get('movement_details','Admin\financial_reports\CC_accountingController@movement_details')->name('movement_details');
+        Route::post('movement_pdf','Admin\financial_reports\CC_accountingController@movement_pdf')->name('movement_pdf');
         Route::get('general_balance_cc','Admin\financial_reports\CC_accountingController@general_balance_cc')->name('general_balance_cc');
 
 //        1_1 financial_report
