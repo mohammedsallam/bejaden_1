@@ -91,6 +91,7 @@
                 });
 
                 $('.Cmp_No').change(function () {
+                    $('.Brn_No, .Cstm_No, .Dlv_Stor').html('');
                     if($(this).val() !== ''){
                         $.ajax({
                             url: "{{route('getActivityCustomer')}}",
@@ -100,11 +101,15 @@
                             success:function (data) {
                                 $('.Brn_No, .Cstm_No, .Dlv_Stor').html('');
 
-                                $('.Actvty_No').html("<option selected value='"+data.activity_id+"'>"+data.activity_name+"</option>");
+                                $('.Brn_No').append("<option>{{trans('admin.select')}}</option>");
+                                $('.Cstm_No').append("<option>{{trans('admin.select')}}</option>");
+
+                                $('.Actvty_No').html("<option value='"+data.activity_id+"'>"+data.activity_name+"</option>");
 
                                 for (let i =0; i < data.customers.length; i++){
                                     $('.Cstm_No').append("<option value='"+data.customers[i]['ID_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
+
 
                                 for (let i =0; i < data.branches.length; i++){
                                     $('.Brn_No').append("<option value='"+data.branches[i]['ID_No']+"'>"+data.branches[i]['Brn_NmEn']+"</option>");
@@ -126,6 +131,7 @@
                                     $('.Dlv_Stor').append("<option value='"+data.stores[i]['ID_No']+"'>"+data.stores[i]['Dlv_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
 
+                                $('.Slm_No').append("<option>{{trans('admin.select')}}</option>");
                                 for (let i =0; i < data.stores.length; i++){
                                     $('.Slm_No').append("<option value='"+data.salesMan[i]['Slm_No']+"'>"+data.salesMan[i]['Slm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
@@ -135,6 +141,10 @@
                 });
                 $('.Cstm_No').change(function () {
                     $('.cstm_no_input').val($(this).val())
+                })
+
+                $('table td input').focus(function () {
+                   console.log('hello')
                 })
             })
 
@@ -208,16 +218,16 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div class="form-group">
-                    <label for="" class="control-label"> ر/فاتورة</label>
-                    <input type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" >
+                    <label for="">رقم</label>
+                    <input type="text" class="form-control cstm_no_input" >
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
-                    <label for="Doc_Dt" class="control-label">ميلادي</label>
-                    <input type="text" name="Doc_Dt" class="form-control Doc_Dt datepicker" id="Doc_Dt">
+                    <label for="" class="control-label"> ر/فاتورة</label>
+                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="{{$last != null ? $last->Custm_Inv+1:1}}">
                 </div>
             </div>
             <div class="col-md-3">
@@ -231,6 +241,13 @@
                     </select>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="Doc_Dt" class="control-label">ميلادي</label>
+                    <input type="text" name="Doc_Dt" class="form-control Doc_Dt datepicker" id="Doc_Dt">
+                </div>
+            </div>
+
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="" class="control-label">هجري</label>
@@ -270,14 +287,6 @@
                     </select>
                 </div>
             </div>
-
-            <div class="col-md-1">
-                <div class="form-group">
-                    <label for="">رقم</label>
-                    <input type="text" class="form-control cstm_no_input" >
-                </div>
-            </div>
-
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
 {{--                    <div>--}}

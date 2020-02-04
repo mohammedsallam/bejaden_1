@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\sales_invoices;
 use App\DataTables\salesInvoicesDataTable;
 use App\Models\Admin\ActivityTypes;
 use App\Models\Admin\AstSalesman;
+use App\Models\Admin\InvLodhdr;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\PjbranchDlv;
@@ -29,8 +30,26 @@ class SalesInvoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $last = InvLodhdr::latest()->first();
+//        InvLodhdr::where('Brn_No', null)->delete();
+//        if ($last == null){
+//            $lastHeader = InvLodhdr::create(['Custm_Inv' => 1]);
+//        } else {
+//            $lastHeader = InvLodhdr::create(['Custm_Inv' => $last->Custm_Inv+1]);
+//        }
+        if ($request->ajax() && $request->Cmp_No){
+            InvLodhdr::create([
+                'Cmp_No' => $request->Cmp_No,
+                'Custm_Inv' => $request->Custm_Inv,
+                'Actvty_No' => $request->Actvty_No,
+                'Brn_No' => $request->Brn_No,
+                'Slm_No' => $request->Slm_No,
+                'Dlv_Stor' => $request->Dlv_Stor,
+                'Cstm_No' => $request->Cstm_No,
+            ]);
+        }
 
         if(session('Cmp_No') == -1){
             $branches = MainBranch::with('stores')->get();
@@ -42,7 +61,7 @@ class SalesInvoicesController extends Controller
             $activity = ActivityTypes::where('Cmp_No', session('Cmp_No'))->get();
         }
 
-        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity']));
+        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last']));
     }
 
     /**
@@ -105,7 +124,7 @@ class SalesInvoicesController extends Controller
     {
         if ($request->ajax()){
             if ($request->Cmp_No){
-                $company = MainCompany::find($request->Cmp_No);
+                $company = MainCompany::where('Cmp_No', $request->Cmp_No)->first();
                 return response()->json([
                     'activity_id' => $company->activity->Actvty_No,
                     'activity_name' => $company->activity->{'Name_'.ucfirst(session('lang'))},
