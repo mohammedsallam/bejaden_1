@@ -46,11 +46,6 @@
                             count = 2;
                         }
 
-                        tableBody.children().each(function () {
-                            $(this).children('td:first-child').html(parseInt($(this).index())+1)
-
-                        });
-
                         let row = `<tr>
                     <td class="delete_row bg-red">`+count+`</td>
                     <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
@@ -77,14 +72,30 @@
                 </tr>`;
 
                         tableBody.append(row);
+
+                        tableBody.children().each(function () {
+                            $(this).children('td:first-child').html(parseInt($(this).index())+1)
+
+                        });
                         count +=1;
                     }
 
-
-
-
-
                 });
+
+                $('.Cmp_No').change(function () {
+                    if($(this).val() !== ''){
+                        $.ajax({
+                            url: "{{route('getActivity')}}",
+                            type: 'get',
+                            dataType: 'json',
+                            data:{Cmp_No:$(this).val()},
+                            success:function (data) {
+                                $('.Actvty_No').html("<option selected value='"+data.id+"'>"+data.name+"</option>");
+                            }
+                        })
+                    }
+
+                })
             })
 
         </script>
@@ -99,6 +110,36 @@
     <div class="box-body">
 {{--        {!! Form::open(['method'=>'POST','route' => 'salesInvoices.store','files'=>true]) !!}--}}
 
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="display: flex">
+                    <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
+                    {{--@if($cmp->ID_No == session('updatedComNo')) selected @endif--}}
+                    <select name="Cmp_No" id="Cmp_No" class="form-control Cmp_No">
+                        <option value="">{{trans('admin.select')}}</option>
+                        @if(count($companies ) > 0)
+                            @foreach($companies as $company)
+                                <option @if(session('Cmp_No') == $company->ID_No) selected @endif value="{{$company->ID_No}}">{{$company->{'Cmp_Nm'.ucfirst(session('lang'))} }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {{--@if($active->ID_No == session('updatedActiveNo')) selected @endif--}}
+                <div class="form-group" style="display: flex">
+                    <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
+                    <select name="Actvty_No" id="Actvty_No" class="form-control Actvty_No">
+                        <option value="">{{trans('admin.select')}}</option>
+                        @if(count($activity) > 0)
+                            @foreach($activity as $active)
+                                <option @if(session('Cmp_No') == $active->ID_No) selected @endif value="{{$active->ID_No}}">{{$active->{'Name_'.ucfirst(session('lang'))} }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+        </div>
         <div>
             <div class="col-md-3">
                 <div class="form-group">
@@ -170,7 +211,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="Cstm_No" class="control-label">العميل</label>
                     <select name="Cstm_No" id="Cstm_No"  class="form-control Cstm_No">
@@ -178,7 +219,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div class="form-group">
                     <label for="">رقم</label>
                     <input type="text" name="Doc_DtAr" class="form-control" >
@@ -194,10 +235,10 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
-                    <div>
-                        <input type="checkbox" class="checkbox-inline" id="cache">
-                        <label for="cache" class="control-label">نقداً خلال</label>
-                    </div>
+{{--                    <div>--}}
+{{--                        <input type="checkbox" class="checkbox-inline" id="cache">--}}
+{{--                        <label for="cache" class="control-label">نقداً خلال</label>--}}
+{{--                    </div>--}}
                     <div style="width: 62%">
                         <label for="Credit_Days" class="control-label">مدة السداد</label>
                         <input type="text" name="Credit_Days" id="Credit_Days" class="form-control Credit_Days" placeholder="يوم">
@@ -225,26 +266,26 @@
         </div>
 
         {{--Start table--}}
-        <div class="row">
+        <div class="row" style="max-height: 300px; overflow: auto">
             <table class="table table-bordered">
                 <tr class="bg-aqua">
                     <th>م</th>
                     <th>رقم الصنف</th>
                     <th>إسم الصنف</th>
                     <th>الوحدة</th>
-                    <th>رقم الموقع</th>
+                    <th>رقم </th>
                     <th>الكمية</th>
                     <th>سعر البيع</th>
                     <th>إجمالي القيمة</th>
                     <th>تاريخ الصلاحية</th>
-                    <th>رقم الباتش</th>
+                    <th> الباتش</th>
                     <th>خصم بيع%</th>
                     <th>خصم قيمة1</th>
                     <th>الضريبة%</th>
                     <th>قيمة الضريبة</th>
                 </tr>
                 <tbody class="table_body">
-                <tr class="first_row">
+                    <tr class="first_row">
                     <td class="delete_row bg-red">1</td>
                     <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
                     <td style="width: 20%">
