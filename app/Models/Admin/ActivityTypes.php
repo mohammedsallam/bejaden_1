@@ -14,4 +14,9 @@ class ActivityTypes extends Model
         'Name_En',
         'NofCmp'
     ];
+
+    public function companies()
+    {
+        return $this->hasMany(MainCompany::class, 'Actvty_No', 'Actvty_No');
+    }
 }

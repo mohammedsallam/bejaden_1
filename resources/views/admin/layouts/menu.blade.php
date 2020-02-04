@@ -5,7 +5,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{url('/')}}/adminlte/previewImage.png @endif"  style="height: 45px !important;" class="img-circle" alt="User Image">
+                <img src="@if(admin()->user()->image !== null){{asset('storage/'.admin()->user()->image)}}@else {{asset('public/adminlte/previewImage.png')}} @endif"  style="height: 45px !important;" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
                 <p>{{admin()->user()->name}}</p>

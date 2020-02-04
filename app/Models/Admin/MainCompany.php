@@ -17,6 +17,7 @@ class MainCompany extends Model
         'Cmp_Email',
         'Cmp_Adrs',
         'Cmp_Tel',
+        'Actvty_No',
         'Picture',
         'Accredit_expens',
         'Foreign_Curncy',
@@ -31,6 +32,11 @@ class MainCompany extends Model
 
     public function branches(){
         return $this->hasMany(MainBranch::class, 'Cmp_No', 'Cmp_No');
+    }
+
+    public function activity()
+    {
+        return $this->belongsTo(ActivityTypes::class, 'Actvty_No', 'Actvty_No');
     }
 
 }
