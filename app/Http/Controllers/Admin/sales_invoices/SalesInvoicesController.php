@@ -9,6 +9,7 @@ use App\Models\Admin\InvLodhdr;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
 use App\Models\Admin\PjbranchDlv;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -33,29 +34,39 @@ class SalesInvoicesController extends Controller
     public function create(Request $request)
     {
         $last = InvLodhdr::latest()->first();
-//        InvLodhdr::where('Brn_No', null)->delete();
-//        if ($last == null){
-//            $lastHeader = InvLodhdr::create(['Custm_Inv' => 1]);
-//        } else {
-//            $lastHeader = InvLodhdr::create(['Custm_Inv' => $last->Custm_Inv+1]);
-//        }
-        if ($request->ajax() && $request->Cmp_No){
-            InvLodhdr::create([
-                'Cmp_No' => $request->Cmp_No,
-                'Custm_Inv' => $request->Custm_Inv,
-                'Actvty_No' => $request->Actvty_No,
-                'Brn_No' => $request->Brn_No,
-                'Slm_No' => $request->Slm_No,
-                'Dlv_Stor' => $request->Dlv_Stor,
-                'Cstm_No' => $request->Cstm_No,
-            ]);
+        if ($request->ajax()){
+            if ($request->Cmp_No){
+                InvLodhdr::where('Brn_No', null)->delete();
+                InvLodhdr::create([
+                    'Cmp_No' => $request->Cmp_No,
+                    'Custm_Inv' => $request->Custm_Inv,
+                    'Actvty_No' => $request->Actvty_No,
+                    'Brn_No' => $request->Brn_No,
+                    'Slm_No' => $request->Slm_No,
+                    'Dlv_Stor' => $request->Dlv_Stor,
+                    'Cstm_No' => $request->Cstm_No,
+                ]);
+            }
+            elseif($request->Custm_Inv){
+                InvLodhdr::where('Brn_No', null)->delete();
+                $last = InvLodhdr::latest()->first();
+                $new = InvLodhdr::create(['Custm_Inv' => $last == null ? 1 : $request->Custm_Inv+1]);
+                return response()->json(['Custm_Inv' => $new->Custm_Inv]);
+            }
+            elseif($request->Doc_Dt || $request->Credit_Days){
+                $dataDayes = Carbon::createFromDate($request->Credit_Days);
+
+                dd($dataDayes);
+            }
+
         }
 
         if(session('Cmp_No') == -1){
             $branches = MainBranch::with('stores')->get();
             $companies = MainCompany::all();
             $activity = ActivityTypes::all();
-        } else {
+        }
+        else {
             $branches = MainBranch::where('Cmp_No', session('Cmp_No'))->with('stores')->get();
             $companies = MainCompany::where('Cmp_No', session('Cmp_No'))->get();
             $activity = ActivityTypes::where('Cmp_No', session('Cmp_No'))->get();
@@ -72,7 +83,7 @@ class SalesInvoicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

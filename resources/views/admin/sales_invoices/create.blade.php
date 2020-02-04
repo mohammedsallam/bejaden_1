@@ -141,10 +141,37 @@
                 });
                 $('.Cstm_No').change(function () {
                     $('.cstm_no_input').val($(this).val())
-                })
+                });
 
-                $('table td input').focus(function () {
-                   console.log('hello')
+                if($('.Custm_Inv').val() !== ''){
+                    $.ajax({
+                        url: "{{route('salesInvoices.create')}}",
+                        type: 'get',
+                        dataType: 'json',
+                        data:{Custm_Inv: $('.Custm_Inv').val()},
+                        success: function (data) {
+                            $('.Custm_Inv').val(data.Custm_Inv)
+                        }
+                    })
+                }
+
+                $('.Doc_Dt, .Credit_Days').change(function () {
+                    if($('.Doc_Dt').val() !== '' &&  $('.Credit_Days').val() !== ''){
+                        $.ajax({
+                            url: "{{route('salesInvoices.create')}}",
+                            type: 'get',
+                            dataType: 'json',
+                            data:{
+                                Doc_Dt: $('.Doc_Dt').val(),
+                                Credit_Days:$('.Credit_Days').val()
+                            },
+                            success: function (data) {
+                                $('.Custm_Inv').val(data.Custm_Inv)
+                            }
+                        });
+                    }
+
+                    // $('.Pym_Dt').val()
                 })
             })
 
@@ -227,7 +254,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="" class="control-label"> ر/فاتورة</label>
-                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="{{$last != null ? $last->Custm_Inv+1:1}}">
+                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="1">
                 </div>
             </div>
             <div class="col-md-3">
