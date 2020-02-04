@@ -55,27 +55,27 @@
 
                         let row = `<tr>
                     <td class="delete_row bg-red"><span>`+count+`</span><input type="hidden" name="Ln-No" value="`+count+`"></td>
-                    <td style="width: 11%"><input name="Itm_No[]" id="Itm_No" class="Itm_No" type="text"></td>
+                    <td style="width: 11%"><input id="itm_no_input" class="itm_no_input" type="text"></td>
                     <td style="width: 20%">
-                        <select name="" >
+                        <select name="Itm_No" id="Itm_No" class="Itm_No" >
                             <option value=""></option>
                         </select>
                     </td>
                     <td style="width: 9%">
-                        <select name="Unit_No[]" id="Unit_No" class="Unit_No" >
+                        <select name="Unit_No" id="Unit_No" class="Unit_No" >
                             <option value=""></option>
                         </select>
                     </td>
-                    <td><input type="text" name="Loc_No[]" id="Loc_No" class="Loc_No"></td>
-                    <td><input type="number" min="1" name="Qty[]" id="Qty" class="Qty"></td>
-                    <td><input type="number" min="1" name="Itm_Sal[]" id="Itm_Sal" class="Itm_Sal"></td>
-                    <td><input type="text"></td>
-                    <td style="width: 11%;"><input type="text" name="Exp_Date[]" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
-                    <td><input type="text"></td>
-                    <td><input type="text"></td>
-                    <td><input type="text" class="last_td"></td>
-                    <td><input type="text" class="last_td"></td>
-                    <td><input type="text" class="last_td"></td>
+                    <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
+                    <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
+                    <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
+                    <td><input type="text" id="item_tot_sal" class="item_tot_sal"></td>
+                    <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
+                    <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No"></td>
+                    <td><input type="text" name="Disc1_Prct" id="Disc1_Prct" class="Disc1_Prct"></td>
+                    <td><input type="text" name="Disc1_Val" id="Disc1_Val" class="Disc1_Val"></td>
+                    <td><input type="text" name="Taxp_Extra" id="Taxp_Extra" class="Taxp_Extra"></td>
+                    <td><input type="text" name="Taxv_Extra" id="Taxv_Extra" class="Taxv_Extra"></td>
                 </tr>`;
 
                         tableBody.append(row);
@@ -211,7 +211,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="" class="control-label"> ر/فاتورة</label>
-                    <input type="text" name="" class="form-control" >
+                    <input type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" >
                 </div>
             </div>
             <div class="col-md-2">
@@ -381,7 +381,7 @@
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">بعد الخصم</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
@@ -403,7 +403,7 @@
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">قيمة الضريبة</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control tax_val">
                 </div>
             </div>
             <div class="col-md-2">
@@ -417,37 +417,37 @@
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">حد الائتمان</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control secure_limit">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">الرصيد الحالي</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control current_balance">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">الفرق</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control diff">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">رصيد الصنف</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control item_balance">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">رصيد المستودعات</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control store_balance">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group" style="display: flex">
                     <label for="">سعر البيع</label>
-                    <input type="text" name="" id="" class="form-control">
+                    <input type="text" class="form-control sale_price">
                 </div>
             </div>
         </div>
