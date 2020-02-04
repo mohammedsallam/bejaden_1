@@ -650,7 +650,7 @@ Route::group(['prefix'=>'admin'],function (){
         })->name('getstoresInvoicesGeneralView');
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
-        Route::get('getActivity', 'Admin\sales_invoices\SalesInvoicesController@getActivity')->name('getActivity');
+        Route::get('getActivityCustomer', 'Admin\sales_invoices\SalesInvoicesController@getActivityCustomer')->name('getActivityCustomer');
 
         /**
          * all about stores place

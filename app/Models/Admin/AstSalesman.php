@@ -41,4 +41,5 @@ class AstSalesman extends Model
         return $this->belongsTo('App\Models\Admin\MainCompany', 'Cmp_No', 'ID_No');
     }
 
+
 }

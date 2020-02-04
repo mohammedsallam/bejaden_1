@@ -39,4 +39,14 @@ class MainCompany extends Model
         return $this->belongsTo(ActivityTypes::class, 'Actvty_No', 'Actvty_No');
     }
 
+    public function customers()
+    {
+        return $this->hasMany(MTsCustomer::class, 'Cmp_No', 'ID_No');
+    }
+
+    public function salesMan()
+    {
+        return $this->hasMany(AstSalesman::class, 'Cmp_No', 'ID_No');
+    }
+
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin\sales_invoices;
 
 use App\DataTables\salesInvoicesDataTable;
 use App\Models\Admin\ActivityTypes;
+use App\Models\Admin\AstSalesman;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\PjbranchDlv;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -99,11 +101,25 @@ class SalesInvoicesController extends Controller
         //
     }
 
-    public function getActivity(Request $request)
+    public function getActivityCustomer(Request $request)
     {
-        if ($request->ajax() && $request->Cmp_No){
-            $company = MainCompany::find($request->Cmp_No);
-            return response()->json(['id' => $company->activity->Actvty_No, 'name' => $company->activity->{'Name_'.ucfirst(session('lang'))} ]);
+        if ($request->ajax()){
+            if ($request->Cmp_No){
+                $company = MainCompany::find($request->Cmp_No);
+                return response()->json([
+                    'activity_id' => $company->activity->Actvty_No,
+                    'activity_name' => $company->activity->{'Name_'.ucfirst(session('lang'))},
+                    'customers' => $company->customers,
+                    'branches' => $company->branches,
+                ]);
+            } elseif($request->Brn_No){
+                $stores = PjbranchDlv::where('Brn_No', $request->Brn_No)->get();
+                $salesMan = AstSalesman::where('Brn_No', $request->Brn_No)->get();
+                return response()->json([
+                    'stores' => $stores,
+                    'salesMan' => $salesMan,
+                ]);
+            }
         }
 
     }
