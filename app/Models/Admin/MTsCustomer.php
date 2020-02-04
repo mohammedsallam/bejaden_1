@@ -117,7 +117,7 @@ class MTsCustomer extends Model
     }
 
     public function company(){
-        return $this->belongsTo('App\Models\Admin\MainCompany', 'Cmp_No', 'ID_No');
+        return $this->belongsTo(MainCompany::class, 'Cmp_No', 'ID_No');
     }
 
     public function country()
