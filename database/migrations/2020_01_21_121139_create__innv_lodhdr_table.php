@@ -16,6 +16,8 @@ class CreateInnvLodhdrTable extends Migration
         Schema::create('invlodhdr', function (Blueprint $table) {
             $table->increments('ID_No');
             $table->smallInteger('Brn_No')->nullable();
+            $table->smallInteger('Cmp_No')->nullable();
+            $table->smallInteger('Actvty_No')->nullable();
             $table->smallInteger('Doc_Ty')->nullable();
             $table->smallInteger('Doc_No')->nullable();
             $table->smallInteger('Dlv_Stor')->nullable();

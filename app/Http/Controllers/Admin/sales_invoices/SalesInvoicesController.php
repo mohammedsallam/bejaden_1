@@ -8,10 +8,13 @@ use App\Models\Admin\AstSalesman;
 use App\Models\Admin\InvLodhdr;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\MtsItmmfs;
 use App\Models\Admin\PjbranchDlv;
-use Carbon\Carbon;
+use App\Models\Admin\Units;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class SalesInvoicesController extends Controller
 {
@@ -19,7 +22,7 @@ class SalesInvoicesController extends Controller
      * Display a listing of the resource.
      *
      * @param salesInvoicesDataTable $table
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(salesInvoicesDataTable $table)
     {
@@ -29,38 +32,12 @@ class SalesInvoicesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function create(Request $request)
     {
         $last = InvLodhdr::latest()->first();
-        if ($request->ajax()){
-            if ($request->Cmp_No){
-                InvLodhdr::where('Brn_No', null)->delete();
-                InvLodhdr::create([
-                    'Cmp_No' => $request->Cmp_No,
-                    'Custm_Inv' => $request->Custm_Inv,
-                    'Actvty_No' => $request->Actvty_No,
-                    'Brn_No' => $request->Brn_No,
-                    'Slm_No' => $request->Slm_No,
-                    'Dlv_Stor' => $request->Dlv_Stor,
-                    'Cstm_No' => $request->Cstm_No,
-                ]);
-            }
-            elseif($request->Custm_Inv){
-                InvLodhdr::where('Brn_No', null)->delete();
-                $last = InvLodhdr::latest()->first();
-                $new = InvLodhdr::create(['Custm_Inv' => $last == null ? 1 : $request->Custm_Inv+1]);
-                return response()->json(['Custm_Inv' => $new->Custm_Inv]);
-            }
-            elseif($request->Doc_Dt || $request->Credit_Days){
-                $dataDayes = Carbon::createFromDate($request->Credit_Days);
-
-                dd($dataDayes);
-            }
-
-        }
-
         if(session('Cmp_No') == -1){
             $branches = MainBranch::with('stores')->get();
             $companies = MainCompany::all();
@@ -72,25 +49,83 @@ class SalesInvoicesController extends Controller
             $activity = ActivityTypes::where('Cmp_No', session('Cmp_No'))->get();
         }
 
-        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last']));
+        $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+        $units = Units::all();
+
+        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last'. 'items', 'units']));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
+        if ($request->ajax() && $request->requestType == 'createHeader'){
+            $validation = Validator::make($request->all(), [
+                'Cmp_No' => 'required',
+                'Actvty_No' => 'required',
+                'Brn_No' => 'required',
+                'Slm_No' => 'required',
+                'Cstm_No' => 'required',
+                'Dlv_Stor' => 'required',
+                'Doc_Dt' => 'required',
+                'Doc_DtAr' => 'required',
+                'Custm_Inv' => 'required',
+                'SubCstm_Filno' => 'required',
+                'Pym_No' => 'required',
+                'Reftyp_No' => 'sometimes',
+                'Ref_No' => 'sometimes',
+                'Credit_Days' => 'required',
+                'Pym_Dt' => 'required',
+                'Tax_Allow' => 'sometimes',
+                'Notes' => 'required',
+                'Notes1' => 'sometimes',
+            ],[], [
+                'Cmp_No' => trans('admin.na_Comp'),
+                'Actvty_No' => trans('admin.activity'),
+                'Brn_No' => trans('admin.Brn_No'),
+                'Slm_No' => trans('admin.Slm_No'),
+                'Cstm_No' => trans('admin.Cstm_No'),
+                'Dlv_Stor' => trans('admin.Dlv_Stor'),
+                'Doc_Dt' => trans('admin.Doc_Dt'),
+                'Doc_DtAr' => trans('admin.Doc_DtAr'),
+                'Custm_Inv' => trans('admin.Custm_Inv'),
+                'SubCstm_Filno' => trans('admin.SubCstm_Filno'),
+                'Pym_No' => trans('admin.Pym_No'),
+                'Reftyp_No' => trans('admin.Reftyp_No'),
+                'Ref_No' => trans('admin.Ref_No'),
+                'Credit_Days' => trans('admin.Credit_Days'),
+                'Pym_Dt' => trans('admin.Pym_Dt'),
+                'Notes' => trans('admin.notes'),
+            ]);
 
+            if ($validation->fails()){
+                return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
+            } else {
+                $header = InvLodhdr::where('Custm_Inv', $request->Custm_Inv)->first();
+                if($header == null){
+                    InvLodhdr::create($request->all());
+                } else {
+                    $header->update($request->all());
+                    if (!$request->has(['Tax_Allow'])){
+                        $header->update(['Tax_Allow' => null]);
+                    }
+                }
+
+                return  response()->json(['status' => 1, 'message' => trans('admin.save_success')]);
+
+            }
+        }
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -101,7 +136,7 @@ class SalesInvoicesController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -113,7 +148,7 @@ class SalesInvoicesController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -124,7 +159,7 @@ class SalesInvoicesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -152,5 +187,33 @@ class SalesInvoicesController extends Controller
             }
         }
 
+    }
+
+    public function billOperation(Request $request)
+    {
+        if ($request->ajax()){
+//            if($request->billNo){
+//                InvLodhdr::where('Brn_No', null)->delete();
+//                $last = InvLodhdr::latest()->first();
+//                $new = InvLodhdr::create(['Custm_Inv' => $last == null ? 1 : $request->billNo+1]);
+//                return response()->json(['Custm_Inv' => $new->Custm_Inv]);
+//            }
+            if($request->DateEn || $request->daysNo){
+                $daysToSec = strtotime($request->DateEn)+($request->daysNo*24*60*60);
+                $daysToDate = date('Y-m-d', $daysToSec);
+                return response()->json(['date' => $daysToDate]);
+            }
+
+        }
+    }
+
+    public function createNewRow(Request $request)
+    {
+        if ($request->ajax()){
+            $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+            $units = Units::all();
+            $row = $request->rowNo;
+            return view('admin.sales_invoices.create_new_row', compact(['items', 'units', 'row']));
+        }
     }
 }
