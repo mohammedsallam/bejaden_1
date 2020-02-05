@@ -31,7 +31,7 @@
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cc/report/motioncc">
+                <a href="movement_statement">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-balance-scale"></i></span>
 

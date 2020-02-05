@@ -43,7 +43,7 @@
             </a>
         </div>
         <div class="col-md-3 col-sm-6 col-12">
-            <a href="daily_restriction">
+            <a href="sup_daily_restriction">
                 <div class="info-box">
                     <span class="info-box-icon bg-warning"><i class="fa fa-500px"></i></span>
 

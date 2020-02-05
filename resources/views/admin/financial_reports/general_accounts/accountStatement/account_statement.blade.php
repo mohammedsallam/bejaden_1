@@ -120,8 +120,6 @@
 
         });
 
-//data backer
-
         $(document).on("blur","#froxsate ,#toDate",function(){
 
             var maincompany = $('.MainCompany').val();
@@ -191,16 +189,6 @@
                 $('.button_print').html('');
             }
         });
-
-
-
-
-
-
-
-
-
-
 
 
 

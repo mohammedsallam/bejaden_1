@@ -89,56 +89,18 @@
         }
 
     });
-    $('#toDate,#fromDate').on('blur',function(){
-        var MainCompany = '{{$MainCompany}}';
-        var sales_check = $('#sales_check').val();
-        var state_check = $('#state_check').val();
-        var but_sales_check =  $('input[id="but_sales_check"]:checked').val();
-        var fromtree = $('.fromtree').val();
-        var numberfromtree = $('.numberfromtree').val();
-        var totree = $('.totree').val();
-        var numbertotree = $('.numbertotree').val();
-        var radioDepartment =  $('input[name="department"]:checked').val();
-        var delegates =  $('input[name="delegates"]:checked').val();
-        var mtscustomer =  $('input[name="mtscustomer"]:checked').val();
-        var From =  $('input[name="From"]').val();
-        var to = $('input[name = "To"]').val();
+    $('.delegates,.mtscustomer,#but_sales_check,.department,.fromtree,.totree').on("change",function(){
 
-        $(".print_div").css("display","none");
-        if (this) {
-            $.ajax({
-                url: '{{route('details_trial_balance')}}',
-                type: 'get',
-                dataType: 'html',
-                data: {MainCompany: MainCompany,
-                    fromtree: fromtree, totree: totree,
-                    From: From,
-                    to: to,
-                    radioDepartment: radioDepartment,
-                    sales_check:sales_check, state_check:state_check,
-                    delegates:delegates, mtscustomer:mtscustomer,
-                    but_sales_check:but_sales_check,
-                    numberfromtree:numberfromtree,
-                    numbertotree  :numbertotree
-
-        },
-                success: function (data) {
-                    $("#loadingmessage-2").css("display", "none");
-                    $('.print_div').css("display", "block").html(data);
-
-                }
-            });
-        }
-    });
-    $('.delegates,.mtscustomer,#but_sales_check,.department').on("change",function(){
             var MainCompany = '{{$MainCompany}}';
             var sales_check = $('#sales_check').val();
             var state_check = $('#state_check').val();
             var but_sales_check =  $('input[id="but_sales_check"]:checked').val();
             var fromtree = $('.fromtree').val();
-            var numberfromtree = $('.numberfromtree').val();
+            $('.numberfromtree').val(fromtree);
+            var numberfromtree = $('.fromtree').val();
             var totree = $('.totree').val();
-            var numbertotree = $('.numbertotree').val();
+            $('.numbertotree').val(totree);
+            // var numbertotree = $(totree).val();
             var radioDepartment =  $('input[name="department"]:checked').val();
             var delegates =  $('input[name="delegates"]:checked').val();
             var mtscustomer =  $('input[name="mtscustomer"]:checked').val();
@@ -181,6 +143,8 @@
             }
 
     });
+
+
 </script>
     <div class="row">
         <div class="col-md-9 col-xs-9">
@@ -211,7 +175,7 @@
         {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 elast efirst fromtree'])) }}
     </div>
     <div class="col-xs-3">
-        {{ Form::text('number_fromtree',$fromtree, array_merge(['class' => 'form-control'])) }}
+        {{ Form::text('number_fromtree',$fromtree, array_merge(['class' => 'form-control numberfromtree'])) }}
     </div>
 </div>
 <br>
@@ -221,7 +185,7 @@
         {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
     </div>
     <div class="col-xs-3">
-        {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control'])) }}
+        {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control numbertotree'])) }}
     </div>
 </div>
 

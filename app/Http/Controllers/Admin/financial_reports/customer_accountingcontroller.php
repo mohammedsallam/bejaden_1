@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin\financial_reports;
 
 use App\Branches;
+use App\limitationReceipts;
 use App\limitations;
 use App\limitationsType;
 use App\Models\Admin\MainCompany;
@@ -218,7 +219,7 @@ class customer_accountingcontroller extends Controller
         if($request->ajax())
 
         {
-            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
+            $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'Acc_No');
             $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
             $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
             $AstSalesman = AstSalesman::where('Cmp_No',$MainCompany)->pluck('Slm_Nm' . ucfirst(session('lang')) ,'Slm_No');
@@ -505,11 +506,100 @@ class customer_accountingcontroller extends Controller
 
 
     }
+
     public function daily_restriction()
     {
-        return view('admin.financial_reports.customer_accounting.report.daily_restriction');
+        $MainCompany = MainCompany::pluck('Cmp_Nm'.ucfirst(session('lang')),'Cmp_No');
+        $limitationReceipts = limitationReceipts::pluck('name_'.session('lang'),'id');
+
+        return view('admin.financial_reports.customer_accounting.daily_restriction.daily_restriction', compact('MainCompany', 'limitationReceipts'));
 
     }
+    public function cust_daily_restriction_show(Request $request)
+    {
+        $MainCompany = $request->MainCompany;
+        $type = $request->type;
+        $date_limition = $request->date_limition;
+        if($request->ajax())
+        {
+            if($date_limition == '0')
+            {
+                return $date = view('admin.financial_reports.customer_accounting.daily_restriction.ajax.date',compact('MainCompany','type','date_limition'))->render();
+
+            }else
+            {
+                return $date = view('admin.financial_reports.customer_accounting.daily_restriction.ajax.limition',compact('MainCompany','type','date_limition'))->render();
+
+
+            }
+
+        }
+
+
+    }
+
+
+    public function cust_daily_restriction_details(Request $request)
+    {
+
+        $MainCompany = $request->MainCompany;
+        $type = $request->type;
+        $date_limition = $request->date_limition;
+        $fromDate = $request->fromDate;
+        $toDate = $request->toDate;
+        if($request->ajax())
+        {
+            if($date_limition == '0')
+            {
+                return $date = view('admin.financial_reports.customer_accounting.daily_restriction.ajax.details',compact('MainCompany','type','date_limition','fromDate','toDate'))->render();
+
+            }else
+            {
+                return $date = view('admin.financial_reports.customer_accounting.daily_restriction.ajax.limition',compact('MainCompany','type','date_limition','fromDate','toDate'))->render();
+
+
+            }
+
+        }
+
+
+    }
+    public function cust_daily_restriction_print(Request $request)
+    {
+
+        $MainCompany = $request->MainCompany;
+        $type = $request->type;
+        $date_limition = $request->date_limition;
+        $fromDate = $request->fromDate;
+        $toDate = $request->toDate;
+
+        $value1 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($fromDate)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($toDate)))
+            ->where('Ln_No',1)
+            ->get();
+        $value2 = GLjrnTrs::where('Cmp_No',$MainCompany)->where('Ac_Ty',2)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($fromDate)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($toDate)))
+            ->where('Ln_No','>',1)
+            ->get();
+        $values = $value1->concat($value2);
+        $data = $values->groupBy(function($data) {
+            return $data->Tr_No;
+        });
+
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+                    <div style="font-size:10px;width:25%;float:right">Print Date: {DATE j-m-Y H:m}</div>
+                    <div style="font-size:10px;width:25%;float:left;direction:ltr;text-align:left">Page {PAGENO} of {nbpg}</div>'
+            );
+        }];
+        $pdf = PDF::loadView('admin.financial_reports.customer_accounting.daily_restriction.pdf.report',
+            ['data'=>$data,'fromDate' => $fromDate,'toDate' => $toDate],[],$config);
+        return $pdf->stream();
+    }
+
+
 
 
     public function index()

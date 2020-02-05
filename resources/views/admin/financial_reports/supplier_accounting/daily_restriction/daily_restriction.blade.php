@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title','القيود اليومية للحسابات العامة')
+@section('title','القيود اليومية للموردين')
 
 @section('content')
 @push('css')
@@ -38,7 +38,7 @@
                 $(".show_row").css("display","none");
                 if (this){
                     $.ajax({
-                        url: '{{route('daily_restriction.show')}}',
+                        url: '{{route('sup_daily_restriction.show')}}',
                         type:'get',
                         dataType:'html',
                         data:{MainCompany: MainCompany,type: type,date_limition: date_limition},
@@ -85,7 +85,7 @@
 @endpush
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">القيود اليومية للحسابات العامة</h3>
+        <h3 class="box-title">القيود اليومية للموردين</h3>
     </div>
     <div class="box-body">
         <div class="row">

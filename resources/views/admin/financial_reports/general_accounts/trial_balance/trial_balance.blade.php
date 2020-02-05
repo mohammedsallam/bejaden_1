@@ -49,36 +49,7 @@
 
 
         </script>
-{{--        <script>--}}
-{{--            $(function () {--}}
-{{--                'use strict'--}}
 
-{{--                $(".MainCompany").on("change",function(){--}}
-{{--                    var mainCompany = $(this).val();--}}
-{{--                    $('.column-form').html('');--}}
-{{--                    $("#loadingmessage-1").css("display","block");--}}
-{{--                    $(".div_branch").css("display","none");--}}
-{{--                    if (this){--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('branche_trial_balance')}}',--}}
-{{--                            type:'get',--}}
-{{--                            dataType:'html',--}}
-{{--                            data:{mainCompany: mainCompany},--}}
-{{--                            success: function (data) {--}}
-{{--                                $("#loadingmessage-1").css("display","none");--}}
-{{--                                $('.div_branch').css("display","block").html(data);--}}
-
-{{--                            }--}}
-{{--                        });--}}
-{{--                    }else{--}}
-{{--                        $('.div_branch').html('');--}}
-{{--                    }--}}
-{{--                });--}}
-
-
-
-{{--            });--}}
-{{--        </script>--}}
         <script>
 
             $(function () {
@@ -208,23 +179,6 @@
         </script>
 
         <script>
-            // mah
-            // $("#seeAnotherField").change(function() {
-
-            //     if ($("#seeAnotherField").val() == 0 &&  $(".MainBranch").val() && $(".MainCompany").val()) {
-            //         $('#otherField').attr('disabled', 'disabled');
-
-            //     }else if  ($("#seeAnotherField").val() == 1) {
-            //         $('#otherField').removeAttr('disabled');
-
-            //     }else if($("#seeAnotherField").val() == 0)
-            //     {
-            //         $('#otherField').attr('disabled', 'disabled');
-            //     }
-
-            // });
-
-            // number maincompany
 
             $('#select_check :checkbox[id=but_level_check]').change(function(){
                 if($(this).is(':checked')){
