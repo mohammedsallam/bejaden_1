@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-xs-10">
-        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3']) }}
+        {{ Form::label('tree','من مركز تكلفه', ['class' => 'col-xs-3']) }}
         <select name="fromtree" id="fromtree" class="col-xs-8  fromtreee">
             <option >{{trans('admin.select')}}</option>
-            @foreach($mtschartac as $mts)
-                <option value="{{$mts->Acc_No}}">{{$mts->Acc_NmAr}}</option>
+            @foreach($costcntrc as $mts)
+                <option value="{{$mts->Costcntr_No}}">{{$mts->Costcntr_Nmar}}</option>
             @endforeach
         </select>
     </div>
@@ -15,11 +15,11 @@
 <br>
 <div class="row">
     <div class="col-xs-10">
-        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
+        {{ Form::label('tree','الى مركز تكلفه', ['class' => 'col-xs-3']) }}
         <select name="totree" id="totree" class="col-xs-8">
             <option >{{trans('admin.select')}}</option>
-            @foreach($mtschartac as $mts)
-                <option value="{{$mts->Acc_No}}">{{$mts->Acc_NmAr}}</option>
+            @foreach($costcntrc as $mts)
+                <option value="{{$mts->Costcntr_No}}">{{$mts->Costcntr_Nmar}}</option>
             @endforeach
         </select>
     </div>

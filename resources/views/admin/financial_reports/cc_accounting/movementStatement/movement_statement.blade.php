@@ -18,12 +18,12 @@
             @endif
         </style>
         {{--    Date Hijri--}}
-        <link rel="stylesheet" href="{{url('/')}}/adminlte/dateHijri/dist/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="{{url('/')}}/public/adminlte/dateHijri/dist/css/bootstrap-datetimepicker.min.css">
 
     @endpush
 
     @push('js')
-        <script src="{{url('/')}}/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
+        <script src="{{url('/')}}/public/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
         <script>
             $(document).on('change','.MainCompany',function(){
@@ -160,34 +160,6 @@
                 selectHtml2.remove();
 
             });
-            $(document).on("blur","#froxsate ,#toDate",function(){
-                var maincompany = $('.MainCompany').val();
-                var fromtree = $('#fromtree').val();
-                var totree = $('#totree').val();
-                var acc_fromtree = $('.acc_fromtree').val();
-                var acc_totree = $('.acc_totree').val();
-                var from = $('#froxsate').val();
-                var to = $('#toDate').val();
-
-                $("#loadingmessage_1").css("display","block");
-                $(".button_print").css("display","none");
-
-                if (this){
-                    $.ajax({
-                        url: '{{route('movement_details')}}',
-                        type:'get',
-                        dataType:'html',
-                        data:{maincompany: maincompany,totree: totree,from: from,to : to,fromtree:fromtree,acc_fromtree:acc_fromtree,acc_totree:acc_totree},
-                        success: function (data) {
-                            $("#loadingmessage_1").css("display","none");
-                            $('.button_print').css("display","block").html(data);
-
-                        }
-                    });
-                }else{
-                    $('.button_print').html('');
-                }
-            });
             $(document).on("change","#fromtree, #totree,.acc_fromtree,.acc_totree",function()
             {
                 var maincompany = $('.MainCompany').val();
@@ -198,8 +170,6 @@
                 var from = $('#froxsate').val();
                 var to = $('#toDate').val();
 
-                // console.log(maincompany,fromtree,totree);
-
                 $("#loadingmessage_1").css("display","block");
                 $(".button_print").css("display","none");
                 if (this){
@@ -218,7 +188,35 @@
                     $('.button_print').html('');
                 }
             });
+            $("#froxsate ,#toDate").blur(function(){
 
+                var maincompany = $('.MainCompany').val();
+                var fromtree = $('#fromtree').val();
+                var totree = $('#totree').val();
+                var acc_fromtree = $('.acc_fromtree').val();
+                var acc_totree = $('.acc_totree').val();
+                var from = $('#froxsate').val();
+                var to = $('#toDate').val();
+
+                $("#loadingmessage_1").css("display","block");
+                $(".button_print").css("display","none");
+
+                if (this){
+                    $.ajax({
+                        url: '{{route('movement_details')}}',
+                        type:'get',
+                        dataType:'html',
+                        data:{maincompany: maincompany,totree: totree,from: from,to : to,fromtree:fromtree,acc_fromtree:acc_fromtree,acc_totree:acc_totree},
+                        success: function (data) {
+                            $("#loadingmessage_1").css("display","none");
+                            $('.button_print').css("display","block").html(data);
+
+                        }
+                    });
+                }else{
+                    $('.button_print').html('');
+                }
+            });
             $(".hijri-date-input").hijriDatePicker({
                     hijri : false,
                     format: "YYYY-MM-DD",
@@ -246,7 +244,7 @@
                 <div class="details_row col-xs-12">
                     <div class="row">
                         <div class="col-xs-10">
-                            {{ Form::label('tree','من حساب', ['class' => 'col-xs-3']) }}
+                            {{ Form::label('tree','من مركز تكلفه', ['class' => 'col-xs-3']) }}
                             {{ Form::select('fromtree',[],null, array_merge(['class' => 'col-xs-9  form-control  e2 ee fromtree' ])) }}
                         </div>
 
@@ -258,7 +256,7 @@
                     <br>
                     <div class="row">
                         <div class="col-xs-10">
-                            {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
+                            {{ Form::label('tree','الى مركز تكلفه', ['class' => 'col-xs-3']) }}
                             {{ Form::select('totree',[],null, array_merge(['class' => 'col-xs-9  form-control  e2 ee totree'])) }}
                         </div>
 
@@ -304,7 +302,7 @@
 
         {{--    loader spinner--}}
         <div id='loadingmessage-1' style='display:none; margin-top: 20px' class="text-center">
-            <img src="{{ url('/') }}/images/ajax-loader.gif"/>
+            <img src="{{ url('/') }}/public/images/ajax-loader.gif"/>
         </div>
 
     </div>

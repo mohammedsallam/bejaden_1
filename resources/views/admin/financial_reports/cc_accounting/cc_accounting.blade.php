@@ -44,7 +44,7 @@
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cc/report/ccpublicbalance">
+                <a href="movement_balance">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-500px"></i></span>
 

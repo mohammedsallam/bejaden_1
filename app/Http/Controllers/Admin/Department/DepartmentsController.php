@@ -8,6 +8,7 @@ use App\city;
 use App\country;
 use App\Models\Admin\AstMarket;
 use App\Models\Admin\AstNutrbusn;
+use App\Models\Admin\MtsCostcntr;
 use App\Models\Admin\AstSalesman;
 use App\Models\Admin\Astsupctg;
 use App\Models\Admin\MainBranch;
@@ -104,10 +105,11 @@ class DepartmentsController extends Controller
                 $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
                 $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
                 $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
+                $costcntrc = MtsCostcntr::where('Cmp_No', $parent->Cmp_No)->where('Level_Status',1)->get();
                 $Acc_No = $this->createAccNo($parent->Acc_No);
                 return view('admin.departments.create', ['title' => trans('admin.Departments'),
                     'parent' => $parent, 'cmps' => $cmps, 'chart' => $chart, 'Acc_No' =>  $Acc_No,
-                    'balances' => $balances, 'incomes' => $incomes]);
+                    'balances' => $balances, 'incomes' => $incomes, 'costcntrc'=>$costcntrc]);
             }
             // else{
             //     return 'else';
@@ -274,13 +276,14 @@ class DepartmentsController extends Controller
             $balances = MtsClosAcc::where('Main_Rpt', 1)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $incomes = MtsClosAcc::where('Main_Rpt', 2)->get(['CLsacc_Nm'.ucfirst(session('lang')), 'CLsacc_No']);
             $chart = MtsChartAc::get(['Acc_Nm'.ucfirst(session('lang')), 'Acc_No']);
+            $costcntrc = MtsCostcntr::where('Cmp_No', $cmps->Cmp_No)->get();
             $chart_item = MtsChartAc::where('Acc_No', $request->Acc_No)
                 ->where('Cmp_No', session('Chart_Cmp_No'))
                 ->first();
             $total = $this->getTotalTransaction($chart_item);
             return view('admin.departments.edit', ['title' => trans('admin.Departments'),
                 'chart' => $chart, 'cmps' => $cmps, 'chart_item' => $chart_item, 'total' => $total,
-                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children]);
+                'balances' => $balances, 'incomes' => $incomes, 'children' => $request->children, 'costcntrc'=>$costcntrc]);
         }
     }
 

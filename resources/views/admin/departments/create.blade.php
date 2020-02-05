@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-1 pull-left">
             <button type="submit" class="btn btn-primary pull-left"
-                    data-toggle="save" 
+                    data-toggle="save"
                     title="{{trans('admin.save')}}"
                     data-placement="bottom">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
@@ -30,7 +30,7 @@
         {{-- تصنيف الحساب --}}
         <div class="form-group col-md-3">
             @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio" 
+                <input class="checkbox-inline" type="radio"
                     name="Level_Status" id="Level_Status" value="{{$key}}"
                     style="margin: 3px;" @if($key == 1) checked @endif>
                 <label>{{$value}}</label>
@@ -40,7 +40,7 @@
 
         {{-- فعال \ غير فعال --}}
         <div class="form-group col-md-4">
-            <input class="checkbox-inline" type="checkbox" 
+            <input class="checkbox-inline" type="checkbox"
                 name="Acc_Actv" id="Acc_Actv" value="1"
                 style="margin: 3px;" checked>
             <label>{{trans('admin.active')}}</label>
@@ -51,14 +51,14 @@
         <div class="form-group col-md-12 col-md-offset-2 branch">
             <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
             @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio" 
+                <input class="checkbox-inline" type="radio"
                     name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
                     style="margin: 3px;">
                 <label>{{$value}}</label>
             @endforeach
         </div>
         {{-- نهاية طبيعة الحساب --}}
-    </div>    
+    </div>
 
     {{-- اسم الحساب عربى --}}
     <div class="form-group row">
@@ -160,25 +160,25 @@
                 </div>
             </div>
             {{-- نهاية الحسابات قائمة الدخل --}}
-            
+
 
             {{-- مركز التكلفه --}}
             <div class="col-md-12 branch">
                 <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'>
-                <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
+                <label for="Clsacc_No3" class="col-md-5">{{trans('admin.with_cc')}}</label>
 
                 <div class="form-group">
-                    <select name="cc_type" id="cc_type" class="form-control col-md-6 hidden">
+                    <select name="Clsacc_No3" id="cc_type" class="form-control col-md-6 hidden">
                         <option value="{{null}}">{{trans('admin.select')}}</option>
-                        {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                            <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                        @endforeach --}}
+                         @foreach($costcntrc as $cc)
+                            <option value="{{$cc->Costcntr_No}}">{{$cc->Costcntr_Nmar}}</option>
+                         @endforeach
                     </select>
                 </div>
             </div>
             {{-- نهاية مركز التكلفه --}}
         </div>
-    </div>                            
+    </div>
 
 {!! Form::close() !!}
 {{-- الحركات --}}

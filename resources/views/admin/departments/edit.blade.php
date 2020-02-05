@@ -61,22 +61,22 @@
 {!! Form::open(['method'=>'POST','route' => ['departments.update', $chart_item->Acc_No? $chart_item->Acc_No : null], 'id' => 'edit_form','files' => true]) !!}
     {{csrf_field()}}
     {{method_field('PUT')}}
-    @if($children)  
+    @if($children)
         @foreach($children as $child)
             <input type="hidden" name="children[]" value='{{$child}}'>
         @endforeach
     @endif
-    
+
     <div class="row">
         <div class="col-md-3 pull-left">
             <button type="submit" class="btn btn-primary"
-                    data-toggle="save" 
+                    data-toggle="save"
                     title="{{trans('admin.save')}}"
                     data-placement="bottom">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </button>
             <button type="submit" class="btn btn-danger" id="delete_button"
-                    data-toggle="delete" 
+                    data-toggle="delete"
                     title="{{trans('admin.delete')}}"
                     data-placement="bottom">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -91,7 +91,7 @@
         {{-- تصنيف الحساب --}}
         <div class="form-group col-md-3">
             @foreach(\App\Enums\dataLinks\TypeAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio" 
+                <input class="checkbox-inline" type="radio"
                     name="Level_Status" id="Level_Status" value="{{$key}}" disabled
                     @if ($chart_item->Level_Status == $key) checked @endif>
                 <label>{{$value}}</label>
@@ -101,7 +101,7 @@
 
         {{-- فعال \ غير فعال --}}
         <div class="form-group col-md-2" @if($chart_item->Level_No == 1) hidden @endif>
-            <input class="checkbox-inline" type="checkbox" 
+            <input class="checkbox-inline" type="checkbox"
                 name="Acc_Actv" id="Acc_Actv" value="{{$chart_item->Acc_Actv}}"
                 style="margin: 3px;" @if($chart_item->Acc_Actv == 1) checked @endif>
             <label>{{trans('admin.active')}}</label>
@@ -112,9 +112,9 @@
         <div class="form-group col-md-12 col-md-offset-2 branch">
             <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
             @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                <input class="checkbox-inline" type="radio" 
+                <input class="checkbox-inline" type="radio"
                     name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
-                    style="margin: 3px;" 
+                    style="margin: 3px;"
                     @if($chart_item->Level_No == 1) disabled @endif
                     @if ($chart_item->Acc_Ntr == $key) checked @endif>
                 <label>{{$value}}</label>
@@ -126,7 +126,7 @@
     {{-- اسم الحساب عربى --}}
     <div class="form-group row">
         <label class="col-md-2" for="Acc_NmAr">{{trans('admin.account_name')}}:</label>
-            <input type="text" name="Acc_NmAr" id="Acc_NmAr" class="col-md-9 form-control"  
+            <input type="text" name="Acc_NmAr" id="Acc_NmAr" class="col-md-9 form-control"
             value="{{$chart_item->Acc_NmAr? $chart_item->Acc_NmAr : null}}">
         </div>
     {{-- نهاية اشم الحساب عربى --}}
@@ -134,7 +134,7 @@
     {{-- اسم الحساب انجليزى --}}
     <div class="form-group row">
         <label class="col-md-2" for="Acc_NmEn">{{trans('admin.account_name_en')}}:</label>
-        <input type="text" name="Acc_NmEn" id="Acc_NmEn" class=" col-md-9 form-control" 
+        <input type="text" name="Acc_NmEn" id="Acc_NmEn" class=" col-md-9 form-control"
             value="{{$chart_item->Acc_NmEn? $chart_item->Acc_NmEn : null}}">
     </div>
     {{-- نهاية اسم الحساب انجليزى --}}
@@ -156,7 +156,7 @@
             <div class="col-md-12 branch">
                 <div class="form-group row">
                     <label for="Fbal_CR" class="col-md-5">{{trans('admin.first_date_creditor')}}</label>
-                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}' 
+                    <input type="text" name="Fbal_CR" id="Fbal_CR" value='{{$chart_item->Fbal_CR? $chart_item->Fbal_CR : 0}}'
                     class="form-control col-md-7"
                     @if($chart_item->Level_No == 1) disabled @endif>
                 </div>
@@ -167,7 +167,7 @@
             <div class="col-md-12 branch">
                 <div class="form-group row">
                     <label for="Cr_Blnc" class="col-md-5">{{trans('admin.credit_balance')}}</label>
-                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}' 
+                    <input type="text" name="Cr_Blnc" id="Cr_Blnc" value='{{$chart_item->Cr_Blnc? $chart_item->Cr_Blnc : 0}}'
                     class="form-control col-md-7"
                     @if($chart_item->Level_No == 1) disabled @endif>
                 </div>
@@ -186,7 +186,7 @@
                         @if($chart_item->Level_No == 1) disabled @endif>
                         <option value="{{null}}">{{trans('admin.select')}}</option>
                         @foreach(\App\Enums\AccountType::toSelectArray() as $key => $value)
-                            <option value="{{$key}}" 
+                            <option value="{{$key}}"
                                 @if($chart_item->Acc_Typ == $key) selected @endif>{{$value}}</option>
                         @endforeach
                     </select>
@@ -237,7 +237,7 @@
                 </div>
             </div>
             {{-- نهاية الحسابات قائمة الدخل --}}
-            
+
 
             {{-- مركز التكلفه --}}
             <div class="col-md-12 branch">
@@ -249,12 +249,15 @@
                     <select name="cc_type" id="cc_type" class="form-control col-md-6"
                         @if($chart_item->Level_No == 1) disabled @endif>
                         <option value="{{null}}">{{trans('admin.select')}}</option>
+                        @foreach($costcntrc as $cc)
+                            <option value="{{$cc->Costcntr_No}}">{{$cc->Costcntr_Nmar}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             {{-- نهاية مركز التكلفه --}}
         </div>
-    </div>                            
+    </div>
 {!! Form::close() !!}
 <form action="{{route('departments.destroy', $chart_item->Acc_No? $chart_item->Acc_No : null)}}" method="POST" id="delete_form">
     {{csrf_field()}}

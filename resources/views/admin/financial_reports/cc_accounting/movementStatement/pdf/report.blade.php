@@ -87,11 +87,11 @@
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.account_statement')}}</span>
-    <span>{{trans('admin.general')}}</span>
+    <span>{{trans('admin.movement_statement')}}</span>
 </div>
 
 @if(count($Empty_GLjrnTrs) > 0 && count($data) == 0)
+    @dd('fff')
     @foreach($Empty_GLjrnTrs as $key => $one)
 
 
@@ -99,8 +99,8 @@
 
             <div class="el-account">
 
-                <p>رقم الحساب :{{$one->acc_no_chart}}</p>
-                <p>اسم الحساب : {{$one->Acc_NmAr}}</p>
+                <p>رقم مركز التكلفه :{{$one->acc_no_chart}}</p>
+                <p>اسم مركز التكلفه : {{$one->Acc_NmAr}}</p>
             </div>
             <div class="el-date">
                 <p>من تاريخ : {{$from}}</p>
@@ -198,11 +198,10 @@
     @endforeach
 
 @elseif(count($Empty_GLjrnTrs) == 0 && count($data) == 0)
-
     <div class="el-account">
 
-        <p>رقم الحساب :{{$GLjrnTrs_name->Acc_No}}</p>
-        <p>اسم الحساب : {{$GLjrnTrs_name->Acc_NmAr}}</p>
+        <p>رقم مركز التكلفه :{{$GLjrnTrs_name->Acc_No}}</p>
+        <p>اسم مركز التكلفه : {{$GLjrnTrs_name->Acc_NmAr}}</p>
     </div>
     <div class="el-date">
         <p>من تاريخ : {{$from}}</p>
@@ -293,14 +292,11 @@
     </div>
 
 @else
-
     @foreach ($data as $day => $Gljrntrs)
 
-
-
         <div class="el-account">
-            @foreach($Gljrntrs as $key => $one) @if($key == 0) <p>رقم الحساب : {{$one->Acc_No}}</p>
-            <p>اسم الحساب : {{$one-> { 'Acc_Nm' . ucfirst(session('lang'))} }}</p>
+            @foreach($Gljrntrs as $key => $one) @if($key == 0) <p>رقم مركز التكلفه : {{$one->Acc_No}}</p>
+            <p>اسم مركز التكلفه : {{$one-> { 'Acc_Nm' . ucfirst(session('lang'))} }}</p>
             @endif  @endforeach
         </div>
         <div class="el-date">

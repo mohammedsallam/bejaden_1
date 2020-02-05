@@ -214,6 +214,7 @@ class general_accountsController extends Controller
         return $pdf->stream();
 
     }
+
     public function trial_balance()
     {
 

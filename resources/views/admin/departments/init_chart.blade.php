@@ -7,10 +7,10 @@
         var delay = 200;
         var prevent = false;
         $(document).ready(function () {
-        
+
             // var Selected_Cmp_No = $('#Select_Cmp_No').children('option:selected').val();\
             $(document).on('change', '#Select_Cmp_No', function(){
-                $('#jstree').jstree('destroy');    
+                $('#jstree').jstree('destroy');
                 var tree = [];
                 var Cmp_No = $('#Select_Cmp_No').val();
                 if(Cmp_No != null){
@@ -20,11 +20,11 @@
                         dataType: 'html',
                         data: {"_token": "{{ csrf_token() }}", Cmp_No: Cmp_No},
                         success: function(data){
-                           
+
                             dataParse = JSON.parse(data);
-                        
+
                             for(var i = 0; i < dataParse.length; i++){
-                               tree.push(dataParse[i])   
+                               tree.push(dataParse[i])
                             }
 
                             $('#jstree').jstree({
@@ -41,7 +41,7 @@
                                     "keep_selected_style" : false
                                 },
                                 "plugins" : [ "themes","html_data","dnd","ui","types" ]
-                            }); 
+                            });
 
                             //close or open all nodes on jstree load -opened by default-
                             $('#jstree').on('loaded.jstree', function() {
@@ -81,7 +81,7 @@
                                 // prevent = false;
                                 // }, delay);
                             });
-                            
+
                             //handle tree click vent
                             // $('#jstree').on("click.jstree", function (e){
                                 // timer = setTimeout(function() {
@@ -98,10 +98,10 @@
                                 prevent = true;
                                 alert('db click');
                                 handle_dbclick(e);
-                            }); 
+                            });
                         }
-                    });  
-                }  
+                    });
+                }
             });
 
 
@@ -273,12 +273,12 @@
                         <input type="text" name="Parnt_Acc" id="Parnt_Acc" value="{{0}}" hidden>
                         <input type="text" name="Level_No" id="Level_No" value="{{1}}" hidden>
                         {{-- Parnt_Acc ebd --}}
-                    
+
                         <div class="row">
                             <div class="col-md-1 pull-left">
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                             </div>
-                        
+
                             {{-- رقم الحساب --}}
                             <label for="Acc_No" class="col-md-2">{{trans('admin.account_number')}}:</label>
                             <input type="text" name="Acc_No" id="Acc_No" class="form-control col-md-2" value="{{$Acc_No}}">
@@ -297,40 +297,40 @@
                                 </select>
                             </div>
                             {{-- نهاية رقم الشركه --}}
-                        
+
                             {{-- تصنيف الحساب --}}
                             <input type="text" value="{{0}}" name="Level_Status" hidden>
                             {{-- نهاية تصنيف الحساب --}}
                         </div>
-                        
+
                         {{-- اسم الحساب عربى --}}
                         <div class="form-group row">
                             <label class="col-md-2" for="Acc_NmAr">{{trans('admin.account_name')}}:</label>
                                 <input type="text" name="Acc_NmAr" id="Acc_NmAr" class="col-md-9 form-control">
                             </div>
                         {{-- نهاية اشم الحساب عربى --}}
-                    
+
                         {{-- اسم الحساب انجليزى --}}
                         <div class="form-group row">
                             <label class="col-md-2" for="Acc_NmEn">{{trans('admin.account_name_en')}}:</label>
                             <input type="text" name="Acc_NmEn" id="Acc_NmEn" class=" col-md-9 form-control">
                         </div>
                         {{-- نهاية اسم الحساب انجليزى --}}
-                    
+
                         <div class="col-md-6">
                             <div class="row">
                                 {{-- طبيعة الحساب --}}
                                 <div class="form-group col-md-12 branch hidden">
                                     <label for="Acc_Ntr" style="margin-left:15px;">{{trans('admin.category')}}:</label>
                                     @foreach(\App\Enums\dataLinks\CategoryAccountType::toSelectArray() as $key => $value)
-                                        <input class="checkbox-inline" type="radio" 
+                                        <input class="checkbox-inline" type="radio"
                                             name="Acc_Ntr" id="Acc_Ntr" value="{{$key}}"
                                             style="margin: 3px;">
                                         <label>{{$value}}</label>
                                     @endforeach
                                 </div>
                                 {{-- نهاية طبيعة الحساب --}}
-                    
+
                                 {{-- رصيد اول المده مدين --}}
                                 <div class="col-md-12 branch hidden">
                                     <div class="form-group row">
@@ -339,7 +339,7 @@
                                     </div>
                                 </div>
                                 {{-- نهايةرصيد اول المده مدين --}}
-                    
+
                                 {{-- رصيد اول المده دائن --}}
                                 <div class="col-md-12 branch hidden">
                                     <div class="form-group row">
@@ -348,7 +348,7 @@
                                     </div>
                                 </div>
                                 {{-- نهاية رصيد اول المده دائن --}}
-                    
+
                                 {{-- رصيد  تقديرى --}}
                                 <div class="col-md-12 branch hidden">
                                     <div class="form-group row">
@@ -359,7 +359,7 @@
                                 {{-- نهاية رصيد  تقديرى --}}
                             </div>
                         </div>
-                    
+
                         <div class="col-md-6">
                             <div class="row">
                                 {{-- نوع الحساب --}}
@@ -375,12 +375,12 @@
                                     </div>
                                 </div>
                                 {{-- نهاية نوع الحساب --}}
-                    
+
                                 {{-- حسابات ختاميه --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1" type="checkbox" id='Clsacc_No1_Check'>
                                     <label for="Clsacc_No1" class="col-md-5">{{trans('admin.Clsacc_No1')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="Clsacc_No1" id="Clsacc_No1" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -391,12 +391,12 @@
                                     </div>
                                 </div>
                                 {{-- نهاية الحسابات الختاميه --}}
-                    
+
                                 {{-- حسابات قائمة الدخل --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1 checks" type="checkbox" id='Clsacc_No2_Check'>
                                     <label for="Clsacc_No2" class="col-md-5">{{trans('admin.Clsacc_No2')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="Clsacc_No2" id="Clsacc_No2" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
@@ -407,19 +407,19 @@
                                     </div>
                                 </div>
                                 {{-- نهاية الحسابات قائمة الدخل --}}
-                                
-                    
+
+
                                 {{-- مركز التكلفه --}}
                                 <div class="col-md-12 branch hidden">
                                     <input class="checkbox-inline col-md-1 checks" type="checkbox" id='cc_type_Check'>
                                     <label for="cc_type" class="col-md-5">{{trans('admin.with_cc')}}</label>
-                    
+
                                     <div class="form-group">
                                         <select name="cc_type" id="cc_type" class="form-control col-md-6 hidden">
                                             <option value="{{null}}">{{trans('admin.select')}}</option>
-                                            {{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)
-                                                <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>
-                                            @endforeach --}}
+{{--                                            --}}{{-- @foreach(\App\Enums\dataLinks\IncomeListType::toSelectArray() as $key => $value)--}}
+{{--                                                <option value="{{$key}}" @if($chart_item->Clsacc_No == $key) selected @endif>{{$value}}</option>--}}
+{{--                                            @endforeach --}}
                                         </select>
                                     </div>
                                 </div>
