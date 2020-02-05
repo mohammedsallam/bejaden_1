@@ -16,6 +16,8 @@ class CreateInnvLoddtlTable extends Migration
         Schema::create('invloddtl', function (Blueprint $table) {
             $table->increments('ID_No');
             $table->smallInteger('Brn_No')->nullable();
+            $table->smallInteger('Cmp_No')->nullable();
+            $table->smallInteger('Actvty_No')->nullable();
             $table->smallInteger('Doc_Ty')->nullable();
             $table->bigInteger('Doc_No')->nullable();
             $table->smallInteger('Ln_No')->nullable();

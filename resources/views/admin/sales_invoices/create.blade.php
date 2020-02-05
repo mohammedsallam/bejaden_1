@@ -101,10 +101,11 @@
                             success:function (data) {
                                 $('.Brn_No, .Cstm_No, .Dlv_Stor').html('');
 
-                                $('.Brn_No').append("<option>{{trans('admin.select')}}</option>");
-                                $('.Cstm_No').append("<option>{{trans('admin.select')}}</option>");
+                                $('.Brn_No').append("<option value=''>{{trans('admin.select')}}</option>");
+                                $('.Cstm_No').append("<option value=''>{{trans('admin.select')}}</option>");
 
-                                $('.Actvty_No').html("<option value='"+data.activity_id+"'>"+data.activity_name+"</option>");
+                                $('.Actvty_No').html("<option value=''>{{trans('admin.select')}}</option>");
+                                $('.Actvty_No').append("<option value='"+data.activity_id+"'>"+data.activity_name+"</option>");
 
                                 for (let i =0; i < data.customers.length; i++){
                                     $('.Cstm_No').append("<option value='"+data.customers[i]['ID_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
@@ -126,12 +127,12 @@
                             dataType: 'json',
                             data:{Brn_No:$('.Brn_No option:selected').val()},
                             success:function (data) {
-                                $('.Dlv_Stor, .Slm_No').html('');
+                                $('.Dlv_Stor').html("<option value=''>{{trans('admin.select')}}</option>");
                                 for (let i =0; i < data.stores.length; i++){
                                     $('.Dlv_Stor').append("<option value='"+data.stores[i]['ID_No']+"'>"+data.stores[i]['Dlv_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
 
-                                $('.Slm_No').append("<option>{{trans('admin.select')}}</option>");
+                                $('.Slm_No').html("<option value=''>{{trans('admin.select')}}</option>");
                                 for (let i =0; i < data.stores.length; i++){
                                     $('.Slm_No').append("<option value='"+data.salesMan[i]['Slm_No']+"'>"+data.salesMan[i]['Slm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
@@ -143,49 +144,119 @@
                     $('.cstm_no_input').val($(this).val())
                 });
 
-                if($('.Custm_Inv').val() !== ''){
-                    $.ajax({
-                        url: "{{route('salesInvoices.create')}}",
-                        type: 'get',
-                        dataType: 'json',
-                        data:{Custm_Inv: $('.Custm_Inv').val()},
-                        success: function (data) {
-                            $('.Custm_Inv').val(data.Custm_Inv)
-                        }
-                    })
-                }
+                {{--if($('.Custm_Inv').val() !== ''){--}}
+                {{--    $.ajax({--}}
+                {{--        url: "{{route('billOperation')}}",--}}
+                {{--        type: 'get',--}}
+                {{--        dataType: 'json',--}}
+                {{--        data:{billNo: $('.Custm_Inv').val()},--}}
+                {{--        success: function (data) {--}}
+                {{--            $('.Custm_Inv').val(data.Custm_Inv)--}}
+                {{--        }--}}
+                {{--    })--}}
+                {{--}--}}
 
                 $('.Doc_Dt, .Credit_Days').change(function () {
                     if($('.Doc_Dt').val() !== '' &&  $('.Credit_Days').val() !== ''){
                         $.ajax({
-                            url: "{{route('salesInvoices.create')}}",
+                            url: "{{route('billOperation')}}",
                             type: 'get',
                             dataType: 'json',
                             data:{
-                                Doc_Dt: $('.Doc_Dt').val(),
-                                Credit_Days:$('.Credit_Days').val()
+                                DateEn: $('.Doc_Dt').val(),
+                                daysNo:$('.Credit_Days').val()
                             },
                             success: function (data) {
-                                $('.Custm_Inv').val(data.Custm_Inv)
+                                $('.Pym_Dt').val(data.date)
                             }
                         });
                     }
+                });
 
-                    // $('.Pym_Dt').val()
-                })
+                // Create header
+                // var header = [];
+                // $('.Cmp_No, .Actvty_No, .Brn_No, .Slm_No, .Cstm_No, .Dlv_Stor, .Doc_Dt, .Doc_DtAr, .SubCstm_Filno, .Pym_No, .Credit_Days, .Pym_Dt, .Notes, .Notes1, .Tax_Allow').change(function () {
+                //     //.Reftyp_No, .Ref_No, .Notes, .Notes1
+                //     if ($(this).val() === ''){
+                //         return false;
+                //     } else {
+                //         header[$(this).attr('name')] = $(this).val();
+                //         header[$('.Pym_Dt').attr('name')] = $('.Pym_Dt').val();
+                //         header[$('.Doc_DtAr').attr('name')] = $('.Doc_DtAr').val();
+                //     }
+                //
+                // });
+                $('.Cmp_No, .Actvty_No, .Brn_No, .Slm_No, .Cstm_No, .Dlv_Stor, .Doc_Dt, .Doc_DtAr, .SubCstm_Filno, .Pym_No, .Credit_Days, .Pym_Dt, .Notes, .Notes1, .Tax_Allow').change(function () {
+
+                    if ($('.Notes').val() !== '' || $('.Notes1').val() !== ''){
+                        $.ajax({
+                            url: "{{route('salesInvoices.store')}}",
+                            type: 'POST',
+                            dataType: 'json',
+                            data:{
+                                _token:"{{csrf_token()}}",
+                                'requestType': 'createHeader',
+                                Cmp_No: $('.Cmp_No option:selected').val(),
+                                Actvty_No: $('.Actvty_No option:selected').val(),
+                                Brn_No: $('.Brn_No option:selected').val(),
+                                Slm_No: $('.Slm_No option:selected').val(),
+                                Cstm_No: $('.Cstm_No option:selected').val(),
+                                Dlv_Stor: $('.Dlv_Stor option:selected').val(),
+                                Pym_No: $('.Pym_No option:selected').val(),
+                                Reftyp_No: $('.Reftyp_No option:selected').val(),
+                                Ref_No: $('.Ref_No option:selected').val(),
+                                Custm_Inv: $('.Custm_Inv').val(),
+                                Doc_Dt: $('.Doc_Dt').val(),
+                                Doc_DtAr: $('.Doc_DtAr').val(),
+                                SubCstm_Filno: $('.SubCstm_Filno').val(),
+                                Credit_Days: $('.Credit_Days').val(),
+                                Pym_Dt: $('.Pym_Dt').val(),
+                                Tax_Allow: $('input.Tax_Allow:checked').val(),
+                                Notes: $('.Notes').val(),
+                                Notes1: $('.Notes1').val(),
+                            },
+                            success: function (data) {
+                                if(data.status === 0){
+                                    $('.error_message').removeClass('hidden').html(data.message);
+                                    $('.success_message').addClass('hidden')
+                                } else {
+                                    // $('.Custm_Inv').val(parseInt($('.Custm_Inv').val())+1);
+                                    $('.success_message').removeClass('hidden').html(data.message);
+                                    $('.error_message').addClass('hidden');
+
+                                    var buffer = setInterval(function () {
+                                        $('.error_message, .success_message').addClass('hidden');
+                                        clearInterval(buffer)
+                                    }, 5000)
+                                }
+                            }
+                        })
+                    }
+                });
+
             })
 
         </script>
     @endpush
 @hasrole('admin')
 @can('create')
+
 <div class="box">
+
     @include('admin.layouts.message')
 {{--    <div class="box-header">--}}
 {{--        <h3 class="box-title">{{trans('admin.delay_bill')}}</h3>--}}
 {{--    </div>--}}
     <div class="box-body">
 {{--        {!! Form::open(['method'=>'POST','route' => 'salesInvoices.store','files'=>true]) !!}--}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger error_message hidden"></div>
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-success success_message hidden"></div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-6">
@@ -254,7 +325,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="" class="control-label"> ر/فاتورة</label>
-                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="1">
+                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="{{$last == null ? 1 : $last->Custm_Inv+1}}">
                 </div>
             </div>
             <div class="col-md-3">
@@ -329,7 +400,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Pym_Dt">تاريخ السداد</label>
-                    <input type="text" name="Pym_Dt" id="Pym_Dt" class="form-control Pym_Dt datepicker" style="direction: rtl">
+                    <input type="text" name="Pym_Dt" id="Pym_Dt" class="form-control Pym_Dt" readonly style="background: #fff">
                 </div>
             </div>
             <div class="col-md-2">
@@ -342,13 +413,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="">ملاحظات</label>
-                    <input name="" class="form-control" >
+                    <input name="Notes" id="Notes" class="form-control Notes">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="">ملاحظات1</label>
-                    <input name="" class="form-control note_1" >
+                    <input name="Notes1" id="Notes1" class="form-control Notes1">
                 </div>
             </div>
         </div>
@@ -407,86 +478,89 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">الإجمالي</label>
-                    <input type="text" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal">
+        <div class="bill_details">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الإجمالي</label>
+                        <input type="text" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">بعد الخصم</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">خصم أصناف</label>
+                        <input type="text" name="Tot_Disc" id="Tot_Disc" class="form-control Tot_Disc">
+                        <input type="text" name="Tot_Prct" id="Tot_Prct" class="form-control Tot_Prct">
+                        <label>%</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">خصم إضافي</label>
+                        <input type="text" name="Tot_ODisc" id="Tot_ODisc" class="form-control Tot_ODisc">
+                        <input type="text" name="Tot_OPrct" id="Tot_OPrct" class="form-control Tot_OPrct">
+                        <label>%</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">قيمة الضريبة</label>
+                        <input type="text" class="form-control tax_val">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الصافي</label>
+                        <input type="text" name="Net" id="Net" class="form-control Net">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">بعد الخصم</label>
-                    <input type="text" class="form-control">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">حد الائتمان</label>
+                        <input type="text" class="form-control secure_limit">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">خصم أصناف</label>
-                    <input type="text" name="Tot_Disc" id="Tot_Disc" class="form-control Tot_Disc">
-                    <input type="text" name="Tot_Prct" id="Tot_Prct" class="form-control Tot_Prct">
-                    <label>%</label>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الرصيد الحالي</label>
+                        <input type="text" class="form-control current_balance">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">خصم إضافي</label>
-                    <input type="text" name="Tot_ODisc" id="Tot_ODisc" class="form-control Tot_ODisc">
-                    <input type="text" name="Tot_OPrct" id="Tot_OPrct" class="form-control Tot_OPrct">
-                    <label>%</label>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الفرق</label>
+                        <input type="text" class="form-control diff">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">قيمة الضريبة</label>
-                    <input type="text" class="form-control tax_val">
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">رصيد الصنف</label>
+                        <input type="text" class="form-control item_balance">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">الصافي</label>
-                    <input type="text" name="Net" id="Net" class="form-control Net">
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">رصيد المستودعات</label>
+                        <input type="text" class="form-control store_balance">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" style="display: flex">
+                        <label for="">سعر البيع</label>
+                        <input type="text" class="form-control sale_price">
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">حد الائتمان</label>
-                    <input type="text" class="form-control secure_limit">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">الرصيد الحالي</label>
-                    <input type="text" class="form-control current_balance">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">الفرق</label>
-                    <input type="text" class="form-control diff">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">رصيد الصنف</label>
-                    <input type="text" class="form-control item_balance">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">رصيد المستودعات</label>
-                    <input type="text" class="form-control store_balance">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group" style="display: flex">
-                    <label for="">سعر البيع</label>
-                    <input type="text" class="form-control sale_price">
-                </div>
-            </div>
-        </div>
+
 
         {{--End table--}}
 

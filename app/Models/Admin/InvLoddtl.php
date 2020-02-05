@@ -12,6 +12,8 @@ class InvLoddtl extends Model
     protected $fillable = [
             'Brn_No',
             'Doc_Ty',
+            'Cmp_No',
+            'Actvty_No',
             'Doc_No',
             'Ln_No',
             'Dlv_Stor',

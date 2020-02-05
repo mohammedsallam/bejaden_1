@@ -13,6 +13,8 @@ class InvLodhdr extends Model
             'Brn_No',
             'Doc_Ty',
             'Doc_No',
+            'Cmp_No',
+            'Actvty_No',
             'Dlv_Stor',
             'Doc_Dt',
             'Doc_DtAr',
