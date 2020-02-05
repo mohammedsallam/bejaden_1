@@ -52,7 +52,7 @@ class SalesInvoicesController extends Controller
         $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
         $units = Units::all();
 
-        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last'. 'items', 'units']));
+        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last', 'items', 'units']));
     }
 
     /**
