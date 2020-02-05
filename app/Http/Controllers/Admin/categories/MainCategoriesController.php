@@ -281,7 +281,6 @@ class MainCategoriesController extends Controller
             return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
         }
         $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
-
         $MtsItmfsunit = [
             [
                 'Ln_No' => 0,
@@ -313,7 +312,7 @@ class MainCategoriesController extends Controller
         ];
 
         if (!$item){
-             MtsItmmfs::create($request->except(
+            MtsItmmfs::create($request->except(
                 [
                     'ItmUnit_No',
                     'Unit_Ratio',
@@ -441,9 +440,13 @@ class MainCategoriesController extends Controller
                     ]);
                 }
             }
-            foreach ($item->units as $unit) {
-                $unit->delete();
+
+            if ($item->units != null){
+                foreach ($item->units as $unit) {
+                    $unit->delete();
+                }
             }
+
             foreach ($MtsItmfsunit as $key => $itemUnit) {
                 if ($itemUnit['Unit_No'] == null || $itemUnit['Unit_Ratio'] == null){
                     continue;
@@ -465,36 +468,68 @@ class MainCategoriesController extends Controller
 
             }
 
-            $otherItems = $item->others->first();
-            $otherItems->update($request->all([
-                'Actvty_No',
-                'Cmp_No',
-                'Itm_No',
-                'Itm_LengthSteel',
-                'Itm_WidthSteel',
-                'Itm_Durability',
-                'Itm_LengthPaper',
-                'Itm_WidthPaper',
-                'Itm_WghtPaper',
-                'Mdcn_Grup1',
-                'Mdcn_Grup2',
-                'Mdcn_Grup3',
-                'ItmRplc_No1',
-                'ItmRplc_No4',
-                'ItmRplc_No3',
-                'Shelf_No',
-                'Itm_Othr1',
-                'Itm_Othr2'
-            ]));
-
-            if($request->hasFile('Itm_Picture')){
-                File::delete($otherItems->Itm_Picture);
-                $file = $request->file('Itm_Picture');
-                $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
-                $path = 'public/uploads/other_items/'.$otherItems->ID_No;
-                $file->move($path, $filename);
-                $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
+            if($item->others != null){
+                $otherItems = $item->others->first();
+                $otherItems->update($request->all([
+                    'Actvty_No',
+                    'Cmp_No',
+                    'Itm_No',
+                    'Itm_LengthSteel',
+                    'Itm_WidthSteel',
+                    'Itm_Durability',
+                    'Itm_LengthPaper',
+                    'Itm_WidthPaper',
+                    'Itm_WghtPaper',
+                    'Mdcn_Grup1',
+                    'Mdcn_Grup2',
+                    'Mdcn_Grup3',
+                    'ItmRplc_No1',
+                    'ItmRplc_No4',
+                    'ItmRplc_No3',
+                    'Shelf_No',
+                    'Itm_Othr1',
+                    'Itm_Othr2'
+                ]));
+                if($request->hasFile('Itm_Picture')){
+                    File::delete($otherItems->Itm_Picture);
+                    $file = $request->file('Itm_Picture');
+                    $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
+                    $path = 'public/uploads/other_items/'.$otherItems->ID_No;
+                    $file->move($path, $filename);
+                    $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
+                }
+            } else {
+                $otherItems = MtsItmOthr::create($request->all([
+                    'Actvty_No',
+                    'Cmp_No',
+                    'Itm_No',
+                    'Itm_LengthSteel',
+                    'Itm_WidthSteel',
+                    'Itm_Durability',
+                    'Itm_LengthPaper',
+                    'Itm_WidthPaper',
+                    'Itm_WghtPaper',
+                    'Mdcn_Grup1',
+                    'Mdcn_Grup2',
+                    'Mdcn_Grup3',
+                    'ItmRplc_No1',
+                    'ItmRplc_No4',
+                    'ItmRplc_No3',
+                    'Shelf_No',
+                    'Itm_Othr1',
+                    'Itm_Othr2'
+                ]));
+                if($request->hasFile('Itm_Picture')){
+                    File::delete($otherItems->Itm_Picture);
+                    $file = $request->file('Itm_Picture');
+                    $filename = time().'_'.md5(Str::random(16)).'.'.$file->getClientOriginalExtension();
+                    $path = 'public/uploads/other_items/'.$otherItems->ID_No;
+                    $file->move($path, $filename);
+                    $otherItems->update(['Itm_Picture' => $path.'/'.$filename]);
+                }
             }
+
+
 
         }
         session(['updatedComNo', $request->Cmp_No,'updatedActiveNo', $request->Actvty_No]);

@@ -41,12 +41,11 @@
 
                 tableBody.keypress(function (e) {
 
-                    if($('.items_table').height() > 500){
-                        $('.items_table').css({
-                            maxHeight: "300px",
-                            overflow: "auto"
-                        })
-                    }
+                    // if($('.items_table').height() > 500){
+                    //     $('.items_table').addClass('scroll_table')
+                    // } else {
+                    //     $('.items_table').removeClass('scroll_table')
+                    // }
 
                     if(e.keyCode  === 13){
                         if(tableBody.children().length === 1){
@@ -424,7 +423,7 @@
 
         {{--Start table--}}
         <div class="row items_table">
-            <div class="col-md-12">
+            <div class="col-md-12" style="max-height: 300px; overflow: auto">
                 <table class="table table-bordered table-responsive">
                     <tr class="bg-aqua">
                         <th>م</th>
@@ -448,12 +447,18 @@
                         <td style="width: 11%"><input type="text" class="itm_no_input"></td>
                         <td style="width: 20%">
                             <select name="Itm_No" id="Itm_No" class="Itm_No">
-                                <option value=""></option>
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach($items as $item)
+                                    <option value="{{$item->Itm_No}}">{{$item->{'Itm_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
                             </select>
                         </td>
                         <td style="width: 9%">
                             <select name="Unit_No" id="Unit_No" class="Unit_No" >
-                                <option value=""></option>
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach($units as $unit)
+                                    <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
                             </select>
                         </td>
                         <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>

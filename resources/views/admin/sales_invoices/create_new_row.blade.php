@@ -3,7 +3,7 @@
     <td style="width: 11%"><input id="itm_no_input" class="itm_no_input" type="text"></td>
     <td style="width: 20%">
         <select name="Itm_No" id="Itm_No" class="Itm_No" >
-            <option value=""></option>
+            <option value="">{{trans('admin.select')}}</option>
             @foreach($items as $item)
                 <option value="{{$item->Itm_No}}">{{$item->{'Itm_Nm'.ucfirst(session('lang'))} }}</option>
             @endforeach
@@ -11,7 +11,7 @@
     </td>
     <td style="width: 9%">
         <select name="Unit_No" id="Unit_No" class="Unit_No" >
-            <option value=""></option>
+            <option value="">{{trans('admin.select')}}</option>
             @foreach($units as $unit)
                 <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
             @endforeach

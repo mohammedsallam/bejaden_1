@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MtsItmmfs extends Model
 {
-    protected $table = 'mtsItmmfs';
+    protected $table = 'mtsitmmfs';
     protected $primaryKey = 'ID_No';
 
     protected $fillable = [
