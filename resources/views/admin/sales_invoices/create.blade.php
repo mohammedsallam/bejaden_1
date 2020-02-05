@@ -53,32 +53,42 @@
                             count = 2;
                         }
 
-                        let row = `<tr>
-                    <td class="delete_row bg-red"><span>`+count+`</span><input type="hidden" name="Ln-No" value="`+count+`"></td>
-                    <td style="width: 11%"><input id="itm_no_input" class="itm_no_input" type="text"></td>
-                    <td style="width: 20%">
-                        <select name="Itm_No" id="Itm_No" class="Itm_No" >
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td style="width: 9%">
-                        <select name="Unit_No" id="Unit_No" class="Unit_No" >
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
-                    <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
-                    <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
-                    <td><input type="text" id="item_tot_sal" class="item_tot_sal"></td>
-                    <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
-                    <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No"></td>
-                    <td><input type="text" name="Disc1_Prct" id="Disc1_Prct" class="Disc1_Prct"></td>
-                    <td><input type="text" name="Disc1_Val" id="Disc1_Val" class="Disc1_Val"></td>
-                    <td><input type="text" name="Taxp_Extra" id="Taxp_Extra" class="Taxp_Extra"></td>
-                    <td><input type="text" name="Taxv_Extra" id="Taxv_Extra" class="Taxv_Extra"></td>
-                </tr>`;
+                        $.ajax({
+                           url: "{{route('createNewRow')}}",
+                           type: 'get',
+                           dataType: 'html',
+                            data:{'rowNo': tableBody.children().length+1},
+                            success:function (data) {
+                                tableBody.append(data)
+                            }
+                        });
 
-                        tableBody.append(row);
+                //         let row = `<tr>
+                //     <td class="delete_row bg-red"><span>`+count+`</span><input type="hidden" name="Ln-No" value="`+count+`"></td>
+                //     <td style="width: 11%"><input id="itm_no_input" class="itm_no_input" type="text"></td>
+                //     <td style="width: 20%">
+                //         <select name="Itm_No" id="Itm_No" class="Itm_No" >
+                //             <option value=""></option>
+                //         </select>
+                //     </td>
+                //     <td style="width: 9%">
+                //         <select name="Unit_No" id="Unit_No" class="Unit_No" >
+                //             <option value=""></option>
+                //         </select>
+                //     </td>
+                //     <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
+                //     <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
+                //     <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
+                //     <td><input type="text" id="item_tot_sal" class="item_tot_sal"></td>
+                //     <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
+                //     <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No"></td>
+                //     <td><input type="text" name="Disc1_Prct" id="Disc1_Prct" class="Disc1_Prct"></td>
+                //     <td><input type="text" name="Disc1_Val" id="Disc1_Val" class="Disc1_Val"></td>
+                //     <td><input type="text" name="Taxp_Extra" id="Taxp_Extra" class="Taxp_Extra"></td>
+                //     <td><input type="text" name="Taxv_Extra" id="Taxv_Extra" class="Taxv_Extra"></td>
+                // </tr>`;
+                //
+                //         tableBody.append(row);
 
                         tableBody.children().each(function () {
                             $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
@@ -174,18 +184,6 @@
                 });
 
                 // Create header
-                // var header = [];
-                // $('.Cmp_No, .Actvty_No, .Brn_No, .Slm_No, .Cstm_No, .Dlv_Stor, .Doc_Dt, .Doc_DtAr, .SubCstm_Filno, .Pym_No, .Credit_Days, .Pym_Dt, .Notes, .Notes1, .Tax_Allow').change(function () {
-                //     //.Reftyp_No, .Ref_No, .Notes, .Notes1
-                //     if ($(this).val() === ''){
-                //         return false;
-                //     } else {
-                //         header[$(this).attr('name')] = $(this).val();
-                //         header[$('.Pym_Dt').attr('name')] = $('.Pym_Dt').val();
-                //         header[$('.Doc_DtAr').attr('name')] = $('.Doc_DtAr').val();
-                //     }
-                //
-                // });
                 $('.Cmp_No, .Actvty_No, .Brn_No, .Slm_No, .Cstm_No, .Dlv_Stor, .Doc_Dt, .Doc_DtAr, .SubCstm_Filno, .Pym_No, .Credit_Days, .Pym_Dt, .Notes, .Notes1, .Tax_Allow').change(function () {
 
                     if ($('.Notes').val() !== '' || $('.Notes1').val() !== ''){

@@ -8,7 +8,9 @@ use App\Models\Admin\AstSalesman;
 use App\Models\Admin\InvLodhdr;
 use App\Models\Admin\MainBranch;
 use App\Models\Admin\MainCompany;
+use App\Models\Admin\MtsItmmfs;
 use App\Models\Admin\PjbranchDlv;
+use App\Models\Admin\Units;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
@@ -47,7 +49,10 @@ class SalesInvoicesController extends Controller
             $activity = ActivityTypes::where('Cmp_No', session('Cmp_No'))->get();
         }
 
-        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last']));
+        $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+        $units = Units::all();
+
+        return view('admin.sales_invoices.create', compact(['branches', 'companies', 'activity', 'last'. 'items', 'units']));
     }
 
     /**
@@ -199,6 +204,16 @@ class SalesInvoicesController extends Controller
                 return response()->json(['date' => $daysToDate]);
             }
 
+        }
+    }
+
+    public function createNewRow(Request $request)
+    {
+        if ($request->ajax()){
+            $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+            $units = Units::all();
+            $row = $request->rowNo;
+            return view('admin.sales_invoices.create_new_row', compact(['items', 'units', 'row']));
         }
     }
 }
