@@ -664,8 +664,9 @@ Route::group(['prefix'=>'admin'],function (){
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
         Route::get('getActivityCustomer', 'Admin\sales_invoices\SalesInvoicesController@getActivityCustomer')->name('getActivityCustomer');
-        Route::get('billOperation', 'Admin\sales_invoices\SalesInvoicesController@billOperation')->name('billOperation');
+        Route::get('returnCountOfDays', 'Admin\sales_invoices\SalesInvoicesController@returnCountOfDays')->name('returnCountOfDays');
         Route::get('createNewRow', 'Admin\sales_invoices\SalesInvoicesController@createNewRow')->name('createNewRow');
+        Route::get('returnItemInfo', 'Admin\sales_invoices\SalesInvoicesController@returnItemInfo')->name('returnItemInfo');
 
         /**
          * all about stores place

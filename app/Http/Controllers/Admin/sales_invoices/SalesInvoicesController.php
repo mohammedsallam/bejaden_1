@@ -73,7 +73,7 @@ class SalesInvoicesController extends Controller
                 'Dlv_Stor' => 'required',
                 'Doc_Dt' => 'required',
                 'Doc_DtAr' => 'required',
-                'Custm_Inv' => 'required',
+                'Doc_No' => 'required',
                 'SubCstm_Filno' => 'required',
                 'Pym_No' => 'required',
                 'Reftyp_No' => 'sometimes',
@@ -92,7 +92,7 @@ class SalesInvoicesController extends Controller
                 'Dlv_Stor' => trans('admin.Dlv_Stor'),
                 'Doc_Dt' => trans('admin.Doc_Dt'),
                 'Doc_DtAr' => trans('admin.Doc_DtAr'),
-                'Custm_Inv' => trans('admin.Custm_Inv'),
+                'Doc_No' => trans('admin.Custm_Inv'),
                 'SubCstm_Filno' => trans('admin.SubCstm_Filno'),
                 'Pym_No' => trans('admin.Pym_No'),
                 'Reftyp_No' => trans('admin.Reftyp_No'),
@@ -189,7 +189,7 @@ class SalesInvoicesController extends Controller
 
     }
 
-    public function billOperation(Request $request)
+    public function returnCountOfDays(Request $request)
     {
         if ($request->ajax()){
 //            if($request->billNo){
@@ -214,6 +214,25 @@ class SalesInvoicesController extends Controller
             $units = Units::all();
             $row = $request->rowNo;
             return view('admin.sales_invoices.create_new_row', compact(['items', 'units', 'row']));
+        }
+    }
+
+    public function returnItemInfo(Request $request)
+    {
+        if ($request->ajax() && $request->Itm_No){
+            $item = MtsItmmfs::where('Itm_No', $request->Itm_No)->first();
+            if ($item != null){
+
+                $unitNo = $item->units->pluck('Unit_No');
+                $units = Units::whereIn('Unit_No', $unitNo)->get(['Unit_No', 'Unit_NmAr']);
+
+                dd($units);
+                return response()->json([
+                    'units' => $item->units,
+                    'price' => $item->Itm_Sal1,
+                    'quantity' => $item->MaxQty_SaL,
+                ]);
+            }
         }
     }
 }

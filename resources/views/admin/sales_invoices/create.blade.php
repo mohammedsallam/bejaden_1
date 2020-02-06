@@ -153,14 +153,14 @@
                     $('.cstm_no_input').val($(this).val())
                 });
 
-                {{--if($('.Custm_Inv').val() !== ''){--}}
+                {{--if($('.Doc_No').val() !== ''){--}}
                 {{--    $.ajax({--}}
-                {{--        url: "{{route('billOperation')}}",--}}
+                {{--        url: "{{route('returnCountOfDays')}}",--}}
                 {{--        type: 'get',--}}
                 {{--        dataType: 'json',--}}
-                {{--        data:{billNo: $('.Custm_Inv').val()},--}}
+                {{--        data:{billNo: $('.Doc_No').val()},--}}
                 {{--        success: function (data) {--}}
-                {{--            $('.Custm_Inv').val(data.Custm_Inv)--}}
+                {{--            $('.Doc_No').val(data.Doc_No)--}}
                 {{--        }--}}
                 {{--    })--}}
                 {{--}--}}
@@ -168,7 +168,7 @@
                 $('.Doc_Dt, .Credit_Days').change(function () {
                     if($('.Doc_Dt').val() !== '' &&  $('.Credit_Days').val() !== ''){
                         $.ajax({
-                            url: "{{route('billOperation')}}",
+                            url: "{{route('returnCountOfDays')}}",
                             type: 'get',
                             dataType: 'json',
                             data:{
@@ -185,6 +185,8 @@
                 // Create header
                 $('.Cmp_No, .Actvty_No, .Brn_No, .Slm_No, .Cstm_No, .Dlv_Stor, .Doc_Dt, .Doc_DtAr, .SubCstm_Filno, .Pym_No, .Credit_Days, .Pym_Dt, .Notes, .Notes1, .Tax_Allow').change(function () {
 
+                    if($(this).hasClass('Cmp_No')){$('.Actvty_No').val(null)}
+                    if($(this).hasClass('Brn_No')){$('.Slm_No').val(null)}
                     if ($('.Notes').val() !== '' || $('.Notes1').val() !== ''){
                         $.ajax({
                             url: "{{route('salesInvoices.store')}}",
@@ -202,7 +204,7 @@
                                 Pym_No: $('.Pym_No option:selected').val(),
                                 Reftyp_No: $('.Reftyp_No option:selected').val(),
                                 Ref_No: $('.Ref_No option:selected').val(),
-                                Custm_Inv: $('.Custm_Inv').val(),
+                                Doc_No: $('.Doc_No').val(),
                                 Doc_Dt: $('.Doc_Dt').val(),
                                 Doc_DtAr: $('.Doc_DtAr').val(),
                                 SubCstm_Filno: $('.SubCstm_Filno').val(),
@@ -217,7 +219,7 @@
                                     $('.error_message').removeClass('hidden').html(data.message);
                                     $('.success_message').addClass('hidden')
                                 } else {
-                                    // $('.Custm_Inv').val(parseInt($('.Custm_Inv').val())+1);
+                                    // $('.Doc_No').val(parseInt($('.Doc_No').val())+1);
                                     $('.success_message').removeClass('hidden').html(data.message);
                                     $('.error_message').addClass('hidden');
 
@@ -231,6 +233,24 @@
                     }
                 });
 
+                $(document).on('change', '.Itm_No', function () {
+                    var Itm_No = $(this).val();
+                    $.ajax({
+                        url: "{{route('returnItemInfo')}}",
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            _token: "{{csrf_token()}}",
+                            Itm_No: Itm_No
+                        },
+                        success: function (data) {
+                            $('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
+                            for (let i =0; i < data.units.length; i++){
+                                $('.Slm_No').append("<option value='"+data.units[i]['ID_No']+"'>"+"{{}}"+"</option>");
+                            }
+                        }
+                    })
+                })
             })
 
         </script>
@@ -322,7 +342,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="" class="control-label"> ر/فاتورة</label>
-                    <input readonly style="background: #fff" type="text" name="Custm_Inv" id="Custm_Inv" class="form-control Custm_Inv" value="{{$last == null ? 1 : $last->Custm_Inv+1}}">
+                    <input readonly style="background: #fff" type="text" name="Doc_No" id="Doc_No" class="form-control Doc_No" value="{{$last == null ? 1 : $last->Doc_No+1}}">
                 </div>
             </div>
             <div class="col-md-3">
