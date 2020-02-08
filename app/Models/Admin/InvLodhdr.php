@@ -18,6 +18,7 @@ class InvLodhdr extends Model
             'Dlv_Stor',
             'Doc_Dt',
             'Doc_DtAr',
+            'status',
             'RcvngPur_Dt',
             'Pym_Dt',
             'Custm_Inv',
@@ -94,7 +95,10 @@ class InvLodhdr extends Model
             'Doc_Time',
             'updt_date',
 
-
-
     ];
+
+    public function details()
+    {
+        return $this->hasMany(InvLoddtl::class, 'Doc_No', 'Doc_No');
+    }
 }

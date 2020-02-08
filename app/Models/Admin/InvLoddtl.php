@@ -91,4 +91,9 @@ class InvLoddtl extends Model
             'User_Id',
 
     ];
+
+    public function header()
+    {
+        return $this->belongsTo(InvLodhdr::class, 'Doc_No', 'Doc_No');
+    }
 }

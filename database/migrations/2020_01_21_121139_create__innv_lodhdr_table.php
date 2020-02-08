@@ -23,6 +23,7 @@ class CreateInnvLodhdrTable extends Migration
             $table->smallInteger('Dlv_Stor')->nullable();
             $table->date('Doc_Dt')->nullable();
             $table->string('Doc_DtAr', 20)->nullable();
+            $table->boolean('status')->default(1);
             $table->date('RcvngPur_Dt')->nullable();
             $table->date('Pym_Dt')->nullable();
             $table->bigInteger('Custm_Inv')->nullable();
