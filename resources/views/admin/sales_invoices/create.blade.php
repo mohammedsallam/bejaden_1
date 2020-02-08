@@ -30,35 +30,9 @@
                 $(document).on('click', '.delete_row', function () {
                     if(tableBody.children().length === 1){
                         count = 1;
+                        return false
                     }
-
-
-                    // tableBody.children().each(function () {
-                    //     var lineNo = parseFloat($(this).children('input').val());
-                    //     // $(this).children('td').children('select').attr('id', $(this).children('td').children('select').attr('class')+'_'+lineNo);
-                    //     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1);
-                    //     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1);
-                    // });
-                    //
-                    // $(this).parent('tr').remove();
-
                     var lineNo = parseFloat($(this).children('input').val());
-
-
-
-
-                    tableBody.children().each(function () {
-                        $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1));
-                        $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
-                        $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
-                    });
-
-                    $(this).parent('tr').remove();
-
-                    count+=1
-
-                    return
-
                     $.ajax({
                         url: "{{route('deleteLine')}}",
                         type: 'get',
@@ -72,17 +46,27 @@
                             if (data.status === 1){
                                 $('#item_tot_sal_'+lineNo).parent('td').parent('tr').remove();
                                 tableBody.children().each(function () {
-                                    $(this).children('td').children('.Unit_No').attr('id', '#Unit_No_'+$(this).index());
                                     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
+                                    $(this).children('td').children('.Itm_No').attr('id', 'Itm_No_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Itm_Sal').attr('id', 'Itm_Sal_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Qty').attr('id', 'Qty_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.item_tot_sal').attr('id', 'item_tot_sal_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.itm_no_input').attr('id', 'itm_no_input_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Exp_Date').attr('id', 'Exp_Date_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Batch_No').attr('id', 'Batch_No_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Disc1_Prct').attr('id', 'Disc1_Prct_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Disc1_Val').attr('id', 'Disc1_Val_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Taxv_Extra').attr('id', 'Taxv_Extra_'+parseInt($(this).index()+1))
+                                    $(this).children('td').children('.Taxp_Extra').attr('id', 'Taxp_Extra_'+parseInt($(this).index()+1))
                                     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
                                 });
                             }
-
-
                         }
                     });
 
 
+                    count +=1;
                 });
 
                 tableBody.keypress(function (e) {
@@ -165,7 +149,7 @@
                                 //     }, 5000)
                                 // }
                             }
-                        })
+                        });
 
 
 
@@ -209,6 +193,7 @@
                     $(document).on('change', '.table_body tr input, .table_body tr select',function () {
                         let lineNo = $(this).parent('td').siblings('td.delete_row').children('input').val(),
                         Tot_Sal = 0;
+
                         $('.item_tot_sal').each(function () {
                             Tot_Sal += parseFloat($(this).val());
                             $('.Tot_Sal').val(Tot_Sal)
@@ -487,7 +472,6 @@
                     element.parent('td').next('td').children('.Itm_No').children('option[value="'+itmNoInput+'"]').removeAttr('selected');
                     if(selectHtml.html() !== undefined){
                         element.parent('td').next('td').children('.Itm_No').prepend(optionSelected);
-                        element.parent('td').next('td').children('.Itm_No').children('option:not(:first-child)').removeAttr('selected')
                     } else {
                         element.parent('td').next('td').next('td').children('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
 

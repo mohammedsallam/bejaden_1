@@ -215,6 +215,9 @@ class SalesInvoicesController extends Controller
                     'Net',
                 ]));
 
+                $header->update(['status' => 1]);
+
+
                 return  response()->json(['status' => 1, 'message' => trans('admin.save_success')]);
 
             }
@@ -342,7 +345,7 @@ class SalesInvoicesController extends Controller
 
     public function deleteLine(Request $request)
     {
-        return response()->json(['status' => 1]);
+//        return response()->json(['status' => 1]);
         $line = InvLoddtl::where('Ln_No', $request->Ln_No)->first();
         if ($line != null){
             $line->delete();
@@ -350,7 +353,7 @@ class SalesInvoicesController extends Controller
             if ($header != null){
                 $header->update([
                     'Tot_Sal' => $header->Tot_Sal - $request->lineTotal,
-                    'status' => count($header->details) == 0 ? 0 : $header->status
+                    'status' => count($header->details) == 0 ? 0 : 1
                 ]);
             }
 
