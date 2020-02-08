@@ -8,6 +8,7 @@ use App\Models\Admin\PjbranchDlv;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class StoresController extends Controller
 {
@@ -42,7 +43,20 @@ class StoresController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $this->validate($request,[
+            'Dlv_Stor' => 'required',
+            'Brn_No' => 'required',
+            'Dlv_NmAr' => 'required',
+            'Dlv_NmEn' => 'sometimes',
+        ],[], [
+            'Dlv_Stor' => trans('admin.number'),
+            'Brn_No' => trans('admin.Brn_No'),
+            'Dlv_NmAr' => trans('admin.name_ar'),
+            'Dlv_NmEn' => trans('admin.name_en'),
+        ]);
+
+        PjbranchDlv::create($request->all());
+        return redirect()->route('stores.index')->with(session()->flash('message',trans('admin.success_add')));
     }
 
     /**

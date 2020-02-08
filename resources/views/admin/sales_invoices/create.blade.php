@@ -5,7 +5,7 @@
         <style>
             .datepicker{direction: rtl;}
             .delete_row{cursor: pointer;}
-            table tr td input, table tr td select{width: 100%;}
+            table tr td input, table tr td select{width: 100%; text-align: center}
         </style>
     @endpush
 
@@ -62,6 +62,67 @@
                             }
                         });
 
+                        let lineNo = $(this).children('tr:last-child').index()+1;
+
+                        $.ajax({
+                            url: "{{route('createNewLine')}}",
+                            type: 'post',
+                            dataType: 'json',
+                            data:{
+                                _token:"{{csrf_token()}}",
+                                Ln_No: lineNo,
+                                Cmp_No: $('.Cmp_No option:selected').val(),
+                                Actvty_No: $('.Actvty_No option:selected').val(),
+                                Brn_No: $('.Brn_No option:selected').val(),
+                                Slm_No: $('.Slm_No option:selected').val(),
+                                Cstm_No: $('.Cstm_No option:selected').val(),
+                                Dlv_Stor: $('.Dlv_Stor option:selected').val(),
+                                Pym_No: $('.Pym_No option:selected').val(),
+                                Reftyp_No: $('.Reftyp_No option:selected').val(),
+                                Ref_No: $('.Ref_No option:selected').val(),
+                                Doc_No: $('.Doc_No').val(),
+                                Doc_Dt: $('.Doc_Dt').val(),
+                                Doc_DtAr: $('.Doc_DtAr').val(),
+                                Itm_No: $('#Itm_No_'+lineNo).val(),
+                                Unit_No: $('#Unit_No_'+lineNo).val(),
+                                Loc_No: $('#Loc_No_'+lineNo).val(),
+                                Qty: $('#Qty_'+lineNo).val(),
+                                Itm_Sal: $('#Itm_Sal_'+lineNo).val(),
+                                Exp_Date: $('#Exp_Date_'+lineNo).val(),
+                                Batch_No: $('#Batch_No_'+lineNo).val(),
+                                Disc1_Prct: $('#Disc1_Prct_'+lineNo).val(),
+                                Disc1_Val: $('#Disc1_Val_'+lineNo).val(),
+
+                                Taxp_Extra: $('#Taxp_Extra_'+lineNo).val(), // 2
+                                Taxv_Extra: $('#Taxv_Extra_'+lineNo).val(), // 2
+
+                                Tot_Sal: $('.Tot_Sal').val(), // hdr
+                                Tot_Disc: $('.Tot_Disc').val(), // hdr
+                                Tot_Prct: $('.Tot_Prct').val(), // hdr
+                                Tot_ODisc: $('.Tot_ODisc').val(), //hdr
+                                Tot_OPrct: $('.Tot_OPrct').val(), //hdr
+                                Net: $('.Net').val(), //hdr
+                            },
+                            success: function (data) {
+                                if(data.status === 0){
+                                    $('.error_message').removeClass('hidden').html(data.message);
+                                    $('.success_message').addClass('hidden')
+                                }
+                                // else {
+                                //     // $('.Doc_No').val(parseInt($('.Doc_No').val())+1);
+                                //     $('.success_message').removeClass('hidden').html(data.message);
+                                //     $('.error_message').addClass('hidden');
+                                //
+                                //     var buffer = setInterval(function () {
+                                //         $('.error_message, .success_message').addClass('hidden');
+                                //         clearInterval(buffer)
+                                //     }, 5000)
+                                // }
+                            }
+                        })
+
+
+
                 //         let row = `<tr>
                 //     <td class="delete_row bg-red"><span>`+count+`</span><input type="hidden" name="Ln-No" value="`+count+`"></td>
                 //     <td style="width: 11%"><input id="itm_no_input" class="itm_no_input" type="text"></td>
@@ -90,13 +151,82 @@
                 //         tableBody.append(row);
 
                         tableBody.children().each(function () {
-                            $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
-                            $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
-
+                            $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1);
+                            $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1);
                         });
                         count +=1;
                     }
 
+                });
+
+                tableBody.children().each(function () {
+                    $(document).on('change', '.table_body tr input, .table_body tr select',function () {
+                        let lineNo = $(this).parent('td').siblings('td.delete_row').children('input').val(),
+                        Tot_Sal = 0;
+
+                        $('.item_tot_sal').each(function () {
+                            Tot_Sal += parseFloat($(this).val());
+                            $('.Tot_Sal').val(Tot_Sal)
+                        });
+
+                        $.ajax({
+                            url: "{{route('createNewLine')}}",
+                            type: 'post',
+                            dataType: 'json',
+                            data:{
+                                _token:"{{csrf_token()}}",
+                                Ln_No: lineNo,
+                                Cmp_No: $('.Cmp_No option:selected').val(),
+                                Actvty_No: $('.Actvty_No option:selected').val(),
+                                Brn_No: $('.Brn_No option:selected').val(),
+                                Slm_No: $('.Slm_No option:selected').val(),
+                                Cstm_No: $('.Cstm_No option:selected').val(),
+                                Dlv_Stor: $('.Dlv_Stor option:selected').val(),
+                                Pym_No: $('.Pym_No option:selected').val(),
+                                Reftyp_No: $('.Reftyp_No option:selected').val(),
+                                Ref_No: $('.Ref_No option:selected').val(),
+                                Doc_No: $('.Doc_No').val(),
+                                Doc_Dt: $('.Doc_Dt').val(),
+                                Doc_DtAr: $('.Doc_DtAr').val(),
+                                Itm_No: $('#Itm_No_'+lineNo).val(),
+                                Unit_No: $('#Unit_No_'+lineNo).val(),
+                                Loc_No: $('#Loc_No_'+lineNo).val(),
+                                Qty: $('#Qty_'+lineNo).val(),
+                                Itm_Sal: $('#Itm_Sal_'+lineNo).val(),
+                                Exp_Date: $('#Exp_Date_'+lineNo).val(),
+                                Batch_No: $('#Batch_No_'+lineNo).val(),
+                                Disc1_Prct: $('#Disc1_Prct_'+lineNo).val(),
+                                Disc1_Val: $('#Disc1_Val_'+lineNo).val(),
+
+                                Taxp_Extra: $('#Taxp_Extra_'+lineNo).val(), // 2
+                                Taxv_Extra: $('#Taxv_Extra_'+lineNo).val(), // 2
+
+                                Tot_Sal: Tot_Sal, // hdr
+                                Tot_Disc: $('.Tot_Disc').val(), // hdr
+                                Tot_Prct: $('.Tot_Prct').val(), // hdr
+                                Tot_ODisc: $('.Tot_ODisc').val(), //hdr
+                                Tot_OPrct: $('.Tot_OPrct').val(), //hdr
+                                Net: $('.Net').val(), //hdr
+                            },
+                            success: function (data) {
+                                if(data.status === 0){
+                                    $('.error_message').removeClass('hidden').html(data.message);
+                                    $('.success_message').addClass('hidden')
+                                }
+                                // else {
+                                //     // $('.Doc_No').val(parseInt($('.Doc_No').val())+1);
+                                //     $('.success_message').removeClass('hidden').html(data.message);
+                                //     $('.error_message').addClass('hidden');
+                                //
+                                //     var buffer = setInterval(function () {
+                                //         $('.error_message, .success_message').addClass('hidden');
+                                //         clearInterval(buffer)
+                                //     }, 5000)
+                                // }
+                            }
+                        })
+
+                    })
                 });
 
                 $('.Cmp_No').change(function () {
@@ -122,12 +252,13 @@
 
 
                                 for (let i =0; i < data.branches.length; i++){
-                                    $('.Brn_No').append("<option value='"+data.branches[i]['ID_No']+"'>"+data.branches[i]['Brn_NmEn']+"</option>");
+                                    $('.Brn_No').append("<option value='"+data.branches[i]['ID_No']+"'>"+data.branches[i]['Brn_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
                             }
                         })
                     }
                 });
+
                 $('.Brn_No').change(function () {
                     if($(this).val()){
                         $.ajax({
@@ -142,13 +273,14 @@
                                 }
 
                                 $('.Slm_No').html("<option value=''>{{trans('admin.select')}}</option>");
-                                for (let i =0; i < data.stores.length; i++){
+                                for (let i =0; i < data.salesMan.length; i++){
                                     $('.Slm_No').append("<option value='"+data.salesMan[i]['Slm_No']+"'>"+data.salesMan[i]['Slm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
                             }
                         })
                     }
                 });
+
                 $('.Cstm_No').change(function () {
                     $('.cstm_no_input').val($(this).val())
                 });
@@ -213,6 +345,13 @@
                                 Tax_Allow: $('input.Tax_Allow:checked').val(),
                                 Notes: $('.Notes').val(),
                                 Notes1: $('.Notes1').val(),
+
+                                // Tot_Sal: $('.Tot_Sal').val(), // hdr
+                                // Tot_Disc: $('.Tot_Disc').val(), // hdr
+                                // Tot_Prct: $('.Tot_Prct').val(), // hdr
+                                // Tot_ODisc: $('.Tot_ODisc').val(), //hdr
+                                // Tot_OPrct: $('.Tot_OPrct').val(), //hdr
+                                // Net: $('.Net').val(), //hdr
                             },
                             success: function (data) {
                                 if(data.status === 0){
@@ -233,24 +372,121 @@
                     }
                 });
 
-                $(document).on('change', '.Itm_No', function () {
-                    var Itm_No = $(this).val();
+                $(document).on('change', '.Itm_No, .itm_no_input', function () {
+
+                    var lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
+                        Itm_No = $(this).val();
+
+                        $('#Qty_'+lineNo).val('');
+                        $('#Itm_Sal_'+lineNo).val('');
+                        $('#item_tot_sal_'+lineNo).val('');
+                        $('#itm_no_input_'+lineNo).val(Itm_No);
+
+                        if (Itm_No === ''){
+                            $('#Unit_No_'+lineNo).html("<option value=''>{{trans('admin.select')}}</option>");
+                        }
+
+                        if(Itm_No !== ''){
+                            $.ajax({
+                                url: "{{route('returnItemInfo')}}",
+                                type: 'get',
+                                dataType: 'json',
+                                data: {
+                                    _token: "{{csrf_token()}}",
+                                    Itm_No: Itm_No,
+                                },
+                                success: function (data) {
+                                    $('#Itm_Sal_'+lineNo).val(data.price);
+                                    $('#Unit_No_'+lineNo).html("<option value=''>{{trans('admin.select')}}</option>");
+                                    for (let i =0; i < data.units.length; i++){
+                                        $('#Unit_No_'+lineNo).append("<option value='"+data.units[i]['ID_No']+"'>"+data.units[i]['Unit_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
+                                    }
+                                }
+                            })
+                        }
+                });
+
+                $(document).on('change', '.Unit_No', function () {
+                    var lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
+                        Itm_No = $('#Itm_No_'+lineNo).val(),
+                        Unit_No = $('#Unit_No_'+lineNo).val();
+
+                    $('#Qty_'+lineNo).val('');
+                    $('#Itm_Sal_'+lineNo).val('');
+                    $('#item_tot_sal_'+lineNo).val('');
+
+                    if(Unit_No !== ''){
+                        $.ajax({
+                            url: "{{route('returnUnitPrice')}}",
+                            type: 'get',
+                            dataType: 'json',
+                            data: {
+                                _token: "{{csrf_token()}}",
+                                Itm_No: Itm_No,
+                                Unit_No: Unit_No,
+                            },
+                            success: function (data) {
+                                $('#Itm_Sal_'+lineNo).val(data.price);
+                            }
+                        })
+                    }
+
+
+                });
+
+                $(document).on('change', '.itm_no_input', function () {
+                    let element = $(this), itmNoInput = $(this).val(),
+                        selectHtml = element.parent('td').next('td').children('.Itm_No').children('option[value="'+itmNoInput+'"]'),
+                        optionSelected = '<option value="'+itmNoInput+'" selected>'+selectHtml.html()+'</option>';
+
+                    element.parent('td').next('td').children('.Itm_No').children('option[value="'+itmNoInput+'"]').removeAttr('selected');
+                    if(selectHtml.html() !== undefined){
+                        element.parent('td').next('td').children('.Itm_No').prepend(optionSelected);
+                    } else {
+                        element.parent('td').next('td').next('td').children('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
+
+                    }
+
+
+                    // if (selectHtml.length === 1){
+                    //     $('#Acc_No_Select ul.select2-results__options').prepend(`
+                    //         <li class="select2-results__option" role="treeitem" aria-selected="true" data-select2-id="`+selectHtml.val()+`">`+selectHtml.html()+`</li>
+                    //     `);
+                    // }
+
+                    selectHtml.remove();
+
                     $.ajax({
                         url: "{{route('returnItemInfo')}}",
                         type: 'get',
                         dataType: 'json',
                         data: {
                             _token: "{{csrf_token()}}",
-                            Itm_No: Itm_No
+                            Itm_No: itmNoInput
                         },
                         success: function (data) {
-                            $('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
+                            element.parent('td').next('td').next('td').children('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
                             for (let i =0; i < data.units.length; i++){
-                                $('.Slm_No').append("<option value='"+data.units[i]['ID_No']+"'>"+"{{}}"+"</option>");
+                                element.parent('td').next('td').next('td').children('.Unit_No').append("<option value='"+data.units[i]['ID_No']+"'>"+data.units[i]['Unit_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                             }
                         }
                     })
-                })
+                });
+
+                $(document).on('change', '.Qty, .Itm_Sal', function () {
+                    let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
+                        element = $('#Qty_'+lineNo),
+                        Qty = parseInt(element.val()),
+                        price = $('#Itm_Sal_'+lineNo).val(),
+                        Tot_Sal = 0;
+                        $('#item_tot_sal_'+lineNo).val(Qty*price);
+                    $('.item_tot_sal').each(function () {
+                        Tot_Sal += parseFloat($(this).val());
+                        $('.Tot_Sal').val(Tot_Sal)
+                    });
+
+                });
+
             })
 
         </script>
@@ -448,13 +684,13 @@
                     <tr class="bg-aqua">
                         <th>م</th>
                         <th>رقم الصنف</th>
-                        <th>إسم الصنف</th>
-                        <th>الوحدة</th>
+                        <th style="width: 13%">إسم الصنف</th>
+                        <th style="width: 10%">الوحدة</th>
                         <th>رقم </th>
                         <th>الكمية</th>
                         <th>سعر البيع</th>
                         <th>إجمالي القيمة</th>
-                        <th>تاريخ الصلاحية</th>
+                        <th style="width: 10%;">تاريخ الصلاحية</th>
                         <th> الباتش</th>
                         <th>خصم بيع%</th>
                         <th>قيمة الخصم1</th>
@@ -463,34 +699,34 @@
                     </tr>
                     <tbody class="table_body">
                     <tr class="first_row">
-                        <td class="delete_row bg-red"><span>1</span><input type="hidden" name="Ln-No" value="1"></td>
-                        <td style="width: 11%"><input type="text" class="itm_no_input"></td>
-                        <td style="width: 20%">
-                            <select name="Itm_No" id="Itm_No" class="Itm_No">
+                        <td class="delete_row bg-red"><span>1</span><input type="hidden" name="Ln_No" value="1"></td>
+                        <td><input type="text" id="itm_no_input_1" class="itm_no_input text-center"></td>
+                        <td>
+                            <select name="Itm_No" id="Itm_No_1" class="Itm_No">
                                 <option value="">{{trans('admin.select')}}</option>
                                 @foreach($items as $item)
                                     <option value="{{$item->Itm_No}}">{{$item->{'Itm_Nm'.ucfirst(session('lang'))} }}</option>
                                 @endforeach
                             </select>
                         </td>
-                        <td style="width: 9%">
-                            <select name="Unit_No" id="Unit_No" class="Unit_No" >
+                        <td>
+                            <select name="Unit_No" id="Unit_No_1" class="Unit_No" >
                                 <option value="">{{trans('admin.select')}}</option>
-                                @foreach($units as $unit)
-                                    <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>
-                                @endforeach
+{{--                                @foreach($units as $unit)--}}
+{{--                                    <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>--}}
+{{--                                @endforeach--}}
                             </select>
                         </td>
-                        <td><input type="text" name="Loc_No" id="Loc_No" class="Loc_No"></td>
-                        <td><input type="number" min="1" name="Qty" id="Qty" class="Qty"></td>
-                        <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal" class="Itm_Sal"></td>
-                        <td><input type="text" id="item_tot_sal" class="item_tot_sal"></td>
-                        <td style="width: 11%;"><input type="text" name="Exp_Date" id="Exp_Date" class="Exp_Date" style="padding: 0; border-radius: 0"></td>
-                        <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No"></td>
-                        <td><input type="text" name="Disc1_Prct" id="Disc1_Prct" class="Disc1_Prct"></td>
-                        <td><input type="text" name="Disc1_Val" id="Disc1_Val" class="Disc1_Val"></td>
-                        <td><input type="text" name="Taxp_Extra" id="Taxp_Extra" class="Taxp_Extra"></td>
-                        <td><input type="text" name="Taxv_Extra" id="Taxv_Extra" class="Taxv_Extra"></td>
+                        <td><input type="text" name="Loc_No" id="Loc_No_1" class="Loc_No"></td>
+                        <td><input type="number" min="1" name="Qty" id="Qty_1" class="Qty"></td>
+                        <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal_1" class="Itm_Sal"></td>
+                        <td><input type="text" id="item_tot_sal_1" class="item_tot_sal"></td>
+                        <td><input type="text" name="Exp_Date" id="Exp_Date_1" class="Exp_Date datepicker" style="padding: 0; border-radius: 0"></td>
+                        <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No_1"></td>
+                        <td><input type="text" name="Disc1_Prct" id="Disc1_Prct_1" class="Disc1_Prct"></td>
+                        <td><input type="text" name="Disc1_Val" id="Disc1_Val_1" class="Disc1_Val"></td>
+                        <td><input type="text" name="Taxp_Extra" id="Taxp_Extra_1" class="Taxp_Extra"></td>
+                        <td><input type="text" name="Taxv_Extra" id="Taxv_Extra_1" class="Taxv_Extra"></td>
                     </tr>
                     </tbody>
                     <tfoot class="bg-primary" style="cursor: pointer">
@@ -506,7 +742,7 @@
                 <div class="col-md-2">
                     <div class="form-group" style="display: flex">
                         <label for="">الإجمالي</label>
-                        <input type="text" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal">
+                        <input type="text" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal text-center">
                     </div>
                 </div>
                 <div class="col-md-2">
