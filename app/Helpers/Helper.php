@@ -2,7 +2,7 @@
 
 
 use App\Models\Admin\GLjrnTrs;
-use App\MtsCostcntr;
+use App\Models\Admin\MtsCostcntr;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Admin\MtsChartAc;
 use App\Models\Admin\Projectmfs;
@@ -720,7 +720,7 @@ if(!function_exists('sumallcc')) {
     {
 
         $value = [];
-        $departments = \App\glcc::findOrFail($id);
+        $departments = MtsCostcntr::findOrFail($id);
 
         $pros = [];
         $products = [];

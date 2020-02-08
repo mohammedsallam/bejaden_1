@@ -1,28 +1,18 @@
 <script>
-
        if('{{$level}}'){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
             var level = $('#level_check').val();
-
-            // alert(3);
-
             var fromtree = $('.efirst2').val();
-
-            // alert(fromtree);
-
             var totree = $('.elast2').val();
-
             var radiodepartment =  $('input[name="department"]:checked').val();
-
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
-
             var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
             $(".print_div").css("display","none");
             if (this) {
                 $.ajax({
-                    url: '{{route('movementTrialbalance.details')}}',
+                    url: '{{route('cc_balance.details')}}',
                     type: 'get',
                     dataType: 'html',
                     data: {MainCompany: MainCompany,

@@ -30,10 +30,8 @@
                 });
             }
         });
-
-
-
         });
+
     $(document).on('change','.fromtree',function () {
         var fromtreee = $(this).val();
         $('.number_fromtree').val(fromtreee);
@@ -197,22 +195,7 @@
     </div>
 </div>
 <br>
-{{--<<<<<<< HEAD--}}
-{{--<div class="row">--}}
-{{--    <div class="col-xs-9">--}}
-{{--        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}--}}
-{{--        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control fromtree col-xs-9 e2 efirst'])) }}--}}
-{{--    </div>--}}
-{{--    <div class="col-xs-3">--}}
-{{--        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<br>--}}
-{{--<div class="row">--}}
-{{--    <div class="col-xs-9">--}}
-{{--        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}--}}
-{{--        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}--}}
-{{--=======--}}
+
 <div class="details_level">
     <div class="row" >
         <div class="col-xs-9">

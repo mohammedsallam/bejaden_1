@@ -382,6 +382,12 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('movement_trialbalance_details','Admin\financial_reports\CC_accountingController@trialbalance_details')->name('movementTrialbalance.details');
         Route::get('trialbalance_details_level','Admin\financial_reports\CC_accountingController@trialbalance_level')->name('movementTrialbalance.level');
         Route::POST('trialbalance_print','Admin\financial_reports\CC_accountingController@trialbalance_print')->name('movementTrialbalance.print');
+        /***/
+        Route::get('cc_balance','Admin\financial_reports\CC_accountingController@cc_balance')->name('cc_balance');
+        Route::get('cc_balance_show','Admin\financial_reports\CC_accountingController@cc_balance_show')->name('cc_balance.show');
+        Route::get('cc_balance_details','Admin\financial_reports\CC_accountingController@cc_balance_details')->name('cc_balance.details');
+        Route::get('cc_balance_details_level','Admin\financial_reports\CC_accountingController@cc_balance_level')->name('cc_balance.level');
+        Route::POST('cc_balance_print','Admin\financial_reports\CC_accountingController@cc_balance_print')->name('cc_balance.print');
         Route::get('general_balance_cc','Admin\financial_reports\CC_accountingController@general_balance_cc')->name('general_balance_cc');
 
 //        1_1 financial_report

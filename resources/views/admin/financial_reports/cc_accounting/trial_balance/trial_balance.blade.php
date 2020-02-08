@@ -240,27 +240,27 @@
                     <div class="col-md-6 col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="total_department" name="department" checked value="1">
-                            <label class="total_department" for="total_department">جميع الحسابات </label>
+                            <label class="total_department" for="total_department">جميع مراكز التكلفه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="balance_department" name="department" value="2">
-                            <label for="balance_department">  حسابات بارصدة </label>
+                            <label for="balance_department">  مراكز التكلفه بارصدة </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="debt_department" name="department" value="3">
-                            <label class="debt_department" for="debt_department">حسابات مدينه </label>
+                            <label class="debt_department" for="debt_department">مراكز التكلفه مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="credit_department" name="department" value="4">
-                            <label for="credit_department">  حسابات دائنه </label>
+                            <label for="credit_department">  مراكز التكلفه دائنه </label>
                         </div>
                     </div>
                 </div>

@@ -1440,6 +1440,7 @@ return [
     'cc_reports'         =>'تقارير مراكز التكلفه',
     'cc_number'          =>'رقم مركز التكلفه',
     'cc_name'            =>'اسم مراكز التكلفه',
+    'ccs_balance'        =>'أرصدة مراكز التكلفه للشركات',
     'cust_account_statement'=>'كشف حساب العملاء',
     'sup_account_statement' =>'كشف حساب الموردين',
     'trial_balance_cust'    =>'ميزان مراجعة العملاء',
