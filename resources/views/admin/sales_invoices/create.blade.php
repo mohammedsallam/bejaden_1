@@ -31,7 +31,34 @@
                     if(tableBody.children().length === 1){
                         count = 1;
                     }
+
+
+                    // tableBody.children().each(function () {
+                    //     var lineNo = parseFloat($(this).children('input').val());
+                    //     // $(this).children('td').children('select').attr('id', $(this).children('td').children('select').attr('class')+'_'+lineNo);
+                    //     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1);
+                    //     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1);
+                    // });
+                    //
+                    // $(this).parent('tr').remove();
+
                     var lineNo = parseFloat($(this).children('input').val());
+
+
+
+
+                    tableBody.children().each(function () {
+                        $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1));
+                        $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
+                        $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
+                    });
+
+                    $(this).parent('tr').remove();
+
+                    count+=1
+
+                    return
+
                     $.ajax({
                         url: "{{route('deleteLine')}}",
                         type: 'get',
@@ -45,7 +72,7 @@
                             if (data.status === 1){
                                 $('#item_tot_sal_'+lineNo).parent('td').parent('tr').remove();
                                 tableBody.children().each(function () {
-                                    $(this).children('td').children('select').attr('id', $(this).children('td').children('select').attr('class')+'_'+lineNo);
+                                    $(this).children('td').children('.Unit_No').attr('id', '#Unit_No_'+$(this).index());
                                     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
                                     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
                                 });

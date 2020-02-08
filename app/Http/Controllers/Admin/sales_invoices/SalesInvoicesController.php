@@ -342,6 +342,7 @@ class SalesInvoicesController extends Controller
 
     public function deleteLine(Request $request)
     {
+        return response()->json(['status' => 1]);
         $line = InvLoddtl::where('Ln_No', $request->Ln_No)->first();
         if ($line != null){
             $line->delete();
