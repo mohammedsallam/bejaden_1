@@ -45,6 +45,7 @@
                             if (data.status === 1){
                                 $('#item_tot_sal_'+lineNo).parent('td').parent('tr').remove();
                                 tableBody.children().each(function () {
+                                    $(this).children('td').children('select').attr('id', $(this).children('td').children('select').attr('class')+'_'+lineNo);
                                     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
                                     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
                                 });
@@ -181,7 +182,6 @@
                     $(document).on('change', '.table_body tr input, .table_body tr select',function () {
                         let lineNo = $(this).parent('td').siblings('td.delete_row').children('input').val(),
                         Tot_Sal = 0;
-
                         $('.item_tot_sal').each(function () {
                             Tot_Sal += parseFloat($(this).val());
                             $('.Tot_Sal').val(Tot_Sal)
@@ -460,6 +460,7 @@
                     element.parent('td').next('td').children('.Itm_No').children('option[value="'+itmNoInput+'"]').removeAttr('selected');
                     if(selectHtml.html() !== undefined){
                         element.parent('td').next('td').children('.Itm_No').prepend(optionSelected);
+                        element.parent('td').next('td').children('.Itm_No').children('option:not(:first-child)').removeAttr('selected')
                     } else {
                         element.parent('td').next('td').next('td').children('.Unit_No').html("<option value=''>{{trans('admin.select')}}</option>");
 
