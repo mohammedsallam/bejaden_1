@@ -669,6 +669,7 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('returnItemInfo', 'Admin\sales_invoices\SalesInvoicesController@returnItemInfo')->name('returnItemInfo');
         Route::get('returnUnitPrice', 'Admin\sales_invoices\SalesInvoicesController@returnUnitPrice')->name('returnUnitPrice');
         Route::post('createNewLine', 'Admin\sales_invoices\SalesInvoicesController@createNewLine')->name('createNewLine');
+        Route::get('deleteLine', 'Admin\sales_invoices\SalesInvoicesController@deleteLine')->name('deleteLine');
 
         /**
          * all about stores place
