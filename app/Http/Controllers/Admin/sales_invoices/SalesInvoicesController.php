@@ -201,7 +201,7 @@ class SalesInvoicesController extends Controller
                         'Tot_ODisc',
                         'Tot_OPrct',
                         'Net',
-                    ]));
+                        ]));
                 }
 
                 $header = InvLodhdr::where('Doc_No', $request->Doc_No)->first();
