@@ -30,8 +30,52 @@
                 $(document).on('click', '.delete_row', function () {
                     if(tableBody.children().length === 1){
                         count = 1;
+
+                        var totalItemSal = $('#item_tot_sal_1').val();
+
+                        $('.table_body tr input').val('');
+                        $('.table_body tr input[type="hidden"]').val(1);
+
+                        let lineNo = parseFloat($(this).children('input').val());
+                        $.ajax({
+                            url: "{{route('deleteLine')}}",
+                            type: 'get',
+                            dataType: 'json',
+                            data: {
+                                Doc_No: $('.Doc_No').val(),
+                                Ln_No: lineNo,
+                                lineTotal: parseFloat(totalItemSal)
+                            },
+                            success: function(data){
+                                if (data.status === 1){
+                                    var Tot_Sal = 0;
+
+                                    $('.item_tot_sal').each(function () {
+                                        Tot_Sal += parseFloat($(this).val());
+                                        $('.Tot_Sal').val(Tot_Sal)
+                                    });
+                                    // tableBody.children().each(function () {
+                                    //     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
+                                    //     $(this).children('td').children('.Itm_No').attr('id', 'Itm_No_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Itm_Sal').attr('id', 'Itm_Sal_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Qty').attr('id', 'Qty_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.item_tot_sal').attr('id', 'item_tot_sal_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.itm_no_input').attr('id', 'itm_no_input_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Exp_Date').attr('id', 'Exp_Date_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Batch_No').attr('id', 'Batch_No_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Disc1_Prct').attr('id', 'Disc1_Prct_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Disc1_Val').attr('id', 'Disc1_Val_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Taxv_Extra').attr('id', 'Taxv_Extra_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td').children('.Taxp_Extra').attr('id', 'Taxp_Extra_'+parseInt($(this).index()+1))
+                                    //     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
+                                    // });
+                                }
+                            }
+                        });
                         return false
                     }
+
                     var lineNo = parseFloat($(this).children('input').val());
                     $.ajax({
                         url: "{{route('deleteLine')}}",
@@ -45,22 +89,29 @@
                         success: function(data){
                             if (data.status === 1){
                                 $('#item_tot_sal_'+lineNo).parent('td').parent('tr').remove();
-                                tableBody.children().each(function () {
-                                    $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
-                                    $(this).children('td').children('.Itm_No').attr('id', 'Itm_No_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Itm_Sal').attr('id', 'Itm_Sal_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Qty').attr('id', 'Qty_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.item_tot_sal').attr('id', 'item_tot_sal_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.itm_no_input').attr('id', 'itm_no_input_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Exp_Date').attr('id', 'Exp_Date_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Batch_No').attr('id', 'Batch_No_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Disc1_Prct').attr('id', 'Disc1_Prct_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Disc1_Val').attr('id', 'Disc1_Val_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Taxv_Extra').attr('id', 'Taxv_Extra_'+parseInt($(this).index()+1))
-                                    $(this).children('td').children('.Taxp_Extra').attr('id', 'Taxp_Extra_'+parseInt($(this).index()+1))
-                                    $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
+
+                                var Tot_Sal = 0;
+
+                                $('.item_tot_sal').each(function () {
+                                    Tot_Sal += parseFloat($(this).val());
+                                    $('.Tot_Sal').val(Tot_Sal)
                                 });
+                                // tableBody.children().each(function () {
+                                //     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1)
+                                //     $(this).children('td').children('.Itm_No').attr('id', 'Itm_No_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Unit_No').attr('id', 'Unit_No_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Itm_Sal').attr('id', 'Itm_Sal_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Qty').attr('id', 'Qty_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.item_tot_sal').attr('id', 'item_tot_sal_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.itm_no_input').attr('id', 'itm_no_input_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Exp_Date').attr('id', 'Exp_Date_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Batch_No').attr('id', 'Batch_No_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Disc1_Prct').attr('id', 'Disc1_Prct_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Disc1_Val').attr('id', 'Disc1_Val_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Taxv_Extra').attr('id', 'Taxv_Extra_'+parseInt($(this).index()+1))
+                                //     $(this).children('td').children('.Taxp_Extra').attr('id', 'Taxp_Extra_'+parseInt($(this).index()+1))
+                                //     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1)
+                                // });
                             }
                         }
                     });
@@ -70,17 +121,17 @@
                 });
 
                 tableBody.keypress(function (e) {
-
-                    // if($('.items_table').height() > 500){
-                    //     $('.items_table').addClass('scroll_table')
-                    // } else {
-                    //     $('.items_table').removeClass('scroll_table')
-                    // }
-
                     if(e.keyCode  === 13){
                         if(tableBody.children().length === 1){
                             count = 2;
                         }
+
+                        var Tot_Sal = 0;
+
+                        $('.item_tot_sal').each(function () {
+                            Tot_Sal += parseFloat($(this).val());
+                            $('.Tot_Sal').val(Tot_Sal)
+                        });
 
                         $.ajax({
                            url: "{{route('createNewRow')}}",
@@ -92,64 +143,64 @@
                             }
                         });
 
-                        let lineNo = $(this).children('tr:last-child').index()+1;
+                        {{--let lineNo = $(this).children('tr:last-child').index()+1;--}}
 
-                        $.ajax({
-                            url: "{{route('createNewLine')}}",
-                            type: 'post',
-                            dataType: 'json',
-                            data:{
-                                _token:"{{csrf_token()}}",
-                                Ln_No: lineNo,
-                                Cmp_No: $('.Cmp_No option:selected').val(),
-                                Actvty_No: $('.Actvty_No option:selected').val(),
-                                Brn_No: $('.Brn_No option:selected').val(),
-                                Slm_No: $('.Slm_No option:selected').val(),
-                                Cstm_No: $('.Cstm_No option:selected').val(),
-                                Dlv_Stor: $('.Dlv_Stor option:selected').val(),
-                                Pym_No: $('.Pym_No option:selected').val(),
-                                Reftyp_No: $('.Reftyp_No option:selected').val(),
-                                Ref_No: $('.Ref_No option:selected').val(),
-                                Doc_No: $('.Doc_No').val(),
-                                Doc_Dt: $('.Doc_Dt').val(),
-                                Doc_DtAr: $('.Doc_DtAr').val(),
-                                Itm_No: $('#Itm_No_'+lineNo).val(),
-                                Unit_No: $('#Unit_No_'+lineNo).val(),
-                                Loc_No: $('#Loc_No_'+lineNo).val(),
-                                Qty: $('#Qty_'+lineNo).val(),
-                                Itm_Sal: $('#Itm_Sal_'+lineNo).val(),
-                                Exp_Date: $('#Exp_Date_'+lineNo).val(),
-                                Batch_No: $('#Batch_No_'+lineNo).val(),
-                                Disc1_Prct: $('#Disc1_Prct_'+lineNo).val(),
-                                Disc1_Val: $('#Disc1_Val_'+lineNo).val(),
+                        {{--$.ajax({--}}
+                        {{--    url: "{{route('createNewLine')}}",--}}
+                        {{--    type: 'post',--}}
+                        {{--    dataType: 'json',--}}
+                        {{--    data:{--}}
+                        {{--        _token:"{{csrf_token()}}",--}}
+                        {{--        Ln_No: lineNo,--}}
+                        {{--        Cmp_No: $('.Cmp_No option:selected').val(),--}}
+                        {{--        Actvty_No: $('.Actvty_No option:selected').val(),--}}
+                        {{--        Brn_No: $('.Brn_No option:selected').val(),--}}
+                        {{--        Slm_No: $('.Slm_No option:selected').val(),--}}
+                        {{--        Cstm_No: $('.Cstm_No option:selected').val(),--}}
+                        {{--        Dlv_Stor: $('.Dlv_Stor option:selected').val(),--}}
+                        {{--        Pym_No: $('.Pym_No option:selected').val(),--}}
+                        {{--        Reftyp_No: $('.Reftyp_No option:selected').val(),--}}
+                        {{--        Ref_No: $('.Ref_No option:selected').val(),--}}
+                        {{--        Doc_No: $('.Doc_No').val(),--}}
+                        {{--        Doc_Dt: $('.Doc_Dt').val(),--}}
+                        {{--        Doc_DtAr: $('.Doc_DtAr').val(),--}}
+                        {{--        Itm_No: $('#Itm_No_'+lineNo).val(),--}}
+                        {{--        Unit_No: $('#Unit_No_'+lineNo).val(),--}}
+                        {{--        Loc_No: $('#Loc_No_'+lineNo).val(),--}}
+                        {{--        Qty: $('#Qty_'+lineNo).val(),--}}
+                        {{--        Itm_Sal: $('#Itm_Sal_'+lineNo).val(),--}}
+                        {{--        Exp_Date: $('#Exp_Date_'+lineNo).val(),--}}
+                        {{--        Batch_No: $('#Batch_No_'+lineNo).val(),--}}
+                        {{--        Disc1_Prct: $('#Disc1_Prct_'+lineNo).val(),--}}
+                        {{--        Disc1_Val: $('#Disc1_Val_'+lineNo).val(),--}}
 
-                                Taxp_Extra: $('#Taxp_Extra_'+lineNo).val(), // 2
-                                Taxv_Extra: $('#Taxv_Extra_'+lineNo).val(), // 2
+                        {{--        Taxp_Extra: $('#Taxp_Extra_'+lineNo).val(), // 2--}}
+                        {{--        Taxv_Extra: $('#Taxv_Extra_'+lineNo).val(), // 2--}}
 
-                                Tot_Sal: $('.Tot_Sal').val(), // hdr
-                                Tot_Disc: $('.Tot_Disc').val(), // hdr
-                                Tot_Prct: $('.Tot_Prct').val(), // hdr
-                                Tot_ODisc: $('.Tot_ODisc').val(), //hdr
-                                Tot_OPrct: $('.Tot_OPrct').val(), //hdr
-                                Net: $('.Net').val(), //hdr
-                            },
-                            success: function (data) {
-                                if(data.status === 0){
-                                    $('.error_message').removeClass('hidden').html(data.message);
-                                    $('.success_message').addClass('hidden')
-                                }
-                                // else {
-                                //     // $('.Doc_No').val(parseInt($('.Doc_No').val())+1);
-                                //     $('.success_message').removeClass('hidden').html(data.message);
-                                //     $('.error_message').addClass('hidden');
-                                //
-                                //     var buffer = setInterval(function () {
-                                //         $('.error_message, .success_message').addClass('hidden');
-                                //         clearInterval(buffer)
-                                //     }, 5000)
-                                // }
-                            }
-                        });
+                        {{--        Tot_Sal: $('.Tot_Sal').val(), // hdr--}}
+                        {{--        Tot_Disc: $('.Tot_Disc').val(), // hdr--}}
+                        {{--        Tot_Prct: $('.Tot_Prct').val(), // hdr--}}
+                        {{--        Tot_ODisc: $('.Tot_ODisc').val(), //hdr--}}
+                        {{--        Tot_OPrct: $('.Tot_OPrct').val(), //hdr--}}
+                        {{--        Net: $('.Net').val(), //hdr--}}
+                        {{--    },--}}
+                        {{--    success: function (data) {--}}
+                        {{--        if(data.status === 0){--}}
+                        {{--            $('.error_message').removeClass('hidden').html(data.message);--}}
+                        {{--            $('.success_message').addClass('hidden')--}}
+                        {{--        }--}}
+                        {{--        // else {--}}
+                        {{--        //     // $('.Doc_No').val(parseInt($('.Doc_No').val())+1);--}}
+                        {{--        //     $('.success_message').removeClass('hidden').html(data.message);--}}
+                        {{--        //     $('.error_message').addClass('hidden');--}}
+                        {{--        //--}}
+                        {{--        //     var buffer = setInterval(function () {--}}
+                        {{--        //         $('.error_message, .success_message').addClass('hidden');--}}
+                        {{--        //         clearInterval(buffer)--}}
+                        {{--        //     }, 5000)--}}
+                        {{--        // }--}}
+                        {{--    }--}}
+                        {{--});--}}
 
 
 
@@ -180,11 +231,11 @@
                 //
                 //         tableBody.append(row);
 
-                        tableBody.children().each(function () {
-                            $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1);
-                            $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1);
-                        });
-                        count +=1;
+                        // tableBody.children().each(function () {
+                        //     $(this).children('td:first-child').children('span').html(parseInt($(this).index())+1);
+                        //     $(this).children('td:first-child').children('input').val(parseInt($(this).index())+1);
+                        // });
+                        count =  parseInt(tableBody.children('tr:last-child').children('td:first-child').children('input').val())+1;
                     }
 
                 });
@@ -503,17 +554,48 @@
                     })
                 });
 
-                $(document).on('change', '.Qty, .Itm_Sal', function () {
+                $(document).on('change', '.Qty, .Itm_Sal, .Disc1_Prct', function () {
                     let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
                         element = $('#Qty_'+lineNo),
                         Qty = parseInt(element.val()),
                         price = $('#Itm_Sal_'+lineNo).val(),
-                        Tot_Sal = 0;
-                        $('#item_tot_sal_'+lineNo).val(Qty*price);
+                        Tot_Sal = 0,
+                        Tot_Disc = 0,
+                        item_tot_sal = $('#item_tot_sal_'+lineNo),
+                        Disc1_Prct = $('#Disc1_Prct_'+lineNo),
+                        Disc1_Val = $('#Disc1_Val_'+lineNo);
+
+                    item_tot_sal.val(Qty*price);
+
+                    // Calc total sale
                     $('.item_tot_sal').each(function () {
+                        $(this).change(function () {
+                            $(this).val('');
+                        });
+
                         Tot_Sal += parseFloat($(this).val());
-                        $('.Tot_Sal').val(Tot_Sal)
+                        $('.Tot_Sal').val(Tot_Sal);
+                        $('.Tot_Disc').val(Tot_Sal);
                     });
+
+                    $('.Disc1_Val').each(function () {
+                        Tot_Disc += parseFloat($(this).val());
+                        $('.Tot_Disc').val(Tot_Disc);
+                    });
+
+                    // Calc total Discount
+
+
+
+
+                    // Calc Discount value and percentage
+                    if (Disc1_Prct.val() !== ''){
+                        Disc1_Val.val((item_tot_sal.val()*parseInt(Disc1_Prct.val()))/100);
+                    }
+
+
+
+
 
                 });
 
