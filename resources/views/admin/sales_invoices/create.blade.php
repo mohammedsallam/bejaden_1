@@ -121,13 +121,6 @@
                 });
 
                 tableBody.keypress(function (e) {
-
-                    // if($('.items_table').height() > 500){
-                    //     $('.items_table').addClass('scroll_table')
-                    // } else {
-                    //     $('.items_table').removeClass('scroll_table')
-                    // }
-
                     if(e.keyCode  === 13){
                         if(tableBody.children().length === 1){
                             count = 2;
@@ -561,17 +554,48 @@
                     })
                 });
 
-                $(document).on('change', '.Qty, .Itm_Sal', function () {
+                $(document).on('change', '.Qty, .Itm_Sal, .Disc1_Prct', function () {
                     let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
                         element = $('#Qty_'+lineNo),
                         Qty = parseInt(element.val()),
                         price = $('#Itm_Sal_'+lineNo).val(),
-                        Tot_Sal = 0;
-                        $('#item_tot_sal_'+lineNo).val(Qty*price);
+                        Tot_Sal = 0,
+                        Tot_Disc = 0,
+                        item_tot_sal = $('#item_tot_sal_'+lineNo),
+                        Disc1_Prct = $('#Disc1_Prct_'+lineNo),
+                        Disc1_Val = $('#Disc1_Val_'+lineNo);
+
+                    item_tot_sal.val(Qty*price);
+
+                    // Calc total sale
                     $('.item_tot_sal').each(function () {
+                        $(this).change(function () {
+                            $(this).val('');
+                        });
+
                         Tot_Sal += parseFloat($(this).val());
-                        $('.Tot_Sal').val(Tot_Sal)
+                        $('.Tot_Sal').val(Tot_Sal);
+                        $('.Tot_Disc').val(Tot_Sal);
                     });
+
+                    $('.Disc1_Val').each(function () {
+                        Tot_Disc += parseFloat($(this).val());
+                        $('.Tot_Disc').val(Tot_Disc);
+                    });
+
+                    // Calc total Discount
+
+
+
+
+                    // Calc Discount value and percentage
+                    if (Disc1_Prct.val() !== ''){
+                        Disc1_Val.val((item_tot_sal.val()*parseInt(Disc1_Prct.val()))/100);
+                    }
+
+
+
+
 
                 });
 
