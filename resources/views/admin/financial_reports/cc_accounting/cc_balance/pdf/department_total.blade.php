@@ -75,7 +75,7 @@
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.trial_balance')}}</span>
+    <span>{{trans('admin.cc_report')}}</span>
 </div>
 
 <div class="clearfix"></div>
@@ -89,13 +89,13 @@
 <div class="table-responsive">
     <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th colspan="2">{{trans('admin.account_name')}}</th>
+            <th colspan="2">{{trans('admin.cc_name')}}</th>
             <th colspan="2">{{trans('admin.first_date')}}</th>
             <th colspan="2">{{trans('admin.motion')}}</th>
             <th colspan="2">{{trans('admin.last_date')}}</th>
         </tr>
         <tr>
-            <th>{{trans('admin.number_account')}}</th>
+            <th>{{trans('admin.numberr')}}</th>
             <th>{{trans('admin.description')}}</th>
             <th>{{trans('admin.debtor')}}</th>
             <th>{{trans('admin.creditor')}}</th>

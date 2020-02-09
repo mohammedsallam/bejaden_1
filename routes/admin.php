@@ -316,8 +316,8 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('branche_trial_balance','Admin\financial_reports\general_accountsController@branche_trial_balance')->name('branche_trial_balance');
         Route::get('trialbalance_show','Admin\financial_reports\general_accountsController@trialbalance_show')->name('trialbalance.show');
         Route::get('trialbalance_details','Admin\financial_reports\general_accountsController@trialbalance_details')->name('trialbalance.details');
-        Route::get('trialbalance_details_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
-        Route::POST('trialbalance_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
+        Route::get('trialbalance_level','Admin\financial_reports\general_accountsController@trialbalance_level')->name('trialbalance.level');
+        Route::post('trialbalance_general_print','Admin\financial_reports\general_accountsController@trialbalance_print')->name('trialbalance.print');
         Route::get('daily_restriction','Admin\financial_reports\general_accountsController@daily_restriction')->name('daily_restriction');
         Route::get('daily_restriction_show','Admin\financial_reports\general_accountsController@daily_restriction_show')->name('daily_restriction.show');
         Route::get('daily_restriction_details','Admin\financial_reports\general_accountsController@daily_restriction_details')->name('daily_restriction.details');
@@ -378,10 +378,11 @@ Route::group(['prefix'=>'admin'],function (){
         Route::get('movement_details','Admin\financial_reports\CC_accountingController@movement_details')->name('movement_details');
         Route::post('movement_pdf','Admin\financial_reports\CC_accountingController@movement_pdf')->name('movement_pdf');
         Route::get('movement_balance','Admin\financial_reports\CC_accountingController@movement_balance')->name('movement_balance');
+        Route::get('get_levels','Admin\financial_reports\CC_accountingController@get_levels')->name('get_levels');
         Route::get('movement_trialbalance_show','Admin\financial_reports\CC_accountingController@trialbalance_show')->name('movementTrialbalance.show');
         Route::get('movement_trialbalance_details','Admin\financial_reports\CC_accountingController@trialbalance_details')->name('movementTrialbalance.details');
         Route::get('trialbalance_details_level','Admin\financial_reports\CC_accountingController@trialbalance_level')->name('movementTrialbalance.level');
-        Route::POST('trialbalance_print','Admin\financial_reports\CC_accountingController@trialbalance_print')->name('movementTrialbalance.print');
+        Route::POST('trialbalance_cc_print','Admin\financial_reports\CC_accountingController@trialbalance_print')->name('movementTrialbalance.print');
         /***/
         Route::get('cc_balance','Admin\financial_reports\CC_accountingController@cc_balance')->name('cc_balance');
         Route::get('cc_balance_show','Admin\financial_reports\CC_accountingController@cc_balance_show')->name('cc_balance.show');

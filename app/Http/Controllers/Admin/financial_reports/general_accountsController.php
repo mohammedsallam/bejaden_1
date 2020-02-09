@@ -239,12 +239,18 @@ class general_accountsController extends Controller
         if($request->ajax())
         {
             $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'Acc_No');
+            $MtsChartAc4 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->latest()->pluck('Acc_Nm'.ucfirst(session('lang')),'Acc_No')->first();
             $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('ID_No');
-            $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
-            $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
-            $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['MtsChartAc'=>$MtsChartAc,'fromtree'=>$MtsChartAc2->first(), 'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,'MainCompany'=>$MainCompany,'level'=>$level])->render();
-            return $contents;
 
+            $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->pluck('Acc_No');
+            $MtsChartAc5 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Acc_No');
+            $level = MtsChartAc::where('Cmp_No',$MainCompany)->where('Acc_Typ',1)->max('Level_No');
+
+            return view('admin.financial_reports.general_accounts.trial_balance.ajax.show', ['MtsChartAc'=>$MtsChartAc,
+                'fromtree'=>$MtsChartAc2->first(),
+                'totree'=>$MtsChartAc2->last(),'MtsChartAc3'=>$MtsChartAc3,
+                'MtsChartAc5'=>$MtsChartAc5,
+                'MainCompany'=>$MainCompany,'level'=>$level])->render();
         }
     }
 
@@ -254,7 +260,6 @@ class general_accountsController extends Controller
         $level = $request->level;
         $from = $request->from;
         $to = $request->to;
-
         $but_level_check = $request->but_level_check;
         $radiodepartment = $request->radiodepartment;
 
@@ -262,7 +267,7 @@ class general_accountsController extends Controller
             $MtsChartAc = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('Acc_Nm'.ucfirst(session('lang')),'ID_No');
             $MtsChartAc2 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('ID_No');
             $MtsChartAc3 = MtsChartAc::where('Cmp_No',$MainCompany)->where('Level_No',$level)->where('Acc_Typ',1)->pluck('Acc_No');
-            return   $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show_level',
+            return  $contents = view('admin.financial_reports.general_accounts.trial_balance.ajax.show_level',
 
                 ['MtsChartAc'=>$MtsChartAc,
                     'fromtree'=>$MtsChartAc2->first(),
@@ -276,10 +281,7 @@ class general_accountsController extends Controller
                     'level'=>$level,
 
                 ])->render();
-
-
         }
-
     }
     public function trialbalance_details(Request $request)
     {

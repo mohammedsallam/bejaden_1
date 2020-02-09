@@ -260,6 +260,11 @@
                             <label for="credit_department">  مراكز التكلفه دائنه </label>
                         </div>
                     </div>
+                    <div class="col-xs-12 custom-control custom-radio" style="text-align: center;right: -33px;">
+                        <br>
+                        <input type="radio" class="total_department" id="credit_department" name="department" value="5">
+                        <label for="credit_department">  مراكز التكلفه بدون حركه </label>
+                    </div>
                 </div>
 
             </div>

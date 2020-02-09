@@ -1,39 +1,5 @@
 <script>
-    $(document).ready(function () {
-        $('#level_check').on('keyup',function(){
-            var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-            var level = $(this).val();
-            var radiodepartment =  $('input[name="department"]:checked').val();
-            var from =  $('input[name="From"]').val();
-            var to =  $('input[name="To"]').val();
-            var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
-            $(".details_level").css("display","none");
-            if (this) {
-                $.ajax({
-                    url: '{{route('trialbalance.level')}}',
-                    type: 'get',
-                    dataType: 'html',
-                    data: {MainCompany: MainCompany,
-                        level: level,
-
-                        from: from,
-                        to: to,
-                        radiodepartment: radiodepartment,
-                        but_level_check: but_level_check,
-                    },
-                    success: function (data) {
-                        $("#loadingmessage-2").css("display", "none");
-                        $('.details_level').css("display", "block").html(data);
-
-                    }
-                });
-            }
-        });
-
-
-
-        });
     $(document).on('change','.fromtree',function () {
         var fromtreee = $(this).val();
         $('.number_fromtree').val(fromtreee);
@@ -177,6 +143,38 @@
             }
         });
     });
+    $(document).ready(function () {
+        $('#level_check').on('keyup',function(){
+            var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+            var level = $(this).val();
+            var radiodepartment =  $('input[name="department"]:checked').val();
+            var from =  $('input[name="From"]').val();
+            var to =  $('input[name="To"]').val();
+            var but_level_check =  $('input[id="but_level_check"]:checked').val();
+
+            $(".details_level").css("display","none");
+            if (this) {
+                $.ajax({
+                    url:'{{route('trialbalance.level')}}',
+                    type: 'get',
+                    dataType: 'html',
+                    data: {MainCompany: MainCompany,
+                        level: level,
+
+                        from: from,
+                        to: to,
+                        radiodepartment: radiodepartment,
+                        but_level_check: but_level_check,
+                    },
+                    success: function (data) {
+                        $("#loadingmessage-2").css("display", "none");
+                        $('.details_level').css("display", "block").html(data);
+
+                    }
+                });
+            }
+        });
+    });
 
 </script>
 
@@ -210,10 +208,10 @@
     <div class="row">
         <div class="col-xs-9">
             {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
-            {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
+            {{ Form::select('totree',$MtsChartAc, $totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
         </div>
         <div class="col-xs-3">
-            {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control number_totree'])) }}
+            {{ Form::text('number_totree',$MtsChartAc5, array_merge(['class' => 'form-control number_totree'])) }}
         </div>
     </div>
 

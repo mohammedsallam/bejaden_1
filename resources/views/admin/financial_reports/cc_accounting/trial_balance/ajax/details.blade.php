@@ -7,7 +7,6 @@
 {{Form::hidden('from', $from)}}
 {{Form::hidden('to', $to)}}
 {{Form::hidden('radiodepartment', $radiodepartment)}}
-{{Form::hidden('but_level_check', $but_level_check)}}
 
 {{--@if(!empty($but_level_check))--}}
 {{--    {{Form::hidden('but_level_check', $but_level_check)}}--}}
