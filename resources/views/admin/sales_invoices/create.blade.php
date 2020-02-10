@@ -309,6 +309,10 @@
                             }
                         })
 
+                        localStorage.setItem('Net', parseFloat($('.Net').val()));
+                        localStorage.setItem('after_desc', parseFloat($('.after_desc').val()));
+                        localStorage.setItem('Tot_Sal', parseFloat($('.Tot_Sal').val()));
+
                     })
                 });
 
@@ -368,7 +372,26 @@
                     });
 
                     $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()))
+
+
                 }
+
+                $('.Tot_ODisc').keyup(function () {
+                    let Tot_ODisc = parseFloat($(this).val()),
+                        Tot_OPrct = $('.Tot_OPrct'),
+                        after_desc = localStorage.getItem('after_desc'),
+                        Net = localStorage.getItem('Net');
+
+                    if ($('.Tot_ODisc').val() === ''){
+                        $('.after_desc').val(after_desc);
+                        $('.Net').val(Net)
+                        Tot_OPrct.val(0)
+                    } else {
+                        $('.after_desc').val(after_desc-Tot_ODisc);
+                        $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()));
+                        Tot_OPrct.val((Tot_ODisc/$('.after_desc').val()).toFixed(1));
+                    }
+                });
 
                 $('.Cmp_No').change(function () {
                     $('.Brn_No, .Cstm_No, .Dlv_Stor').html('');
@@ -937,19 +960,33 @@
         </div>
         <div class="bill_details">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">الإجمالي</label>
                         <input type="text" value="0" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal text-center">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">بعد الخصم</label>
                         <input type="text" value="0" class="form-control after_desc">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">حد الائتمان</label>
+                        <input type="text" class="form-control secure_limit">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">رصيد الصنف</label>
+                        <input type="text" class="form-control item_balance">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">خصم أصناف</label>
                         <input type="text" name="Tot_Disc" value="0" id="Tot_Disc" class="form-control Tot_Disc">
@@ -957,7 +994,27 @@
                         <label>%</label>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">قيمة الضريبة</label>
+                        <input type="text" name="Taxv_Extra" value="0" class="form-control tax_val">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الرصيد الحالي</label>
+                        <input type="text" class="form-control current_balance">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">رصيد المستودعات</label>
+                        <input type="text" class="form-control store_balance">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">خصم إضافي</label>
                         <input type="text" name="Tot_ODisc" value="0" id="Tot_ODisc" class="form-control Tot_ODisc">
@@ -965,51 +1022,19 @@
                         <label>%</label>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">قيمة الضريبة</label>
-                        <input type="text" name="Taxv_Extra" value="0" class="form-control tax_val">
-                    </div>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">الصافي</label>
                         <input type="text" value="0" name="Net" id="Net" class="form-control Net">
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">حد الائتمان</label>
-                        <input type="text" class="form-control secure_limit">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">الرصيد الحالي</label>
-                        <input type="text" class="form-control current_balance">
-                    </div>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">الفرق</label>
                         <input type="text" class="form-control diff">
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">رصيد الصنف</label>
-                        <input type="text" class="form-control item_balance">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">رصيد المستودعات</label>
-                        <input type="text" class="form-control store_balance">
-                    </div>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">سعر البيع</label>
                         <input type="text" class="form-control sale_price">
