@@ -2,9 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Admin;
 use App\Models\Admin\InvLodhdr;
-use App\User;
 use Yajra\DataTables\Services\DataTable;
 
 class salesInvoicesDataTable extends DataTable
@@ -19,11 +17,19 @@ class salesInvoicesDataTable extends DataTable
     {
         return datatables($query)
             ->addColumn('edit', function ($query) {
-                return '<a href="salesInvoices/'.$query->ID_No.'/edit" class="btn btn-success"><i class="fa fa-edit"></i></a>';
+                return '<a href="salesInvoices/'.$query->Doc_No.'/edit" class="btn btn-success"><i class="fa fa-edit"></i></a>';
+            })
+
+            ->addColumn('customer', function ($query) {
+                return $query->customer->{'Cstm_Nm'.ucfirst(session('lang'))};
             })
 
             ->addColumn('delete', 'admin.sales_invoices.btn.delete')
+
+            ->addIndexColumn()
+
             ->rawColumns([
+                'customer',
                 'edit',
                 'delete',
             ]);
@@ -37,7 +43,7 @@ class salesInvoicesDataTable extends DataTable
      */
     public function query()
     {
-        return InvLodhdr::query();
+        return InvLodhdr::with('customer');
     }
 
     /**
@@ -49,7 +55,22 @@ class salesInvoicesDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+
+            ->addColumnBefore([
+                'defaultContent' => '',
+                'data'           => 'DT_RowIndex',
+                'name'           => 'DT_RowIndex',
+                'title'          => trans('admin.id'),
+                'render'         => null,
+                'orderable'      => false,
+                'searchable'     => false,
+                'exportable'     => false,
+                'printable'      => true,
+                'footer'         => '',
+            ])
             ->minifiedAjax()
+
+
 //                    ->parameters($this->getBuilderParameters());
             ->parameters([
                 'dom' => 'Blfrtip',
@@ -93,8 +114,8 @@ class salesInvoicesDataTable extends DataTable
     {
         return [
             ['name'=>'Doc_No','data'=>'Doc_No','title'=>trans('admin.Doc_No')],
-            ['name'=>'Brn_No','data'=>'Brn_No','title'=>trans('admin.Brn_No')],
-            ['name'=>'Doc_Ty','data'=>'Doc_Ty','title'=>trans('admin.Doc_Ty')],
+            ['name'=>'customer.Cstm_Nm'.ucfirst(session('lang')),'data'=>'customer','title'=>trans('admin.customer_name')],
+//            ['name'=>'Doc_Ty','data'=>'Doc_Ty','title'=>trans('admin.Doc_Ty')],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
 

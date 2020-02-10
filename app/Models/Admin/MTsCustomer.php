@@ -149,5 +149,10 @@ class MTsCustomer extends Model
         return $this->belongsTo('App\Models\Admin\MainCompany', 'Cstm_Rsp', 'ID_No');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(InvLodhdr::class, 'Cstm_No', 'Cstm_No');
+    }
+
 
 }

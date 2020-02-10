@@ -185,7 +185,7 @@ class SalesInvoicesController extends Controller
             if ($validation->fails()){
                 return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
             } else {
-                $detail = InvLoddtl::where('Ln_No', $request->Ln_No)->first();
+                $detail = InvLoddtl::where('Ln_No', $request->Ln_No)->where('Doc_No', $request->Doc_No)->first();
                 if($detail == null){
                     InvLoddtl::create($request->except([
                         'Tot_Sal',
@@ -251,7 +251,9 @@ class SalesInvoicesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $header = InvLodhdr::with('details')->where('Doc_No', $id)->firstOrFail();
+        return view('admin.sales_invoices.edit', compact(['header']));
+
     }
 
     /**
