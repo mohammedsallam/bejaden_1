@@ -101,4 +101,9 @@ class InvLodhdr extends Model
     {
         return $this->hasMany(InvLoddtl::class, 'Doc_No', 'Doc_No');
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(MTsCustomer::class, 'Cstm_No', 'Cstm_No');
+    }
 }

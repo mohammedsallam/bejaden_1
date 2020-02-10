@@ -328,7 +328,7 @@
                                 $('.Actvty_No').append("<option value='"+data.activity_id+"'>"+data.activity_name+"</option>");
 
                                 for (let i =0; i < data.customers.length; i++){
-                                    $('.Cstm_No').append("<option value='"+data.customers[i]['ID_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
+                                    $('.Cstm_No').append("<option value='"+data.customers[i]['Cstm_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
 
 
@@ -681,7 +681,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="">رقم</label>
                     <input type="text" class="form-control cstm_no_input" >

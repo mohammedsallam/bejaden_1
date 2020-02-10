@@ -243,7 +243,9 @@ class SalesInvoicesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $header = InvLodhdr::with('details')->where('Doc_No', $id)->firstOrFail();
+
+        dd($header);
     }
 
     /**
