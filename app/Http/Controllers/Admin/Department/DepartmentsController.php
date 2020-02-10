@@ -266,6 +266,7 @@ class DepartmentsController extends Controller
     }
 
     public function getEditBlade(Request $request){
+        @dd($request->all());
         if($request->ajax()){
             if(session('Cmp_No') == -1){
                 $cmps = MainCompany::get(['Cmp_Nm'.ucfirst(session('lang')), 'Cmp_No']);
