@@ -255,6 +255,7 @@ class MainCategoriesController extends Controller
 
     // Update child or root
     public function updateRootOrChildOrCreateChild(Request $request){
+
         $validation = Validator::make($request->all(), [
             'Cmp_No' => 'required',
             'Actvty_No' => 'required',
@@ -304,7 +305,7 @@ class MainCategoriesController extends Controller
                 'Ln_No' => 2,
                 'Unit_No' =>$request->ItmUnit_No[2],
                 'Unit_Ratio' =>$request->Unit_Ratio[2],
-                'Unit_Sal1' =>$request->Unit_Sal2[2],
+                'Unit_Sal1' =>$request->Unit_Sal1[2],
                 'Unit_Pur' =>$request->Unit_Pur[2],
                 'Unit_Cost' =>$request->Unit_Cost[2],
                 'Label_No' =>$request->Label_No[2],
@@ -446,6 +447,7 @@ class MainCategoriesController extends Controller
                     $unit->delete();
                 }
             }
+
 
             foreach ($MtsItmfsunit as $key => $itemUnit) {
                 if ($itemUnit['Unit_No'] == null || $itemUnit['Unit_Ratio'] == null){

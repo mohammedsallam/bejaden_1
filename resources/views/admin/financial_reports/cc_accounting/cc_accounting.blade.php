@@ -17,7 +17,7 @@
         <div class="box-body">
 
             <div class="col-md-3 col-sm-6 col-12">
-                <a href="cc/report/checkReports">
+                <a href="cc_balance">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fa fa-calculator"></i></span>
 

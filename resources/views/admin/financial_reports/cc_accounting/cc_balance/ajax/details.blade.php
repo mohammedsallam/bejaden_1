@@ -1,4 +1,4 @@
-{!! Form::open(array('route' => 'movementTrialbalance.print', 'method' => 'POST', 'target' => '_blank')) !!}
+{!! Form::open(array('route' => 'cc_balance.print', 'method' => 'POST', 'target' => '_blank')) !!}
 
 {{Form::hidden('MainCompany', $MainCompany)}}
 {{Form::hidden('level', $level)}}
@@ -7,6 +7,7 @@
 {{Form::hidden('from', $from)}}
 {{Form::hidden('to', $to)}}
 {{Form::hidden('radiodepartment', $radiodepartment)}}
+{{Form::hidden('but_level_check', $but_level_check)}}
 
 {{--@if(!empty($but_level_check))--}}
 {{--    {{Form::hidden('but_level_check', $but_level_check)}}--}}

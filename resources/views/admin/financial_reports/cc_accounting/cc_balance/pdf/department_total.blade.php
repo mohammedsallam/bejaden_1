@@ -75,7 +75,7 @@
 </div>
 
 <div class="el-no3">
-    <span>{{trans('admin.trial_balance')}}</span>
+    <span>{{trans('admin.cc_report')}}</span>
 </div>
 
 <div class="clearfix"></div>
@@ -89,13 +89,13 @@
 <div class="table-responsive">
     <table style="border: none" class="table table-bordered table-striped table-hover text-center">
         <tr>
-            <th colspan="2">{{trans('admin.account_name')}}</th>
+            <th colspan="2">{{trans('admin.cc_name')}}</th>
             <th colspan="2">{{trans('admin.first_date')}}</th>
             <th colspan="2">{{trans('admin.motion')}}</th>
             <th colspan="2">{{trans('admin.last_date')}}</th>
         </tr>
         <tr>
-            <th>{{trans('admin.number_account')}}</th>
+            <th>{{trans('admin.numberr')}}</th>
             <th>{{trans('admin.description')}}</th>
             <th>{{trans('admin.debtor')}}</th>
             <th>{{trans('admin.creditor')}}</th>
@@ -117,14 +117,15 @@
             {{$dataCredit2 = 0}}
         </div>
         {{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
+{{--@dd($data)--}}
         @foreach($data as $merged)
             <tr>
                 <td>
 
-                    {{$merged->Costcntr_No}}
+                    {{$merged->Acc_No}}
                 </td>
                 <td>
-                    {{session_lang($merged->Costcntr_Nmen,$merged->Costcntr_Nmar)}}
+                    {{session_lang($merged->Acc_NmEn,$merged->Acc_NmAr)}}
 
                 </td>
                 <td class="depratment_first_debter">
@@ -132,11 +133,11 @@
                     <div style="display:none">
 
                         {{ $debtor = $merged->Fbal_DB  +
-                       Fbalance($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','<')  }}
+                       Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
 
                         {{ $creditor =  $merged->Fbal_CR  +
 
-                         Fbalance($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','<')}}
+                         Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
 
 
 
@@ -161,11 +162,11 @@
 
 
                         {{ $debtor1 = $merged->Fbal_DB  +
-                       Fbalance($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','<')  }}
+                       Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','<')  }}
 
                         {{ $creditor1 =  $merged->Fbal_CR  +
 
-                         Fbalance($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','<')}}
+                         Fbalance($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','<')}}
 
 
 
@@ -189,15 +190,15 @@
                 <td class="depratment_move_debter">
 
 
-                    {{$value_debtor2 = getTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
+                    {{$value_debtor2 = getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}
                     <div style="display:none">
-                        {{$dataDebtor1 += getTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
+                        {{$dataDebtor1 += getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Db','>=')}}
                     </div>
                 </td>
                 <td class="depratment_move_creditor">
-                    {{$value_creditor2 =getTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
+                    {{$value_creditor2 =getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
                     <div style="display:none">
-                        {{$dataCredit1 += getTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
+                        {{$dataCredit1 += getTrans($merged->Cmp_No,$merged->Acc_No,$from,$to,'Tr_Cr','>=')}}
                     </div>
                 </td>
                 <td class="depratment_end_debt">

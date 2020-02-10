@@ -48,10 +48,8 @@
             });
             $(document).on('change','.fromtreee',function () {
                 var fromtreee = $(this).val(),
-
                     selectHtml = $('.fromtreee option[value="'+fromtreee+'"]'),
                     selectHtml2 = $('#totree option[value="'+fromtreee+'"]'),
-
                     optionSelected = '<option value="'+fromtreee+'" selected>'+selectHtml.html()+'</option>';
                 $('#totree option:not([value="'+fromtreee+'"])').removeAttr('selected');
                 $('.fromtreee').prepend(optionSelected);

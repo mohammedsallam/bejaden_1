@@ -1,50 +1,12 @@
 <script>
-    $(document).ready(function () {
-        $('#level_check').on('keyup',function(){
-            var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-            var level = $(this).val();
-            var radiodepartment =  $('input[name="department"]:checked').val();
-            var from =  $('input[name="From"]').val();
-            var to =  $('input[name="To"]').val();
-            var but_level_check =  $('input[id="but_level_check"]:checked').val();
-
-            $(".details_level").css("display","none");
-            if (this) {
-                $.ajax({
-                    url: '{{route('movementTrialbalance.level')}}',
-                    type: 'get',
-                    dataType: 'html',
-                    data: {MainCompany: MainCompany,
-                        level: level,
-
-                        from: from,
-                        to: to,
-                        radiodepartment: radiodepartment,
-                        but_level_check: but_level_check,
-                    },
-                    success: function (data) {
-                        $("#loadingmessage-2").css("display", "none");
-                        $('.details_level').css("display", "block").html(data);
-
-                    }
-                });
-            }
-        });
-
-
-
-        });
     $(document).on('change','.fromtree',function () {
-        var fromtreee = $(this).val();
-        $('.number_fromtree').val(fromtreee);
-        var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-        var level = '{{isset($level) ? $level : null}}';
         var fromtree = $(this).val();
-        var totree = $('.totree').val();
+        $('.number_fromtree').val(fromtree);
+        var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+        var level = $('#level_check').val();
         var radiodepartment =  $('input[name="department"]:checked').val();
         var from =  $('input[name="From"]').val();
         var to =  $('input[name="To"]').val();
-        var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
         $(".print_div").css("display","none");
         if (this) {
@@ -54,11 +16,40 @@
                 dataType: 'html',
                 data: {MainCompany: MainCompany,
                     level: level,
-                    fromtree: fromtree, totree: totree,
+                    fromtree: fromtree,
                     from: from,
                     to: to,
                     radiodepartment: radiodepartment,
-                    but_level_check: but_level_check,
+                },
+                success: function (data) {
+                    $("#loadingmessage-2").css("display", "none");
+                    $('.print_div').css("display", "block").html(data);
+                }
+            });
+        }
+    });
+
+    $(document).on('change','#level_check',function () {
+        var level = $(this).val();
+        var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
+        var fromtree = $('.fromtree').val();
+        $('.number_fromtree').val(fromtree);
+        var radiodepartment =  $('input[name="department"]:checked').val();
+        var from =  $('input[name="From"]').val();
+        var to =  $('input[name="To"]').val();
+
+        $(".print_div").css("display","none");
+        if (this) {
+            $.ajax({
+                url: '{{route('movementTrialbalance.details')}}',
+                type: 'get',
+                dataType: 'html',
+                data: {MainCompany: MainCompany,
+                    level: level,
+                    fromtree: fromtree,
+                    from: from,
+                    to: to,
+                    radiodepartment: radiodepartment,
                 },
                 success: function (data) {
                     $("#loadingmessage-2").css("display", "none");
@@ -70,54 +61,29 @@
 
     });
 
-    $(document).on('change','.totree',function () {
-        var totree = $(this).val();
-        $('.number_totree').val(totree);
-
+    $(document).on('change','.fromtree',function () {
+        var fromtree = $(this).val();
         var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-        var level = '{{isset($level) ? $level : null}}';
-        var fromtree = $('.fromtree').val();
-        var totree = $(this).val();
-        var radiodepartment =  $('input[name="department"]:checked').val();
-        var from =  $('input[name="From"]').val();
-        var to =  $('input[name="To"]').val();
-        var but_level_check =  $('input[id="but_level_check"]:checked').val();
-
-        $(".print_div").css("display","none");
-        if (this) {
-            $.ajax({
-                url: '{{route('movementTrialbalance.details')}}',
-                type: 'get',
-                dataType: 'html',
-                data: {MainCompany: MainCompany,
-                    level: level,
-                    fromtree: fromtree, totree: totree,
-                    from: from,
-                    to: to,
-                    radiodepartment: radiodepartment,
-                    but_level_check: but_level_check,
-                },
-                success: function (data) {
-                    $("#loadingmessage-2").css("display", "none");
-                    $('.print_div').css("display", "block").html(data);
-
-                }
-            });
-        }
-
+        $.ajax({
+            url: '{{route('get_levels')}}',
+            type: 'get',
+            dataType: 'html',
+            data: {MainCompany: MainCompany, fromtree:fromtree},
+            success:function ($data) {
+                $('#level_check').html($data)
+            }
+        });
     });
 
     $(document).ready(function () {
         if ("{{$fromtree,$totree}}"){
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-            var level = '{{isset($level) ? $level : null}}';
+            var level = $('#level_check').val();
             var fromtree = $('.efirst').val();
             var totree = $('.elast').val();
             var radiodepartment =  $('input[name="department"]:checked').val();
-
             var from =  $('input[name="From"]').val();
             var to =  $('input[name="To"]').val();
-
             var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
             $(".print_div").css("display","none");
@@ -145,16 +111,10 @@
         $('#toDate,#fromDate').on('blur',function(){
             var to =  $('input[name="To"]').val();
             var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
-            var level = '{{isset($level) ? $level : null}}';
+            var level = $('#level_check').val();
             var fromtree = $('.efirst').val();
-            var totree = $('.elast').val();
-
             var radiodepartment =  $('input[name="department"]:checked').val();
-
             var from =  $('input[name="From"]').val();
-
-
-            var but_level_check =  $('input[id="but_level_check"]:checked').val();
 
             $(".print_div").css("display","none");
             if (this) {
@@ -164,11 +124,10 @@
                     dataType: 'html',
                     data: {MainCompany: MainCompany,
                         level: level,
-                        fromtree: fromtree, totree: totree,
+                        fromtree: fromtree,
                         from: from,
                         to: to,
                         radiodepartment: radiodepartment,
-                        but_level_check: but_level_check,
                     },
                     success: function (data) {
                         $("#loadingmessage-2").css("display", "none");
@@ -189,50 +148,27 @@
     });
 
 </script>
-<div class="row">
-
-    <div class="col-md-12 col-xs-12">
-        {{ Form::label('level','المستوى', ['class' => 'col-md-2 control-label']) }}
-        {{ Form::text('level',$level,array_merge(['class' => 'form-control col-xs-10', 'id'=>'level_check','disabled'=>'disabled'])) }}
-    </div>
-</div>
-<br>
-{{--<<<<<<< HEAD--}}
-{{--<div class="row">--}}
-{{--    <div class="col-xs-9">--}}
-{{--        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}--}}
-{{--        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control fromtree col-xs-9 e2 efirst'])) }}--}}
-{{--    </div>--}}
-{{--    <div class="col-xs-3">--}}
-{{--        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control'])) }}--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<br>--}}
-{{--<div class="row">--}}
-{{--    <div class="col-xs-9">--}}
-{{--        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}--}}
-{{--        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}--}}
-{{--=======--}}
 <div class="details_level">
     <div class="row" >
         <div class="col-xs-9">
-            {{ Form::label('tree','من مركز تكلفه', ['class' => 'col-xs-3 control-label']) }}
+            {{ Form::label('tree','مراكز التكلفه', ['class' => 'col-xs-3 control-label']) }}
             {{ Form::select('fromtree',$MtsCostcntr,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst fromtree'])) }}
         </div>
         <div class="col-xs-3">
             {{ Form::text('number_fromtree',$MtsCostcntr3->first(), array_merge(['class' => 'form-control number_fromtree'])) }}
         </div>
     </div>
-    <br>
-    <div class="row">
-        <div class="col-xs-9">
-            {{ Form::label('tree','الى مركز تكلفه', ['class' => 'col-xs-3']) }}
-            {{ Form::select('totree',$MtsCostcntr,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast totree'])) }}
-        </div>
-        <div class="col-xs-3">
-            {{ Form::text('number_totree',$MtsCostcntr3->last(), array_merge(['class' => 'form-control number_totree'])) }}
-        </div>
-    </div>
-
 </div>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        {{ Form::label('level','المستوى', ['class' => 'col-md-2 control-label']) }}
+        <select name="level" class="form-control col-xs-10" id="level_check">
+            <option>{{trans('admin.select')}}</option>
+        </select>
+    </div>
+</div>
+
+
+
 
