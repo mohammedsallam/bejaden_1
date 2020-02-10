@@ -72,4 +72,9 @@ class MainBranch extends Model
     public function stores(){
         return $this->hasMany(PjbranchDlv::class, 'Brn_No', 'ID_No');
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(InvLodhdr::class, 'Brn_No', 'Brn_No');
+    }
 }
