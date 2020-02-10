@@ -309,6 +309,10 @@
                             }
                         })
 
+                        localStorage.setItem('Net', parseFloat($('.Net').val()));
+                        localStorage.setItem('after_desc', parseFloat($('.after_desc').val()));
+                        localStorage.setItem('Tot_Sal', parseFloat($('.Tot_Sal').val()));
+
                     })
                 });
 
@@ -368,7 +372,26 @@
                     });
 
                     $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()))
+
+
                 }
+
+                $('.Tot_ODisc').keyup(function () {
+                    let Tot_ODisc = parseFloat($(this).val()),
+                        Tot_OPrct = $('.Tot_OPrct'),
+                        after_desc = localStorage.getItem('after_desc'),
+                        Net = localStorage.getItem('Net');
+
+                    if ($('.Tot_ODisc').val() === ''){
+                        $('.after_desc').val(after_desc);
+                        $('.Net').val(Net)
+                        Tot_OPrct.val(0)
+                    } else {
+                        $('.after_desc').val(after_desc-Tot_ODisc);
+                        $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()));
+                        Tot_OPrct.val((Tot_ODisc/$('.after_desc').val()).toFixed(1));
+                    }
+                });
 
                 $('.Cmp_No').change(function () {
                     $('.Brn_No, .Cstm_No, .Dlv_Stor').html('');
@@ -709,14 +732,14 @@
                     <div class="col-md-6">
                         <div class="form-group" style="display: flex">
                             <label style="width: 25%" for="Cmp_No">{{trans('admin.companies')}}</label>
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\MainCompany::where('Cmp_No', $header->Cmp_No)->first()->{'Cmp_Nm'.ucfirst(session('lang'))} }}">
+                            <input type="text" readonly style="background: #fff" class="form-control" value="{{$header->company->{'Cmp_Nm'.ucfirst(session('lang'))} }}">
                             <input type="hidden" name="Cmp_No" class="Cmp_No" id="Cmp_No" value="{{$header->Cmp_No}}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" style="display: flex">
                             <label style="width: 25%" for="Actvty_No" >{{trans('admin.activity')}}</label>
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\ActivityTypes::where('Actvty_No', $header->Actvty_No)->first()->{'Name_'.ucfirst(session('lang'))} }}">
+                            <input type="text" readonly style="background: #fff" class="form-control" value="{{$header->company->activity->{'Name_'.ucfirst(session('lang'))} }}">
                             <input type="hidden" name="Actvty_No" class="Actvty_No" id="Actvty_No" value="{{$header->Actvty_No}}">
                         </div>
                     </div>
@@ -725,23 +748,30 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             {{ Form::label('Brn_No', trans('admin.Branches') , ['class' => 'control-label']) }}
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\MainBranch::where('Brn_No', $header->Brn_No)->first()->{'Brn_Nm'.ucfirst(session('lang'))} }}">
+                            <input type="text" readonly style="background: #fff" class="form-control" value="{{$header->company->branches->where('Brn_No', $header->Brn_No)->first()->{'Brn_Nm'.ucfirst(session('lang'))} }}">
                             <input type="hidden" name="Brn_No" class="Brn_No" id="Brn_No" value="{{$header->Brn_No}}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="Slm_No" class="control-label">مندوب المبيعات</label>
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\AstSalesman::where('Slm_No', $header->Slm_No)->first()->{'Slm_Nm'.ucfirst(session('lang'))} }}">
-                            <input type="hidden" name="Slm_No" id="Slm_No"  class="Slm_No" value="{{$header->Slm_No}}">
+                            <select name="Slm_No" id="Slm_No"  class="form-control Slm_No">
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach($header->company->salesMan as $salesMan)
+                                    <option @if($salesMan->Slm_No == $header->Slm_No) selected @endif value="{{$salesMan->Slm_No}}">{{$salesMan->{'Slm_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="Cstm_No" class="control-label">العميل</label>
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\MTsCustomer::where('Cstm_No', $header->Cstm_No)->first()->{'Cstm_Nm'.ucfirst(session('lang'))} }}">
-                            <input type="hidden" name="Cstm_No" id="Cstm_No"  class="Cstm_No" value="{{$header->Cstm_No}}">
-
+                            <select name="Cstm_No" id="Cstm_No"  class="form-control Cstm_No">
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach(\App\Models\Admin\MTsCustomer::all() as $customer)
+                                    <option @if($customer->Cstm_No == $header->Cstm_No) selected @endif value="{{$customer->Cstm_No}}">{{$customer->{'Cstm_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -753,34 +783,42 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="Dlv_Stor" class="control-label">مستودع</label>
-                            <input type="text" readonly style="background: #fff" class="form-control" value="{{\App\Models\Admin\PjbranchDlv::where('ID_No', $header->Dlv_Stor)->first()->{'Dlv_Nm'.ucfirst(session('lang'))} }}">
-                            <input type="hidden" name="Dlv_Stor" id="Dlv_Stor" class="Dlv_Stor" value="{{$header->Dlv_Stor}}">
+                            <select name="Dlv_Stor" id="Dlv_Stor"  class="form-control Dlv_Stor">
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach($header->branch->stores as $store)
+                                    <option @if($store->ID_No == $header->Dlv_Stor) selected @endif value="{{$store->ID_No}}">{{$store->{'Dlv_Nm'.ucfirst(session('lang'))} }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Doc_Dt" class="control-label">ميلادي</label>
-                            <input type="text" name="Doc_Dt" readonly style="background: #fff" class="form-control Doc_Dt" id="Doc_Dt" value="{{$header->Doc_Dt}}">
+                            <input type="text" name="Doc_Dt" class="form-control Doc_Dt datepicker" id="Doc_Dt" value="{{$header->Doc_Dt}}">
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="" class="control-label">هجري</label>
-                            <input type="text" readonly style="background: #fff" name="Doc_DtAr"  class="form-control Doc_DtAr" value="{{$header->Doc_DtAr}}">
+                            <input type="text" name="Doc_DtAr"  class="form-control Doc_DtAr" value="{{$header->Doc_DtAr}}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="">مستند</label>
-                            <input type="text" readonly style="background: #fff" name="SubCstm_Filno" class="form-control SubCstm_Filno" id="SubCstm_Filno" value="{{$header->SubCstm_Filno}}">
+                            <input type="text"  name="SubCstm_Filno" class="form-control SubCstm_Filno" id="SubCstm_Filno" value="{{$header->SubCstm_Filno}}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Pym_No" class="control-label">طريقة الدفع</label>
-                            <input type="text" class="form-control" value="{{\App\Enums\PayType::getDescription($header->Pym_No)}}">
-                            <input type="hidden" name="Pym_No"  id="Pym_No" class="form-control Pym_No" value="{{$header->Pym_No}}">
+                            <select name="Pym_No"  id="Pym_No" class="form-control Pym_No">
+                                <option value="">{{trans('admin.select')}}</option>
+                                @foreach(\App\Enums\PayType::toSelectArray() as $key => $type)
+                                    <option  @if($key == $header->Pym_No) selected @endif value="{{$key}}">{{$type}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -803,33 +841,33 @@
                         <div class="form-group" style="display: flex">
                             <div style="width: 62%">
                                 <label for="Credit_Days" class="control-label">مدة السداد</label>
-                                <input type="text" name="Credit_Days" id="Credit_Days" class="form-control Credit_Days" placeholder="يوم">
+                                <input type="text" name="Credit_Days" id="Credit_Days" class="form-control Credit_Days" placeholder="يوم" value="{{$header->Credit_Days}}">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Pym_Dt">تاريخ السداد</label>
-                            <input type="text" name="Pym_Dt" id="Pym_Dt" class="form-control Pym_Dt" readonly style="background: #fff">
+                            <input type="text"  style="background: #fff" name="Pym_Dt" id="Pym_Dt" class="form-control Pym_Dt" value="{{$header->Pym_Dt}}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="Tax_Allow">الضريبة المضافة</label>
                             <br>
-                            <input value="1" type="checkbox" name="Tax_Allow" id="Tax_Allow" class="checkbox-inline Tax_Allow" style="width: 20px; height: 20px;">
+                            <input @if($header->Tax_Allow == 1) checked @endif value="1" type="checkbox" name="Tax_Allow" id="Tax_Allow" class="checkbox-inline Tax_Allow" style="width: 20px; height: 20px;">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">ملاحظات</label>
-                            <input name="Notes" id="Notes" class="form-control Notes">
+                            <input name="Notes" id="Notes" class="form-control Notes" value="{{$header->Notes}}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">ملاحظات1</label>
-                            <input name="Notes1" id="Notes1" class="form-control Notes1">
+                            <input name="Notes1" id="Notes1" class="form-control Notes1" value="{{$header->Notes1}}">
                         </div>
                     </div>
                 </div>
@@ -854,37 +892,41 @@
                                 <th>الضريبة%</th>
                                 <th>قيمة الضريبة</th>
                             </tr>
+
                             <tbody class="table_body">
-                            <tr class="first_row">
-                                <td class="delete_row bg-red"><span>1</span><input type="hidden" name="Ln_No" value="1"></td>
-                                <td><input type="text" id="itm_no_input_1" class="itm_no_input text-center"></td>
-                                <td>
-                                    <select name="Itm_No" id="Itm_No_1" class="Itm_No">
-                                        <option value="">{{trans('admin.select')}}</option>
-                                        @foreach($items as $item)
-                                            <option value="{{$item->Itm_No}}">{{$item->{'Itm_Nm'.ucfirst(session('lang'))} }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="Unit_No" id="Unit_No_1" class="Unit_No" >
-                                        <option value="">{{trans('admin.select')}}</option>
-                                        {{--                                @foreach($units as $unit)--}}
-                                        {{--                                    <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>--}}
-                                        {{--                                @endforeach--}}
-                                    </select>
-                                </td>
-                                <td><input type="text" name="Loc_No" id="Loc_No_1" class="Loc_No"></td>
-                                <td><input type="number" min="1" name="Qty" id="Qty_1" class="Qty"></td>
-                                <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal_1" class="Itm_Sal"></td>
-                                <td><input type="text" id="item_tot_sal_1" class="item_tot_sal"></td>
-                                <td><input type="text" name="Exp_Date" id="Exp_Date_1" class="Exp_Date datepicker" style="padding: 0; border-radius: 0"></td>
-                                <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No_1"></td>
-                                <td><input type="text" name="Disc1_Prct" id="Disc1_Prct_1" value="0" class="Disc1_Prct"></td>
-                                <td><input type="text" name="Disc1_Val" id="Disc1_Val_1" value="0" class="Disc1_Val"></td>
-                                <td><input type="text" name="Taxp_Extra" id="Taxp_Extra_1" value="5" class="Taxp_Extra"></td>
-                                <td><input type="text" name="Taxv_Extra" id="Taxv_Extra_1" value="0" class="Taxv_Extra"></td>
-                            </tr>
+                            @foreach($header->details as $detail)
+                                <tr>
+                                    <td class="delete_row bg-red"><span>{{$detail->Ln_No}}</span><input type="hidden" name="Ln_No" value="{{$detail->Ln_No}}"></td>
+                                    <td><input type="text" id="itm_no_input_1" class="itm_no_input text-center"></td>
+                                    <td>
+                                        <select name="Itm_No" id="Itm_No_1" class="Itm_No">
+                                            <option value="">{{trans('admin.select')}}</option>
+                                            @foreach($items as $item)
+                                                <option value="{{$item->Itm_No}}">{{$item->{'Itm_Nm'.ucfirst(session('lang'))} }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="Unit_No" id="Unit_No_1" class="Unit_No" >
+                                            <option value="">{{trans('admin.select')}}</option>
+                                            {{--                                @foreach($units as $unit)--}}
+                                            {{--                                    <option value="{{$unit->Unit_No}}">{{$unit->{'Unit_Nm'.ucfirst(session('lang'))} }}</option>--}}
+                                            {{--                                @endforeach--}}
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="Loc_No" id="Loc_No_1" class="Loc_No"></td>
+                                    <td><input type="number" min="1" name="Qty" id="Qty_1" class="Qty"></td>
+                                    <td><input type="number" min="1" name="Itm_Sal" id="Itm_Sal_1" class="Itm_Sal"></td>
+                                    <td><input type="text" id="item_tot_sal_1" class="item_tot_sal"></td>
+                                    <td><input type="text" name="Exp_Date" id="Exp_Date_1" class="Exp_Date datepicker" style="padding: 0; border-radius: 0"></td>
+                                    <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No_1"></td>
+                                    <td><input type="text" name="Disc1_Prct" id="Disc1_Prct_1" value="0" class="Disc1_Prct"></td>
+                                    <td><input type="text" name="Disc1_Val" id="Disc1_Val_1" value="0" class="Disc1_Val"></td>
+                                    <td><input type="text" name="Taxp_Extra" id="Taxp_Extra_1" value="5" class="Taxp_Extra"></td>
+                                    <td><input type="text" name="Taxv_Extra" id="Taxv_Extra_1" value="0" class="Taxv_Extra"></td>
+                                </tr>
+                            @endforeach
+
                             </tbody>
                             <tfoot class="bg-primary" style="cursor: pointer">
                             {{--                <tr>--}}

@@ -253,8 +253,10 @@ class SalesInvoicesController extends Controller
      */
     public function edit($id)
     {
-        $header = InvLodhdr::with('details')->where('Doc_No', $id)->firstOrFail();
-        return view('admin.sales_invoices.edit', compact(['header']));
+        $header = InvLodhdr::with('details', 'customer', 'branch', 'company', 'store')->where('Doc_No', $id)->firstOrFail();
+        $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+        $units = Units::all();
+        return view('admin.sales_invoices.edit', compact(['header', 'items', 'units']));
 
     }
 
