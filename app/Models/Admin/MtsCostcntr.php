@@ -52,4 +52,5 @@ class MtsCostcntr extends Model
     public function children(){
         return $this->hasMany(MtsCostcntr::class, 'Parnt_Acc', 'Costcntr_No');
     }
+
 }

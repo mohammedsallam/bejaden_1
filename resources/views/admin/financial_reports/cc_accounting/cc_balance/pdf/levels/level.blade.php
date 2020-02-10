@@ -122,10 +122,10 @@
 
             <tr>
                 <td>
-                    {{$merged->Acc_No}}
+                    {{$merged->Costcntr_No}}
                 </td>
                 <td>
-                    {{session_lang($merged->Acc_NmEn,$merged->Acc_NmAr)}}
+                    {{session_lang($merged->Costcntr_Nmen,$merged->Costcntr_Nmar)}}
                 </td>
                 <td class="depratment_first_debter">
                     <div style="display:none">

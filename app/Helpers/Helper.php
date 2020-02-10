@@ -1186,7 +1186,6 @@ if(!function_exists('getTrans')) {
         $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)->where('Ac_Ty',1)
             ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
             ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
-
             ->where('Sysub_Account',$Acc_No)
             ->where('Ln_No','>',1)->sum($sum);
 //@dd($value2);
@@ -1194,6 +1193,50 @@ if(!function_exists('getTrans')) {
 
        return $value1  +$value2;
 //            + $value2;
+    }
+}
+//for cc
+if(!function_exists('getTransCC')) {
+    function getTransCC($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//        dd($Cmp_No,$Acc_No,$from,$sum);
+        $mtschartac = MtsChartAc::where('Cmp_No',$Cmp_No)->where('Clsacc_No3', $Acc_No)->pluck('Acc_No');
+
+            $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->whereIn('Acc_No',$mtschartac)
+                ->where('Ln_No',1)->sum($sum);
+
+            $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)
+                ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+                ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+                ->whereIn('Sysub_Account',$mtschartac)
+                ->where('Ln_No','>',1)->sum($sum);
+            return $value1  +$value2;
+
+    }
+}
+//for cc without movements
+if(!function_exists('getNoTrans')) {
+    function getNoTrans($Cmp_No = null,$Acc_No= Null,$from = null,$to = null,$sum = null,$sign = null)
+    {
+//        dd($Cmp_No,$Acc_No,$from,$sum);
+        $mtschartac = MtsChartAc::where('Cmp_No',$Cmp_No)->where('Clsacc_No3', $Acc_No)->pluck('Acc_No');
+
+        $value1 = GLjrnTrs::where('Cmp_No',$Cmp_No)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+            ->whereIn('Acc_No', $mtschartac)
+            ->where('Ln_No',1)->sum($sum);
+
+        $value2 = GLjrnTrs::where('Cmp_No',$Cmp_No)
+            ->where('Tr_Dt','>=', date('Y-m-d 00:00:00',strtotime($from)))
+            ->where('Tr_Dt','<=', date('Y-m-d 00:00:00',strtotime($to)))
+            ->whereIn('Sysub_Account',$mtschartac)
+            ->where('Ln_No','>',1)->sum($sum);
+        return $value1  +$value2;
+
     }
 }
 //for customer

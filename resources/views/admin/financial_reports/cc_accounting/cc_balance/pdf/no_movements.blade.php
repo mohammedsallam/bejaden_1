@@ -117,7 +117,6 @@
             {{$dataCredit2 = 0}}
         </div>
         {{--        @dd( Fbalance($data[1]->Cmp_No,$data[1]->Acc_No,$from,$to,'Tr_Cr','<'));--}}
-{{--@dd($data)--}}
         @foreach($data as $merged)
             <tr>
                 <td>
@@ -188,15 +187,15 @@
 
                 </td>
                 <td class="depratment_move_debter">
-                    {{$value_debtor2 =getTransCC($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
+                    {{$value_debtor2 =getNoTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
                     <div style="display:none">
-                        {{$dataDebtor1 += getTransCC($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
+                        {{$dataDebtor1 += getNoTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Db','>=')}}
                     </div>
                 </td>
                 <td class="depratment_move_creditor">
-                    {{$value_creditor2 =getTransCC($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
+                    {{$value_creditor2 =getNoTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
                     <div style="display:none">
-                        {{$dataCredit1 += getTransCC($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
+                        {{$dataCredit1 += getNoTrans($merged->Cmp_No,$merged->Costcntr_No,$from,$to,'Tr_Cr','>=')}}
                     </div>
                 </td>
                 <td class="depratment_end_debt">
