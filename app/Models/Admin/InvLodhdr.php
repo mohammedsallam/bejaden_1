@@ -101,4 +101,24 @@ class InvLodhdr extends Model
     {
         return $this->hasMany(InvLoddtl::class, 'Doc_No', 'Doc_No');
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(MTsCustomer::class, 'Cstm_No', 'Cstm_No');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(MainBranch::class, 'Brn_No', 'Brn_No');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(MainCompany::class, 'Cmp_No', 'Cmp_No');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(PjbranchDlv::class, 'Dlv_Stor', 'ID_No');
+    }
 }

@@ -150,14 +150,16 @@ class SalesInvoicesController extends Controller
                 'Batch_No' => 'required',
                 'Disc1_Prct' => 'sometimes',
                 'Disc1_Val' => 'sometimes',
-                'Taxp_Extra' => 'sometimes',
-                'Taxv_Extra' => 'sometimes',
+                'Taxp_ExtraDtl' => 'sometimes',
+                'Taxv_ExtraDtl' => 'sometimes',
 
                 'Tot_Sal' => 'sometimes',
                 'Tot_Disc' => 'sometimes',
                 'Tot_Prct' => 'sometimes',
                 'Tot_ODisc' => 'sometimes',
                 'Tot_OPrct' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
+                'Taxv_Extra' => 'sometimes',
                 'Net' => 'sometimes',
             ],[], [
                 'Cmp_No' => trans('admin.na_Comp'),
@@ -183,7 +185,7 @@ class SalesInvoicesController extends Controller
             if ($validation->fails()){
                 return  response()->json(['status' => 0, 'message' => $validation->getMessageBag()->first()]);
             } else {
-                $detail = InvLoddtl::where('Ln_No', $request->Ln_No)->first();
+                $detail = InvLoddtl::where('Ln_No', $request->Ln_No)->where('Doc_No', $request->Doc_No)->first();
                 if($detail == null){
                     InvLoddtl::create($request->except([
                         'Tot_Sal',
@@ -191,6 +193,8 @@ class SalesInvoicesController extends Controller
                         'Tot_Prct',
                         'Tot_ODisc',
                         'Tot_OPrct',
+                        'Taxp_Extra',
+                        'Taxv_Extra',
                         'Net',
                     ]));
                 } else {
@@ -200,6 +204,8 @@ class SalesInvoicesController extends Controller
                         'Tot_Prct',
                         'Tot_ODisc',
                         'Tot_OPrct',
+                        'Taxp_Extra',
+                        'Taxv_Extra',
                         'Net',
                         ]));
                 }
@@ -212,6 +218,8 @@ class SalesInvoicesController extends Controller
                     'Tot_Prct',
                     'Tot_ODisc',
                     'Tot_OPrct',
+//                    'Taxp_Extra',
+                    'Taxv_Extra',
                     'Net',
                 ]));
 
@@ -243,7 +251,11 @@ class SalesInvoicesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $header = InvLodhdr::with('details', 'customer', 'branch', 'company', 'store')->where('Doc_No', $id)->firstOrFail();
+        $items = MtsItmmfs::where('Itm_Parnt', '!=', null)->get();
+        $units = Units::all();
+        return view('admin.sales_invoices.edit', compact(['header', 'items', 'units']));
+
     }
 
     /**

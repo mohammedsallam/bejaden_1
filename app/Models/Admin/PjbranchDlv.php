@@ -14,4 +14,9 @@ class PjbranchDlv extends Model
     public function branch(){
         return $this->belongsTo(MainBranch::class, 'Brn_No', 'ID_No');
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(InvLodhdr::class, 'Dlv_Stor', 'ID_No');
+    }
 }

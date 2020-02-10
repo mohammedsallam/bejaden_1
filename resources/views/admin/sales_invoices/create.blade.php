@@ -244,6 +244,7 @@
                     $(document).on('change', '.table_body tr input, .table_body tr select',function () {
                         let lineNo = $(this).parent('td').siblings('td.delete_row').children('input').val(),
                         Tot_Sal = 0;
+                        operationCalc($(this));
 
                         $('.item_tot_sal').each(function () {
                             Tot_Sal += parseFloat($(this).val());
@@ -279,11 +280,12 @@
                                 Disc1_Prct: $('#Disc1_Prct_'+lineNo).val(),
                                 Disc1_Val: $('#Disc1_Val_'+lineNo).val(),
 
-                                Taxp_Extra: $('#Taxp_Extra_'+lineNo).val(), // 2
-                                Taxv_Extra: $('#Taxv_Extra_'+lineNo).val(), // 2
+                                Taxp_ExtraDtl: $('#Taxp_Extra_'+lineNo).val(), // 2
+                                Taxv_ExtraDtl: $('#Taxv_Extra_'+lineNo).val(), // 2
 
                                 Tot_Sal: Tot_Sal, // hdr
                                 Tot_Disc: $('.Tot_Disc').val(), // hdr
+                                Taxv_Extra: $('.tax_val').val(), // hdr
                                 Tot_Prct: $('.Tot_Prct').val(), // hdr
                                 Tot_ODisc: $('.Tot_ODisc').val(), //hdr
                                 Tot_OPrct: $('.Tot_OPrct').val(), //hdr
@@ -307,7 +309,88 @@
                             }
                         })
 
+                        localStorage.setItem('Net', parseFloat($('.Net').val()));
+                        localStorage.setItem('after_desc', parseFloat($('.after_desc').val()));
+                        localStorage.setItem('Tot_Sal', parseFloat($('.Tot_Sal').val()));
+
                     })
+                });
+
+                function operationCalc(parameter) {
+                    let lineNo = parameter.parent('td').siblings('.delete_row').children('input').val(),
+                        Qty = $('#Qty_'+lineNo).val(),
+                        price = $('#Itm_Sal_'+lineNo).val(),
+                        Tot_Sal = 0,
+                        Tot_Disc = 0,
+                        Tot_Taxv_Extra = 0,
+                        item_tot_sal = $('#item_tot_sal_'+lineNo),
+                        Disc1_Prct = $('#Disc1_Prct_'+lineNo),
+                        Disc1_Val = $('#Disc1_Val_'+lineNo),
+                        Taxp_Extra = $('#Taxp_Extra_'+lineNo),
+                        Taxv_Extra = $('#Taxv_Extra_'+lineNo);
+
+
+                    item_tot_sal.val(Qty*price);
+
+
+                    // Calc Discount value and percentage
+                    if (Disc1_Prct.val() !== ''){
+                        Disc1_Val.val(0);
+                        Disc1_Val.val((item_tot_sal.val()*parseInt(Disc1_Prct.val()))/100);
+                    }
+
+                    var itemAfterDisc = parseFloat(item_tot_sal.val())-parseFloat(Disc1_Val.val());
+                    Taxv_Extra.val(parseFloat((itemAfterDisc*Taxp_Extra.val())/100));
+
+                    // Calc total sale
+                    $('.item_tot_sal').each(function () {
+                        $(this).change(function () {
+                            $(this).val('');
+                        });
+                        Tot_Sal += parseFloat($(this).val());
+                        $('.Tot_Sal').val(Tot_Sal);
+                    });
+
+                    $('.Disc1_Val').each(function () {
+                        if($(this).val() !== ''){
+                            Tot_Disc += parseFloat($(this).val());
+                            $('.Tot_Disc').val(Tot_Disc);
+                        }
+                    });
+
+                    $('.Tot_Prct').val(Math.round(parseFloat(($('.Tot_Disc').val()/$('.Tot_Sal').val())*100)))
+
+                    // After discount
+                    $('.after_desc').val(parseFloat($('.Tot_Sal').val()-$('.Tot_Disc').val()))
+
+                    $('.Taxv_Extra').each(function () {
+                        if($(this).val() !== ''){
+                            Tot_Taxv_Extra += parseFloat($(this).val());
+                        }
+
+                        $('.tax_val').val(Tot_Taxv_Extra);
+                    });
+
+                    $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()))
+
+
+                }
+
+                $('.Tot_ODisc').keyup(function () {
+                    let Tot_ODisc = parseFloat($(this).val()),
+                        Tot_OPrct = $('.Tot_OPrct'),
+                        after_desc = localStorage.getItem('after_desc'),
+                        Net = localStorage.getItem('Net');
+
+                    if ($('.Tot_ODisc').val() === ''){
+                        $('.after_desc').val(after_desc);
+                        $('.Net').val(Net)
+                        Tot_OPrct.val(0)
+                    } else {
+                        $('.after_desc').val(after_desc-Tot_ODisc);
+                        $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()));
+                        Tot_OPrct.val((Tot_ODisc/$('.after_desc').val()).toFixed(1));
+                    }
                 });
 
                 $('.Cmp_No').change(function () {
@@ -328,7 +411,7 @@
                                 $('.Actvty_No').append("<option value='"+data.activity_id+"'>"+data.activity_name+"</option>");
 
                                 for (let i =0; i < data.customers.length; i++){
-                                    $('.Cstm_No').append("<option value='"+data.customers[i]['ID_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
+                                    $('.Cstm_No').append("<option value='"+data.customers[i]['Cstm_No']+"'>"+data.customers[i]['Cstm_Nm'+"{{ucfirst(session('lang'))}}"]+"</option>");
                                 }
 
 
@@ -554,50 +637,76 @@
                     })
                 });
 
-                $(document).on('change', '.Qty, .Itm_Sal, .Disc1_Prct', function () {
-                    let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
-                        element = $('#Qty_'+lineNo),
-                        Qty = parseInt(element.val()),
-                        price = $('#Itm_Sal_'+lineNo).val(),
-                        Tot_Sal = 0,
-                        Tot_Disc = 0,
-                        item_tot_sal = $('#item_tot_sal_'+lineNo),
-                        Disc1_Prct = $('#Disc1_Prct_'+lineNo),
-                        Disc1_Val = $('#Disc1_Val_'+lineNo);
-
-                    item_tot_sal.val(Qty*price);
-
-                    // Calc total sale
-                    $('.item_tot_sal').each(function () {
-                        $(this).change(function () {
-                            $(this).val('');
-                        });
-
-                        Tot_Sal += parseFloat($(this).val());
-                        $('.Tot_Sal').val(Tot_Sal);
-                        $('.Tot_Disc').val(Tot_Sal);
-                    });
-
-                    $('.Disc1_Val').each(function () {
-                        Tot_Disc += parseFloat($(this).val());
-                        $('.Tot_Disc').val(Tot_Disc);
-                    });
-
-                    // Calc total Discount
 
 
-
-
-                    // Calc Discount value and percentage
-                    if (Disc1_Prct.val() !== ''){
-                        Disc1_Val.val((item_tot_sal.val()*parseInt(Disc1_Prct.val()))/100);
-                    }
-
-
-
-
-
-                });
+                // $(document).on('change', '.Disc1_Val', function(){
+                //     let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
+                //         Disc1_Prct = $('#Disc1_Prct_'+lineNo),
+                //         Disc1_Val = $('#Disc1_Val_'+lineNo),
+                //         item_tot_sal = $('#item_tot_sal_'+lineNo);
+                //     if (Disc1_Val.val() !== ''){
+                //         Disc1_Prct.val(0)
+                //         Disc1_Prct.val((parseFloat(Disc1_Val.val())*100)/item_tot_sal.val());
+                //     }
+                // });
+                // $(document).on('change', '.Qty, .Itm_Sal, .Disc1_Prct, .Disc1_Val', function () {
+                //     let lineNo = $(this).parent('td').siblings('.delete_row').children('input').val(),
+                //         Qty = $('#Qty_'+lineNo).val(),
+                //         price = $('#Itm_Sal_'+lineNo).val(),
+                //         Tot_Sal = 0,
+                //         Tot_Disc = 0,
+                //         Tot_Taxv_Extra = 0,
+                //         item_tot_sal = $('#item_tot_sal_'+lineNo),
+                //         Disc1_Prct = $('#Disc1_Prct_'+lineNo),
+                //         Disc1_Val = $('#Disc1_Val_'+lineNo),
+                //         Taxp_Extra = $('#Taxp_Extra_'+lineNo),
+                //         Taxv_Extra = $('#Taxv_Extra_'+lineNo);
+                //
+                //
+                //     item_tot_sal.val(Qty*price);
+                //
+                //
+                //     // Calc Discount value and percentage
+                //     if (Disc1_Prct.val() !== ''){
+                //         Disc1_Val.val(0);
+                //         Disc1_Val.val((item_tot_sal.val()*parseInt(Disc1_Prct.val()))/100);
+                //     }
+                //
+                //     var itemAfterDisc = parseFloat(item_tot_sal.val())-parseFloat(Disc1_Val.val());
+                //     Taxv_Extra.val(parseFloat((itemAfterDisc*Taxp_Extra.val())/100));
+                //
+                //     // Calc total sale
+                //     $('.item_tot_sal').each(function () {
+                //         $(this).change(function () {
+                //             $(this).val('');
+                //         });
+                //         Tot_Sal += parseFloat($(this).val());
+                //         $('.Tot_Sal').val(Tot_Sal);
+                //     });
+                //
+                //     $('.Disc1_Val').each(function () {
+                //         if($(this).val() !== ''){
+                //             Tot_Disc += parseFloat($(this).val());
+                //             $('.Tot_Disc').val(Tot_Disc);
+                //         }
+                //     });
+                //
+                //     $('.Tot_Prct').val(Math.round(parseFloat(($('.Tot_Disc').val()/$('.Tot_Sal').val())*100)))
+                //
+                //     // After discount
+                //     $('.after_desc').val(parseFloat($('.Tot_Sal').val()-$('.Tot_Disc').val()))
+                //
+                //     $('.Taxv_Extra').each(function () {
+                //         if($(this).val() !== ''){
+                //             Tot_Taxv_Extra += parseFloat($(this).val());
+                //         }
+                //
+                //         $('.tax_val').val(Tot_Taxv_Extra);
+                //     });
+                //
+                //     $('.Net').val(parseFloat($('.after_desc').val())+parseFloat($('.tax_val').val()))
+                //
+                // });
 
             })
 
@@ -681,7 +790,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="">رقم</label>
                     <input type="text" class="form-control cstm_no_input" >
@@ -835,10 +944,10 @@
                         <td><input type="text" id="item_tot_sal_1" class="item_tot_sal"></td>
                         <td><input type="text" name="Exp_Date" id="Exp_Date_1" class="Exp_Date datepicker" style="padding: 0; border-radius: 0"></td>
                         <td><input type="text" name="Batch_No" class="Batch_No" id="Batch_No_1"></td>
-                        <td><input type="text" name="Disc1_Prct" id="Disc1_Prct_1" class="Disc1_Prct"></td>
-                        <td><input type="text" name="Disc1_Val" id="Disc1_Val_1" class="Disc1_Val"></td>
-                        <td><input type="text" name="Taxp_Extra" id="Taxp_Extra_1" class="Taxp_Extra"></td>
-                        <td><input type="text" name="Taxv_Extra" id="Taxv_Extra_1" class="Taxv_Extra"></td>
+                        <td><input type="text" name="Disc1_Prct" id="Disc1_Prct_1" value="0" class="Disc1_Prct"></td>
+                        <td><input type="text" name="Disc1_Val" id="Disc1_Val_1" value="0" class="Disc1_Val"></td>
+                        <td><input type="text" name="Taxp_Extra" id="Taxp_Extra_1" value="5" class="Taxp_Extra"></td>
+                        <td><input type="text" name="Taxv_Extra" id="Taxv_Extra_1" value="0" class="Taxv_Extra"></td>
                     </tr>
                     </tbody>
                     <tfoot class="bg-primary" style="cursor: pointer">
@@ -851,79 +960,81 @@
         </div>
         <div class="bill_details">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">الإجمالي</label>
-                        <input type="text" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal text-center">
+                        <input type="text" value="0" name="Tot_Sal" id="Tot_Sal" class="form-control Tot_Sal text-center">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">بعد الخصم</label>
-                        <input type="text" class="form-control">
+                        <input type="text" value="0" class="form-control after_desc">
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">خصم أصناف</label>
-                        <input type="text" name="Tot_Disc" id="Tot_Disc" class="form-control Tot_Disc">
-                        <input type="text" name="Tot_Prct" id="Tot_Prct" class="form-control Tot_Prct">
-                        <label>%</label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">خصم إضافي</label>
-                        <input type="text" name="Tot_ODisc" id="Tot_ODisc" class="form-control Tot_ODisc">
-                        <input type="text" name="Tot_OPrct" id="Tot_OPrct" class="form-control Tot_OPrct">
-                        <label>%</label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">قيمة الضريبة</label>
-                        <input type="text" class="form-control tax_val">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">الصافي</label>
-                        <input type="text" name="Net" id="Net" class="form-control Net">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">حد الائتمان</label>
                         <input type="text" class="form-control secure_limit">
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">الرصيد الحالي</label>
-                        <input type="text" class="form-control current_balance">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group" style="display: flex">
-                        <label for="">الفرق</label>
-                        <input type="text" class="form-control diff">
-                    </div>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">رصيد الصنف</label>
                         <input type="text" class="form-control item_balance">
                     </div>
                 </div>
-                <div class="col-md-2">
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">خصم أصناف</label>
+                        <input type="text" name="Tot_Disc" value="0" id="Tot_Disc" class="form-control Tot_Disc">
+                        <input style="width: 50%" type="text" name="Tot_Prct" value="0" id="Tot_Prct" class="form-control Tot_Prct">
+                        <label>%</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">قيمة الضريبة</label>
+                        <input type="text" name="Taxv_Extra" value="0" class="form-control tax_val">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الرصيد الحالي</label>
+                        <input type="text" class="form-control current_balance">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">رصيد المستودعات</label>
                         <input type="text" class="form-control store_balance">
                     </div>
                 </div>
-                <div class="col-md-2">
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">خصم إضافي</label>
+                        <input type="text" name="Tot_ODisc" value="0" id="Tot_ODisc" class="form-control Tot_ODisc">
+                        <input style="width: 50%" type="text" name="Tot_OPrct" value="0" id="Tot_OPrct" class="form-control Tot_OPrct">
+                        <label>%</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الصافي</label>
+                        <input type="text" value="0" name="Net" id="Net" class="form-control Net">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="display: flex">
+                        <label for="">الفرق</label>
+                        <input type="text" class="form-control diff">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group" style="display: flex">
                         <label for="">سعر البيع</label>
                         <input type="text" class="form-control sale_price">

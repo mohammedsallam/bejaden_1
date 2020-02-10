@@ -49,4 +49,9 @@ class MainCompany extends Model
         return $this->hasMany(AstSalesman::class, 'Cmp_No', 'ID_No');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(InvLodhdr::class, 'Cmp_No', 'Cmp_No');
+    }
+
 }
