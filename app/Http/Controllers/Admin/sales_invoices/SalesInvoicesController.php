@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use function GuzzleHttp\Promise\all;
 
 class SalesInvoicesController extends Controller
@@ -29,6 +30,7 @@ class SalesInvoicesController extends Controller
      */
     public function index(salesInvoicesDataTable $table)
     {
+
         return $table->render('admin.sales_invoices.index');
     }
 
@@ -277,6 +279,21 @@ class SalesInvoicesController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function salesInvoices_print($id)
+    {
+        @dd($id);
+        $header = InvLodhdr::with('details')->where('Doc_No', $id)->firstOrFail();
+        $config = ['instanceConfigurator' => function($mpdf) {
+            $mpdf->SetHTMLFooter('
+                    <div dir="ltr" style="text-align: right">{DATE j-m-Y H:m}</div>
+                    <div dir="ltr" style="text-align: center">{PAGENO} of {nbpg}</div>'
+            );
+        }];
+        $pdf = PDF::loadView('admin.banks.invoice.pdf.report', compact('receiptsData','data','receipts'),[],['format' => 'A5-L'], $config);
+        return $pdf->stream();
+        return view('admin.sales_invoices.edit', compact(['header']));
+
     }
 
     public function getActivityCustomer(Request $request)

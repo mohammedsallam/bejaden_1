@@ -670,6 +670,7 @@ Route::group(['prefix'=>'admin'],function (){
         })->name('getstoresInvoicesGeneralView');
 
         Route::resource('salesInvoices', 'Admin\sales_invoices\SalesInvoicesController');
+        Route::get('salesInvoices/print/{id}', 'Admin\sales_invoices\SalesInvoicesController@salesInvoices_print')->name('salesInvoices.print');
         Route::get('getActivityCustomer', 'Admin\sales_invoices\SalesInvoicesController@getActivityCustomer')->name('getActivityCustomer');
         Route::get('returnCountOfDays', 'Admin\sales_invoices\SalesInvoicesController@returnCountOfDays')->name('returnCountOfDays');
         Route::get('createNewRow', 'Admin\sales_invoices\SalesInvoicesController@createNewRow')->name('createNewRow');

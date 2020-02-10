@@ -37,8 +37,8 @@ class limitationsDataTable extends DataTable
                 } else {
                     return '<span class="label label-danger">'.trans('admin.deactive').'</span>';
                 }
-            })
 
+            })
             ->addColumn('delete', 'admin.limitations.btn.delete')
             ->rawColumns([
                 'show',

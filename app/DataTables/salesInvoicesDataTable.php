@@ -23,13 +23,16 @@ class salesInvoicesDataTable extends DataTable
             ->addColumn('customer', function ($query) {
                 return $query->customer->{'Cstm_Nm'.ucfirst(session('lang'))};
             })
-
+            ->addColumn('print', function ($query) {
+                return '<a href="salesInvoices/print/'.$query->Doc_No.'" class="btn btn-info" target="_blanck">' .'<i class="fa fa-print"></i>'  . '</a>';
+            })
             ->addColumn('delete', 'admin.sales_invoices.btn.delete')
 
             ->addIndexColumn()
 
             ->rawColumns([
                 'customer',
+                'print',
                 'edit',
                 'delete',
             ]);
@@ -116,9 +119,10 @@ class salesInvoicesDataTable extends DataTable
             ['name'=>'Doc_No','data'=>'Doc_No','title'=>trans('admin.Doc_No')],
             ['name'=>'customer.Cstm_Nm'.ucfirst(session('lang')),'data'=>'customer','title'=>trans('admin.customer_name')],
 //            ['name'=>'Doc_Ty','data'=>'Doc_Ty','title'=>trans('admin.Doc_Ty')],
+
+            ['name'=>'print','data'=>'print','title'=>trans('admin.print'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'edit','data'=>'edit','title'=>trans('admin.edit'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
             ['name'=>'delete','data'=>'delete','title'=>trans('admin.delete'),'printable'=>false,'exportable'=>false,'orderable'=>false,'searchable'=>false],
-
         ];
     }
 
