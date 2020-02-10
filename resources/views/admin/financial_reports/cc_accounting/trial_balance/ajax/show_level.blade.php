@@ -63,19 +63,19 @@
 <div class="row" >
     <div class="col-xs-9">
         {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
-        {{ Form::select('fromtree',$MtsChartAc,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst2 fromtree'])) }}
+        {{ Form::select('fromtree',$MtsCostcntr,$fromtree, array_merge(['class' => 'form-control col-xs-9 e2 efirst2 fromtree'])) }}
     </div>
     <div class="col-xs-3">
-        {{ Form::text('number_fromtree',$MtsChartAc3->first(), array_merge(['class' => 'form-control number_fromtree'])) }}
+        {{ Form::text('number_fromtree',$MtsCostcntr3->first(), array_merge(['class' => 'form-control number_fromtree'])) }}
     </div>
 </div>
 <br>
 <div class="row">
     <div class="col-xs-9">
         {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
-        {{ Form::select('totree',$MtsChartAc,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast2 totree2 totree'])) }}
+        {{ Form::select('totree',$MtsCostcntr,$totree, array_merge(['class' => 'form-control col-xs-9 e2 elast2 totree2 totree'])) }}
     </div>
     <div class="col-xs-3">
-        {{ Form::text('number_totree',$MtsChartAc3->last(), array_merge(['class' => 'form-control number_totree'])) }}
+        {{ Form::text('number_totree',$MtsCostcntr3->last(), array_merge(['class' => 'form-control number_totree'])) }}
     </div>
 </div>

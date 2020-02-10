@@ -1,5 +1,5 @@
 @extends('admin.index')
-@section('title', trans('admin.trial_balance'))
+@section('title', trans('admin.ccs_balance'))
 @section('content')
     @push('css')
         <style>
@@ -11,6 +11,7 @@
                 color: red;
             }
 
+
         </style>
         {{--    Date Hijri--}}
         <link rel="stylesheet" href="{{url('/')}}/public/adminlte/dateHijri/dist/css/bootstrap-datetimepicker.min.css">
@@ -19,49 +20,17 @@
     @push('js')
         <script src="{{url('/')}}/public/adminlte/dateHijri/dist/js/bootstrap-hijri-datepicker.min.js"></script>
 
-        <script>
-            $(function () {
-                'use strict'
-
-                {{--$(".MainCompany").on("change",function(){--}}
-                {{--    var mainCompany = $(this).val();--}}
-                {{--    $('.column-form').html('');--}}
-                {{--    $("#loadingmessage-1").css("display","block");--}}
-                {{--    $(".div_branch").css("display","none");--}}
-                {{--    if (this){--}}
-                {{--        $.ajax({--}}
-                {{--            url: '{{route('branche_trial_balance')}}',--}}
-                {{--            type:'get',--}}
-                {{--            dataType:'html',--}}
-                {{--            data:{mainCompany: mainCompany},--}}
-                {{--            success: function (data) {--}}
-                {{--                $("#loadingmessage-1").css("display","none");--}}
-                {{--                $('.div_branch').css("display","block").html(data);--}}
-
-                {{--            }--}}
-                {{--        });--}}
-                {{--    }else{--}}
-                {{--        $('.div_branch').html('');--}}
-                {{--    }--}}
-                {{--});--}}
-
-            });
-
-
-        </script>
 
         <script>
-
             $(function () {
                 'use strict';
-
                 $('#MainCompany').on('change',function () {
                     var MainCompany = $( "#MainCompany option:selected" ).val();
                     if (this){
                         $("#loadingmessage").css("display","block");
                         $(".show_row").css("display","none");
                         $.ajax({
-                            url: '{{route('trialbalance.show')}}',
+                            url: '{{route('cc_balance.show')}}',
                             type:'get',
                             dataType:'html',
                             data:{MainCompany:MainCompany},
@@ -83,9 +52,8 @@
                         $('.show_row').html('');
                     }
                 });
-
-
             });
+
             $('.total_department').change(function () {
                 var MainCompany = '{{isset($MainCompany) ? $MainCompany : null}}';
                 var level = '{{isset($level) ? $level : null}}';
@@ -99,7 +67,7 @@
                 $(".print_div").css("display","none");
                 if (this) {
                     $.ajax({
-                        url: '{{route('trialbalance.details')}}',
+                        url: '{{route('cc_balance.details')}}',
                         type: 'get',
                         dataType: 'html',
                         data: {MainCompany: MainCompany,
@@ -131,7 +99,7 @@
                 $(".print_div").css("display","none");
                 if (this) {
                     $.ajax({
-                        url: '{{route('trialbalance.details')}}',
+                        url: '{{route('cc_balance.details')}}',
                         type: 'get',
                         dataType: 'html',
                         data: {MainCompany: MainCompany,
@@ -201,7 +169,7 @@
 
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">{{trans('admin.trial_balance')}}</h3>
+            <h3 class="box-title">{{trans('admin.ccs_balance')}}</h3>
         </div>
         @include('admin.layouts.message')
         <div class="box-body">
@@ -231,7 +199,7 @@
                 <br>
                 <div class="row">
                     <div class="col-xs-9">
-                        {{ Form::label('tree','من حساب', ['class' => 'col-xs-3 control-label']) }}
+                        {{ Form::label('tree','من مركز تكلفه', ['class' => 'col-xs-3 control-label']) }}
                         {{ Form::select('fromtree',[],null, array_merge(['class' => 'form-control fromtree col-xs-9 e2 ee', 'id'=>'fromtree'])) }}
                     </div>
                     <div class="col-xs-3">
@@ -241,7 +209,7 @@
                 <br>
                 <div class="row">
                     <div class="col-xs-9">
-                        {{ Form::label('tree','الى حساب', ['class' => 'col-xs-3']) }}
+                        {{ Form::label('tree','الى مركز تكلفه', ['class' => 'col-xs-3']) }}
                         {{ Form::select('totree',[],null, array_merge(['class' => 'form-control col-xs-9 e2 ee totree'])) }}
                     </div>
                     <div class="col-xs-3">
@@ -269,28 +237,33 @@
                     <div class="col-md-6 col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="total_department" name="department" checked value="1">
-                            <label class="total_department" for="total_department">جميع الحسابات </label>
+                            <label class="total_department" for="total_department">جميع مراكز التكلفه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="balance_department" name="department" value="2">
-                            <label for="balance_department">  حسابات بارصدة </label>
+                            <label for="balance_department">  مراكز التكلفه بارصدة </label>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="debt_department" name="department" value="3">
-                            <label class="debt_department" for="debt_department">حسابات مدينه </label>
+                            <label class="debt_department" for="debt_department">مراكز التكلفه مدينه </label>
                         </div>
                         <br>
                         <br>
                         <br>
                         <div class="col-xs-12 custom-control custom-radio">
                             <input type="radio" class="total_department" id="credit_department" name="department" value="4">
-                            <label for="credit_department">  حسابات دائنه </label>
+                            <label for="credit_department">  مراكز التكلفه دائنه </label>
                         </div>
+                    </div>
+                    <div class="col-xs-12 custom-control custom-radio" style="text-align: center;right: -33px;">
+                        <br>
+                        <input type="radio" class="total_department" id="credit_department" name="department" value="5">
+                        <label for="credit_department">  مراكز التكلفه بدون حركه </label>
                     </div>
                 </div>
 

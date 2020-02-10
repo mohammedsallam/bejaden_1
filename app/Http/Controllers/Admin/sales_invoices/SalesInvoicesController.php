@@ -150,14 +150,16 @@ class SalesInvoicesController extends Controller
                 'Batch_No' => 'required',
                 'Disc1_Prct' => 'sometimes',
                 'Disc1_Val' => 'sometimes',
-                'Taxp_Extra' => 'sometimes',
-                'Taxv_Extra' => 'sometimes',
+                'Taxp_ExtraDtl' => 'sometimes',
+                'Taxv_ExtraDtl' => 'sometimes',
 
                 'Tot_Sal' => 'sometimes',
                 'Tot_Disc' => 'sometimes',
                 'Tot_Prct' => 'sometimes',
                 'Tot_ODisc' => 'sometimes',
                 'Tot_OPrct' => 'sometimes',
+                'Taxp_Extra' => 'sometimes',
+                'Taxv_Extra' => 'sometimes',
                 'Net' => 'sometimes',
             ],[], [
                 'Cmp_No' => trans('admin.na_Comp'),
@@ -191,6 +193,8 @@ class SalesInvoicesController extends Controller
                         'Tot_Prct',
                         'Tot_ODisc',
                         'Tot_OPrct',
+                        'Taxp_Extra',
+                        'Taxv_Extra',
                         'Net',
                     ]));
                 } else {
@@ -200,6 +204,8 @@ class SalesInvoicesController extends Controller
                         'Tot_Prct',
                         'Tot_ODisc',
                         'Tot_OPrct',
+                        'Taxp_Extra',
+                        'Taxv_Extra',
                         'Net',
                         ]));
                 }
@@ -212,6 +218,8 @@ class SalesInvoicesController extends Controller
                     'Tot_Prct',
                     'Tot_ODisc',
                     'Tot_OPrct',
+//                    'Taxp_Extra',
+                    'Taxv_Extra',
                     'Net',
                 ]));
 

@@ -89,8 +89,8 @@ class CreateInnvLoddtlTable extends Migration
             $table->float('Ret_Uprice', 8)->nullable();
             $table->string('Lc_No', 50)->nullable();
             $table->float('SpecialDiscount', 8)->nullable();
-            $table->float('Taxp_Extra', 8)->nullable();
-            $table->float('Taxv_Extra', 8)->nullable();
+            $table->float('Taxp_ExtraDtl', 8)->nullable();
+            $table->float('Taxv_ExtraDtl', 8)->nullable();
             $table->string('Doc_Post', 10)->nullable();
             $table->string('updt_date', 10)->nullable();
             $table->smallInteger('User_Id')->nullable();
